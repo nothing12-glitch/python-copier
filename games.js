@@ -1,4 +1,4 @@
-/* Ігровий хаб: Tic-Tac-Toe, Snake, Memory, 2048, RPS, Reaction */
+/* Ігровий хаб: Tic-Tac-Toe, Snake, Memory, 2048, RPS, Reaction, Simon, Mines, Guess */
 (function (global) {
   const $ = (s) => document.querySelector(s);
   const t = (k, v) => global.I18n.t(k, v);
@@ -11,7 +11,10 @@
     { id: "memory", ico: "\u{1F9E0}", name: "game.memory", desc: "game.memoryDesc", best: "low" },
     { id: "g2048", ico: "\u{1F522}", name: "game.g2048", desc: "game.g2048Desc", best: "high" },
     { id: "rps", ico: "\u{270A}", name: "game.rps", desc: "game.rpsDesc", best: "high" },
-    { id: "react", ico: "\u{26A1}", name: "game.react", desc: "game.reactDesc", best: "low" }
+    { id: "react", ico: "\u{26A1}", name: "game.react", desc: "game.reactDesc", best: "low" },
+    { id: "simon", ico: "\u{1F3A8}", name: "game.simon", desc: "game.simonDesc", best: "high" },
+    { id: "mines", ico: "\u{1F4A3}", name: "game.mines", desc: "game.minesDesc", best: "low" },
+    { id: "guess", ico: "\u{1F3AF}", name: "game.guess", desc: "game.guessDesc", best: "low" }
   ];
 
   function toast(msg) {
@@ -236,7 +239,162 @@
     return ()=>clearTimeout(to);
   }
 
-  const MOUNTS = { ttt:mountTTT, snake:mountSnake, memory:mountMemory, g2048:mount2048, rps:mountRPS, react:mountReact };
+  /* ---------------- Simon Says ---------------- */
+  function mountSimon(area, score) {
+    const COLORS = ["#ff5b7a", "#22d3ee", "#3ddc97", "#f0b429"];
+    let seq = [], idx = 0, accepting = false, level = 0;
+    const wrap = document.createElement("div");
+    wrap.className = "simon";
+    const pads = COLORS.map((c, i) => {
+      const b = document.createElement("button");
+      b.style.background = c;
+      b.onclick = () => press(i);
+      wrap.appendChild(b);
+      return b;
+    });
+    area.appendChild(wrap);
+    const status = document.createElement("div");
+    status.className = "game-score";
+    area.appendChild(status);
+    setScore(score, t("games.score"), 0);
+    function flash(i, ms) { pads[i].classList.add("lit"); setTimeout(() => pads[i].classList.remove("lit"), ms || 300); SFX() && SFX().pop(); }
+    function playSeq() {
+      accepting = false; status.textContent = t("simon.watch");
+      seq.forEach((v, n) => setTimeout(() => flash(v), 500 + n * 450));
+      setTimeout(() => { accepting = true; idx = 0; status.textContent = t("simon.your"); }, 500 + seq.length * 450);
+    }
+    function next() { level++; setScore(score, t("games.score"), level); seq.push((Math.random() * 4) | 0); playSeq(); }
+    function press(i) {
+      if (!accepting) return;
+      flash(i, 180);
+      if (i === seq[idx]) {
+        idx++;
+        if (idx === seq.length) { accepting = false; saveRecord("simon", level, "high"); setTimeout(next, 700); }
+      } else {
+        accepting = false; status.textContent = t("games.over"); SFX() && SFX().lose();
+        saveRecord("simon", level, "high");
+        setTimeout(() => { seq = []; level = 0; setScore(score, t("games.score"), 0); next(); }, 1600);
+      }
+    }
+    next();
+    return null;
+  }
+
+  /* ---------------- Minesweeper ---------------- */
+  function mountMines(area, score) {
+    const N = 9, M = 10;
+    let grid, revealed, flags, over, started, t0, timerInt, left;
+    const wrap = document.createElement("div"); wrap.className = "mines";
+    area.appendChild(wrap);
+    const info = document.createElement("div"); info.className = "game-score"; area.appendChild(info);
+    const cells = [];
+    function init() {
+      grid = Array.from({ length: N }, () => Array(N).fill(0));
+      revealed = Array.from({ length: N }, () => Array(N).fill(false));
+      flags = Array.from({ length: N }, () => Array(N).fill(false));
+      over = false; started = false; left = N * N - M; t0 = 0;
+      clearInterval(timerInt);
+      setScore(score, t("games.score"), 0);
+      info.textContent = t("mines.flags") + ": " + M;
+      wrap.innerHTML = ""; cells.length = 0;
+      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+        const b = document.createElement("button");
+        b.onclick = () => open(x, y);
+        b.oncontextmenu = (e) => { e.preventDefault(); flag(x, y); };
+        wrap.appendChild(b); cells.push(b);
+      }
+    }
+    function place(sx, sy) {
+      let placed = 0;
+      while (placed < M) {
+        const x = (Math.random() * N) | 0, y = (Math.random() * N) | 0;
+        if (grid[y][x] === -1 || (Math.abs(x - sx) <= 1 && Math.abs(y - sy) <= 1)) continue;
+        grid[y][x] = -1; placed++;
+      }
+      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+        if (grid[y][x] === -1) continue;
+        let c = 0;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+          const ny = y + dy, nx = x + dx;
+          if (ny >= 0 && nx >= 0 && ny < N && nx < N && grid[ny][nx] === -1) c++;
+        }
+        grid[y][x] = c;
+      }
+    }
+    function draw(x, y) {
+      const b = cells[y * N + x];
+      if (flags[y][x]) { b.textContent = "\u{1F6A9}"; b.className = "fl"; return; }
+      if (!revealed[y][x]) { b.textContent = ""; b.className = ""; return; }
+      const v = grid[y][x];
+      b.textContent = v === -1 ? "\u{1F4A3}" : (v || "");
+      b.className = "op" + (v > 0 ? " n" + Math.min(v, 3) : "");
+    }
+    function open(x, y) {
+      if (over || flags[y][x] || revealed[y][x]) return;
+      if (!started) { started = true; place(x, y); t0 = Date.now(); timerInt = setInterval(() => setScore(score, t("games.score"), Math.floor((Date.now() - t0) / 1000)), 500); }
+      if (grid[y][x] === -1) return lose();
+      const stack = [[x, y]];
+      while (stack.length) {
+        const c = stack.pop(); const cx = c[0], cy = c[1];
+        if (cx < 0 || cy < 0 || cx >= N || cy >= N || revealed[cy][cx] || flags[cy][cx]) continue;
+        revealed[cy][cx] = true; left--; draw(cx, cy);
+        if (grid[cy][cx] === 0) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) stack.push([cx + dx, cy + dy]);
+      }
+      SFX() && SFX().pop();
+      if (left === 0) win();
+    }
+    function flag(x, y) {
+      if (over || revealed[y][x]) return;
+      flags[y][x] = !flags[y][x];
+      let f = 0; flags.forEach((r) => r.forEach((v) => { if (v) f++; }));
+      info.textContent = t("mines.flags") + ": " + (M - f);
+      draw(x, y); SFX() && SFX().click();
+    }
+    function lose() {
+      over = true; clearInterval(timerInt); SFX() && SFX().lose();
+      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (grid[y][x] === -1) { revealed[y][x] = true; draw(x, y); }
+      setTimeout(init, 1800);
+    }
+    function win() {
+      over = true; clearInterval(timerInt);
+      const sec = Math.floor((Date.now() - t0) / 1000);
+      SFX() && SFX().win(); saveRecord("mines", sec, "low"); toast(t("games.youWin"));
+      setTimeout(init, 1800);
+    }
+    init();
+    return () => clearInterval(timerInt);
+  }
+
+  /* ---------------- Guess the number ---------------- */
+  function mountGuess(area, score) {
+    let target = 1 + ((Math.random() * 100) | 0), tries = 0;
+    const row = document.createElement("div"); row.className = "guess";
+    const inp = document.createElement("input"); inp.type = "number"; inp.min = "1"; inp.max = "100"; inp.placeholder = "1-100";
+    const btn = document.createElement("button"); btn.className = "btn contained"; btn.textContent = t("games.play");
+    row.append(inp, btn); area.appendChild(row);
+    const res = document.createElement("div"); res.className = "game-score"; res.style.fontSize = "18px"; area.appendChild(res);
+    setScore(score, t("games.score"), 0);
+    function check() {
+      const v = Number(inp.value);
+      if (!v || v < 1 || v > 100) return;
+      tries++; setScore(score, t("games.score"), tries);
+      if (v === target) {
+        res.textContent = t("games.youWin") + " " + target;
+        SFX() && SFX().win(); saveRecord("guess", tries, "low");
+        target = 1 + ((Math.random() * 100) | 0); tries = 0; inp.value = "";
+        setTimeout(() => { res.textContent = ""; setScore(score, t("games.score"), 0); }, 1800);
+      } else {
+        res.textContent = v < target ? t("guess.higher") : t("guess.lower");
+        SFX() && SFX().pop();
+      }
+      inp.focus();
+    }
+    btn.onclick = check;
+    inp.onkeydown = (e) => { if (e.key === "Enter") check(); };
+    return null;
+  }
+
+  const MOUNTS = { ttt:mountTTT, snake:mountSnake, memory:mountMemory, g2048:mount2048, rps:mountRPS, react:mountReact, simon:mountSimon, mines:mountMines, guess:mountGuess };
 
   function renderHub() {
     const hub=$("#gamesHub"); if(!hub) return;
