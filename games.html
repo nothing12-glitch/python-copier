@@ -1,86 +1,29 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ігри та Проєкти</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ігри</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
-
-  <!-- Ліва бічна панель (Sidebar) -->
-  <aside class="sidebar">
-    <div class="sidebar-menu">
-      <a href="index.html" class="nav-item">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-        <span>Головна</span>
-      </a>
-      <a href="games.html" class="nav-item active">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 1c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-3c-.83 0-1.5-.67-1.5-1.5S17.67 8 18.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-        <span>Ігри</span>
-      </a>
-    </div>
-  </aside>
-
-  <!-- Основний контент -->
-  <main class="main-content">
-    <header class="page-header">
-      <h1>Гра "Вгадай число"</h1>
-      <p>Спробуй вгадати число від 1 до 100 за найменшу кількість спроб!</p>
-    </header>
-
-    <section class="card game-card">
-      <p id="game-instruction">Я загадав число від 1 до 100. Введи свій варіант:</p>
-      
-      <div class="game-controls">
-        <input type="number" id="user-guess" min="1" max="100" placeholder="Число">
-        <button onclick="checkGuess()">Перевірити</button>
-      </div>
-
-      <p id="game-message"></p>
-      <button id="reset-btn" onclick="resetGame()" style="display:none; margin-top: 15px;">Зіграти знову</button>
-    </section>
-  </main>
-
-  <script>
-    let targetNumber = Math.floor(Math.random() * 100) + 1;
-    let attempts = 0;
-
-    function checkGuess() {
-      const guessInput = document.getElementById('user-guess');
-      const message = document.getElementById('game-message');
-      const guess = parseInt(guessInput.value);
-
-      if (isNaN(guess) || guess < 1 || guess > 100) {
-        message.style.color = '#ff6b6b';
-        message.textContent = 'Будь ласка, введи коректне число від 1 до 100!';
-        return;
-      }
-
-      attempts++;
-
-      if (guess === targetNumber) {
-        message.style.color = '#51cf66';
-        message.textContent = `Вітаю! Ти вгадав число ${targetNumber} за ${attempts} спроб(и)! 🎉`;
-        document.getElementById('reset-btn').style.display = 'inline-block';
-      } else if (guess < targetNumber) {
-        message.style.color = '#38d9a9';
-        message.textContent = 'Моє число БІЛЬШЕ!';
-      } else {
-        message.style.color = '#38d9a9';
-        message.textContent = 'Моє число МЕНШЕ!';
-      }
-
-      guessInput.value = '';
-    }
-
-    function resetGame() {
-      targetNumber = Math.floor(Math.random() * 100) + 1;
-      attempts = 0;
-      document.getElementById('game-message').textContent = '';
-      document.getElementById('user-guess').value = '';
-      document.getElementById('reset-btn').style.display = 'none';
-    }
-  </script>
+<body data-title="games">
+<nav>
+ <a href="index.html#home"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 5.7 18 11v7h-3v-5H9v5H6v-7l6-5.3M12 3 2 12h3v8h6v-5h2v5h6v-8h3L12 3z"/></svg></span><span data-t="home"></span></a>
+ <a href="games.html" class="on"><span class="ic"><svg viewBox="0 0 24 24"><path d="M21 6H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h4l2-3h6l2 3h4a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1zM9 12H7v2H5v-2H3v-2h2V8h2v2h2v2zm7 1a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-2a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg></span><span data-t="games"></span></a>
+ <a href="index.html#settings"><span class="ic"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6a.5.5 0 0 0 .1-.6l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.3 7.3 0 0 0-1.7-1L14.4 3a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.4 2.6a7.3 7.3 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.500a.5.5 0 0 0 .1.6L4.600 11a7.600 7.600 0 0 0 0 2l-2.100 1.600a.5.5 0 0 0-.1.600l2 3.500c.1.200.4.300.6.200l2.500-1c.5.400 1.100.7 1.700 1l.4 2.600c0 .2.200.4.500.4h4c.3 0 .5-.2.500-.4l.4-2.600c.6-.3 1.200-.6 1.700-1l2.500 1c.2.100.5 0 .6-.2l2-3.500a.5.5 0 0 0-.1-.6L19.400 13zM12 15.500a3.500 3.500 0 1 1 0-7 3.500 3.500 0 0 1 0 7z"/></svg></span><span data-t="settings"></span></a>
+</nav>
+<main>
+ <h1 data-t="games"></h1>
+ <p data-t="gText"></p>
+ <div class="games">
+  <!-- Шаблон картки гри. Скопіюй, зміни посилання й текст:
+  <a class="game" href="ПОСИЛАННЯ"><b>Назва гри</b><span>Короткий опис</span></a>
+  -->
+ </div>
+ <p data-t="gEmpty"></p>
+</main>
+<script src="app.js"></script>
 </body>
 </html>
