@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ігри</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Навігаційне меню -->
+    <header>
+        <nav class="navbar">
+            <a href="index.html">Головна (Завдання)</a>
+            <a href="games.html" class="active">Ігри</a>
+        </nav>
+    </header>
+
+    <!-- Основний вміст вкладки ігор -->
+    <main class="container">
+        <h1>Аркада: Клікер</h1>
+        <p class="subtitle">Тисни на кнопку якомога швидше і збирай бали!</p>
+        
+        <div class="game-box">
+            <h2 id="score">Бали: 0</h2>
+            <button id="clickBtn" onclick="addScore()">Клік!</button>
+        </div>
+    </main>
+
+    <!-- Логіка гри на JavaScript -->
+    <script>
+        let count = 0;
+        function addScore() {
+            count++;
+            document.getElementById('score').innerText = "Бали: " + count;
+        }
+    </script>
+
+</body>
+</html>
