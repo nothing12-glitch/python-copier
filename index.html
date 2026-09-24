@@ -1,33 +1,107 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мої завдання та ігри</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мої проєкти та завдання</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Підключення Pyodide для виконання Python прямо в браузері -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
 </head>
 <body>
 
-    <!-- Навігаційне меню -->
-    <header>
-        <nav class="navbar">
-            <a href="index.html" class="active">Головна (Завдання)</a>
-            <a href="games.html">Ігри</a>
-        </nav>
+  <!-- Ліва бічна панель (Sidebar) -->
+  <aside class="sidebar">
+    <div class="sidebar-menu">
+      <a href="index.html" class="nav-item active">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Головна</span>
+      </a>
+      <a href="games.html" class="nav-item">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 1c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-3c-.83 0-1.5-.67-1.5-1.5S17.67 8 18.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        <span>Ігри</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Основний контент -->
+  <main class="main-content">
+    <header class="page-header">
+      <h1>Мої проєкти та завдання</h1>
+      <p>Тут зібрані мої шкільні роботи та вбудований Python-середовище.</p>
     </header>
 
-    <!-- Основний вміст головної сторінки -->
-    <main class="container">
-        <h1>Мої проєкти та завдання</h1>
-        <p class="subtitle">Тут зібрані мої шкільні роботи.</p>
-        
-        <section class="card-list">
-            <div class="card">
-                <h3>Завдання 1</h3>
-                <p>Опис твого першого завдання або посилання на нього.</p>
-            </div>
-        </section>
-    </main>
+    <!-- Картка Завдання 1 -->
+    <section class="card">
+      <h2>Завдання 1</h2>
+      <p class="card-desc">Опис твого першого завдання або посилання на нього.</p>
+    </section>
 
+    <!-- Вбудований Python Компілятор -->
+    <section class="card python-section">
+      <h2>Вбудований Python</h2>
+      <p class="card-desc">Пиши та запускай Python-код прямо в браузері:</p>
+
+      <div class="editor-container">
+        <textarea id="python-code" rows="8" spellcheck="false"># Напиши свій Python код тут
+def greet(name):
+    return f"Привіт, {name}!"
+
+print(greet("Арсеній"))
+print("Результат обчислення:", 10 * 5)
+</textarea>
+        <button id="run-btn" onclick="runPython()">▶ Запустити код</button>
+      </div>
+
+      <div class="output-container">
+        <label>Консоль виводу:</label>
+        <pre id="output">Завантаження Python середовища (Pyodide)...</pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let pyodideReady = false;
+    let pyodideInstance = null;
+
+    async function main() {
+      const output = document.getElementById("output");
+      try {
+        pyodideInstance = await loadPyodide();
+        pyodideReady = true;
+        output.textContent = "Python середовище готове до роботи!";
+      } catch (err) {
+        output.textContent = "Помилка завантаження Python: " + err;
+      }
+    }
+    main();
+
+    async function runPython() {
+      const output = document.getElementById("output");
+      if (!pyodideReady) {
+        output.textContent = "Зачекайте, Python ще завантажується...";
+        return;
+      }
+
+      const code = document.getElementById("python-code").value;
+      output.textContent = "Виконується...";
+
+      try {
+        // Перенаправляємо stdout в консоль
+        pyodideInstance.runPython(`
+          import sys
+          import io
+          sys.stdout = io.StringIO()
+        `);
+
+        await pyodideInstance.runPythonAsync(code);
+
+        let stdout = pyodideInstance.runPython("sys.stdout.getvalue()");
+        output.textContent = stdout || "[Код виконано без виводу]";
+      } catch (err) {
+        output.textContent = "Помилка виконання:\n" + err;
+      }
+    }
+  </script>
 </body>
 </html>
