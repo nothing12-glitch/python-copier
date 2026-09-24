@@ -86,6 +86,12 @@
       "game.g2048": "2048", "game.g2048Desc": "Об'єднуй плитки",
       "game.rps": "Камінь-Ножиці-Папір", "game.rpsDesc": "Обіграй комп'ютер",
       "game.react": "Реакція", "game.reactDesc": "Наскільки ти швидкий?",
+      "game.simon": "Саймон каже", "game.simonDesc": "Повтори послідовність кольорів",
+      "game.mines": "Сапер", "game.minesDesc": "Відкрий поле без мін",
+      "game.guess": "Вгадай число", "game.guessDesc": "Число від 1 до 100",
+      "simon.watch": "Запам'ятовуй…", "simon.your": "Твій хід!",
+      "mines.flags": "Прапорці",
+      "guess.higher": "Моє число більше!", "guess.lower": "Моє число менше!",
       "react.tapStart": "Натисни, щоб почати", "react.wait": "Чекай на зелений…",
       "react.go": "ТИСНИ!", "react.result": "Твій час: {ms} мс", "react.tooSoon": "За рано! Спробуй ще."
     },
@@ -174,6 +180,12 @@
       "game.g2048": "2048", "game.g2048Desc": "Merge the tiles",
       "game.rps": "Rock-Paper-Scissors", "game.rpsDesc": "Beat the computer",
       "game.react": "Reaction", "game.reactDesc": "How fast are you?",
+      "game.simon": "Simon Says", "game.simonDesc": "Repeat the color sequence",
+      "game.mines": "Minesweeper", "game.minesDesc": "Clear the field safely",
+      "game.guess": "Guess the Number", "game.guessDesc": "A number from 1 to 100",
+      "simon.watch": "Watch…", "simon.your": "Your turn!",
+      "mines.flags": "Flags",
+      "guess.higher": "My number is higher!", "guess.lower": "My number is lower!",
       "react.tapStart": "Tap to start", "react.wait": "Wait for green…",
       "react.go": "TAP!", "react.result": "Your time: {ms} ms", "react.tooSoon": "Too soon! Try again."
     },
@@ -262,6 +274,12 @@
       "game.g2048": "2048", "game.g2048Desc": "Kutuları birleştir",
       "game.rps": "Taş-Kağıt-Makas", "game.rpsDesc": "Bilgisayarı yen",
       "game.react": "Refleks", "game.reactDesc": "Ne kadar hızlısın?",
+      "game.simon": "Simon Diyor", "game.simonDesc": "Renk dizisini tekrarla",
+      "game.mines": "Mayın Tarlası", "game.minesDesc": "Tarlayı güvenle temizle",
+      "game.guess": "Sayıyı Tahmin Et", "game.guessDesc": "1 ile 100 arası bir sayı",
+      "simon.watch": "İzle…", "simon.your": "Sıra sende!",
+      "mines.flags": "Bayraklar",
+      "guess.higher": "Sayım daha büyük!", "guess.lower": "Sayım daha küçük!",
       "react.tapStart": "Başlamak için dokun", "react.wait": "Yeşili bekle…",
       "react.go": "DOKUN!", "react.result": "Süren: {ms} ms", "react.tooSoon": "Çok erken! Tekrar dene."
     }
