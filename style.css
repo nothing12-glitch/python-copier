@@ -326,3 +326,16 @@ body.compact .btn{height:34px}
 .range-box input[type=range]{flex:1;accent-color:var(--md-primary);cursor:pointer}
 .range-val{font-size:12px;color:var(--md-on-surface-var);min-width:36px;text-align:right;font-variant-numeric:tabular-nums}
 .about-card{margin-top:16px}
+/* ===== Onboarding modal ===== */
+.ob-backdrop{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:grid;place-items:center;padding:16px;animation:mdfade .25s ease}
+.ob-card{background:var(--md-surface);color:var(--md-on-surface);border-radius:24px;box-shadow:var(--md-elev3);max-width:460px;width:100%;padding:28px 24px;text-align:center}
+.ob-emoji{font-size:64px;line-height:1;margin-bottom:12px}
+.ob-card h3{margin:0 0 8px;font-size:22px;font-weight:500}
+.ob-card p{margin:0 0 18px;color:var(--md-on-surface-var);font-size:14px;line-height:1.6}
+.ob-langs{display:flex;gap:10px;justify-content:center;margin-bottom:8px;flex-wrap:wrap}
+.ob-langs button{font-family:var(--md-font);font-size:15px;font-weight:500;padding:12px 20px;border-radius:14px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);color:var(--md-on-surface);cursor:pointer;transition:.15s}
+.ob-langs button:hover{background:var(--md-primary-container);color:var(--md-on-primary-container)}
+.ob-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.ob-dots{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.ob-dots span{width:8px;height:8px;border-radius:50%;background:var(--md-outline-var)}
+.ob-dots span.on{background:var(--md-primary);width:20px;border-radius:4px}
