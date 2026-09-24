@@ -1,67 +1,220 @@
 <!DOCTYPE html>
-<html lang="uk" data-theme="dark">
+<html lang="uk">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Мої проєкти та завдання</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мої проєкти та завдання</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Pyodide: Python у браузері без скачування -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
 </head>
 <body>
-<nav id="nav" aria-label="Menu"></nav>
-<main>
-<section id="home">
- <h1 data-t="title"></h1>
- <p data-t="intro"></p>
- <div class="group">
-  <h2 data-t="task"></h2>
-  <p data-t="taskText"></p>
- </div>
- <div class="group">
-  <h2 data-t="pyTitle"></h2>
-  <p data-t="pyText"></p>
-  <textarea id="code" spellcheck="false" aria-label="Python"></textarea>
-  <button class="run" id="run" disabled data-t="run"></button>
-  <div class="label" data-t="console"></div>
-  <pre id="out" data-t="loading"></pre>
- </div>
-</section>
-<section id="settings" hidden>
- <h1 data-t="settings"></h1>
- <div class="group">
-  <h2 data-t="look"></h2>
-  <label class="row opt"><input type="radio" name="theme" value="system"><span data-t="sys"></span></label>
-  <label class="row opt"><input type="radio" name="theme" value="light"><span data-t="light"></span></label>
-  <label class="row opt"><input type="radio" name="theme" value="dark"><span data-t="dark"></span></label>
- </div>
- <label class="row"><span data-t="sounds"></span><input type="checkbox" id="sound"></label>
- <div class="group" style="margin-top:24px">
-  <h2 data-t="lang"></h2>
-  <label class="row opt"><input type="radio" name="lang" value="uk"><span>Українська</span></label>
-  <label class="row opt"><input type="radio" name="lang" value="en"><span>English</span></label>
-  <label class="row opt"><input type="radio" name="lang" value="tr"><span>Türkçe</span></label>
- </div>
- <div class="row" style="min-height:72px">
-  <div><div data-t="data"></div><div style="font-size:14px;color:var(--muted)" data-t="dataText"></div></div>
-  <button class="link" id="reset" data-t="reset"></button>
- </div>
-</section>
-</main>
-<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
-<script src="app.js"></script>
-<script>
-const DEFAULT='def greet(name):\n    return f"Привіт, {name}!"\n\nprint(greet("Арсеній"))\nprint("Результат обчислення:", 10 * 5)';
-$('#code').value=load('code')||DEFAULT;
-$('#code').oninput=e=>save('code',e.target.value);
-let py;const out=$('#out');
-loadPyodide().then(p=>{py=p;out.removeAttribute('data-t');out.textContent='';$('#run').disabled=false});
-$('#run').onclick=async()=>{
- beep();out.textContent='';
- const add=s=>out.textContent+=s+'\n';
- py.setStdout({batched:add});py.setStderr({batched:add});
- try{await py.runPythonAsync($('#code').value)}catch(e){add(e.message)}
-};
-</script>
+  <!-- Background FX: ambient glow + animated blobs + cursor-follow glow -->
+  <div class="bg-fx" aria-hidden="true">
+    <div class="bg-glow"></div>
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+    <div class="cursor-glow" id="cursorGlow"></div>
+  </div>
+
+  <!-- Top app bar -->
+  <header class="appbar">
+    <span class="material-icons appbar-logo">terminal</span>
+    <span class="appbar-title" data-i18n="app.title">Мої проєкти та завдання</span>
+    <div class="appbar-spacer"></div>
+
+    <div class="lang-switch" id="langSwitch" role="group" aria-label="Language">
+      <button data-lang="uk" class="active">UA</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="tr">TR</button>
+    </div>
+    <button id="sfxToggle" class="icon-btn" title="Sound" aria-pressed="true"><span class="material-icons">volume_up</span></button>
+    <button id="musicToggle" class="icon-btn" title="Music" aria-pressed="false"><span class="material-icons">music_note</span></button>
+    <button id="profileBtn" class="chip-btn">
+      <span class="avatar" id="avatarTop">👤</span>
+      <span id="profileName" data-i18n="profile.guest">Гість</span>
+    </button>
+  </header>
+
+  <!-- Navigation rail (вертикальна навігація) -->
+  <nav class="navrail" id="mainnav">
+    <button class="rail-btn active" data-route="home">
+      <span class="rail-ico"><span class="material-icons">home</span></span>
+      <span class="rail-label" data-i18n="nav.home">Головна</span>
+    </button>
+    <button class="rail-btn" data-route="python">
+      <span class="rail-ico"><span class="material-icons">code</span></span>
+      <span class="rail-label" data-i18n="nav.python">Python</span>
+    </button>
+    <button class="rail-btn" data-route="games">
+      <span class="rail-ico"><span class="material-icons">sports_esports</span></span>
+      <span class="rail-label" data-i18n="nav.games">Ігри</span>
+    </button>
+    <button class="rail-btn" data-route="profile">
+      <span class="rail-ico"><span class="material-icons">person</span></span>
+      <span class="rail-label" data-i18n="nav.profile">Профіль</span>
+    </button>
+    <button class="rail-btn" data-route="settings">
+      <span class="rail-ico"><span class="material-icons">settings</span></span>
+      <span class="rail-label" data-i18n="nav.settings">Налаштування</span>
+    </button>
+  </nav>
+
+  <main id="app">
+    <!-- HOME -->
+    <section class="view active" id="view-home">
+      <div class="hero">
+        <h2 data-i18n="home.heroTitle">Вчись, грай, кодуй — усе в браузері</h2>
+        <p data-i18n="home.heroText">Інтерактивний майданчик: запускай Python прямо тут, грай в ігри та зберігай прогрес у профілі.</p>
+        <div class="hero-cta">
+          <button class="btn contained" data-goto="python"><span class="material-icons">code</span><span data-i18n="home.ctaPython">Відкрити Python</span></button>
+          <button class="btn outlined" data-goto="games"><span class="material-icons">sports_esports</span><span data-i18n="home.ctaGames">До ігор</span></button>
+        </div>
+      </div>
+      <div class="cards">
+        <article class="card elev1" data-goto="python">
+          <span class="material-icons card-ico">code</span>
+          <h3 data-i18n="home.cardPython">Python-майданчик</h3>
+          <p data-i18n="home.cardPythonText">Пиши та запускай код з підказками.</p>
+        </article>
+        <article class="card elev1" data-goto="games">
+          <span class="material-icons card-ico">sports_esports</span>
+          <h3 data-i18n="home.cardGames">Ігри</h3>
+          <p data-i18n="home.cardGamesText">Змійка, 2048, Memory та інші.</p>
+        </article>
+        <article class="card elev1" data-goto="profile">
+          <span class="material-icons card-ico">person</span>
+          <h3 data-i18n="home.cardProfile">Профіль</h3>
+          <p data-i18n="home.cardProfileText">Створи акаунт та зберігай рекорди.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- PYTHON -->
+    <section class="view" id="view-python">
+      <div class="section-head">
+        <h2 data-i18n="python.title">Python-майданчик</h2>
+        <span id="pyStatus" class="md-chip loading">Завантаження Python…</span>
+      </div>
+
+      <div class="py-layout">
+        <div class="card elev1 py-editor">
+          <div class="card-bar">
+            <span class="bar-title"><span class="material-icons">edit_note</span><span data-i18n="python.code">Код</span></span>
+            <div class="bar-actions">
+              <select id="examples" class="md-select" title="Examples"></select>
+              <button id="clearCode" class="btn text"><span data-i18n="python.clear">Очистити</span></button>
+              <button id="run" class="btn contained" disabled><span class="material-icons">play_arrow</span><span data-i18n="python.run">Запуск</span></button>
+            </div>
+          </div>
+          <div class="editor-wrap">
+            <div id="lineNumbers" class="line-numbers">1</div>
+            <textarea id="code" rows="16" spellcheck="false" autocomplete="off"></textarea>
+          </div>
+          <div class="hint-bar">
+            <span class="hint-label"><span class="material-icons">lightbulb</span><span data-i18n="python.hints">Підказки</span></span>
+            <div id="hintList" class="hint-list"></div>
+          </div>
+        </div>
+
+        <div class="card elev1 py-output">
+          <div class="card-bar">
+            <span class="bar-title"><span class="material-icons">terminal</span><span data-i18n="python.output">Вивід</span></span>
+            <button id="clearOut" class="btn text"><span data-i18n="python.clearOut">Очистити</span></button>
+          </div>
+          <output id="out" class="console"></output>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAMES -->
+    <section class="view" id="view-games">
+      <div class="section-head"><h2 data-i18n="games.title">Ігри</h2></div>
+      <div id="gamesHub" class="games-hub"></div>
+      <div id="gameStage" class="card elev2 game-stage hidden"></div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="view" id="view-profile">
+      <div class="section-head"><h2 data-i18n="profile.title">Профіль</h2></div>
+
+      <div id="authPanel" class="card elev2 auth-panel">
+        <div class="auth-tabs">
+          <button class="tab-btn active" data-authtab="login" data-i18n="profile.login">Вхід</button>
+          <button class="tab-btn" data-authtab="register" data-i18n="profile.register">Реєстрація</button>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+          <div class="field">
+            <input id="loginUser" type="text" placeholder=" " autocomplete="username" required>
+            <label data-i18n="profile.username">Ім'я</label>
+          </div>
+          <div class="field">
+            <input id="loginPass" type="password" placeholder=" " autocomplete="current-password" required>
+            <label data-i18n="profile.password">Пароль</label>
+          </div>
+          <button class="btn contained" type="submit"><span data-i18n="profile.signIn">Увійти</span></button>
+          <p class="auth-msg" id="loginMsg"></p>
+        </form>
+
+        <form id="registerForm" class="auth-form hidden">
+          <div class="field">
+            <input id="regUser" type="text" placeholder=" " autocomplete="username" minlength="3" required>
+            <label data-i18n="profile.username">Ім'я</label>
+          </div>
+          <div class="field">
+            <input id="regPass" type="password" placeholder=" " autocomplete="new-password" minlength="4" required>
+            <label data-i18n="profile.password">Пароль</label>
+          </div>
+          <button class="btn contained" type="submit"><span data-i18n="profile.createAccount">Створити акаунт</span></button>
+          <p class="auth-msg" id="regMsg"></p>
+        </form>
+
+        <p class="auth-note"><span class="material-icons">info</span><span data-i18n="profile.localNote">Акаунт зберігається лише локально у вашому браузері (демо, без сервера).</span></p>
+      </div>
+
+      <div id="profilePanel" class="card elev2 profile-panel hidden">
+        <div class="profile-head">
+          <div class="avatar big" id="avatarBig">👤</div>
+          <div>
+            <h3 id="profileDisplayName">—</h3>
+            <p class="muted" id="profileMeta"></p>
+          </div>
+          <button id="logoutBtn" class="btn outlined danger"><span class="material-icons">logout</span><span data-i18n="profile.logout">Вийти</span></button>
+        </div>
+        <h4 data-i18n="profile.records">Рекорди</h4>
+        <div id="recordsGrid" class="records-grid"></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="view" id="view-settings">
+      <div class="section-head"><h2 data-i18n="settings.title">Налаштування</h2></div>
+
+      <div class="card elev1 settings-card" id="settingsBody"></div>
+
+      <div class="card elev1 settings-card about-card">
+        <h4 class="settings-group" data-i18n="settings.about">Про застосунок</h4>
+        <p class="about-text"><span class="material-icons">info</span><span data-i18n="settings.aboutText">Python у браузері через Pyodide — без встановлення.</span></p>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="snackbar" role="status" aria-live="polite"></div>
+
+  <footer class="footer"><span data-i18n="footer.made">Зроблено з ❤ для навчання</span></footer>
+
+  <script src="i18n.js"></script>
+  <script src="audio.js"></script>
+  <script src="profile.js"></script>
+  <script src="settings.js"></script>
+  <script src="python.js"></script>
+  <script src="games.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
