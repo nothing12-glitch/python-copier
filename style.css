@@ -326,6 +326,23 @@ body.compact .btn{height:34px}
 .range-box input[type=range]{flex:1;accent-color:var(--md-primary);cursor:pointer}
 .range-val{font-size:12px;color:var(--md-on-surface-var);min-width:36px;text-align:right;font-variant-numeric:tabular-nums}
 .about-card{margin-top:16px}
+
+/* ===== Lang switch fade ===== */
+.appbar,.navrail,main{transition:opacity .18s ease,transform .18s ease}
+body.lang-fade .appbar,body.lang-fade .navrail,body.lang-fade main{opacity:0;transform:translateY(6px)}
+
+/* ===== Simon / Mines / Guess ===== */
+.simon{display:grid;grid-template-columns:repeat(2,110px);gap:10px}
+.simon button{width:110px;height:110px;border-radius:16px;border:0;cursor:pointer;opacity:.55;transition:.12s}
+.simon button.lit{opacity:1;transform:scale(1.06);box-shadow:var(--md-elev2)}
+.mines{display:grid;grid-template-columns:repeat(9,34px);gap:3px}
+.mines button{width:34px;height:34px;border-radius:6px;border:0;background:var(--md-surface-dim);cursor:pointer;font-size:15px;font-weight:700;color:var(--md-on-surface);font-family:var(--md-font);padding:0}
+.mines button.op{background:var(--md-primary-container);cursor:default}
+.mines button.fl{background:var(--md-secondary-container)}
+.mines button.n1{color:#1565C0}.mines button.n2{color:#2E7D32}.mines button.n3{color:#C62828}
+.guess{display:flex;gap:10px;align-items:center}
+.guess input{width:120px;font-family:var(--md-font);font-size:16px;padding:10px 12px;border-radius:8px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);color:var(--md-on-surface);outline:none}
+
 /* ===== Onboarding modal ===== */
 .ob-backdrop{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:grid;place-items:center;padding:16px;animation:mdfade .25s ease}
 .ob-card{background:var(--md-surface);color:var(--md-on-surface);border-radius:24px;box-shadow:var(--md-elev3);max-width:460px;width:100%;padding:28px 24px;text-align:center}
