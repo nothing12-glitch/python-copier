@@ -301,7 +301,7 @@ body.bg-animate-on .blob{opacity:.16;animation:blobfloat 20s ease-in-out infinit
 .cursor-glow{position:absolute;top:0;left:0;width:500px;height:500px;border-radius:50%;opacity:0;transition:opacity .3s;
   background:radial-gradient(circle,rgba(103,80,164,.28),transparent 65%);will-change:transform}
 body.cursor-glow-on .cursor-glow{opacity:1}
-main,.appbar,.navrail,.footer{position:relative;z-index:1}
+main,.footer{position:relative;z-index:1}
 .appbar,.navrail{z-index:30}
 
 /* ===== Accent palettes ===== */
