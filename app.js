@@ -54,7 +54,7 @@
   function updateHeaderProfile() {
     const info = global.Profile.info();
     $("#profileName").textContent = info ? info.name : t("profile.guest");
-    $("#avatarTop").textContent = info ? info.name[0].toUpperCase() : "👤";
+    $("#avatarTop").textContent = info ? info.name[0].toUpperCase() : "\u{1F464}";
   }
 
   function setMsg(el, text, ok) {
@@ -162,8 +162,7 @@
       const rect = host.getBoundingClientRect();
       const size = Math.max(rect.width, rect.height);
       r.style.width = r.style.height = size + "px";
-      r.style.left = e.clientX - rect.left -
-             r.style.left = e.clientX - rect.left - size / 2 + "px";
+      r.style.left = e.clientX - rect.left - size / 2 + "px";
       r.style.top = e.clientY - rect.top - size / 2 + "px";
       host.appendChild(r);
       setTimeout(() => r.remove(), 520);
