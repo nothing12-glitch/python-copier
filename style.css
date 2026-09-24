@@ -1,88 +1,186 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #0f172a;
-    color: #f8fafc;
-    margin: 0;
-    padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #0d1117;
+  color: #f0f6fc;
+  display: flex;
+  min-height: 100vh;
 }
 
-.navbar {
-    background-color: #1e293b;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+/* Ліва панель */
+.sidebar {
+  width: 80px;
+  background-color: #161b22;
+  border-right: 1px solid #30363d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
 }
 
-.navbar a {
-    color: #94a3b8;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
 }
 
-.navbar a:hover {
-    color: #ffffff;
-    background-color: #334155;
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #8b949e;
+  font-size: 11px;
+  padding: 10px 0;
+  transition: all 0.2s ease;
 }
 
-.navbar a.active {
-    color: #ffffff;
-    background-color: #3b82f6;
+.nav-item svg {
+  margin-bottom: 4px;
 }
 
-.container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 0 20px;
-    text-align: center;
+.nav-item:hover {
+  color: #f0f6fc;
+  background-color: #21262d;
 }
 
-h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+.nav-item.active {
+  color: #58a6ff;
+  border-left: 3px solid #58a6ff;
+  background-color: #1f242c;
 }
 
-.subtitle {
-    color: #94a3b8;
-    font-size: 1.1rem;
-    margin-bottom: 30px;
+/* Основна область */
+.main-content {
+  flex: 1;
+  padding: 40px;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-.card-list, .game-box {
-    background-color: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+.page-header {
+  margin-bottom: 30px;
 }
 
-.card h3 {
-    margin-top: 0;
-    color: #60a5fa;
+.page-header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.page-header p {
+  color: #8b949e;
+  font-size: 15px;
+}
+
+/* Картки */
+.card {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.card h2 {
+  font-size: 20px;
+  color: #58a6ff;
+  margin-bottom: 8px;
+}
+
+.card-desc {
+  color: #8b949e;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* Python Редактор */
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+textarea {
+  width: 100%;
+  background-color: #0d1117;
+  color: #e6edf3;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 12px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  resize: vertical;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #58a6ff;
 }
 
 button {
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    padding: 12px 28px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 15px;
+  align-self: flex-start;
+  background-color: #238636;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 button:hover {
-    background-color: #2563eb;
+  background-color: #2ea043;
 }
 
-button:active {
-    transform: scale(0.98);
+.output-container {
+  margin-top: 16px;
+}
+
+.output-container label {
+  display: block;
+  font-size: 12px;
+  color: #8b949e;
+  margin-bottom: 6px;
+}
+
+pre#output {
+  background-color: #010409;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 12px;
+  color: #7ee787;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+  white-space: pre-wrap;
+  min-height: 50px;
+}
+
+/* Гра */
+.game-controls {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+input[type="number"] {
+  background-color: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #f0f6fc;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+#game-message {
+  margin-top: 10px;
+  font-weight: 500;
 }
