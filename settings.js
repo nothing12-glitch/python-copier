@@ -4,7 +4,7 @@
 
   const DEFAULTS = {
     // Вигляд
-    theme: "light", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
+    theme: "auto", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
     reduceMotion: false, compact: false, fontSize: 14,
     // Редактор
     lineNumbers: true, wordWrap: true, autocomplete: true, tabSize: 4, autosaveCode: true, timestamps: false,
@@ -32,9 +32,12 @@
   function resetAll() { state = Object.assign({}, DEFAULTS); save(); apply(); document.dispatchEvent(new CustomEvent("settingschange", { detail: { key: "*", value: null } })); }
 
   /* ---------- Застосування глобальних ефектів ---------- */
+  const darkMQ = global.matchMedia ? global.matchMedia("(prefers-color-scheme: dark)") : null;
+  function isDark() { return state.theme === "dark" || (state.theme === "auto" && !!darkMQ && darkMQ.matches); }
+
   function apply() {
     const b = document.body;
-    b.classList.toggle("dark", state.theme === "dark");
+    b.classList.toggle("dark", isDark());
     b.dataset.accent = state.accent;
     b.classList.toggle("bg-glow-on", !!state.bgGlow);
     b.classList.toggle("bg-animate-on", !!state.bgAnimate);
@@ -68,7 +71,8 @@
   // type: switch | select | range | button
   const SCHEMA = [
     { group: "settings.appearance", items: [
-      { id: "theme", type: "switch", label: "settings.theme", on: "dark", off: "light" },
+      { id: "theme", type: "select", label: "settings.theme", options: [
+        ["auto", "set.themeAuto"], ["light", "set.themeLight"], ["dark", "set.themeDark"] ] },
       { id: "accent", type: "select", label: "set.accent", options: [
         ["purple", "set.acc.purple"], ["blue", "set.acc.blue"], ["green", "set.acc.green"], ["orange", "set.acc.orange"], ["pink", "set.acc.pink"] ] },
       { id: "bgGlow", type: "switch", label: "set.bgGlow" },
@@ -129,7 +133,7 @@
       const inp = document.createElement("input"); inp.type = "checkbox"; inp.dataset.set = item.id;
       const isToggleVal = item.on !== undefined;
       inp.checked = isToggleVal ? state[item.id] === item.on : !!state[item.id];
-      inp.onchange = () => set(item.id, isToggleVal ? (inp.checked ? item.on : item.off) : inp.checked);
+      inp.onchange = () => set(item.id, isToggleVal ? (inp.checked ? item.on : inp.checked) : inp.checked);
       const tr = document.createElement("span"); tr.className = "track";
       lab.append(inp, tr); wrap.appendChild(lab);
     }
@@ -201,6 +205,11 @@
   function init() {
     apply();
     initCursorGlow();
+    if (darkMQ) {
+      const onScheme = () => { if (state.theme === "auto") apply(); };
+      if (darkMQ.addEventListener) darkMQ.addEventListener("change", onScheme);
+      else darkMQ.addListener(onScheme);
+    }
     document.addEventListener("langchange", () => {
       const c = document.getElementById("settingsBody");
       if (c) render(c);
