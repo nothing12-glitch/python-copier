@@ -1,107 +1,71 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Мої проєкти та завдання</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Підключення Pyodide для виконання Python прямо в браузері -->
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Мої проєкти та завдання</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <!-- Ліва бічна панель (Sidebar) -->
-  <aside class="sidebar">
-    <div class="sidebar-menu">
-      <a href="index.html" class="nav-item active">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-        <span>Головна</span>
-      </a>
-      <a href="games.html" class="nav-item">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 1c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-3c-.83 0-1.5-.67-1.5-1.5S17.67 8 18.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-        <span>Ігри</span>
-      </a>
-    </div>
-  </aside>
-
-  <!-- Основний контент -->
-  <main class="main-content">
-    <header class="page-header">
-      <h1>Мої проєкти та завдання</h1>
-      <p>Тут зібрані мої шкільні роботи та вбудований Python-середовище.</p>
-    </header>
-
-    <!-- Картка Завдання 1 -->
-    <section class="card">
-      <h2>Завдання 1</h2>
-      <p class="card-desc">Опис твого першого завдання або посилання на нього.</p>
-    </section>
-
-    <!-- Вбудований Python Компілятор -->
-    <section class="card python-section">
-      <h2>Вбудований Python</h2>
-      <p class="card-desc">Пиши та запускай Python-код прямо в браузері:</p>
-
-      <div class="editor-container">
-        <textarea id="python-code" rows="8" spellcheck="false"># Напиши свій Python код тут
-def greet(name):
-    return f"Привіт, {name}!"
-
-print(greet("Арсеній"))
-print("Результат обчислення:", 10 * 5)
-</textarea>
-        <button id="run-btn" onclick="runPython()">▶ Запустити код</button>
-      </div>
-
-      <div class="output-container">
-        <label>Консоль виводу:</label>
-        <pre id="output">Завантаження Python середовища (Pyodide)...</pre>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    let pyodideReady = false;
-    let pyodideInstance = null;
-
-    async function main() {
-      const output = document.getElementById("output");
-      try {
-        pyodideInstance = await loadPyodide();
-        pyodideReady = true;
-        output.textContent = "Python середовище готове до роботи!";
-      } catch (err) {
-        output.textContent = "Помилка завантаження Python: " + err;
-      }
-    }
-    main();
-
-    async function runPython() {
-      const output = document.getElementById("output");
-      if (!pyodideReady) {
-        output.textContent = "Зачекайте, Python ще завантажується...";
-        return;
-      }
-
-      const code = document.getElementById("python-code").value;
-      output.textContent = "Виконується...";
-
-      try {
-        // Перенаправляємо stdout в консоль
-        pyodideInstance.runPython(`
-          import sys
-          import io
-          sys.stdout = io.StringIO()
-        `);
-
-        await pyodideInstance.runPythonAsync(code);
-
-        let stdout = pyodideInstance.runPython("sys.stdout.getvalue()");
-        output.textContent = stdout || "[Код виконано без виводу]";
-      } catch (err) {
-        output.textContent = "Помилка виконання:\n" + err;
-      }
-    }
-  </script>
+<nav>
+ <a href="#home"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 5.7 18 11v7h-3v-5H9v5H6v-7l6-5.3M12 3 2 12h3v8h6v-5h2v5h6v-8h3L12 3z"/></svg></span><span data-t="home"></span></a>
+ <a href="games.html"><span class="ic"><svg viewBox="0 0 24 24"><path d="M21 6H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h4l2-3h6l2 3h4a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1zM9 12H7v2H5v-2H3v-2h2V8h2v2h2v2zm7 1a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-2a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg></span><span data-t="games"></span></a>
+ <a href="#settings"><span class="ic"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6a.5.5 0 0 0 .1-.6l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.3 7.3 0 0 0-1.7-1L14.4 3a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.4 2.6a7.3 7.3 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.500a.5.5 0 0 0 .1.6L4.600 11a7.600 7.600 0 0 0 0 2l-2.100 1.600a.5.5 0 0 0-.1.600l2 3.500c.1.200.4.300.6.200l2.500-1c.5.400 1.100.7 1.700 1l.4 2.600c0 .2.200.4.500.4h4c.3 0 .5-.2.500-.4l.4-2.600c.6-.3 1.200-.6 1.700-1l2.500 1c.2.100.5 0 .6-.2l2-3.500a.5.5 0 0 0-.1-.6L19.400 13zM12 15.500a3.500 3.500 0 1 1 0-7 3.500 3.500 0 0 1 0 7z"/></svg></span><span data-t="settings"></span></a>
+</nav>
+<main>
+<section id="home">
+ <h1 data-t="title"></h1>
+ <p data-t="intro"></p>
+ <div class="group">
+  <h2 data-t="task"></h2>
+  <p data-t="taskText"></p>
+ </div>
+ <div class="group">
+  <h2 data-t="pyTitle"></h2>
+  <p data-t="pyText"></p>
+  <textarea id="code" spellcheck="false" aria-label="Python"></textarea>
+  <button class="run" id="run" disabled data-t="run"></button>
+  <div class="label" data-t="console"></div>
+  <pre id="out" data-t="loading"></pre>
+ </div>
+</section>
+<section id="settings" hidden>
+ <h1 data-t="settings"></h1>
+ <div class="group">
+  <h2 data-t="look"></h2>
+  <label class="row opt"><input type="radio" name="theme" value="system"><span data-t="sys"></span></label>
+  <label class="row opt"><input type="radio" name="theme" value="light"><span data-t="light"></span></label>
+  <label class="row opt"><input type="radio" name="theme" value="dark"><span data-t="dark"></span></label>
+ </div>
+ <label class="row"><span data-t="sounds"></span><input type="checkbox" id="sound"></label>
+ <div class="group" style="margin-top:24px">
+  <h2 data-t="lang"></h2>
+  <label class="row opt"><input type="radio" name="lang" value="uk"><span>Українська</span></label>
+  <label class="row opt"><input type="radio" name="lang" value="en"><span>English</span></label>
+  <label class="row opt"><input type="radio" name="lang" value="tr"><span>Türkçe</span></label>
+ </div>
+ <div class="row" style="min-height:72px">
+  <div><div data-t="data"></div><div style="font-size:14px;color:var(--muted)" data-t="dataText"></div></div>
+  <button class="link" id="reset" data-t="reset"></button>
+ </div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script src="app.js"></script>
+<script>
+const DEFAULT='def greet(name):\n    return f"Привіт, {name}!"\n\nprint(greet("Арсеній"))\nprint("Результат обчислення:", 10 * 5)';
+$('#code').value=load('code')||DEFAULT;
+$('#code').oninput=e=>save('code',e.target.value);
+let py;const out=$('#out');
+loadPyodide().then(p=>{py=p;out.removeAttribute('data-t');out.textContent='';$('#run').disabled=false});
+$('#run').onclick=async()=>{
+ beep();out.textContent='';
+ const add=s=>out.textContent+=s+'\n';
+ py.setStdout({batched:add});py.setStderr({batched:add});
+ try{await py.runPythonAsync($('#code').value)}catch(e){add(e.message)}
+};
+</script>
 </body>
 </html>
