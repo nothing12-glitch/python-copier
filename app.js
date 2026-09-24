@@ -1,50 +1,211 @@
-const T={
-uk:{home:"Головна",games:"Ігри",settings:"Налаштування",title:"Мої проєкти та завдання",intro:"Тут зібрані мої шкільні роботи та вбудоване Python-середовище.",task:"Завдання 1",taskText:"Опис твого першого завдання або посилання на нього.",pyTitle:"Вбудований Python",pyText:"Пиши та запускай Python-код прямо в браузері:",run:"▶ Запустити код",console:"Консоль виводу:",loading:"Завантаження Python…",look:"Вигляд",sys:"Системна",light:"Світла",dark:"Темна",sounds:"Службові звуки",lang:"Мова",data:"Дані сайту",dataText:"Скинути налаштування та збережений код",reset:"Скинути",gText:"Тут будуть мої ігри та міні-проєкти.",gEmpty:"Ігор поки немає. Додай першу картку в games.html."},
-en:{home:"Home",games:"Games",settings:"Settings",title:"My projects and assignments",intro:"My school work and a built-in Python environment.",task:"Assignment 1",taskText:"Description of your first assignment or a link to it.",pyTitle:"Built-in Python",pyText:"Write and run Python code right in the browser:",run:"▶ Run code",console:"Output console:",loading:"Loading Python…",look:"Appearance",sys:"System",light:"Light",dark:"Dark",sounds:"System sounds",lang:"Language",data:"Site data",dataText:"Reset settings and saved code",reset:"Reset",gText:"My games and mini projects will live here.",gEmpty:"No games yet. Add the first card in games.html."},
-tr:{home:"Ana sayfa",games:"Oyunlar",settings:"Ayarlar",title:"Projelerim ve ödevlerim",intro:"Okul çalışmalarım ve yerleşik Python ortamı.",task:"Ödev 1",taskText:"İlk ödevinin açıklaması veya bağlantısı.",pyTitle:"Yerleşik Python",pyText:"Python kodunu doğrudan tarayıcıda yaz ve çalıştır:",run:"▶ Kodu çalıştır",console:"Çıktı konsolu:",loading:"Python yükleniyor…",look:"Görünüm",sys:"Sistem",light:"Açık",dark:"Koyu",sounds:"Sistem sesleri",lang:"Dil",data:"Site verileri",dataText:"Ayarları ve kaydedilen kodu sıfırla",reset:"Sıfırla",gText:"Oyunlarım ve mini projelerim burada olacak.",gEmpty:"Henüz oyun yok. İlk kartı games.html içine ekle."}
-};
-const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const load=k=>{try{return localStorage.getItem(k)}catch{return null}};
-const save=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
-const S={theme:'system',lang:'uk',sound:true,...JSON.parse(load('settings')||'{}')};
+/* Головний модуль: роутинг, профіль UI, аудіо-перемикачі, ініціалізація */
+(function (global) {
+  const $ = (s) => document.querySelector(s);
+  const t = (k, v) => global.I18n.t(k, v);
+  const SFX = () => global.Audio2 && global.Audio2.SFX;
 
-function apply(){
- const dark=S.theme==='dark'||(S.theme==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);
- document.documentElement.dataset.theme=dark?'dark':'light';
- document.documentElement.lang=S.lang;
- document.title=T[S.lang][document.body.dataset.title||'title'];
- $$('[data-t]').forEach(e=>e.textContent=T[S.lang][e.dataset.t]);
- $$('input[name=theme],input[name=lang]').forEach(i=>i.checked=S[i.name]===i.value);
- if($('#sound'))$('#sound').checked=S.sound;
-}
-function beep(){
- if(!S.sound)return;
- try{const c=new AudioContext(),o=c.createOscillator(),g=c.createGain();
- o.connect(g);g.connect(c.destination);g.gain.value=.05;o.frequency.value=660;o.start();o.stop(c.currentTime+.06)}catch{}
-}
-const NAV=[['home','index.html#home'],['games','games.html'],['settings','index.html#settings']];
-const IC={
-home:'<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>',
-games:'<path d="M6.5 6h11a4.5 4.5 0 0 1 4.4 5.4l-.9 4.6a3 3 0 0 1-5 1.6L14 16h-4l-2 1.6a3 3 0 0 1-5-1.6l-.9-4.6A4.5 4.5 0 0 1 6.5 6z"/><g class="cut"><path d="M6.5 11h3M8 9.5v3"/><circle cx="15.5" cy="10.2" r="1"/><circle cx="17.5" cy="12.2" r="1"/></g>',
-settings:'<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>'
-};
-function route(){
- const k=document.body.dataset.title==='games'?'games':location.hash==='#settings'?'settings':'home';
- $$('main section').forEach(s=>s.hidden=s.id!==k);
- $$('nav a').forEach(a=>a.classList.toggle('on',a.dataset.k===k));
-}
-$$('input[name=theme],input[name=lang]').forEach(i=>i.onchange=()=>{S[i.name]=i.value;save('settings',JSON.stringify(S));apply();beep()});
-if($('#sound'))$('#sound').onchange=e=>{S.sound=e.target.checked;save('settings',JSON.stringify(S));beep()};
-const nav=$('#nav');
-nav.innerHTML=NAV.map(([k,h])=>`<a href="${h}" data-k="${k}"><span class="ic"><svg class="o" viewBox="0 0 24 24">${IC[k]}</svg><svg class="f" viewBox="0 0 24 24">${IC[k]}</svg></span><span data-t="${k}"></span></a>`).join('');
-nav.addEventListener('click',e=>{if(e.target.closest('a'))beep()});
-nav.addEventListener('pointerdown',e=>{
- const ic=e.target.closest('a')?.querySelector('.ic');if(!ic)return;
- const r=ic.getBoundingClientRect(),s=document.createElement('span');
- s.className='rip';s.style.left=e.clientX-r.left+'px';s.style.top=e.clientY-r.top+'px';
- ic.append(s);s.onanimationend=()=>s.remove();
-});
-if($('#reset'))$('#reset').onclick=()=>{try{localStorage.clear()}catch{}location.reload()};
-matchMedia('(prefers-color-scheme: dark)').onchange=apply;
-addEventListener('hashchange',route);
-apply();void nav.offsetWidth;route();
+  /* ---------- Router ---------- */
+  function route(name) {
+    document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+    const view = document.getElementById("view-" + name);
+    if (view) view.classList.add("active");
+    document.querySelectorAll("[data-route]").forEach((b) => b.classList.toggle("active", b.dataset.route === name));
+    if (name === "games" && global.Games) global.Games.renderHub();
+    if (name === "profile") renderProfile();
+    location.hash = name;
+  }
+
+  /* ---------- Toast ---------- */
+  function toast(msg) {
+    const el = $("#toast");
+    el.textContent = msg; el.classList.add("show");
+    clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("show"), 2400);
+  }
+
+  /* ---------- Profile UI ---------- */
+  const GAME_LABELS = { ttt: "game.ttt", snake: "game.snake", memory: "game.memory", g2048: "game.g2048", rps: "game.rps", react: "game.react" };
+
+  function renderProfile() {
+    const info = global.Profile.info();
+    const authPanel = $("#authPanel"), profPanel = $("#profilePanel");
+    updateHeaderProfile();
+    if (!info) { authPanel.classList.remove("hidden"); profPanel.classList.add("hidden"); return; }
+    authPanel.classList.add("hidden"); profPanel.classList.remove("hidden");
+    $("#profileDisplayName").textContent = info.name;
+    $("#avatarBig").textContent = info.name[0].toUpperCase();
+    const d = new Date(info.created);
+    $("#profileMeta").textContent = t("profile.memberSince") + " " + d.toLocaleDateString();
+    renderRecords();
+  }
+
+  function renderRecords() {
+    const grid = $("#recordsGrid"); grid.innerHTML = "";
+    const recs = global.Profile.getRecords();
+    const keys = Object.keys(recs);
+    if (!keys.length) { grid.innerHTML = `<p class="muted">${t("profile.noRecords")}</p>`; return; }
+    keys.forEach((k) => {
+      const div = document.createElement("div"); div.className = "record";
+      const label = GAME_LABELS[k] ? t(GAME_LABELS[k]) : k;
+      div.innerHTML = `<div class="g">${label}</div><div class="v">${recs[k]}</div>`;
+      grid.appendChild(div);
+    });
+  }
+
+  function updateHeaderProfile() {
+    const info = global.Profile.info();
+    $("#profileName").textContent = info ? info.name : t("profile.guest");
+    $("#avatarTop").textContent = info ? info.name[0].toUpperCase() : "👤";
+  }
+
+  function setMsg(el, text, ok) {
+    el.textContent = text; el.className = "auth-msg " + (ok ? "ok" : "err");
+  }
+
+  function bindAuth() {
+    document.querySelectorAll("[data-authtab]").forEach((tab) => {
+      tab.onclick = () => {
+        SFX() && SFX().click();
+        document.querySelectorAll("[data-authtab]").forEach((x) => x.classList.remove("active"));
+        tab.classList.add("active");
+        const mode = tab.dataset.authtab;
+        $("#loginForm").classList.toggle("hidden", mode !== "login");
+        $("#registerForm").classList.toggle("hidden", mode !== "register");
+      };
+    });
+
+    $("#registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const r = await global.Profile.register($("#regUser").value, $("#regPass").value);
+      if (!r.ok) { setMsg($("#regMsg"), t("profile.errExists"), false); SFX() && SFX().error(); return; }
+      setMsg($("#regMsg"), t("profile.okRegister"), true); SFX() && SFX().success();
+      toast(t("profile.welcome") + ", " + r.name + "!");
+      $("#registerForm").reset(); renderProfile();
+    });
+
+    $("#loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const r = await global.Profile.login($("#loginUser").value, $("#loginPass").value);
+      if (!r.ok) { setMsg($("#loginMsg"), t("profile.errLogin"), false); SFX() && SFX().error(); return; }
+      setMsg($("#loginMsg"), t("profile.okLogin"), true); SFX() && SFX().success();
+      toast(t("profile.welcome") + ", " + r.name + "!");
+      $("#loginForm").reset(); renderProfile();
+    });
+
+    $("#logoutBtn").onclick = () => {
+      SFX() && SFX().click(); global.Profile.logout(); toast(t("profile.loggedOut")); renderProfile();
+    };
+  }
+
+  /* ---------- Audio toggles (app bar) ---------- */
+  function bindAudio() {
+    const sfxBtn = $("#sfxToggle"), musicBtn = $("#musicToggle");
+    function sync() {
+      const sOn = global.Audio2.sfxOn, mOn = global.Audio2.musicOn;
+      sfxBtn.querySelector(".material-icons").textContent = sOn ? "volume_up" : "volume_off";
+      sfxBtn.setAttribute("aria-pressed", String(sOn));
+      musicBtn.querySelector(".material-icons").textContent = mOn ? "music_note" : "music_off";
+      musicBtn.setAttribute("aria-pressed", String(mOn));
+    }
+    sfxBtn.onclick = () => { global.Audio2.setSfx(!global.Audio2.sfxOn); toast(global.Audio2.sfxOn ? t("audio.sfxOn") : t("audio.sfxOff")); sync(); };
+    musicBtn.onclick = () => { global.Audio2.setMusic(!global.Audio2.musicOn); toast(global.Audio2.musicOn ? t("audio.musicOn") : t("audio.musicOff")); sync(); };
+    document.addEventListener("settingschange", sync);
+    sync();
+  }
+
+  /* ---------- Settings actions (соц-вхід, експорт, скидання) ---------- */
+  function bindSettingsActions() {
+    document.addEventListener("settingschange", () => { if (global.Settings) global.Settings.syncUI(); });
+
+    document.addEventListener("settings-action", async (e) => {
+      const id = e.detail.id;
+      SFX() && SFX().click();
+      if (id === "google" || id === "github") {
+        const name = id === "google" ? "Google User" : "GitHub User";
+        await global.Profile.socialLogin(id, name);
+        toast(t("set.socialDemo"));
+        updateHeaderProfile(); renderProfile();
+      }
+      else if (id === "export") {
+        const data = {};
+        Object.keys(localStorage).filter((k) => k.startsWith("app.")).forEach((k) => { data[k] = localStorage.getItem(k); });
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob); a.download = "my-projects-data.json"; a.click();
+        URL.revokeObjectURL(a.href);
+        toast(t("set.exportDone"));
+      }
+      else if (id === "resetRecords") {
+        global.Profile.clearRecords(); toast(t("settings.recordsCleared"));
+        if (global.Games) global.Games.renderHub();
+        if ($("#view-profile").classList.contains("active")) renderRecords();
+      }
+      else if (id === "clearAll") {
+        SFX() && SFX().error();
+        global.Profile.clearAll(); toast(t("settings.cleared"));
+        updateHeaderProfile(); renderProfile();
+        if (global.Games) global.Games.renderHub();
+      }
+      else if (id === "resetSettings") {
+        global.Settings.resetAll(); toast(t("set.settingsReset"));
+        global.Settings.render($("#settingsBody"));
+      }
+    });
+  }
+
+  /* ---------- Material ripple ---------- */
+  function bindRipple() {
+    document.addEventListener("pointerdown", (e) => {
+      const host = e.target.closest(".btn, .chip-btn, .icon-btn, .rail-btn, .lang-switch button, .tab-btn, .chip");
+      if (!host) return;
+      const r = document.createElement("span");
+      r.className = "ripple";
+      const rect = host.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      r.style.width = r.style.height = size + "px";
+      r.style.left = e.clientX - rect.left -
+             r.style.left = e.clientX - rect.left - size / 2 + "px";
+      r.style.top = e.clientY - rect.top - size / 2 + "px";
+      host.appendChild(r);
+      setTimeout(() => r.remove(), 520);
+    });
+  }
+
+  /* ---------- Init ---------- */
+  function init() {
+    global.I18n.apply();
+    // language switch (усі перемикачі мови)
+    document.querySelectorAll("button[data-lang]").forEach((b) => {
+      b.classList.toggle("active", b.dataset.lang === global.I18n.lang);
+      b.onclick = () => { global.I18n.setLang(b.dataset.lang); SFX() && SFX().click(); };
+    });
+    document.documentElement.lang = global.I18n.lang;
+
+    // nav
+    document.querySelectorAll("[data-route]").forEach((b) => (b.onclick = () => { SFX() && SFX().click(); route(b.dataset.route); }));
+    document.querySelectorAll("[data-goto]").forEach((b) => (b.onclick = () => { SFX() && SFX().click(); route(b.dataset.goto); }));
+    $("#profileBtn").onclick = () => { SFX() && SFX().click(); route("profile"); };
+
+    bindRipple();
+
+    bindAuth();
+    bindAudio();
+    if (global.Settings) { global.Settings.init(); global.Settings.render($("#settingsBody")); }
+    bindSettingsActions();
+    if (global.PythonPad) global.PythonPad.init();
+    if (global.Games) global.Games.init();
+
+    // audio needs a user gesture to start; enable on first interaction if music requested
+    const kick = () => { global.Audio2.ensure(); if (global.Audio2.musicOn) global.Audio2.setMusic(true); window.removeEventListener("pointerdown", kick); };
+    window.addEventListener("pointerdown", kick);
+
+    // re-render profile-dependent labels on lang change
+    document.addEventListener("langchange", () => { updateHeaderProfile(); if ($("#view-profile").classList.contains("active")) renderProfile(); });
+
+    // initial route
+    const hash = (location.hash || "#home").slice(1);
+    route(["home", "python", "games", "profile", "settings"].includes(hash) ? hash : "home");
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+  global.App = { route, toast };
+})(window);
