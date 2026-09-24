@@ -1,40 +1,86 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ігри</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ігри та Проєкти</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Навігаційне меню -->
-    <header>
-        <nav class="navbar">
-            <a href="index.html">Головна (Завдання)</a>
-            <a href="games.html" class="active">Ігри</a>
-        </nav>
+  <!-- Ліва бічна панель (Sidebar) -->
+  <aside class="sidebar">
+    <div class="sidebar-menu">
+      <a href="index.html" class="nav-item">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Головна</span>
+      </a>
+      <a href="games.html" class="nav-item active">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 1c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-3c-.83 0-1.5-.67-1.5-1.5S17.67 8 18.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        <span>Ігри</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Основний контент -->
+  <main class="main-content">
+    <header class="page-header">
+      <h1>Гра "Вгадай число"</h1>
+      <p>Спробуй вгадати число від 1 до 100 за найменшу кількість спроб!</p>
     </header>
 
-    <!-- Основний вміст вкладки ігор -->
-    <main class="container">
-        <h1>Аркада: Клікер</h1>
-        <p class="subtitle">Тисни на кнопку якомога швидше і збирай бали!</p>
-        
-        <div class="game-box">
-            <h2 id="score">Бали: 0</h2>
-            <button id="clickBtn" onclick="addScore()">Клік!</button>
-        </div>
-    </main>
+    <section class="card game-card">
+      <p id="game-instruction">Я загадав число від 1 до 100. Введи свій варіант:</p>
+      
+      <div class="game-controls">
+        <input type="number" id="user-guess" min="1" max="100" placeholder="Число">
+        <button onclick="checkGuess()">Перевірити</button>
+      </div>
 
-    <!-- Логіка гри на JavaScript -->
-    <script>
-        let count = 0;
-        function addScore() {
-            count++;
-            document.getElementById('score').innerText = "Бали: " + count;
-        }
-    </script>
+      <p id="game-message"></p>
+      <button id="reset-btn" onclick="resetGame()" style="display:none; margin-top: 15px;">Зіграти знову</button>
+    </section>
+  </main>
 
+  <script>
+    let targetNumber = Math.floor(Math.random() * 100) + 1;
+    let attempts = 0;
+
+    function checkGuess() {
+      const guessInput = document.getElementById('user-guess');
+      const message = document.getElementById('game-message');
+      const guess = parseInt(guessInput.value);
+
+      if (isNaN(guess) || guess < 1 || guess > 100) {
+        message.style.color = '#ff6b6b';
+        message.textContent = 'Будь ласка, введи коректне число від 1 до 100!';
+        return;
+      }
+
+      attempts++;
+
+      if (guess === targetNumber) {
+        message.style.color = '#51cf66';
+        message.textContent = `Вітаю! Ти вгадав число ${targetNumber} за ${attempts} спроб(и)! 🎉`;
+        document.getElementById('reset-btn').style.display = 'inline-block';
+      } else if (guess < targetNumber) {
+        message.style.color = '#38d9a9';
+        message.textContent = 'Моє число БІЛЬШЕ!';
+      } else {
+        message.style.color = '#38d9a9';
+        message.textContent = 'Моє число МЕНШЕ!';
+      }
+
+      guessInput.value = '';
+    }
+
+    function resetGame() {
+      targetNumber = Math.floor(Math.random() * 100) + 1;
+      attempts = 0;
+      document.getElementById('game-message').textContent = '';
+      document.getElementById('user-guess').value = '';
+      document.getElementById('reset-btn').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
