@@ -9,7 +9,7 @@
     },
     greet: {
       label: { uk: "Привітання", en: "Greeting", tr: "Selamlama" },
-      code: `def greet(name):\n    return f"Привіт, {name}!"\n\nprint(greet("Арсеній"))`
+      code: `def greet(name):\n    return f"Привіт, {name}!"\n\nprint(greet("your name"))`
     },
     fizzbuzz: {
       label: { uk: "FizzBuzz", en: "FizzBuzz", tr: "FizzBuzz" },
@@ -158,8 +158,7 @@
   }
   function moveAc(delta) {
     if (!acItems.length) return false;
-    acIdx = (acIdx + delta) % acItems.length;
-    if (acIdx < 0) acIdx += acItems.length;
+    acIdx = (acIdx + delta + acItems.length) % acItems.length;
     [...acBox.children].forEach((c, i) => c.classList.toggle("sel", i === acIdx));
     return true;
   }
