@@ -3,6 +3,10 @@
   const $ = (s) => document.querySelector(s);
 
   const EXAMPLES = {
+    hello: {
+      label: { uk: "Hello World", en: "Hello World", tr: "Hello World" },
+      code: `print("Hello World!")`
+    },
     greet: {
       label: { uk: "Привітання", en: "Greeting", tr: "Selamlama" },
       code: `def greet(name):\n    return f"Привіт, {name}!"\n\nprint(greet("Арсеній"))`
@@ -105,7 +109,7 @@
     });
     if (prev && EXAMPLES[prev]) exSel.value = prev;
     if (loadDefaultCode) {
-      codeEl.value = EXAMPLES.greet.code;
+      codeEl.value = EXAMPLES.hello.code;
       updateLineNumbers();
     }
   }
@@ -154,7 +158,8 @@
   }
   function moveAc(delta) {
     if (!acItems.length) return false;
-    acIdx = (acIdx + delta + acItems.length) % acItems.length;
+    acIdx = (acIdx + delta) % acItems.length;
+    if (acIdx < 0) acIdx += acItems.length;
     [...acBox.children].forEach((c, i) => c.classList.toggle("sel", i === acIdx));
     return true;
   }
