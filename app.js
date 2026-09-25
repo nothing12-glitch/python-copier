@@ -78,7 +78,6 @@
     h.textContent = title;
     card.appendChild(h);
     bd.appendChild(card);
-    document.body.appendChild(bd);
     bd.onclick = (ev) => { if (ev.target === bd) closeModals(); };
     document.body.appendChild(bd);
     return card;
