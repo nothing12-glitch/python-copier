@@ -5,7 +5,7 @@
   const DEFAULTS = {
     // Вигляд
     theme: "auto", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
-    reduceMotion: false, compact: false, fontSize: 14,
+    glass: false, reduceMotion: false, compact: false, fontSize: 14,
     // Редактор
     lineNumbers: true, wordWrap: true, autocomplete: true, tabSize: 4, autosaveCode: true, timestamps: false,
     // Звук
@@ -42,6 +42,7 @@
     b.classList.toggle("bg-glow-on", !!state.bgGlow);
     b.classList.toggle("bg-animate-on", !!state.bgAnimate);
     b.classList.toggle("cursor-glow-on", !!state.cursorGlow);
+    b.classList.toggle("glass-on", !!state.glass);
     b.classList.toggle("reduce-motion", !!state.reduceMotion);
     b.classList.toggle("compact", !!state.compact);
     b.classList.toggle("no-linenumbers", !state.lineNumbers);
@@ -78,6 +79,7 @@
       { id: "bgGlow", type: "switch", label: "set.bgGlow" },
       { id: "cursorGlow", type: "switch", label: "set.cursorGlow" },
       { id: "bgAnimate", type: "switch", label: "set.bgAnimate" },
+      { id: "glass", type: "switch", label: "Liquid Glass" },
       { id: "reduceMotion", type: "switch", label: "set.reduceMotion" },
       { id: "compact", type: "switch", label: "set.compact" },
       { id: "fontSize", type: "range", label: "set.fontSize", min: 12, max: 20, step: 1 }
@@ -133,7 +135,7 @@
       const inp = document.createElement("input"); inp.type = "checkbox"; inp.dataset.set = item.id;
       const isToggleVal = item.on !== undefined;
       inp.checked = isToggleVal ? state[item.id] === item.on : !!state[item.id];
-      inp.onchange = () => set(item.id, isToggleVal ? (inp.checked ? item.on : inp.checked) : inp.checked);
+      inp.onchange = () => set(item.id, isToggleVal ? (inp.checked ? item.on : item.off) : inp.checked);
       const tr = document.createElement("span"); tr.className = "track";
       lab.append(inp, tr); wrap.appendChild(lab);
     }
