@@ -22,6 +22,7 @@
       ],
       next: "Далі",
       skip: "Пропустити",
+      nickSkip: "Пропустити (зроблю пізніше)",
       start: "Почати тур",
       finish: "Завершити",
       done: "Готово",
@@ -47,6 +48,7 @@
       ],
       next: "Next",
       skip: "Skip",
+      nickSkip: "Skip (I'll do it later)",
       start: "Start tour",
       finish: "Finish",
       done: "Done",
@@ -72,6 +74,7 @@
       ],
       next: "İleri",
       skip: "Atla",
+      nickSkip: "Atla (sonra yaparım)",
       start: "Tura başla",
       finish: "Bitir",
       done: "Tamam",
@@ -82,8 +85,37 @@
 
   let phase = null; // "lang" | "nick" | "welcome" | number | "thanks"
   let backdrop = null;
+  let sysLang = null; // мова системи (prefixed, напр. "de")
+
+  const SITE_LANGS = ["uk", "en", "tr"];
+
+  // Текст кроку вибору мови багатьма мовами, щоб питати мовою системи
+  const LANG_UI = {
+    uk: { langTitle: "Обери мову", langText: "Мову можна будь-коли змінити у налаштуваннях." },
+    en: { langTitle: "Choose your language", langText: "You can change it anytime in Settings." },
+    tr: { langTitle: "Dilini seç", langText: "Bunu istediğin zaman Ayarlar'dan değiştirebilirsin." },
+    de: { langTitle: "Wähle deine Sprache", langText: "Du kannst sie jederzeit in den Einstellungen ändern." },
+    fr: { langTitle: "Choisis ta langue", langText: "Tu peux la changer à tout moment dans les paramètres." },
+    es: { langTitle: "Elige tu idioma", langText: "Puedes cambiarlo cuando quieras en Ajustes." },
+    pl: { langTitle: "Wybierz język", langText: "Możesz go zmienić w dowolnym momencie w ustawieniach." },
+    it: { langTitle: "Scegli la tua lingua", langText: "Puoi cambiarla in qualsiasi momento nelle impostazioni." },
+    pt: { langTitle: "Escolha seu idioma", langText: "Você pode alterá-lo a qualquer momento nas configurações." },
+    ja: { langTitle: "言語を選んでください", langText: "設定からいつでも変更できます。" },
+    zh: { langTitle: "选择你的语言", langText: "你可以随时在设置中更改。" },
+    ko: { langTitle: "언어를 선택하세요", langText: "설정에서 언제든지 변경할 수 있어요." },
+    ar: { langTitle: "اختر لغتك", langText: "يمكنك تغييرها في أي وقت من الإعدادات." },
+    hi: { langTitle: "अपनी भाषा चुनें", langText: "इसे कभी भी सेटिंग्स में बदला जा सकता है।" },
+    cs: { langTitle: "Vyber si jazyk", langText: "Kdykoli jej můžeš změnit v nastavení." },
+    ro: { langTitle: "Alege limba ta", langText: "O poți schimba oricând din setări." }
+  };
+
+  function detectSysLang() {
+    const n = ((global.navigator && global.navigator.language) || "en").toLowerCase();
+    return n.split("-")[0];
+  }
 
   const S = () => L[global.I18n ? global.I18n.lang : "uk"] || L.uk;
+  const langUi = () => LANG_UI[sysLang] || LANG_UI.en;
 
   function close() {
     if (backdrop) { backdrop.remove(); backdrop = null; }
@@ -127,9 +159,9 @@
     emo.className = "ob-emoji";
     emo.textContent = "\u{1F30D}";
     const h = document.createElement("h3");
-    h.textContent = S().langTitle;
+    h.textContent = langUi().langTitle;
     const p = document.createElement("p");
-    p.textContent = S().langText;
+    p.textContent = langUi().langText;
     const row = document.createElement("div");
     row.className = "ob-langs";
     [["uk", "Українська"], ["en", "English"], ["tr", "Türkçe"]].forEach(([code, name]) => {
@@ -171,7 +203,7 @@
     inp.addEventListener("keydown", (e) => { if (e.key === "Enter") save(); });
     card.append(emo, h, p, inp);
     actions(card, [
-      [S().skip, "text", () => { saveNickname(""); renderWelcome(); }],
+      [S().nickSkip, "text", () => { saveNickname(""); renderWelcome(); }],
       [S().nickOk, "contained", save]
     ]);
     setTimeout(() => inp.focus(), 60);
@@ -232,7 +264,12 @@
     actions(card, [[S().done, "contained", () => finishTour(true)]]);
   }
 
-  function start() { renderLang(); }
+  function start() {
+    sysLang = detectSysLang();
+    // якщо мова системи підтримується сайтом — одразу ставимо її
+    if (SITE_LANGS.includes(sysLang) && global.I18n && global.I18n.lang !== sysLang) global.I18n.setLang(sysLang);
+    renderLang();
+  }
 
   function init() {
     if (localStorage.getItem(KEY)) return;
