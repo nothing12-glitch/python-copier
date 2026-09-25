@@ -27,9 +27,9 @@
 
   // Рядки для редагування профілю (окремий словник, щоб не чіпати i18n.js)
   const PL = {
-    uk: { pickAvatar: "Обери аватар", rename: "Змінити ім'я", save: "Зберегти", cancel: "Скасувати", renamed: "Ім'я оновлено", avatarSet: "Аватар оновлено", upload: "Фото з ПК", guestNote: "Гостьовий режим — дані зберігаються локально у браузері." },
-    en: { pickAvatar: "Pick an avatar", rename: "Change name", save: "Save", cancel: "Cancel", renamed: "Name updated", avatarSet: "Avatar updated", upload: "Photo from PC", guestNote: "Guest mode — data is stored locally in your browser." },
-    tr: { pickAvatar: "Bir avatar seç", rename: "İsim değiştir", save: "Kaydet", cancel: "İptal", renamed: "İsim güncellendi", avatarSet: "Avatar güncellendi", upload: "PC'den fotoğraf", guestNote: "Misafir modu — veriler tarayıcında yerel olarak saklanır." }
+    uk: { pickAvatar: "Обери аватар", rename: "Змінити ім'я", save: "Зберегти", cancel: "Скасувати", renamed: "Ім'я оновлено", avatarSet: "Аватар оновлено", upload: "Фото з ПК" },
+    en: { pickAvatar: "Pick an avatar", rename: "Change name", save: "Save", cancel: "Cancel", renamed: "Name updated", avatarSet: "Avatar updated", upload: "Photo from PC" },
+    tr: { pickAvatar: "Bir avatar seç", rename: "İsim değiştir", save: "Kaydet", cancel: "İptal", renamed: "İsim güncellendi", avatarSet: "Avatar güncellendi", upload: "PC'den fotoğraf" }
   };
   const pt = (k) => (PL[global.I18n.lang] || PL.uk)[k];
 
@@ -192,13 +192,12 @@
     const authPanel = $("#authPanel"), profPanel = $("#profilePanel");
     updateHeaderProfile();
     authPanel.classList.toggle("hidden", !!info);
-    profPanel.classList.remove("hidden");
+    profPanel.classList.toggle("hidden", !info);
+    if (!info) return;
     $("#profileDisplayName").textContent = displayName();
     applyAvatar($("#avatarBig"));
-    $("#logoutBtn").classList.toggle("hidden", !info);
-    $("#profileMeta").textContent = info
-      ? t("profile.memberSince") + " " + new Date(info.created).toLocaleDateString()
-      : pt("guestNote");
+    $("#logoutBtn").classList.remove("hidden");
+    $("#profileMeta").textContent = t("profile.memberSince") + " " + new Date(info.created).toLocaleDateString();
     renderRecords();
   }
 
