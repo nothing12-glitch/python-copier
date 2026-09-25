@@ -36,8 +36,8 @@
     <button id="sfxToggle" class="icon-btn" title="Sound" aria-pressed="true"><span class="material-icons">volume_up</span></button>
     <button id="musicToggle" class="icon-btn" title="Music" aria-pressed="false"><span class="material-icons">music_note</span></button>
     <button id="profileBtn" class="chip-btn">
-      <span class="avatar" id="avatarTop">&#128100;</span>
-      <span id="profileName" data-i18n="profile.guest">Гість</span>
+      <span class="avatar" id="avatarTop" title="Avatar">&#128100;</span>
+      <span id="profileName">Github user</span>
     </button>
   </header>
 
@@ -54,6 +54,10 @@
     <button class="rail-btn" data-route="games">
       <span class="rail-ico"><span class="material-icons">sports_esports</span></span>
       <span class="rail-label" data-i18n="nav.games">Ігри</span>
+    </button>
+    <button class="rail-btn" data-route="tools">
+      <span class="rail-ico"><span class="material-icons">construction</span></span>
+      <span class="rail-label" id="toolsNavLabel">Інструменти</span>
     </button>
     <button class="rail-btn" data-route="profile">
       <span class="rail-ico"><span class="material-icons">person</span></span>
@@ -93,6 +97,9 @@
           <p data-i18n="home.cardProfileText">Створи акаунт та зберігай рекорди.</p>
         </article>
       </div>
+
+      <!-- Learn: що таке Python і навіщо цей проєкт -->
+      <div class="cards learn-cards" id="learnSection"></div>
     </section>
 
     <!-- PYTHON -->
@@ -139,6 +146,29 @@
       <div id="gameStage" class="card elev2 game-stage hidden"></div>
     </section>
 
+    <!-- TOOLS -->
+    <section class="view" id="view-tools">
+      <div class="section-head"><h2 id="toolsTitle">Інструменти</h2></div>
+      <div class="tools-grid">
+        <div class="card elev1 tool-card">
+          <span class="bar-title"><span class="material-icons">calculate</span><span id="calcTitle">Калькулятор</span></span>
+          <div id="calcBox" class="calc"></div>
+        </div>
+        <div class="card elev1 tool-card">
+          <span class="bar-title"><span class="material-icons">straighten</span><span id="convTitle">Конвертер величин</span></span>
+          <div id="convBox" class="conv"></div>
+        </div>
+        <div class="card elev1 tool-card">
+          <span class="bar-title"><span class="material-icons">casino</span><span id="randTitle">Випадкове</span></span>
+          <div id="randBox" class="rand"></div>
+        </div>
+        <div class="card elev1 tool-card">
+          <span class="bar-title"><span class="material-icons">password</span><span id="pwdTitle">Генератор паролів</span></span>
+          <div id="pwdBox" class="pwd"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- PROFILE -->
     <section class="view" id="view-profile">
       <div class="section-head"><h2 data-i18n="profile.title">Профіль</h2></div>
@@ -180,11 +210,12 @@
 
       <div id="profilePanel" class="card elev2 profile-panel hidden">
         <div class="profile-head">
-          <div class="avatar big" id="avatarBig">&#128100;</div>
+          <div class="avatar big" id="avatarBig" title="Avatar">&#128100;</div>
           <div>
             <h3 id="profileDisplayName">—</h3>
             <p class="muted" id="profileMeta"></p>
           </div>
+          <button id="renameBtn" class="icon-btn" title="Rename"><span class="material-icons">edit</span></button>
           <button id="logoutBtn" class="btn outlined danger"><span class="material-icons">logout</span><span data-i18n="profile.logout">Вийти</span></button>
         </div>
         <h4 data-i18n="profile.records">Рекорди</h4>
@@ -207,7 +238,7 @@
 
   <div id="toast" class="snackbar" role="status" aria-live="polite"></div>
 
-  <footer class="footer"><span data-i18n="footer.made">Зроблено з &#10084; для навчання</span></footer>
+  <footer class="footer"><span data-i18n="footer.made">Зроблено з ❤ для навчання</span></footer>
 
   <script src="i18n.js"></script>
   <script src="audio.js"></script>
@@ -215,6 +246,7 @@
   <script src="settings.js"></script>
   <script src="python.js"></script>
   <script src="games.js"></script>
+  <script src="tools.js"></script>
   <script src="app.js"></script>
   <script src="onboarding.js"></script>
 </body>
