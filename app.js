@@ -78,6 +78,7 @@
     h.textContent = title;
     card.appendChild(h);
     bd.appendChild(card);
+    document.body.appendChild(bd);
     bd.onclick = (ev) => { if (ev.target === bd) closeModals(); };
     document.body.appendChild(bd);
     return card;
@@ -409,7 +410,7 @@
 
     // initial route
     const hash = (location.hash || "#home").slice(1);
-    route(["home", "python", "games", "tools", "profile", "settings"].includes(hash) ? hash : "home");
+    route(["home", "python", "games", "tools", "feedback", "profile", "settings"].includes(hash) ? hash : "home");
   }
 
   document.addEventListener("DOMContentLoaded", init);
