@@ -6,12 +6,17 @@
     uk: {
       langTitle: "Обери мову",
       langText: "Мову можна будь-коли змінити у налаштуваннях.",
+      nickTitle: "Як тебе звати?",
+      nickText: "Введи свій нікнейм — це буде твоє ім'я за замовчуванням. Його можна будь-коли змінити у профілі.",
+      nickPlaceholder: "Github user",
+      nickOk: "Продовжити",
       welcomeTitle: "Вітаємо на сайті!",
       welcomeText: "Тут ти можеш запускати Python прямо в браузері, грати в міні-ігри, зберігати рекорди у профілі та налаштовувати все під себе. Зараз покажемо кожен розділ!",
       steps: [
         ["home", "Головна", "Стартова сторінка з коротким описом усього, що вміє сайт."],
         ["python", "Python", "Пиши код у редакторі та натискай «Запуск» — результат з'явиться у виводі поруч. Є приклади та підказки."],
         ["games", "Ігри", "Дев'ять міні-ігор: змійка, 2048, сапер та інші. Рекорди зберігаються у профілі."],
+        ["tools", "Інструменти", "Калькулятор, конвертер величин та випадкові числа — усе в одному місці."],
         ["profile", "Профіль", "Створи локальний акаунт (демо, без сервера) і бач свої рекорди."],
         ["settings", "Налаштування", "Тема (світла / темна / авто), кольори, звук, мова, фон і багато іншого."]
       ],
@@ -26,12 +31,17 @@
     en: {
       langTitle: "Choose your language",
       langText: "You can change it anytime in Settings.",
+      nickTitle: "What's your nickname?",
+      nickText: "Enter your nickname — it will be your default name. You can change it anytime in your profile.",
+      nickPlaceholder: "Github user",
+      nickOk: "Continue",
       welcomeTitle: "Welcome to the site!",
       welcomeText: "Here you can run Python right in the browser, play mini-games, keep records in your profile and customize everything. Let us show you around!",
       steps: [
         ["home", "Home", "A short overview of everything the site can do."],
         ["python", "Python", "Write code in the editor and press Run — the result appears in the output panel. Examples and hints included."],
         ["games", "Games", "Nine mini-games: Snake, 2048, Minesweeper and more. Records are saved in your profile."],
+        ["tools", "Tools", "A calculator, unit converter and random tools — all in one place."],
         ["profile", "Profile", "Create a local account (demo, no server) and see your records."],
         ["settings", "Settings", "Theme (light / dark / auto), colors, sound, language, background and much more."]
       ],
@@ -46,12 +56,17 @@
     tr: {
       langTitle: "Dilini seç",
       langText: "Bunu istediğin zaman Ayarlar'dan değiştirebilirsin.",
+      nickTitle: "Takma adın ne?",
+      nickText: "Takma adını gir — varsayılan ismin olacak. İstediğin zaman profilden değiştirebilirsin.",
+      nickPlaceholder: "Github user",
+      nickOk: "Devam",
       welcomeTitle: "Sitemize hoş geldin!",
       welcomeText: "Burada Python'u doğrudan tarayıcıda çalıştırabilir, mini oyunlar oynayabilir, rekorlarını profilinde saklayabilir ve her şeyi kendine göre ayarlayabilirsin. Şimdi sana her bölümü göstereceğiz!",
       steps: [
         ["home", "Ana Sayfa", "Sitenin neler yapabildiğine dair kısa bir özet."],
         ["python", "Python", "Düzenleyiciye kod yaz ve Çalıştır'a bas — sonuç yandaki çıktıda görünür. Örnekler ve ipuçları var."],
         ["games", "Oyunlar", "Dokuz mini oyun: Yılan, 2048, Mayın Tarlası ve daha fazlası. Rekorlar profilde saklanır."],
+        ["tools", "Araçlar", "Hesap makinesi, birim dönüştürücü ve rastgele sayı araçları — hepsi bir arada."],
         ["profile", "Profil", "Yerel bir hesap oluştur (demo, sunucu yok) ve rekorlarını gör."],
         ["settings", "Ayarlar", "Tema (açık / koyu / otomatik), renkler, ses, dil, arka plan ve daha fazlası."]
       ],
@@ -65,7 +80,7 @@
     }
   };
 
-  let phase = null; // "lang" | "welcome" | number | "thanks"
+  let phase = null; // "lang" | "nick" | "welcome" | number | "thanks"
   let backdrop = null;
 
   const S = () => L[global.I18n ? global.I18n.lang : "uk"] || L.uk;
@@ -122,11 +137,44 @@
       b.textContent = name;
       b.onclick = () => {
         if (global.I18n) global.I18n.setLang(code);
-        renderWelcome();
+        renderNickname();
       };
       row.appendChild(b);
     });
     card.append(emo, h, p, row);
+  }
+
+  function saveNickname(v) {
+    const name = (v || "").trim() || "Github user";
+    if (global.Profile && global.Profile.setNickname) global.Profile.setNickname(name);
+    else localStorage.setItem("app.nickname", name);
+    document.dispatchEvent(new CustomEvent("profilechange"));
+  }
+
+  function renderNickname() {
+    phase = "nick";
+    const card = shell();
+    const emo = document.createElement("div");
+    emo.className = "ob-emoji";
+    emo.textContent = "\u{1F600}";
+    const h = document.createElement("h3");
+    h.textContent = S().nickTitle;
+    const p = document.createElement("p");
+    p.textContent = S().nickText;
+    const inp = document.createElement("input");
+    inp.className = "ob-input";
+    inp.type = "text";
+    inp.maxLength = 24;
+    inp.placeholder = S().nickPlaceholder;
+    inp.value = localStorage.getItem("app.nickname") || "";
+    const save = () => { saveNickname(inp.value); renderWelcome(); };
+    inp.addEventListener("keydown", (e) => { if (e.key === "Enter") save(); });
+    card.append(emo, h, p, inp);
+    actions(card, [
+      [S().skip, "text", () => { saveNickname(""); renderWelcome(); }],
+      [S().nickOk, "contained", save]
+    ]);
+    setTimeout(() => inp.focus(), 60);
   }
 
   function renderWelcome() {
@@ -192,6 +240,7 @@
     document.addEventListener("langchange", () => {
       if (phase === null) return;
       if (phase === "lang") renderLang();
+      else if (phase === "nick") renderNickname();
       else if (phase === "welcome") renderWelcome();
       else if (phase === "thanks") renderThanks();
       else renderStep(phase);
