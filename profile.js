@@ -2,7 +2,30 @@
 (function (global) {
   const USERS_KEY = "app.users";
   const SESSION_KEY = "app.session";
+  const NICK_KEY = "app.nickname";
+  const AVATAR_KEY = "app.avatar";
   const recKey = (u) => "app.records." + u;
+
+  function getNickname() { return localStorage.getItem(NICK_KEY) || "Github user"; }
+  function setNickname(n) {
+    n = (n || "").trim() || "Github user";
+    localStorage.setItem(NICK_KEY, n);
+    return n;
+  }
+  function getAvatar() { return localStorage.getItem(AVATAR_KEY) || ""; }
+  function setAvatar(e) {
+    if (e) localStorage.setItem(AVATAR_KEY, e);
+    else localStorage.removeItem(AVATAR_KEY);
+  }
+  function rename(n) {
+    n = setNickname(n);
+    const c = current();
+    if (c) {
+      const users = loadUsers();
+      if (users[c]) { users[c].name = n; saveUsers(users); }
+    }
+    return n;
+  }
 
   function loadUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || {}; } catch { return {}; } }
   function saveUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
@@ -31,6 +54,7 @@
     };
     saveUsers(users);
     localStorage.setItem(SESSION_KEY, username.toLowerCase());
+    setNickname(username);
     return { ok: true, name: username };
   }
 
@@ -42,6 +66,7 @@
     const h = await sha256(u.salt + password);
     if (h !== u.hash) return { ok: false, code: "bad" };
     localStorage.setItem(SESSION_KEY, username.toLowerCase());
+    setNickname(u.name);
     return { ok: true, name: u.name };
   }
 
@@ -71,6 +96,8 @@
   function clearAll() {
     localStorage.removeItem(USERS_KEY);
     localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(NICK_KEY);
+    localStorage.removeItem(AVATAR_KEY);
     Object.keys(localStorage).filter((k) => k.startsWith("app.records.")).forEach((k) => localStorage.removeItem(k));
   }
 
@@ -80,7 +107,7 @@
     const key = provider + ".user";
     if (!users[key]) {
       const s = salt();
-      users[key] = { name: displayName, salt: s, hash: await sha256(s + crypto.randomUUID()), created: Date.now(), provider };
+      users[key] = { name: displayName || getNickname(), salt: s, hash: await sha256(s + crypto.randomUUID()), created: Date.now(), provider };
       saveUsers(users);
     }
     localStorage.setItem(SESSION_KEY, key);
@@ -89,6 +116,7 @@
 
   global.Profile = {
     register, login, logout, current, handle, info,
-    getRecords, getRecord, setRecord, clearRecords, clearAll, socialLogin
+    getRecords, getRecord, setRecord, clearRecords, clearAll, socialLogin,
+    getNickname, setNickname, getAvatar, setAvatar, rename
   };
 })(window);
