@@ -356,3 +356,60 @@ body.lang-fade .appbar,body.lang-fade .navrail,body.lang-fade main{opacity:0;tra
 .ob-dots{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
 .ob-dots span{width:8px;height:8px;border-radius:50%;background:var(--md-outline-var)}
 .ob-dots span.on{background:var(--md-primary);width:20px;border-radius:4px}
+
+/* ===== Avatar picker & rename ===== */
+.ob-input{width:100%;font-family:var(--md-font);font-size:15px;color:var(--md-on-surface);background:var(--md-surface-dim);border:1px solid var(--md-outline-var);border-radius:10px;padding:12px 14px;outline:none;margin-bottom:16px;transition:border-color .2s;text-align:center}
+.ob-input:focus{border-color:var(--md-primary)}
+.emoji-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:14px 0 18px}
+.emoji-btn{font-size:26px;width:100%;aspect-ratio:1;border-radius:12px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);cursor:pointer;transition:.15s;display:grid;place-items:center;padding:0}
+.emoji-btn:hover{background:var(--md-primary-container);transform:scale(1.08)}
+#avatarBig{cursor:pointer;transition:transform .15s}
+#avatarBig:hover{transform:scale(1.06)}
+#profileDisplayName{cursor:pointer}
+#avatarTop{cursor:pointer}
+@media(max-width:480px){.emoji-grid{grid-template-columns:repeat(5,1fr)}}
+
+/* ===== Liquid Glass ===== */
+body.glass-on{--glass-bg:rgba(254,247,255,.55);--glass-brd:rgba(255,255,255,.35)}
+body.dark.glass-on{--glass-bg:rgba(23,18,35,.55);--glass-brd:rgba(255,255,255,.10)}
+body.glass-on .appbar,body.glass-on .navrail,body.glass-on .card,body.glass-on .ob-card,body.glass-on .snackbar,body.glass-on .autocomplete{
+  background:var(--glass-bg);backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);
+}
+body.glass-on .appbar{box-shadow:none;border-bottom:1px solid var(--glass-brd)}
+body.glass-on .navrail{border-color:var(--glass-brd)}
+body.glass-on .card{box-shadow:0 8px 32px rgba(0,0,0,.14);border:1px solid var(--glass-brd)}
+body.glass-on .ob-card{box-shadow:0 12px 40px rgba(0,0,0,.25);border:1px solid var(--glass-brd)}
+
+/* ===== Learn cards ===== */
+.learn-cards{margin-top:16px}
+.learn-card{padding:24px}
+.learn-ico{font-size:34px;width:56px;height:56px;border-radius:16px;background:var(--md-primary-container);display:grid;place-items:center;margin-bottom:16px}
+.learn-card h3{margin:0 0 8px;font-size:18px;font-weight:500}
+.learn-card p{margin:0;color:var(--md-on-surface-var);font-size:14px;line-height:1.6}
+
+/* ===== Tools ===== */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;align-items:start}
+.tool-card{padding:20px}
+.tool-card .bar-title{margin-bottom:14px}
+.calc-display{background:var(--md-surface-dim);border:1px solid var(--md-outline-var);border-radius:12px;padding:14px 16px;font-family:var(--md-mono);font-size:26px;text-align:right;min-height:58px;word-break:break-all;margin-bottom:12px;color:var(--md-on-surface)}
+.calc-pad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.calc-pad button{height:52px;border-radius:12px;border:0;background:var(--md-surface-dim);color:var(--md-on-surface);font-size:18px;font-family:var(--md-font);cursor:pointer;transition:.15s;padding:0}
+.calc-pad button:hover{background:var(--md-primary-container)}
+.calc-pad button.op{background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
+.calc-pad button.eq{background:var(--md-primary);color:var(--md-on-primary)}
+.conv-row{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.md-input{flex:1;min-width:90px;font-family:var(--md-font);font-size:15px;padding:10px 12px;border-radius:8px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);color:var(--md-on-surface);outline:none}
+.md-input:focus{border-color:var(--md-primary)}
+.conv-result{font-size:20px;font-weight:500;text-align:center;padding:12px;background:var(--md-primary-container);border-radius:12px;color:var(--md-on-primary-container);word-break:break-all}
+.rand-block{margin-bottom:18px}
+.rand-block:last-child{margin-bottom:0}
+.rand-label{font-size:13px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;color:var(--md-on-surface-var);margin-bottom:10px}
+.rand-out{font-size:22px;font-weight:500;text-align:center;padding:12px;background:var(--md-surface-dim);border-radius:12px;margin-top:10px;min-height:48px;color:var(--md-on-surface)}
+
+/* ===== Password generator ===== */
+.pwd-len{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.pwd-len label{font-size:13px;color:var(--md-on-surface-var);white-space:nowrap}
+.pwd-len input[type=range]{flex:1;accent-color:var(--md-primary)}
+.pwd-out{font-family:var(--md-mono);font-size:16px;text-align:center;padding:12px;background:var(--md-surface-dim);border-radius:12px;margin-bottom:12px;word-break:break-all;min-height:46px;color:var(--md-on-surface);user-select:all}
+.pwd-btns{display:flex;gap:8px}
+.pwd-btns .btn{flex:1}
