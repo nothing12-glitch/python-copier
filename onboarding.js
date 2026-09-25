@@ -17,6 +17,7 @@
         ["python", "Python", "Пиши код у редакторі та натискай «Запуск» — результат з'явиться у виводі поруч. Є приклади та підказки."],
         ["games", "Ігри", "Дев'ять міні-ігор: змійка, 2048, сапер та інші. Рекорди зберігаються у профілі."],
         ["tools", "Інструменти", "Калькулятор, конвертер величин та випадкові числа — усе в одному місці."],
+        ["feedback", "Відгуки", "Форма зворотного зв'язку: поділися ідеєю чи подякою — вона потрапить прямо до автора."],
         ["profile", "Профіль", "Створи локальний акаунт (демо, без сервера) і бач свої рекорди."],
         ["settings", "Налаштування", "Тема (світла / темна / авто), кольори, звук, мова, фон і багато іншого."]
       ],
@@ -43,6 +44,7 @@
         ["python", "Python", "Write code in the editor and press Run — the result appears in the output panel. Examples and hints included."],
         ["games", "Games", "Nine mini-games: Snake, 2048, Minesweeper and more. Records are saved in your profile."],
         ["tools", "Tools", "A calculator, unit converter and random tools — all in one place."],
+        ["feedback", "Feedback", "A feedback form: share an idea or a kind word — it goes straight to the author."],
         ["profile", "Profile", "Create a local account (demo, no server) and see your records."],
         ["settings", "Settings", "Theme (light / dark / auto), colors, sound, language, background and much more."]
       ],
@@ -69,6 +71,7 @@
         ["python", "Python", "Düzenleyiciye kod yaz ve Çalıştır'a bas — sonuç yandaki çıktıda görünür. Örnekler ve ipuçları var."],
         ["games", "Oyunlar", "Dokuz mini oyun: Yılan, 2048, Mayın Tarlası ve daha fazlası. Rekorlar profilde saklanır."],
         ["tools", "Araçlar", "Hesap makinesi, birim dönüştürücü ve rastgele sayı araçları — hepsi bir arada."],
+        ["feedback", "Geri Bildirim", "Bir geri bildirim formu: bir fikir veya tatlı bir söz paylaş — doğrudan site sahibine gider."],
         ["profile", "Profil", "Yerel bir hesap oluştur (demo, sunucu yok) ve rekorlarını gör."],
         ["settings", "Ayarlar", "Tema (açık / koyu / otomatik), renkler, ses, dil, arka plan ve daha fazlası."]
       ],
