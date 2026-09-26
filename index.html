@@ -59,6 +59,10 @@
       <span class="rail-ico"><span class="material-icons">construction</span></span>
       <span class="rail-label" id="toolsNavLabel">Інструменти</span>
     </button>
+    <button class="rail-btn" data-route="feedback">
+      <span class="rail-ico"><span class="material-icons">rate_review</span></span>
+      <span class="rail-label" id="feedbackNavLabel">Відгуки</span>
+    </button>
     <button class="rail-btn" data-route="profile">
       <span class="rail-ico"><span class="material-icons">person</span></span>
       <span class="rail-label" data-i18n="nav.profile">Профіль</span>
@@ -169,6 +173,20 @@
       </div>
     </section>
 
+    <!-- FEEDBACK -->
+    <section class="view" id="view-feedback">
+      <div class="section-head"><h2 id="feedbackTitle">Відгуки</h2></div>
+      <div class="card elev1 feedback-card">
+        <div class="card-bar">
+          <span class="bar-title"><span class="material-icons">rate_review</span><span id="feedbackBarTitle">Відгуки</span></span>
+          <button id="feedbackOpen" class="btn outlined hidden"><span class="material-icons">open_in_new</span><span></span></button>
+        </div>
+        <p class="feedback-intro" id="feedbackIntro"></p>
+        <div id="feedbackBody" class="feedback-body"></div>
+        <p class="auth-note feedback-note"><span class="material-icons">lock</span><span id="feedbackPrivacy"></span></p>
+      </div>
+    </section>
+
     <!-- PROFILE -->
     <section class="view" id="view-profile">
       <div class="section-head"><h2 data-i18n="profile.title">Профіль</h2></div>
@@ -247,6 +265,7 @@
   <script src="python.js"></script>
   <script src="games.js"></script>
   <script src="tools.js"></script>
+  <script src="feedback.js"></script>
   <script src="app.js"></script>
   <script src="onboarding.js"></script>
 </body>
