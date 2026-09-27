@@ -1,4 +1,4 @@
-      cancel: "Cancel",
+         cancel: "Cancel",
       wrong: "Wrong password. Try again.",
       roomTitle: "Secret room found!",
       roomText: "Vitya says: the nyam-nyam is safely protected.",
@@ -140,37 +140,3 @@
 
   document.addEventListener("DOMContentLoaded", init);
 })(window);
-+20
--0
-.feedback-card{max-width:860px;margin:0 auto;padding:0 0 16px}
-.feedback-card .card-bar{position:relative}
-.bar-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px}
-@media(max-width:640px){.feedback-card .bar-center{position:static;transform:none;margin-left:auto}}
-.feedback-intro{margin:16px 16px 0;color:var(--md-on-surface-var);font-size:14px;line-height:1.6}
-.feedback-body{margin:16px}
-.feedback-frame{width:100%;height:1400px;border:0;border-radius:12px;background:var(--md-surface-dim);display:block}
-.feedback-empty{text-align:center;padding:48px 16px;color:var(--md-on-surface-var)}
-.feedback-empty .material-icons{font-size:48px;color:var(--md-primary)}
-.feedback-empty h3{margin:12px 0 6px;font-size:18px;font-weight:500;color:var(--md-on-surface)}
-.feedback-empty p{margin:0;font-size:14px}
-.feedback-note{margin:16px}
-
-/* ===== Secret room ===== */
-.appbar-logo{cursor:pointer}
-.secret-imgs{display:flex;flex-direction:column;gap:6px;margin:4px 0 16px}
-.secret-img{width:100%;border-radius:12px;border:1px solid var(--md-outline-var)}
-.secret-cap{font-size:12px;color:var(--md-on-surface-var);margin:0 0 8px}
-
-/* ===== Music playlist ===== */
-#musicPanel{position:fixed;top:70px;right:12px;width:320px;max-width:calc(100vw - 24px);z-index:55;background:var(--md-surface);border-radius:16px;box-shadow:var(--md-elev3);padding:12px;display:none}
-#musicPanel.show{display:block}
-.mp-head{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 8px}
-.mp-list{display:flex;flex-direction:column;gap:4px;margin:0 0 8px}
-.mp-track{display:flex;flex-direction:column;gap:2px;text-align:left;border:0;background:transparent;border-radius:10px;padding:8px 10px;cursor:pointer;font-family:var(--md-font)}
-.mp-track:hover{background:var(--md-surface-dim)}
-.mp-track .t{font-size:14px;font-weight:500;color:var(--md-on-surface)}
-.mp-track .a{font-size:12px;color:var(--md-on-surface-var)}
-.mp-track.playing{background:var(--md-primary-container)}
-.mp-track.playing .t,.mp-track.playing .a{color:var(--md-on-primary-container)}
-.mp-controls{display:flex;justify-content:center;gap:8px}
-@media(max-width:640px){#musicPanel{le
