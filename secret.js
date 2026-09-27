@@ -1,4 +1,54 @@
-         cancel: "Cancel",
+/* Секретна кімната: кліки по логотипу -> фрази; з 200-го кліку пароль; після пароля кімната з фото.
+   Пароль сховано частинами у title заголовків трьох розділів (Python, Ігри, Інструменти). */
+(function (global) {
+  const KEY_CLICKS = "app.secretClicks";
+  const KEY_FOUND = "app.secretFound";
+  const PASSWORD = "nyamnyam200";
+  const GOAL = 200;
+  const TEASE_FROM = GOAL - 20;
+
+  const SL = {
+    uk: {
+      phrases: [
+        "Тут нічого немає.",
+        "Серйозно. Нічого.",
+        "Це просто логотип.",
+        "Тут лише терминал і трохи магії.",
+        "Порожньо, як у консолі без print.",
+        "Тук-тук. Ніхто не відчиняє.",
+        "Нічого… або?",
+        "Не клацай сюди 200 разів. Просто не треба."
+      ],
+      tease: "Залишилось кліків: {n}…",
+      pwdTitle: "Секретний вхід",
+      pwdText: "Стукіт прийнято. Пароль складається з трьох частин, схованих у трьох вкладках: наведи курсор на заголовок розділу.",
+      pwdPh: "Пароль",
+      pwdOk: "Увійти",
+      cancel: "Скасувати",
+      wrong: "Не той пароль. Спробуй ще.",
+      roomTitle: "Секретну кімнату знайдено!",
+      roomText: "Витя передає: ням-ням надійно захищено.",
+      cap1: "Тут усе почалося",
+      cap2: "Витя где ням ням",
+      close: "Закрити"
+    },
+    en: {
+      phrases: [
+        "There is nothing here.",
+        "Seriously. Nothing.",
+        "This is just a logo.",
+        "Only a terminal and a bit of magic here.",
+        "Empty, like a console without print.",
+        "Knock knock. Nobody answers.",
+        "Nothing… or is there?",
+        "Do not click this 200 times. Just don't."
+      ],
+      tease: "{n} more clicks — and something will happen…",
+      pwdTitle: "Secret entrance",
+      pwdText: "The knock is accepted. The password has three parts hidden in three tabs: hover the cursor over a section title.",
+      pwdPh: "Password",
+      pwdOk: "Enter",
+      cancel: "Cancel",
       wrong: "Wrong password. Try again.",
       roomTitle: "Secret room found!",
       roomText: "Vitya says: the nyam-nyam is safely protected.",
