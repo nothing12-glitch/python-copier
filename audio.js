@@ -47,12 +47,54 @@
 
   /* ---------- Музика: плейлист ---------- */
   const AUTHOR = "nothing12-glitch";
+
+  // Обкладинки — згенеровані SVG (вбудовані в код, без зовнішніх файлів)
+  function cover(inner) {
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">' + inner + '</svg>';
+    return 'data:image/svg+xml,' + encodeURIComponent(svg);
+  }
+  const COVER = {
+    chill: cover(
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b47a0"/><stop offset="1" stop-color="#1b1440"/></linearGradient></defs>' +
+      '<rect width="200" height="200" fill="url(#g)"/>' +
+      '<circle cx="146" cy="54" r="24" fill="#ffe9a8" opacity="0.95"/>' +
+      '<g fill="#ffffff" opacity="0.85"><circle cx="40" cy="40" r="2"/><circle cx="72" cy="82" r="1.5"/><circle cx="30" cy="112" r="1.8"/><circle cx="92" cy="34" r="1.2"/><circle cx="56" cy="150" r="1.6"/><circle cx="118" cy="118" r="1.3"/><circle cx="160" cy="150" r="1.5"/></g>' +
+      '<path d="M0 158 Q50 138 100 158 T200 158 V200 H0 Z" fill="#2a1f52" opacity="0.55"/>' +
+      '<path d="M0 176 Q60 160 120 176 T200 176 V200 H0 Z" fill="#1b1440" opacity="0.5"/>'
+    ),
+    flow: cover(
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1565C0"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>' +
+      '<rect width="200" height="200" fill="url(#g)"/>' +
+      '<circle cx="100" cy="72" r="26" fill="#ffffff" opacity="0.14"/>' +
+      '<g fill="none" stroke="#ffffff" stroke-opacity="0.4" stroke-width="3" stroke-linecap="round">' +
+      '<path d="M-10 118 Q40 92 90 118 T190 118"/><path d="M-10 140 Q40 114 90 140 T190 140"/><path d="M-10 162 Q40 136 90 162 T190 162"/></g>'
+    ),
+    hello: cover(
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b5e20"/><stop offset="1" stop-color="#66BB6A"/></linearGradient></defs>' +
+      '<rect width="200" height="200" fill="url(#g)"/>' +
+      '<rect x="28" y="52" width="144" height="96" rx="12" fill="#0d2b12" opacity="0.6"/>' +
+      '<g stroke="#a5d6a7" stroke-width="5" stroke-linecap="round" opacity="0.92"><path d="M48 80 h34"/><path d="M48 100 h64"/><path d="M48 120 h48"/></g>' +
+      '<rect x="104" y="112" width="11" height="16" fill="#a5d6a7"/>'
+    ),
+    serenade: cover(
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#AD1457"/><stop offset="1" stop-color="#F48FB1"/></linearGradient></defs>' +
+      '<rect width="200" height="200" fill="url(#g)"/>' +
+      '<g fill="#ffffff" opacity="0.94"><ellipse cx="78" cy="142" rx="19" ry="15"/><rect x="93" y="58" width="7" height="86" rx="3"/><path d="M100 58 q34 9 38 34 q-7 -21 -38 -20 z"/></g>' +
+      '<g fill="#ffffff" opacity="0.55"><ellipse cx="146" cy="120" rx="12" ry="10"/><rect x="155" y="72" width="5" height="50" rx="2"/></g>'
+    ),
+    pocket: cover(
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E65100"/><stop offset="1" stop-color="#FFB74D"/></linearGradient></defs>' +
+      '<rect width="200" height="200" fill="url(#g)"/>' +
+      '<g fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="4"><circle cx="100" cy="100" r="34"/><circle cx="100" cy="100" r="56"/><circle cx="100" cy="100" r="78"/></g>' +
+      '<circle cx="100" cy="100" r="17" fill="#ffffff" opacity="0.9"/>'
+    )
+  };
   const TRACKS = [
-    { file: "music/docstring-chill.mp3", title: "Docstring Chill", icon: "\u{1F319}", bg: "linear-gradient(135deg,#6750A4,#3b2d63)" },
-    { file: "music/focus-flow.mp3", title: "Focus Flow", icon: "\u{1F3A7}", bg: "linear-gradient(135deg,#1565C0,#22d3ee)" },
-    { file: "music/print-hello-chill.mp3", title: "print(Hello, Chill)", icon: "\u{1F40D}", bg: "linear-gradient(135deg,#2E7D32,#66BB6A)" },
-    { file: "music/py-serenade.mp3", title: "Py_Serenade", icon: "\u{1F3B9}", bg: "linear-gradient(135deg,#AD1457,#F48FB1)" },
-    { file: "music/steady-pocket.mp3", title: "Steady Pocket", icon: "\u{1F941}", bg: "linear-gradient(135deg,#E65100,#FFB74D)" }
+    { file: "music/docstring-chill.mp3", title: "Docstring Chill", cover: COVER.chill },
+    { file: "music/focus-flow.mp3", title: "Focus Flow", cover: COVER.flow },
+    { file: "music/print-hello-chill.mp3", title: "print(Hello, Chill)", cover: COVER.hello },
+    { file: "music/py-serenade.mp3", title: "Py_Serenade", cover: COVER.serenade },
+    { file: "music/steady-pocket.mp3", title: "Steady Pocket", cover: COVER.pocket }
   ];
 
   const AL = {
@@ -88,7 +130,9 @@
   function renderPanel() {
     if (!panel) return;
     const t = T();
+    const playing = audio && !audio.paused;
     panel.innerHTML = "";
+
     const head = document.createElement("div");
     head.className = "mp-head";
     const h = document.createElement("span");
@@ -101,17 +145,30 @@
     h.append(ico, lbl);
     head.appendChild(h);
 
+    // Велика обкладинка + назва/автор поточного треку
+    const hero = document.createElement("div");
+    hero.className = "mp-hero";
+    hero.style.backgroundImage = 'url("' + TRACKS[cur].cover + '")';
+    const scrim = document.createElement("div");
+    scrim.className = "mp-hero-scrim";
+    const ht = document.createElement("div");
+    ht.className = "mp-hero-t";
+    ht.textContent = TRACKS[cur].title;
+    const ha = document.createElement("div");
+    ha.className = "mp-hero-a";
+    ha.textContent = t.author + ": " + AUTHOR;
+    scrim.append(ht, ha);
+    hero.appendChild(scrim);
+
     const list = document.createElement("div");
     list.className = "mp-list";
-    const playing = audio && !audio.paused;
     TRACKS.forEach((tr, i) => {
       const b = document.createElement("button");
       b.type = "button";
       b.className = "mp-track" + (i === cur && playing ? " playing" : "");
       const cov = document.createElement("span");
       cov.className = "mp-cover";
-      cov.style.background = tr.bg;
-      cov.textContent = tr.icon;
+      cov.style.backgroundImage = 'url("' + tr.cover + '")';
       const meta = document.createElement("span");
       meta.className = "mp-meta";
       const tt = document.createElement("span"); tt.className = "t"; tt.textContent = tr.title;
@@ -164,7 +221,7 @@
       mkBtn("close", t.close, "close", () => showPanel(false))
     );
 
-    panel.append(head, list, ctrl, foot);
+    panel.append(head, hero, list, ctrl, foot);
   }
 
   function showPanel(on) {
