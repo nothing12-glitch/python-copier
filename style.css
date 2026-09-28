@@ -435,20 +435,25 @@ body.glass-on .ob-card{box-shadow:0 12px 40px rgba(0,0,0,.25);border:1px solid v
 .secret-cap{font-size:12px;color:var(--md-on-surface-var);margin:0 0 8px}
 
 /* ===== Music playlist ===== */
-#musicPanel{position:fixed;top:70px;right:12px;width:320px;max-width:calc(100vw - 24px);z-index:55;background:var(--md-surface);border-radius:16px;box-shadow:var(--md-elev3);padding:12px;display:none}
+#musicPanel{position:fixed;top:70px;right:12px;width:320px;max-width:calc(100vw - 24px);max-height:calc(100vh - 90px);overflow-y:auto;z-index:55;background:var(--md-surface);border-radius:16px;box-shadow:var(--md-elev3);padding:12px;display:none}
 #musicPanel.show{display:block}
 .mp-head{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 8px}
-.mp-list{display:flex;flex-direction:column;gap:4px;margin:0 0 8px;max-height:44vh;overflow-y:auto}
+.mp-hero{position:relative;height:168px;border-radius:14px;background-size:cover;background-position:center;margin-bottom:12px;overflow:hidden;box-shadow:var(--md-elev2)}
+.mp-hero-scrim{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.05) 60%)}
+.mp-hero-t{color:#fff;font-size:18px;font-weight:600;letter-spacing:.2px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.mp-hero-a{color:rgba(255,255,255,.88);font-size:12px;margin-top:3px;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.mp-list{display:flex;flex-direction:column;gap:4px;margin:0 0 8px}
 .mp-track{display:flex;align-items:center;gap:10px;text-align:left;border:0;background:transparent;border-radius:10px;padding:6px 8px;cursor:pointer;font-family:var(--md-font)}
 .mp-track:hover{background:var(--md-surface-dim)}
-.mp-cover{width:42px;height:42px;flex:none;border-radius:8px;display:grid;place-items:center;font-size:20px;box-shadow:var(--md-elev1)}
+.mp-cover{width:44px;height:44px;flex:none;border-radius:9px;background-size:cover;background-position:center;box-shadow:var(--md-elev1)}
 .mp-meta{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
 .mp-track .t{font-size:14px;font-weight:500;color:var(--md-on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mp-track .a{font-size:12px;color:var(--md-on-surface-var);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mp-track.playing{background:var(--md-primary-container)}
 .mp-track.playing .t,.mp-track.playing .a{color:var(--md-on-primary-container)}
 .mp-eq{display:flex;align-items:flex-end;gap:2px;height:16px;flex:none;visibility:hidden}
-.mp-eq i{width:3px;height:6px;border-radius:2px;background:var(--md-on-primary-container)}
+.mp-eq i{width:3px;height:6px;border-radius:2px;background:var(--md-primary)}
+.mp-track.playing .mp-eq i{background:var(--md-on-primary-container)}
 .mp-eq.on{visibility:visible}
 .mp-eq.on i{animation:mpeq .8s ease-in-out infinite}
 .mp-eq.on i:nth-child(2){animation-delay:.15s}
