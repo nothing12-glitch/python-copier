@@ -8,13 +8,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!-- УВАГА: при кожному новому деплої міняй ?v= на нову дату, щоб пробити кеш -->
-  <link rel="stylesheet" href="style.css?v=26.10.02">
-  <!-- Pyodide: Python у браузері без скачування -->
+  <link rel="stylesheet" href="style.css?v=26.10.02b">
   <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
 </head>
 <body>
-  <!-- Background FX -->
   <div class="bg-fx" aria-hidden="true">
     <div class="bg-glow"></div>
     <span class="blob b1"></span>
@@ -23,12 +20,10 @@
     <div class="cursor-glow" id="cursorGlow"></div>
   </div>
 
-  <!-- Top app bar -->
   <header class="appbar">
     <span class="material-icons appbar-logo">terminal</span>
     <span class="appbar-title" data-i18n="app.title">Мої проєкти та завдання</span>
     <div class="appbar-spacer"></div>
-
     <div class="lang-switch" id="langSwitch" role="group" aria-label="Language">
       <button data-lang="uk" class="active">UA</button>
       <button data-lang="en">EN</button>
@@ -48,40 +43,17 @@
     </button>
   </header>
 
-  <!-- Navigation rail -->
   <nav class="navrail" id="mainnav">
-    <button class="rail-btn active" data-route="home">
-      <span class="rail-ico"><span class="material-icons">home</span></span>
-      <span class="rail-label" data-i18n="nav.home">Головна</span>
-    </button>
-    <button class="rail-btn" data-route="python">
-      <span class="rail-ico"><span class="material-icons">code</span></span>
-      <span class="rail-label" data-i18n="nav.python">Python</span>
-    </button>
-    <button class="rail-btn" data-route="games">
-      <span class="rail-ico"><span class="material-icons">sports_esports</span></span>
-      <span class="rail-label" data-i18n="nav.games">Ігри</span>
-    </button>
-    <button class="rail-btn" data-route="tools">
-      <span class="rail-ico"><span class="material-icons">construction</span></span>
-      <span class="rail-label" id="toolsNavLabel">Інструменти</span>
-    </button>
-    <button class="rail-btn" data-route="feedback">
-      <span class="rail-ico"><span class="material-icons">rate_review</span></span>
-      <span class="rail-label" id="feedbackNavLabel">Відгуки</span>
-    </button>
-    <button class="rail-btn" data-route="profile">
-      <span class="rail-ico"><span class="material-icons">person</span></span>
-      <span class="rail-label" data-i18n="nav.profile">Профіль</span>
-    </button>
-    <button class="rail-btn" data-route="settings">
-      <span class="rail-ico"><span class="material-icons">settings</span></span>
-      <span class="rail-label" data-i18n="nav.settings">Налаштування</span>
-    </button>
+    <button class="rail-btn active" data-route="home"><span class="rail-ico"><span class="material-icons">home</span></span><span class="rail-label" data-i18n="nav.home">Головна</span></button>
+    <button class="rail-btn" data-route="python"><span class="rail-ico"><span class="material-icons">code</span></span><span class="rail-label" data-i18n="nav.python">Python</span></button>
+    <button class="rail-btn" data-route="games"><span class="rail-ico"><span class="material-icons">sports_esports</span></span><span class="rail-label" data-i18n="nav.games">Ігри</span></button>
+    <button class="rail-btn" data-route="tools"><span class="rail-ico"><span class="material-icons">construction</span></span><span class="rail-label" id="toolsNavLabel">Інструменти</span></button>
+    <button class="rail-btn" data-route="feedback"><span class="rail-ico"><span class="material-icons">rate_review</span></span><span class="rail-label" id="feedbackNavLabel">Відгуки</span></button>
+    <button class="rail-btn" data-route="profile"><span class="rail-ico"><span class="material-icons">person</span></span><span class="rail-label" data-i18n="nav.profile">Профіль</span></button>
+    <button class="rail-btn" data-route="settings"><span class="rail-ico"><span class="material-icons">settings</span></span><span class="rail-label" data-i18n="nav.settings">Налаштування</span></button>
   </nav>
 
   <main id="app">
-    <!-- HOME -->
     <section class="view active" id="view-home">
       <div class="hero">
         <h2 data-i18n="home.heroTitle">Вчись, грай, кодуй — усе в браузері</h2>
@@ -92,26 +64,13 @@
         </div>
       </div>
       <div class="cards">
-        <article class="card elev1" data-goto="python">
-          <span class="material-icons card-ico">code</span>
-          <h3 data-i18n="home.cardPython">Python-майданчик</h3>
-          <p data-i18n="home.cardPythonText">Пиши та запускай код з підказками.</p>
-        </article>
-        <article class="card elev1" data-goto="games">
-          <span class="material-icons card-ico">sports_esports</span>
-          <h3 data-i18n="home.cardGames">Ігри</h3>
-          <p data-i18n="home.cardGamesText">Змійка, 2048, Memory та інші.</p>
-        </article>
-        <article class="card elev1" data-goto="profile">
-          <span class="material-icons card-ico">person</span>
-          <h3 data-i18n="home.cardProfile">Профіль</h3>
-          <p data-i18n="home.cardProfileText">Створи акаунт та зберігай рекорди.</p>
-        </article>
+        <article class="card elev1" data-goto="python"><span class="material-icons card-ico">code</span><h3 data-i18n="home.cardPython">Python-майданчик</h3><p data-i18n="home.cardPythonText">Пиши та запускай код з підказками.</p></article>
+        <article class="card elev1" data-goto="games"><span class="material-icons card-ico">sports_esports</span><h3 data-i18n="home.cardGames">Ігри</h3><p data-i18n="home.cardGamesText">Змійка, 2048, Memory та інші.</p></article>
+        <article class="card elev1" data-goto="profile"><span class="material-icons card-ico">person</span><h3 data-i18n="home.cardProfile">Профіль</h3><p data-i18n="home.cardProfileText">Створи акаунт та зберігай рекорди.</p></article>
       </div>
       <div class="cards learn-cards" id="learnSection"></div>
     </section>
 
-    <!-- PYTHON -->
     <section class="view" id="view-python">
       <div class="section-head">
         <h2 data-i18n="python.title" title="nyam">Python-майданчик</h2>
@@ -146,49 +105,29 @@
       </div>
     </section>
 
-    <!-- GAMES -->
     <section class="view" id="view-games">
       <div class="section-head"><h2 data-i18n="games.title" title="nyam">Ігри</h2></div>
       <div id="gamesHub" class="games-hub"></div>
       <div id="gameStage" class="card elev2 game-stage hidden"></div>
     </section>
 
-    <!-- TOOLS -->
     <section class="view" id="view-tools">
       <div class="section-head"><h2 id="toolsTitle" title="200">Інструменти</h2></div>
       <div class="tools-grid">
-        <div class="card elev1 tool-card">
-          <span class="bar-title"><span class="material-icons">calculate</span><span id="calcTitle">Калькулятор</span></span>
-          <div id="calcBox" class="calc"></div>
-        </div>
-        <div class="card elev1 tool-card">
-          <span class="bar-title"><span class="material-icons">straighten</span><span id="convTitle">Конвертер величин</span></span>
-          <div id="convBox" class="conv"></div>
-        </div>
-        <div class="card elev1 tool-card">
-          <span class="bar-title"><span class="material-icons">casino</span><span id="randTitle">Випадкове</span></span>
-          <div id="randBox" class="rand"></div>
-        </div>
-        <div class="card elev1 tool-card">
-          <span class="bar-title"><span class="material-icons">password</span><span id="pwdTitle">Генератор паролів</span></span>
-          <div id="pwdBox" class="pwd"></div>
-        </div>
-        <div class="card elev1 tool-card">
-          <span class="bar-title"><span class="material-icons">timer</span><span data-i18n="tool.pomo">Помідоро</span></span>
-          <div id="pomoBox"></div>
-        </div>
+        <div class="card elev1 tool-card"><span class="bar-title"><span class="material-icons">calculate</span><span id="calcTitle">Калькулятор</span></span><div id="calcBox" class="calc"></div></div>
+        <div class="card elev1 tool-card"><span class="bar-title"><span class="material-icons">straighten</span><span id="convTitle">Конвертер величин</span></span><div id="convBox" class="conv"></div></div>
+        <div class="card elev1 tool-card"><span class="bar-title"><span class="material-icons">casino</span><span id="randTitle">Випадкове</span></span><div id="randBox" class="rand"></div></div>
+        <div class="card elev1 tool-card"><span class="bar-title"><span class="material-icons">password</span><span id="pwdTitle">Генератор паролів</span></span><div id="pwdBox" class="pwd"></div></div>
+        <div class="card elev1 tool-card"><span class="bar-title"><span class="material-icons">timer</span><span data-i18n="tool.pomo">Помідоро</span></span><div id="pomoBox"></div></div>
       </div>
     </section>
 
-    <!-- FEEDBACK -->
     <section class="view" id="view-feedback">
       <div class="section-head"><h2 id="feedbackTitle">Відгуки</h2></div>
       <div class="card elev1 feedback-card">
         <div class="card-bar">
           <span class="bar-title"><span class="material-icons">rate_review</span><span id="feedbackBarTitle">Відгуки</span></span>
-          <div class="bar-center">
-            <button id="feedbackOpen" class="btn outlined hidden"><span class="material-icons">open_in_new</span><span></span></button>
-          </div>
+          <div class="bar-center"><button id="feedbackOpen" class="btn outlined hidden"><span class="material-icons">open_in_new</span><span></span></button></div>
         </div>
         <p class="feedback-intro" id="feedbackIntro"></p>
         <div id="feedbackBody" class="feedback-body"></div>
@@ -196,7 +135,6 @@
       </div>
     </section>
 
-    <!-- PROFILE -->
     <section class="view" id="view-profile">
       <div class="section-head"><h2 data-i18n="profile.title">Профіль</h2></div>
       <div id="authPanel" class="card elev2 auth-panel">
@@ -230,7 +168,6 @@
       </div>
     </section>
 
-    <!-- SETTINGS -->
     <section class="view" id="view-settings">
       <div class="section-head"><h2 data-i18n="settings.title">Налаштування</h2></div>
       <div class="card elev1 settings-card" id="settingsBody"></div>
@@ -244,7 +181,6 @@
   <div id="toast" class="snackbar" role="status" aria-live="polite"></div>
   <footer class="footer"><span data-i18n="footer.made">Зроблено з ❤ для навчання</span></footer>
 
-  <!-- Teacher Secret Greeting -->
   <div id="teacherGreet" class="teacher-greet" role="dialog" aria-modal="true">
     <div class="teacher-card">
       <div class="teacher-flower">🌹</div>
@@ -257,21 +193,21 @@
     </div>
   </div>
 
-  <!-- ПОРЯДОК ВАЖЛИВИЙ: shield.js ДО app.js, fix.js ПІСЛЯ всіх -->
-  <script src="i18n.js?v=26.10.02"></script>
-  <script src="audio.js?v=26.10.02"></script>
-  <script src="profile.js?v=26.10.02"></script>
-  <script src="settings.js?v=26.10.02"></script>
-  <script src="python.js?v=26.10.02"></script>
-  <script src="games.js?v=26.10.02"></script>
-  <script src="tools.js?v=26.10.02"></script>
-  <script src="feedback.js?v=26.10.02"></script>
-  <script src="shield.js?v=26.10.02"></script>
-  <script src="app.js?v=26.10.02"></script>
-  <script src="onboarding.js?v=26.10.02"></script>
-  <script src="secret.js?v=26.10.02"></script>
-  <script src="teacher.js?v=26.10.02"></script>
-  <script src="updates.js?v=26.10.02"></script>
-  <script src="fix.js?v=26.10.02"></script>
+  <!-- ПОРЯДОК КРИТИЧНИЙ: shield.js ДО app.js, fix.js ПІСЛЯ всіх -->
+  <script src="i18n.js?v=26.10.02b"></script>
+  <script src="audio.js?v=26.10.02b"></script>
+  <script src="profile.js?v=26.10.02b"></script>
+  <script src="settings.js?v=26.10.02b"></script>
+  <script src="python.js?v=26.10.02b"></script>
+  <script src="games.js?v=26.10.02b"></script>
+  <script src="tools.js?v=26.10.02b"></script>
+  <script src="feedback.js?v=26.10.02b"></script>
+  <script src="shield.js?v=26.10.02b"></script>
+  <script src="app.js?v=26.10.02b"></script>
+  <script src="onboarding.js?v=26.10.02b"></script>
+  <script src="secret.js?v=26.10.02b"></script>
+  <script src="teacher.js?v=26.10.02b"></script>
+  <script src="updates.js?v=26.10.02b"></script>
+  <script src="fix.js?v=26.10.02b"></script>
 </body>
 </html>
