@@ -9,11 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <!-- Pyodide: Python у браузері без скачування -->
   <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
 </head>
 <body>
-  <!-- Background FX: ambient glow + animated blobs + cursor-follow glow -->
   <div class="bg-fx" aria-hidden="true">
     <div class="bg-glow"></div>
     <span class="blob b1"></span>
@@ -22,7 +20,6 @@
     <div class="cursor-glow" id="cursorGlow"></div>
   </div>
 
-  <!-- Top app bar -->
   <header class="appbar">
     <span class="material-icons appbar-logo">terminal</span>
     <span class="appbar-title" data-i18n="app.title">Мої проєкти та завдання</span>
@@ -32,8 +29,14 @@
       <button data-lang="uk" class="active">UA</button>
       <button data-lang="en">EN</button>
       <button data-lang="tr">TR</button>
+      <button data-lang="de">DE</button>
+      <button data-lang="pl">PL</button>
+      <button data-lang="es">ES</button>
+      <button data-lang="fr">FR</button>
+      <button data-lang="ja">JA</button>
     </div>
     <button id="sfxToggle" class="icon-btn" title="Sound" aria-pressed="true"><span class="material-icons">volume_up</span></button>
+    <button id="focusToggle" class="icon-btn" title="Focus" aria-pressed="false"><span class="material-icons">center_focus_strong</span></button>
     <button id="musicToggle" class="icon-btn" title="Music" aria-pressed="false"><span class="material-icons">music_note</span></button>
     <button id="profileBtn" class="chip-btn">
       <span class="avatar" id="avatarTop" title="Avatar">&#128100;</span>
@@ -41,7 +44,6 @@
     </button>
   </header>
 
-  <!-- Navigation rail (вертикальна навігація) -->
   <nav class="navrail" id="mainnav">
     <button class="rail-btn active" data-route="home">
       <span class="rail-ico"><span class="material-icons">home</span></span>
@@ -74,7 +76,6 @@
   </nav>
 
   <main id="app">
-    <!-- HOME -->
     <section class="view active" id="view-home">
       <div class="hero">
         <h2 data-i18n="home.heroTitle">Вчись, грай, кодуй — усе в браузері</h2>
@@ -101,18 +102,14 @@
           <p data-i18n="home.cardProfileText">Створи акаунт та зберігай рекорди.</p>
         </article>
       </div>
-
-      <!-- Learn: що таке Python і навіщо цей проєкт -->
       <div class="cards learn-cards" id="learnSection"></div>
     </section>
 
-    <!-- PYTHON -->
     <section class="view" id="view-python">
       <div class="section-head">
         <h2 data-i18n="python.title" title="nyam">Python-майданчик</h2>
         <span id="pyStatus" class="md-chip loading">Завантаження Python…</span>
       </div>
-
       <div class="py-layout">
         <div class="card elev1 py-editor">
           <div class="card-bar">
@@ -132,7 +129,6 @@
             <div id="hintList" class="hint-list"></div>
           </div>
         </div>
-
         <div class="card elev1 py-output">
           <div class="card-bar">
             <span class="bar-title"><span class="material-icons">terminal</span><span data-i18n="python.output">Вивід</span></span>
@@ -143,14 +139,12 @@
       </div>
     </section>
 
-    <!-- GAMES -->
     <section class="view" id="view-games">
       <div class="section-head"><h2 data-i18n="games.title" title="nyam">Ігри</h2></div>
       <div id="gamesHub" class="games-hub"></div>
       <div id="gameStage" class="card elev2 game-stage hidden"></div>
     </section>
 
-    <!-- TOOLS -->
     <section class="view" id="view-tools">
       <div class="section-head"><h2 id="toolsTitle" title="200">Інструменти</h2></div>
       <div class="tools-grid">
@@ -170,10 +164,13 @@
           <span class="bar-title"><span class="material-icons">password</span><span id="pwdTitle">Генератор паролів</span></span>
           <div id="pwdBox" class="pwd"></div>
         </div>
+        <div class="card elev1 tool-card">
+          <span class="bar-title"><span class="material-icons">timer</span><span data-i18n="tool.pomo">Помідоро</span></span>
+          <div id="pomoBox" class="pomo-container"></div>
+        </div>
       </div>
     </section>
 
-    <!-- FEEDBACK -->
     <section class="view" id="view-feedback">
       <div class="section-head"><h2 id="feedbackTitle">Відгуки</h2></div>
       <div class="card elev1 feedback-card">
@@ -189,52 +186,31 @@
       </div>
     </section>
 
-    <!-- PROFILE -->
     <section class="view" id="view-profile">
       <div class="section-head"><h2 data-i18n="profile.title">Профіль</h2></div>
-
       <div id="authPanel" class="card elev2 auth-panel">
         <div class="auth-tabs">
           <button class="tab-btn active" data-authtab="login" data-i18n="profile.login">Вхід</button>
           <button class="tab-btn" data-authtab="register" data-i18n="profile.register">Реєстрація</button>
         </div>
-
         <form id="loginForm" class="auth-form">
-          <div class="field">
-            <input id="loginUser" type="text" placeholder=" " autocomplete="username" required>
-            <label data-i18n="profile.username">Ім'я</label>
-          </div>
-          <div class="field">
-            <input id="loginPass" type="password" placeholder=" " autocomplete="current-password" required>
-            <label data-i18n="profile.password">Пароль</label>
-          </div>
+          <div class="field"><input id="loginUser" type="text" placeholder=" " autocomplete="username" required><label data-i18n="profile.username">Ім'я</label></div>
+          <div class="field"><input id="loginPass" type="password" placeholder=" " autocomplete="current-password" required><label data-i18n="profile.password">Пароль</label></div>
           <button class="btn contained" type="submit"><span data-i18n="profile.signIn">Увійти</span></button>
           <p class="auth-msg" id="loginMsg"></p>
         </form>
-
         <form id="registerForm" class="auth-form hidden">
-          <div class="field">
-            <input id="regUser" type="text" placeholder=" " autocomplete="username" minlength="3" required>
-            <label data-i18n="profile.username">Ім'я</label>
-          </div>
-          <div class="field">
-            <input id="regPass" type="password" placeholder=" " autocomplete="new-password" minlength="4" required>
-            <label data-i18n="profile.password">Пароль</label>
-          </div>
+          <div class="field"><input id="regUser" type="text" placeholder=" " autocomplete="username" minlength="3" required><label data-i18n="profile.username">Ім'я</label></div>
+          <div class="field"><input id="regPass" type="password" placeholder=" " autocomplete="new-password" minlength="4" required><label data-i18n="profile.password">Пароль</label></div>
           <button class="btn contained" type="submit"><span data-i18n="profile.createAccount">Створити акаунт</span></button>
           <p class="auth-msg" id="regMsg"></p>
         </form>
-
         <p class="auth-note"><span class="material-icons">info</span><span data-i18n="profile.localNote">Акаунт зберігається лише локально у вашому браузері (демо, без сервера).</span></p>
       </div>
-
       <div id="profilePanel" class="card elev2 profile-panel hidden">
         <div class="profile-head">
           <div class="avatar big" id="avatarBig" title="Avatar">&#128100;</div>
-          <div>
-            <h3 id="profileDisplayName">—</h3>
-            <p class="muted" id="profileMeta"></p>
-          </div>
+          <div><h3 id="profileDisplayName">—</h3><p class="muted" id="profileMeta"></p></div>
           <button id="renameBtn" class="icon-btn" title="Rename"><span class="material-icons">edit</span></button>
           <button id="logoutBtn" class="btn outlined danger"><span class="material-icons">logout</span><span data-i18n="profile.logout">Вийти</span></button>
         </div>
@@ -243,12 +219,9 @@
       </div>
     </section>
 
-    <!-- SETTINGS -->
     <section class="view" id="view-settings">
       <div class="section-head"><h2 data-i18n="settings.title">Налаштування</h2></div>
-
       <div class="card elev1 settings-card" id="settingsBody"></div>
-
       <div class="card elev1 settings-card about-card">
         <h4 class="settings-group" data-i18n="settings.about">Про застосунок</h4>
         <p class="about-text"><span class="material-icons">info</span><span data-i18n="settings.aboutText">Python у браузері через Pyodide — без встановлення.</span></p>
@@ -257,8 +230,20 @@
   </main>
 
   <div id="toast" class="snackbar" role="status" aria-live="polite"></div>
-
   <footer class="footer"><span data-i18n="footer.made">Зроблено з ❤ для навчання</span></footer>
+
+  <!-- Teacher Secret Greeting -->
+  <div id="teacherGreet" class="teacher-greet" role="dialog" aria-modal="true">
+    <div class="teacher-card">
+      <div class="teacher-flower">🌹</div>
+      <h2 data-i18n="teacher.title">З Днем учителя!</h2>
+      <div class="to" data-i18n="teacher.to">Шановному Олексію Олександровичу</div>
+      <p data-i18n="teacher.text">Дякуємо за знання, терпіння та віру в кожного з нас.</p>
+      <p data-i18n="teacher.wish">Нехай кожен ваш день буде сповнений радості! 💙💛</p>
+      <div class="signature" data-i18n="teacher.sig">— з повагою і вдячністю</div>
+      <div class="teacher-close"><button class="btn contained" id="teacherClose"><span data-i18n="teacher.close">Дякую, закрити</span></button></div>
+    </div>
+  </div>
 
   <script src="i18n.js"></script>
   <script src="audio.js"></script>
@@ -271,5 +256,6 @@
   <script src="app.js"></script>
   <script src="onboarding.js"></script>
   <script src="secret.js"></script>
+  <script src="teacher.js"></script>
 </body>
 </html>
