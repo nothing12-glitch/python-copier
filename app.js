@@ -1,5 +1,7 @@
-/* app.js — головний ініціалізатор. Усі кліки безпечні до відсутніх елементів.
-   shield.js гарантує що всі $()-селектори знаходять елементи (хоча б заглушки). */
+/* app.js — головний ініціалізатор (v26.10.02d).
+   - Навігація через делегування подій: кнопки НЕ можуть "не прив'язатись".
+   - renderLearn повертає справжні картки "Що таке Python?" / "Для чого цей проєкт?".
+   - Усі блоки init у try/catch: одна помилка не вбиває решту. */
 (function (global) {
   const $ = (s) => document.querySelector(s);
   const t = (k) => (global.I18n ? global.I18n.t(k) : k);
@@ -30,9 +32,21 @@
       try { global.Settings.render($("#settingsBody")); } catch (e) { console.warn(e); }
     }
     location.hash = name;
+    console.info("[app.js] route ->", name);
     document.dispatchEvent(new CustomEvent("routechange", { detail: name }));
   }
   global.route = route;
+
+  /* ---------- Навігація: делегування на весь документ (безсмертне) ---------- */
+  function bindNavDelegation() {
+    document.addEventListener("click", (e) => {
+      const el = e.target.closest ? e.target.closest("[data-route],[data-goto]") : null;
+      if (!el) return;
+      e.preventDefault();
+      const name = el.dataset.route || el.dataset.goto;
+      if (name) route(name);
+    });
+  }
 
   /* ---------- Ріппл ефект ---------- */
   function bindRipple() {
@@ -67,18 +81,15 @@
       document.querySelectorAll("[data-i18n]").forEach((el) => {
         el.textContent = t(el.getAttribute("data-i18n"));
       });
-      if (global.Settings) {
-        try { global.Settings.render($("#settingsBody")); } catch (e) {}
-      }
+      if (global.Settings) { try { global.Settings.render($("#settingsBody")); } catch (e) {} }
+      renderLearn();
     });
   }
 
   /* ---------- Аудіо (null-safe) ---------- */
   function bindAudio() {
     const sfxBtn = $("#sfxToggle");
-    const musicBtn = $("#musicToggle");
     const focusBtn = $("#focusToggle");
-
     function sync() {
       const A = global.Audio2;
       if (!A) return;
@@ -88,13 +99,13 @@
         if (ico) ico.textContent = sOn ? "volume_up" : "volume_off";
         sfxBtn.setAttribute("aria-pressed", String(sOn));
       }
+      const musicBtn = $("#musicToggle");
       if (musicBtn && !musicBtn.dataset.shield) {
         const ico = musicBtn.querySelector(".material-icons");
         if (ico) ico.textContent = mOn ? "music_note" : "music_off";
         musicBtn.setAttribute("aria-pressed", String(mOn));
       }
     }
-
     if (sfxBtn && !sfxBtn.dataset.shield) {
       sfxBtn.onclick = () => {
         if (!global.Audio2) return;
@@ -103,10 +114,6 @@
         sync();
       };
     }
-
-    // musicBtn — НЕ призначаємо onclick: перехоплює teacher.js у capture
-    // щоб не вимикати музику при повторному кліку
-
     if (focusBtn && !focusBtn.dataset.shield) {
       focusBtn.onclick = () => {
         const on = document.body.classList.toggle("focus-mode");
@@ -125,7 +132,6 @@
         }
       };
     }
-
     document.addEventListener("settingschange", sync);
     sync();
   }
@@ -135,52 +141,44 @@
     const loginForm = $("#loginForm");
     const registerForm = $("#registerForm");
     const tabs = document.querySelectorAll("[data-authtab]");
-
     tabs.forEach((tab) => {
       tab.onclick = () => {
-        tabs.forEach((t) => t.classList.toggle("active", t === tab));
+        tabs.forEach((x) => x.classList.toggle("active", x === tab));
         const mode = tab.dataset.authtab;
         if (loginForm) loginForm.classList.toggle("hidden", mode !== "login");
         if (registerForm) registerForm.classList.toggle("hidden", mode !== "register");
       };
     });
-
     if (loginForm) {
       loginForm.onsubmit = (e) => {
         e.preventDefault();
         if (!global.Profile) return;
-        const u = $("#loginUser").value.trim();
-        const p = $("#loginPass").value;
+        const u = ($("#loginUser") || {}).value || "";
+        const p = ($("#loginPass") || {}).value || "";
         const msg = $("#loginMsg");
-        const res = global.Profile.login(u, p);
-        if (res.ok) {
+        const res = global.Profile.login(u.trim(), p);
+        if (res && res.ok) {
           if (msg) { msg.className = "auth-msg ok"; msg.textContent = t("profile.okLogin"); }
           toast(t("profile.okLogin"));
           renderProfile();
-        } else {
-          if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errLogin"); }
-        }
+        } else if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errLogin"); }
       };
     }
-
     if (registerForm) {
       registerForm.onsubmit = (e) => {
         e.preventDefault();
         if (!global.Profile) return;
-        const u = $("#regUser").value.trim();
-        const p = $("#regPass").value;
+        const u = ($("#regUser") || {}).value || "";
+        const p = ($("#regPass") || {}).value || "";
         const msg = $("#regMsg");
-        const res = global.Profile.register(u, p);
-        if (res.ok) {
+        const res = global.Profile.register(u.trim(), p);
+        if (res && res.ok) {
           if (msg) { msg.className = "auth-msg ok"; msg.textContent = t("profile.okRegister"); }
           toast(t("profile.okRegister"));
           renderProfile();
-        } else {
-          if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errExists"); }
-        }
+        } else if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errExists"); }
       };
     }
-
     const logoutBtn = $("#logoutBtn");
     if (logoutBtn) {
       logoutBtn.onclick = () => {
@@ -243,15 +241,11 @@
     const rename = $("#renameBtn");
     const big = $("#avatarBig");
     const name = $("#profileDisplayName");
-
     if (rename) {
       rename.onclick = () => {
         if (!global.Profile || !global.Profile.current()) return;
         const n = prompt("Нік:", global.Profile.current().name || "");
-        if (n !== null && n.trim()) {
-          global.Profile.rename(n.trim());
-          renderProfile();
-        }
+        if (n !== null && n.trim()) { global.Profile.rename(n.trim()); renderProfile(); }
       };
     }
     if (big) {
@@ -260,17 +254,10 @@
         const emojis = ["\u{1F9D1}", "\u{1F469}", "\u{1F468}", "\u{1F9D2}", "\u{1F47B}", "\u{1F916}", "\u{1F431}", "\u{1F436}", "\u{1F981}", "\u{1F43C}", "\u{1F984}", "\u{1F430}"];
         const cur = global.Profile.current().avatar || "\u{1F9D1}";
         const choice = prompt("Аватар (emoji): " + emojis.join(" "), cur);
-        if (choice !== null && choice.trim()) {
-          global.Profile.setAvatar(choice.trim());
-          renderProfile();
-        }
+        if (choice !== null && choice.trim()) { global.Profile.setAvatar(choice.trim()); renderProfile(); }
       };
     }
-    if (name) {
-      name.onclick = () => {
-        if (rename) rename.click();
-      };
-    }
+    if (name) name.onclick = () => { if (rename) rename.click(); };
   }
 
   /* ---------- Дії налаштувань ---------- */
@@ -280,7 +267,7 @@
       if (!id) return;
       if (id === "export") {
         if (!global.Profile) return;
-        const data = JSON.stringify({ profile: global.Profile.current(), records: global.Profile.records(), settings: global.Settings ? global.Settings.DEFAULTS : {} }, null, 2);
+        const data = JSON.stringify({ profile: global.Profile.current(), records: global.Profile.records ? global.Profile.records() : {} }, null, 2);
         const blob = new Blob([data], { type: "application/json" });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
@@ -292,10 +279,7 @@
         toast(t("settings.recordsCleared"));
         renderProfile();
       } else if (id === "clearAll") {
-        if (confirm(t("settings.clearAll") + "?")) {
-          localStorage.clear();
-          location.reload();
-        }
+        if (confirm(t("settings.clearAll") + "?")) { localStorage.clear(); location.reload(); }
       } else if (id === "resetSettings") {
         if (global.Settings) global.Settings.resetAll();
         toast(t("set.settingsReset"));
@@ -305,25 +289,45 @@
     });
   }
 
-  /* ---------- Learn cards ---------- */
+  /* ---------- Learn cards: СПРАВЖНІ тексти ---------- */
+  const LEARN = {
+    uk: [
+      { ico: "🐍", h: "Що таке Python?", p: "Python — одна з найпопулярніших мов програмування у світі: проста й читабельна, але водночас потужна. Нею створюють сайти, ігри, аналіз даних, штучний інтелект та автоматизацію. На цьому сайті ти можеш писати й запускати Python-код прямо у браузері — нічого не встановлюючи." },
+      { ico: "🎯", h: "Для чого цей проєкт?", p: "Це навчальний майданчик: знайомся з Python на готових прикладах, тренуйся з підказками, відпочивай у міні-іграх та інструментах, зберігай рекорди у профілі. Акаунт і дані — локальні (демо, без сервера), тож усе залишається у твоєму браузері." }
+    ],
+    en: [
+      { ico: "🐍", h: "What is Python?", p: "Python is one of the most popular programming languages in the world: simple and readable, yet powerful. It is used for websites, games, data analysis, artificial intelligence and automation. On this site you can write and run Python code right in your browser — nothing to install." },
+      { ico: "🎯", h: "Why this project?", p: "It is a learning playground: get to know Python with ready examples, practice with hints, relax with mini-games and tools, and keep records in your profile. The account and data are local (demo, no server), so everything stays in your browser." }
+    ],
+    tr: [
+      { ico: "🐍", h: "Python nedir?", p: "Python, dünyanın en popüler programlama dillerinden biridir: basit ve okunaklı, aynı zamanda güçlü. Web siteleri, oyunlar, veri analizi, yapay zekâ ve otomasyon için kullanılır. Bu sitede Python kodunu doğrudan tarayıcıda yazıp çalıştırabilirsin — kurulum gerekmez." },
+      { ico: "🎯", h: "Bu proje neden var?", p: "Burası bir öğrenme alanı: hazır örneklerle Python'u tanı, ipuçlarıyla pratik yap, mini oyunlar ve araçlarla dinlen, rekorlarını profilinde sakla. Hesap ve veriler yereldir (demo, sunucu yok), her şey tarayıcında kalır." }
+    ]
+  };
   function renderLearn() {
     const host = $("#learnSection");
     if (!host) return;
-    const items = [
-      { ico: "description", k: "🐍", h: "python.title", p: "python.code" },
-      { ico: "school", k: "🎯", h: "home.cardPython", p: "python.output" }
-    ];
+    const lang = global.I18n ? global.I18n.lang : "uk";
+    const items = LEARN[lang] || LEARN.uk;
     host.innerHTML = "";
     items.forEach((it) => {
       const c = document.createElement("article");
       c.className = "card elev1 learn-card";
-      c.innerHTML = '<span class="material-icons learn-ico">' + it.ico + '</span><h3>' + it.k + " " + t(it.h) + '</h3><p>' + t(it.p) + '</p>';
+      const ico = document.createElement("span");
+      ico.className = "learn-ico";
+      ico.textContent = it.ico;
+      const h = document.createElement("h3");
+      h.textContent = it.h;
+      const p = document.createElement("p");
+      p.textContent = it.p;
+      c.append(ico, h, p);
       host.appendChild(c);
     });
   }
 
   /* ---------- Init ---------- */
   function init() {
+    try { bindNavDelegation(); } catch (e) { console.warn("bindNavDelegation", e); }
     try { bindRipple(); } catch (e) { console.warn("bindRipple", e); }
     try { bindLang(); } catch (e) { console.warn("bindLang", e); }
     try { bindAudio(); } catch (e) { console.warn("bindAudio", e); }
@@ -342,19 +346,13 @@
     try { if (global.Tools) global.Tools.init(); } catch (e) { console.warn("Tools", e); }
     try { renderLearn(); } catch (e) { console.warn("renderLearn", e); }
 
-    // nav
-    document.querySelectorAll("[data-route]").forEach((b) => (b.onclick = () => route(b.dataset.route)));
-    document.querySelectorAll("[data-goto]").forEach((b) => (b.onclick = () => route(b.dataset.goto)));
-    const pb = $("#profileBtn");
-    if (pb && !pb.dataset.shield) pb.onclick = () => route("profile");
-
     // початковий маршрут
-    const hash = (location.hash || "#home").slice(1);
-    route(["home", "python", "games", "tools", "feedback", "profile", "settings"].includes(hash) ? hash : "home");
+    try {
+      const hash = (location.hash || "#home").slice(1);
+      route(["home", "python", "games", "tools", "feedback", "profile", "settings"].includes(hash) ? hash : "home");
+    } catch (e) { console.warn("initial route", e); }
 
-    // apply i18n
-    if (global.I18n && global.I18n.apply) global.I18n.apply();
-
+    if (global.I18n && global.I18n.apply) { try { global.I18n.apply(); } catch (e) {} }
     console.info("[app.js] init done");
   }
 
