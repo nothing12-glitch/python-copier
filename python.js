@@ -1,15 +1,16 @@
-/* python.js — Python-майданчик: Pyodide + УСІ стандартні модулі + turtle (міст на canvas).
-   Полотно turtle створюється автоматично (index.html чіпати не треба).
-   Важкі пакети (numpy/pandas/sympy/scipy/matplotlib) довантажуються самі, якщо їх імпортувати. */
+/* python.js — Python-майданчик: Pyodide + усі стандартні модулі + turtle.
+   ВАЖЛИВО (v26.10.02e): Pyodide НЕ завантажується автоматично.
+   Стартує ТІЛЬКИ коли користувач сам відкрив вкладку Python або натиснув «Запуск».
+   Це прибирає заморожування сторінки ("Сторінка не відповідає") під час відкриття сайту. */
 (function (global) {
   const $ = (s) => document.querySelector(s);
   const t = (k) => (global.I18n ? global.I18n.t(k) : k);
   const S = () => global.Settings;
 
-  let py = null, ready = false, running = false, initDone = false;
+  let py = null, ready = false, running = false, initDone = false, loadStarted = false;
   let canvas = null, ctx = null;
 
-  /* ---------- Полотно turtle (створюється само) ---------- */
+  /* ---------- Полотно turtle ---------- */
   function ensureCanvas() {
     if (canvas) return canvas;
     const layout = document.querySelector(".py-layout");
@@ -48,7 +49,7 @@
     ctx.lineJoin = "round";
   }
 
-  /* ---------- JS-міст для turtle ---------- */
+  /* ---------- JS-міст turtle ---------- */
   const bridge = {
     line(x1, y1, x2, y2, color, width) {
       if (!ctx) return;
@@ -184,8 +185,6 @@ import sys, types
 _mod = types.ModuleType("turtle")
 _mod.Turtle = Turtle
 _mod.Screen = Screen
-def _screen(): return Screen()
-_mod.Screen = Screen
 for _n in _mod_funcs:
     setattr(_mod, _n, getattr(_t, _n))
 _mod.done = lambda: None
@@ -200,23 +199,33 @@ _mod.bgcolor = Screen().bgcolor
 sys.modules["turtle"] = _mod
 `;
 
-  /* ---------- Вивід у консоль ---------- */
+  /* ---------- Вивід ---------- */
   function out(text, cls) {
     const o = $("#out");
     if (!o) return;
     const line = document.createElement("span");
     if (cls) line.className = cls;
     let prefix = "";
-    if (S() && S().get && S().get("timestamps")) {
-      prefix = "[" + new Date().toLocaleTimeString() + "] ";
-    }
+    if (S() && S().get && S().get("timestamps")) prefix = "[" + new Date().toLocaleTimeString() + "] ";
     line.textContent = prefix + text;
     o.appendChild(line);
     o.appendChild(document.createTextNode("\n"));
     o.scrollTop = o.scrollHeight;
   }
 
-  /* ---------- Авто-завантаження важких пакетів ---------- */
+  /* ---------- Динамічний скрипт Pyodide ---------- */
+  function injectPyodideScript() {
+    return new Promise((resolve, reject) => {
+      if (global.loadPyodide) return resolve();
+      const s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js";
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error("Не вдалося завантажити Pyodide з CDN"));
+      document.head.appendChild(s);
+    });
+  }
+
+  /* ---------- Авто-пакети ---------- */
   const LOADABLE = ["numpy", "pandas", "sympy", "scipy", "matplotlib"];
   async function ensureImports(code) {
     const names = new Set();
@@ -227,16 +236,12 @@ sys.modules["turtle"] = _mod
       if (!LOADABLE.includes(n)) continue;
       try {
         await py.loadPackage(n);
-        if (n === "matplotlib") {
-          try { py.runPython("import matplotlib; matplotlib.use('AGG')"); } catch (e) {}
-        }
-      } catch (e) {
-        out("⚠ не вдалося довантажити пакет: " + n, "err");
-      }
+        if (n === "matplotlib") { try { py.runPython("import matplotlib; matplotlib.use('AGG')"); } catch (e) {} }
+      } catch (e) { out("⚠ не вдалося довантажити пакет: " + n, "err"); }
     }
   }
 
-  /* ---------- Приклади та підказки ---------- */
+  /* ---------- Приклади / підказки ---------- */
   const EXAMPLES = [
     ["Hello World", 'print("Hello, World!")'],
     ["Greeting", 'name = "світе"\nprint(f"Привіт, {name}!")'],
@@ -259,16 +264,14 @@ sys.modules["turtle"] = _mod
     sel.innerHTML = "";
     EXAMPLES.forEach(([name, code], i) => {
       const o = document.createElement("option");
-      o.value = String(i);
-      o.textContent = name;
+      o.value = String(i); o.textContent = name;
       sel.appendChild(o);
     });
     sel.onchange = () => {
       const codeEl = $("#code");
       if (!codeEl) return;
       codeEl.value = EXAMPLES[Number(sel.value)][1];
-      syncLines();
-      saveCode();
+      syncLines(); saveCode();
     };
   }
   function fillHints() {
@@ -277,25 +280,22 @@ sys.modules["turtle"] = _mod
     list.innerHTML = "";
     HINTS.forEach((h) => {
       const b = document.createElement("button");
-      b.className = "chip";
-      b.textContent = h;
+      b.className = "chip"; b.textContent = h;
       b.onclick = () => {
         const codeEl = $("#code");
         if (!codeEl) return;
         codeEl.value += (codeEl.value && !codeEl.value.endsWith("\n") ? "\n" : "") + h + "\n";
-        syncLines();
-        codeEl.focus();
+        syncLines(); codeEl.focus();
       };
       list.appendChild(b);
     });
   }
 
-  /* ---------- Редактор: рядки, autosave, Tab ---------- */
+  /* ---------- Редактор ---------- */
   function syncLines() {
     const codeEl = $("#code"), ln = $("#lineNumbers");
     if (!codeEl || !ln) return;
-    const n = codeEl.value.split("\n").length;
-    ln.textContent = Array.from({ length: n }, (_, i) => i + 1).join("\n");
+    ln.textContent = Array.from({ length: codeEl.value.split("\n").length }, (_, i) => i + 1).join("\n");
   }
   let saveTimer = null;
   function saveCode() {
@@ -309,10 +309,7 @@ sys.modules["turtle"] = _mod
     const codeEl = $("#code");
     if (codeEl) {
       codeEl.addEventListener("input", () => { syncLines(); saveCode(); });
-      codeEl.addEventListener("scroll", () => {
-        const ln = $("#lineNumbers");
-        if (ln) ln.scrollTop = codeEl.scrollTop;
-      });
+      codeEl.addEventListener("scroll", () => { const ln = $("#lineNumbers"); if (ln) ln.scrollTop = codeEl.scrollTop; });
       codeEl.addEventListener("keydown", (e) => {
         if (e.key === "Tab") {
           e.preventDefault();
@@ -322,12 +319,8 @@ sys.modules["turtle"] = _mod
           syncLines(); saveCode();
         }
       });
-      // autosave: відновити код
       if (S() && S().get && S().get("autosaveCode")) {
-        try {
-          const saved = localStorage.getItem("app.python.code");
-          if (saved) codeEl.value = saved;
-        } catch (e) {}
+        try { const saved = localStorage.getItem("app.python.code"); if (saved) codeEl.value = saved; } catch (e) {}
       }
       if (!codeEl.value) codeEl.value = EXAMPLES[0][1];
       syncLines();
@@ -343,7 +336,13 @@ sys.modules["turtle"] = _mod
   /* ---------- Запуск ---------- */
   async function runCode() {
     const runBtn = $("#run"), codeEl = $("#code");
-    if (!ready || running || !codeEl) return;
+    if (!codeEl) return;
+    if (!ready) {
+      startLoad();
+      out("Python завантажується… Після готовності натисни «Запуск» ще раз.", "err");
+      return;
+    }
+    if (running) return;
     running = true;
     if (runBtn) runBtn.disabled = true;
     const o = $("#out");
@@ -361,7 +360,7 @@ sys.modules["turtle"] = _mod
     }
   }
 
-  /* ---------- Статус + завантаження Pyodide ---------- */
+  /* ---------- Статус + ЗАВАНТАЖЕННЯ ТІЛЬКИ НА ЗАПИТ ---------- */
   function setStatus(state) {
     const chip = $("#pyStatus");
     if (!chip) return;
@@ -370,9 +369,13 @@ sys.modules["turtle"] = _mod
       : state === "ready" ? t("python.ready")
       : t("python.error");
   }
+
   async function loadPyodideLib() {
     setStatus("loading");
+    if (global.App && global.App.toast) global.App.toast("Python завантажується — сторінка може на кілька секунд підвиснути, це нормально");
     try {
+      await injectPyodideScript();
+      await new Promise((r) => setTimeout(r, 30));
       py = await global.loadPyodide();
       py.setStdout({ batched: (s) => out(s) });
       py.setStderr({ batched: (s) => out(s, "err") });
@@ -384,8 +387,14 @@ sys.modules["turtle"] = _mod
       if (runBtn) runBtn.disabled = false;
     } catch (e) {
       setStatus("error");
-      out(String(e), "err");
+      out(String(e && e.message ? e.message : e), "err");
     }
+  }
+
+  function startLoad() {
+    if (loadStarted) return;
+    loadStarted = true;
+    loadPyodideLib();
   }
 
   function init() {
@@ -397,9 +406,15 @@ sys.modules["turtle"] = _mod
     bindEditor();
     fillExamples();
     fillHints();
-    loadPyodideLib();
-    document.addEventListener("langchange", () => { setStatus(ready ? "ready" : "loading"); });
+    setStatus("loading");
+    const chip = $("#pyStatus");
+    if (chip) chip.textContent = "Python: натисни, щоб увімкнути";
+    // Старт ТІЛЬКИ за дією користувача:
+    document.addEventListener("routechange", (e) => { if (e.detail === "python") startLoad(); });
+    const runBtn = $("#run");
+    if (runBtn) runBtn.addEventListener("click", () => startLoad(), { once: false });
+    document.addEventListener("langchange", () => { if (!loadStarted && chip) chip.textContent = "Python: натисни, щоб увімкнути"; });
   }
 
-  global.PythonPad = { init, run: runCode, get ready() { return ready; } };
+  global.PythonPad = { init, run: runCode, start: startLoad, get ready() { return ready; } };
 })(window);
