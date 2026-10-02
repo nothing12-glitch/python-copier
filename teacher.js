@@ -1,6 +1,5 @@
 /* teacher.js — пасхалки + привітання вчителя + фікси UI.
-   1) Пасхалка: 10 кліків по НАЗВІ в шапці (.appbar-title) -> привітання.
-      (Бонус: Ctrl+Shift+T)
+   1) Пасхалка: 10 кліків по НАЗВІ в шапці (.appbar-title) -> привітання. (Бонус: Ctrl+Shift+T)
    2) Кнопка музики: повторний клік НЕ вимикає музику, а лише відкриває панель.
    3) Анімована «бульбка» в дизайні «пігулка».
    4) Помідоро-таймер у #pomoBox (щоб tools.js не треба було чіпати).
@@ -28,7 +27,7 @@
     if (!title) return;
     title.addEventListener("click", () => {
       const now = Date.now();
-      if (now - lastClick > 2000) clicks = 0;   // скидається, якщо пауза >2с
+      if (now - lastClick > 2000) clicks = 0;   // пауза >2с скидає лічильник
       lastClick = now;
       clicks++;
       if (clicks === 7) toast(T().soon.replace("{n}", "3"));
@@ -85,8 +84,7 @@
       const A = global.Audio2;
       if (!A) return;
       if (A.musicOn) {
-        if (A.openPanelOnly) A.openPanelOnly();   // просто відкриваємо панель
-        else { /* fallback */ }
+        if (A.openPanelOnly) A.openPanelOnly();   // просто відкриваємо панель, музика грає далі
       } else {
         A.setMusic(true);
         toast(t("audio.musicOn"));
@@ -132,10 +130,13 @@
   }
 
   /* ---------- 4) Помідоро ---------- */
-  function renderPomo() {
+  function renderPomo(force) {
     const box = document.getElementById("pomoBox");
     if (!box) return;
+    if (box.dataset.rendered === "1" && !force) return;  // захист від подвійного рендеру
+    box.dataset.rendered = "1";
     box.innerHTML = "";
+
     const MODES = [
       ["work", t("pomo.work"), 25 * 60],
       ["short", t("pomo.short"), 5 * 60],
@@ -199,8 +200,12 @@
     bindTitleEgg();
     bindMusicFix();
     initDrop();
-    renderPomo();
-    document.addEventListener("langchange", renderPomo);
+    renderPomo(true);
+    document.addEventListener("langchange", () => {
+      const b = document.getElementById("pomoBox");
+      if (b) b.dataset.rendered = "";
+      renderPomo(true);
+    });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
