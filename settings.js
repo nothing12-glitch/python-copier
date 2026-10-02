@@ -3,17 +3,18 @@
   const KEY = "app.settings";
 
   const DEFAULTS = {
-    // Вигляд
     theme: "auto", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
     glass: false, reduceMotion: false, compact: false, fontSize: 14,
-    // Редактор
+    navDesign: "pill",
+    navSize: "medium",
+    navPos: "bottom",
     lineNumbers: true, wordWrap: true, autocomplete: true, tabSize: 4, autosaveCode: true, timestamps: false,
-    // Звук
     sfx: true, music: false, sfxVolume: 0.25, musicVolume: 0.12,
-    // Ігри
+    musicTrack: 0,
+    musicShuffle: false,
+    musicLoop: false,
     snakeSpeed: "normal", memorySize: 8, trackRecords: true, showHints: true, shortcuts: true,
-    // Мова
-    language: null // null = використовувати поточну з i18n
+    language: null
   };
 
   let state = load();
@@ -31,7 +32,6 @@
   }
   function resetAll() { state = Object.assign({}, DEFAULTS); save(); apply(); document.dispatchEvent(new CustomEvent("settingschange", { detail: { key: "*", value: null } })); }
 
-  /* ---------- Застосування глобальних ефектів ---------- */
   const darkMQ = global.matchMedia ? global.matchMedia("(prefers-color-scheme: dark)") : null;
   function isDark() { return state.theme === "dark" || (state.theme === "auto" && !!darkMQ && darkMQ.matches); }
 
@@ -48,16 +48,17 @@
     b.classList.toggle("no-linenumbers", !state.lineNumbers);
     b.classList.toggle("no-wrap", !state.wordWrap);
     b.classList.toggle("no-hints", !state.showHints);
+    b.dataset.nav = state.navDesign;
+    b.dataset.navSize = state.navSize;
+    b.dataset.navPos = state.navPos;
     document.documentElement.style.setProperty("--editor-font", state.fontSize + "px");
     document.documentElement.style.setProperty("--tab-size", state.tabSize);
-    // синхронізувати аудіо
     if (global.Audio2) {
       global.Audio2.setSfxVolume(state.sfxVolume);
       global.Audio2.setMusicVolume(state.musicVolume);
     }
   }
 
-  // Сяйво за курсором
   function initCursorGlow() {
     const g = document.getElementById("cursorGlow");
     if (!g) return;
@@ -68,14 +69,13 @@
     }, { passive: true });
   }
 
-  /* ---------- Схема UI ---------- */
-  // type: switch | select | range | button
   const SCHEMA = [
     { group: "settings.appearance", items: [
       { id: "theme", type: "select", label: "settings.theme", options: [
         ["auto", "set.themeAuto"], ["light", "set.themeLight"], ["dark", "set.themeDark"] ] },
       { id: "accent", type: "select", label: "set.accent", options: [
-        ["purple", "set.acc.purple"], ["blue", "set.acc.blue"], ["green", "set.acc.green"], ["orange", "set.acc.orange"], ["pink", "set.acc.pink"] ] },
+        ["purple", "set.acc.purple"], ["blue", "set.acc.blue"], ["green", "set.acc.green"], ["orange", "set.acc.orange"], ["pink", "set.acc.pink"],
+        ["cyan", "set.acc.cyan"], ["red", "set.acc.red"], ["gold", "set.acc.gold"], ["mint", "set.acc.mint"] ] },
       { id: "bgGlow", type: "switch", label: "set.bgGlow" },
       { id: "cursorGlow", type: "switch", label: "set.cursorGlow" },
       { id: "bgAnimate", type: "switch", label: "set.bgAnimate" },
@@ -83,6 +83,14 @@
       { id: "reduceMotion", type: "switch", label: "set.reduceMotion" },
       { id: "compact", type: "switch", label: "set.compact" },
       { id: "fontSize", type: "range", label: "set.fontSize", min: 12, max: 20, step: 1 }
+    ]},
+    { group: "settings.navPanel", items: [
+      { id: "navDesign", type: "select", label: "set.navDesign", options: [
+        ["classic", "set.navClassic"], ["pill", "set.navPill"] ] },
+      { id: "navSize", type: "select", label: "set.navSize", options: [
+        ["small", "set.szSmall"], ["medium", "set.szMedium"], ["large", "set.szLarge"] ] },
+      { id: "navPos", type: "select", label: "set.navPos", options: [
+        ["top", "set.posTop"], ["bottom", "set.posBottom"], ["left", "set.posLeft"], ["right", "set.posRight"] ] }
     ]},
     { group: "set.editor", items: [
       { id: "lineNumbers", type: "switch", label: "set.lineNumbers" },
@@ -95,6 +103,10 @@
     { group: "settings.audio", items: [
       { id: "sfx", type: "switch", label: "settings.sound" },
       { id: "music", type: "switch", label: "settings.music" },
+      { id: "musicTrack", type: "select", label: "set.musicTrack", options: [
+        [0, "Docstring Chill"], [1, "Focus Flow"], [2, "print(Hello, Chill)"], [3, "Py_Serenade"], [4, "Steady Pocket"] ] , cast: Number },
+      { id: "musicShuffle", type: "switch", label: "set.musicShuffle" },
+      { id: "musicLoop", type: "switch", label: "set.musicLoop" },
       { id: "sfxVolume", type: "range", label: "set.sfxVolume", min: 0, max: 1, step: 0.05 },
       { id: "musicVolume", type: "range", label: "set.musicVolume", min: 0, max: 1, step: 0.05 }
     ]},
@@ -106,7 +118,7 @@
       { id: "shortcuts", type: "switch", label: "set.shortcuts" }
     ]},
     { group: "settings.language", items: [
-      { id: "language", type: "select", label: "settings.language", options: [["uk", "Українська"], ["en", "English"], ["tr", "Türkçe"]] }
+      { id: "language", type: "select", label: "settings.language", options: [["uk", "Українська"], ["en", "English"], ["tr", "Türkçe"], ["de", "Deutsch"], ["pl", "Polski"], ["es", "Español"], ["fr", "Français"], ["ja", "日本語"]] }
     ]},
     { group: "set.account", items: [
       { id: "google", type: "button", label: "set.google", icon: "login", variant: "contained" },
