@@ -1,8 +1,16 @@
 /* fix.js — "реаніматор": дозапускає секції, які не стартанули через збій у init.
-   Підключається ОСТАННІМ, після updates.js. */
+   Підключається ОСТАННІМ. */
 (function (global) {
   const $ = (s) => document.querySelector(s);
   const log = (m) => console.info("[fix.js]", m);
+
+  function reviveAppRoute() {
+    if (global.App && typeof global.App.route !== "function" && typeof global.route === "function") {
+      global.App.route = global.route;
+      log("App.route restored");
+    }
+  }
+  reviveAppRoute();
 
   function reviveNav() {
     if (typeof global.route !== "function") return;
@@ -63,6 +71,7 @@
   }
 
   function reviveAll() {
+    reviveAppRoute();
     hideStrayGreet();
     reviveNav();
     reviveSettings();
