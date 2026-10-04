@@ -1,229 +1,274 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Навчальний майданчик — Python в браузері</title>
-<meta name="description" content="Навчальний майданчик: Python у браузері, міні-ігри, інструменти та профіль.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=26.10.06">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мої проєкти та завдання</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- УВАГА: при кожному новому деплої міняй ?v= на нову дату, щоб пробити кеш -->
+  <link rel="stylesheet" href="style.css?v=26.10.06">
+  <!-- Pyodide більше НЕ тут: його підключає python.js лише за потребою -->
 </head>
-<body data-nav="pill" data-nav-pos="bottom" data-nav-size="medium">
-
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <filter id="goo">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"></feGaussianBlur>
-      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo"></feColorMatrix>
-      <feComposite in="SourceGraphic" in2="goo" operator="atop"></feComposite>
-    </filter>
-  </defs>
-</svg>
-
-<div class="bg-fx" id="bgFx" aria-hidden="true">
-  <div class="bg-blob b1"></div>
-  <div class="bg-blob b2"></div>
-  <div class="bg-blob b3"></div>
-  <div class="bg-grid"></div>
-</div>
-
-<header class="appbar">
-  <div class="appbar-logo" id="logoBtn" title="Хтось тут є...">
-    <span class="material-icons">terminal</span>
+<body>
+  <!-- Background FX -->
+  <div class="bg-fx" aria-hidden="true">
+    <div class="bg-glow"></div>
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+    <div class="cursor-glow" id="cursorGlow"></div>
   </div>
-  <div class="appbar-title" data-i18n="app.title">Мої проєкти та завдання</div>
-  <div class="appbar-actions">
-    <button class="icon-btn" id="sfxToggle" data-i18n-title="audio.sfxOn" title="Звуки інтерфейсу"><span class="material-icons">volume_up</span></button>
-    <button class="icon-btn" id="focusToggle" data-i18n-title="app.focusOff" title="Режим фокусу"><span class="material-icons">center_focus_weak</span></button>
-    <button class="icon-btn" id="musicToggle" data-i18n-title="audio.musicOff" title="Музика"><span class="material-icons">music_off</span></button>
-    <div class="chip user-chip" id="userChip">
-      <img id="userAvatar" alt="" hidden>
-      <span id="userName">Гість</span>
-    </div>
-  </div>
-</header>
 
-<nav class="mainnav" id="mainnav">
-  <div class="nav-rail">
-    <button class="rail-btn active" data-route="home"><span class="rail-ico material-icons">home</span><span class="rail-label" data-i18n="nav.home">Головна</span></button>
-    <button class="rail-btn" data-route="python"><span class="rail-ico material-icons">code</span><span class="rail-label" data-i18n="nav.python">Python</span></button>
-    <button class="rail-btn" data-route="games"><span class="rail-ico material-icons">sports_esports</span><span class="rail-label" data-i18n="nav.games">Ігри</span></button>
-    <button class="rail-btn" data-route="tools"><span class="rail-ico material-icons">build</span><span class="rail-label" data-i18n="nav.tools">Інструменти</span></button>
-    <button class="rail-btn" data-route="feedback"><span class="rail-ico material-icons">rate_review</span><span class="rail-label" data-i18n="nav.feedback">Відгуки</span></button>
-    <button class="rail-btn" data-route="profile"><span class="rail-ico material-icons">person</span><span class="rail-label" data-i18n="nav.profile">Профіль</span></button>
-    <button class="rail-btn" data-route="settings"><span class="rail-ico material-icons">settings</span><span class="rail-label" data-i18n="nav.settings">Налаштування</span></button>
-  </div>
-</nav>
+  <!-- Top app bar -->
+  <header class="appbar">
+    <span class="material-icons appbar-logo">terminal</span>
+    <span class="appbar-title" data-i18n="app.title">Мої проєкти та завдання</span>
+    <div class="appbar-spacer"></div>
 
-<main class="content">
+    <div class="lang-switch" id="langSwitch" role="group" aria-label="Language">
+      <button data-lang="uk" class="active">UA</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="tr">TR</button>
+      <button data-lang="de">DE</button>
+      <button data-lang="pl">PL</button>
+      <button data-lang="es">ES</button>
+      <button data-lang="fr">FR</button>
+      <button data-lang="ja">JA</button>
+    </div>
+    <button id="sfxToggle" class="icon-btn" title="Sound" aria-pressed="true"><span class="material-icons">volume_up</span></button>
+    <button id="focusToggle" class="icon-btn" title="Focus" aria-pressed="false"><span class="material-icons">center_focus_strong</span></button>
+    <button id="musicToggle" class="icon-btn" title="Music" aria-pressed="false"><span class="material-icons">music_note</span></button>
+    <button id="profileBtn" class="chip-btn">
+      <span class="avatar" id="avatarTop" title="Avatar">&#128100;</span>
+      <span id="profileName">Github user</span>
+    </button>
+  </header>
 
-  <section id="view-home" class="view active">
-    <div class="hero">
-      <h1 data-i18n="home.heroTitle">Вчись, грай, кодуй — усе в браузері</h1>
-      <p class="muted" data-i18n="home.heroText">Інтерактивний майданчик: запускай Python прямо тут, грай у міні-ігри та зберігай прогрес у профілі.</p>
-    </div>
-    <div class="grid two">
-      <div class="card feature">
-        <div class="feature-ico material-icons">code</div>
-        <h3 data-i18n="home.f1Title">Python-майданчик</h3>
-        <p class="muted" data-i18n="home.f1Text">Пиши та запускай код з підказками.</p>
-        <button class="btn contained" data-goto="python" data-i18n="home.f1Btn">Спробувати</button>
-      </div>
-      <div class="card feature">
-        <div class="feature-ico material-icons">sports_esports</div>
-        <h3 data-i18n="home.f2Title">Ігри</h3>
-        <p class="muted" data-i18n="home.f2Text">Змійка, 2048, сапер і ще шість.</p>
-        <button class="btn contained" data-goto="games" data-i18n="home.f2Btn">Грати</button>
-      </div>
-      <div class="card feature">
-        <div class="feature-ico material-icons">build</div>
-        <h3 data-i18n="home.f3Title">Інструменти</h3>
-        <p class="muted" data-i18n="home.f3Text">Калькулятор, конвертер, генератори.</p>
-        <button class="btn contained" data-goto="tools" data-i18n="home.f3Btn">Відкрити</button>
-      </div>
-      <div class="card feature">
-        <div class="feature-ico material-icons">person</div>
-        <h3 data-i18n="home.f4Title">Профіль</h3>
-        <p class="muted" data-i18n="home.f4Text">Створи акаунт і зберігай рекорди.</p>
-        <button class="btn contained" data-goto="profile" data-i18n="home.f4Btn">Профіль</button>
-      </div>
-    </div>
-    <div class="card" id="learnSection">
-      <h3 data-i18n="home.learnTitle">Що таке Python?</h3>
-      <p class="muted" data-i18n="home.learnText">Python — одна з найпопулярніших мов програмування: проста для читання, але потужна. Нею створюють сайти, ігри, аналіз даних, штучний інтелект і автоматизацію. На цьому сайті ти можеш писати й запускати Python прямо в браузері — без встановлення чогось додаткового.</p>
-      <div class="grid two">
-        <div class="card sub">
-          <h4 data-i18n="home.whyTitle">Для чого цей проєкт?</h4>
-          <p class="muted" data-i18n="home.whyText">Це навчальний майданчик: знайомся з Python на готових прикладах, тренуйся з підказками, відпочивай у міні-іграх та інструментах, зберігай рекорди у профілі. Усе працює локально в браузері (демо, без сервера), тож усі дані залишаються у тебе.</p>
-        </div>
-        <div class="card sub">
-          <h4 data-i18n="home.startTitle">З чого почати?</h4>
-          <p class="muted" data-i18n="home.startText">Відкрий Python-майданчик, обери приклад «Привіт, світ» і натисни «Запуск». Потім спробуй підказки рівнів 1–3: змінні, умови, цикли. Коли набридне код — грай у ігри або перевіряй інструменти.</p>
+  <!-- Navigation rail -->
+  <nav class="navrail" id="mainnav">
+    <button class="rail-btn active" data-route="home">
+      <span class="rail-ico"><span class="material-icons">home</span></span>
+      <span class="rail-label" data-i18n="nav.home">Головна</span>
+    </button>
+    <button class="rail-btn" data-route="python">
+      <span class="rail-ico"><span class="material-icons">code</span></span>
+      <span class="rail-label" data-i18n="nav.python">Python</span>
+    </button>
+    <button class="rail-btn" data-route="games">
+      <span class="rail-ico"><span class="material-icons">sports_esports</span></span>
+      <span class="rail-label" data-i18n="nav.games">Ігри</span>
+    </button>
+    <button class="rail-btn" data-route="tools">
+      <span class="rail-ico"><span class="material-icons">construction</span></span>
+      <span class="rail-label" id="toolsNavLabel">Інструменти</span>
+    </button>
+    <button class="rail-btn" data-route="feedback">
+      <span class="rail-ico"><span class="material-icons">rate_review</span></span>
+      <span class="rail-label" id="feedbackNavLabel">Відгуки</span>
+    </button>
+    <button class="rail-btn" data-route="profile">
+      <span class="rail-ico"><span class="material-icons">person</span></span>
+      <span class="rail-label" data-i18n="nav.profile">Профіль</span>
+    </button>
+    <button class="rail-btn" data-route="settings">
+      <span class="rail-ico"><span class="material-icons">settings</span></span>
+      <span class="rail-label" data-i18n="nav.settings">Налаштування</span>
+    </button>
+  </nav>
+
+  <main id="app">
+    <!-- HOME -->
+    <section class="view active" id="view-home">
+      <div class="hero">
+        <h2 data-i18n="home.heroTitle">Вчись, грай, кодуй — усе в браузері</h2>
+        <p data-i18n="home.heroText">Інтерактивний майданчик: запускай Python прямо тут, грай в ігри та зберігай прогрес у профілі.</p>
+        <div class="hero-cta">
+          <button class="btn contained" data-goto="python"><span class="material-icons">code</span><span data-i18n="home.ctaPython">Відкрити Python</span></button>
+          <button class="btn outlined" data-goto="games"><span class="material-icons">sports_esports</span><span data-i18n="home.ctaGames">До ігор</span></button>
         </div>
       </div>
-    </div>
-  </section>
+      <div class="cards">
+        <article class="card elev1" data-goto="python">
+          <span class="material-icons card-ico">code</span>
+          <h3 data-i18n="home.cardPython">Python-майданчик</h3>
+          <p data-i18n="home.cardPythonText">Пиши та запускай код з підказками.</p>
+        </article>
+        <article class="card elev1" data-goto="games">
+          <span class="material-icons card-ico">sports_esports</span>
+          <h3 data-i18n="home.cardGames">Ігри</h3>
+          <p data-i18n="home.cardGamesText">Змійка, 2048, Memory та інші.</p>
+        </article>
+        <article class="card elev1" data-goto="profile">
+          <span class="material-icons card-ico">person</span>
+          <h3 data-i18n="home.cardProfile">Профіль</h3>
+          <p data-i18n="home.cardProfileText">Створи акаунт та зберігай рекорди.</p>
+        </article>
+      </div>
+      <div class="cards learn-cards" id="learnSection"></div>
+    </section>
 
-  <section id="view-python" class="view">
-    <div class="card">
-      <div class="pad-head">
-        <h2 data-i18n="pad.title">Python-майданчик</h2>
-        <div class="pad-actions">
-          <select id="examples" class="select" title="Приклади"></select>
-          <button class="btn contained" id="runBtn"><span class="material-icons">play_arrow</span><span data-i18n="pad.run">Запуск</span></button>
-          <button class="btn text" id="clearBtn" data-i18n="pad.clear">Очистити</button>
+    <!-- PYTHON -->
+    <section class="view" id="view-python">
+      <div class="section-head">
+        <h2 data-i18n="python.title" title="nyam">Python-майданчик</h2>
+        <span id="pyStatus" class="md-chip loading">Завантаження Python…</span>
+      </div>
+      <div class="py-layout">
+        <div class="card elev1 py-editor">
+          <div class="card-bar">
+            <span class="bar-title"><span class="material-icons">edit_note</span><span data-i18n="python.code">Код</span></span>
+            <div class="bar-actions">
+              <select id="examples" class="md-select" title="Examples"></select>
+              <button id="clearCode" class="btn text"><span data-i18n="python.clear">Очистити</span></button>
+              <button id="run" class="btn contained" disabled><span class="material-icons">play_arrow</span><span data-i18n="python.run">Запуск</span></button>
+            </div>
+          </div>
+          <div class="editor-wrap">
+            <div id="lineNumbers" class="line-numbers">1</div>
+            <textarea id="code" rows="16" spellcheck="false" autocomplete="off"></textarea>
+          </div>
+          <div class="hint-bar">
+            <span class="hint-label"><span class="material-icons">lightbulb</span><span data-i18n="python.hints">Підказки</span></span>
+            <div id="hintList" class="hint-list"></div>
+          </div>
+        </div>
+        <div class="card elev1 py-output">
+          <div class="card-bar">
+            <span class="bar-title"><span class="material-icons">terminal</span><span data-i18n="python.output">Вивід</span></span>
+            <button id="clearOut" class="btn text"><span data-i18n="python.clearOut">Очистити</span></button>
+          </div>
+          <output id="out" class="console"></output>
         </div>
       </div>
-      <div class="pad-wrap">
-        <textarea id="codeBox" class="codebox" spellcheck="false" data-i18n-ph="pad.placeholder" placeholder="Пиши свій Python код тут..."></textarea>
-        <pre id="outBox" class="outbox"></pre>
+    </section>
+
+    <!-- GAMES -->
+    <section class="view" id="view-games">
+      <div class="section-head"><h2 data-i18n="games.title" title="nyam">Ігри</h2></div>
+      <div id="gamesHub" class="games-hub"></div>
+      <div id="gameStage" class="card elev2 game-stage hidden"></div>
+    </section>
+
+    <!-- TOOLS -->
+    <section class="view" id="view-tools">
+      <div class="section-head"><h2 id="toolsTitle" title="200">Інструменти</h2></div>
+      <div class="tools-grid">
+        <div class="card elev1 tool-card">
+          <span class="bar-title"><span class="material-icons">calculate</span><span id="calcTitle">Калькулятор</span></span>
+          <div id="calcBox" class="calc"></div>
+        </div>
+        <div class="card elev1 tool-card">
+          <span class="bar-title"><span class="material-icons">straighten</span><span id="convTitle">Конвертер величин</span></span>
+          <div id="convBox" class="conv"></div>
+        </div>
+        <div class="card elev1 tool-card">
+          <span class="bar-title"><span class="material-icons">casino</span><span id="randTitle">Випадкове</span></span>
+          <div id="randBox" class="rand"></div>
+        </div>
+        <div class="card elev1 tool-card">
+          <span class="bar-title"><span class="material-icons">password</span><span id="pwdTitle">Генератор паролів</span></span>
+          <div id="pwdBox" class="pwd"></div>
+        </div>
+        <div class="card elev1 tool-card">
+          <span class="bar-title"><span class="material-icons">timer</span><span data-i18n="tool.pomo">Помідоро</span></span>
+          <div id="pomoBox"></div>
+        </div>
       </div>
-      <div class="pad-hints">
-        <div class="chip" id="hintLevel">Рівень 1</div>
-        <button class="btn text" id="hintBtn"><span class="material-icons">lightbulb</span><span data-i18n="pad.hint">Підказка</span></button>
+    </section>
+
+    <!-- FEEDBACK -->
+    <section class="view" id="view-feedback">
+      <div class="section-head"><h2 id="feedbackTitle">Відгуки</h2></div>
+      <div class="card elev1 feedback-card">
+        <div class="card-bar">
+          <span class="bar-title"><span class="material-icons">rate_review</span><span id="feedbackBarTitle">Відгуки</span></span>
+          <div class="bar-center">
+            <button id="feedbackOpen" class="btn outlined hidden"><span class="material-icons">open_in_new</span><span></span></button>
+          </div>
+        </div>
+        <p class="feedback-intro" id="feedbackIntro"></p>
+        <div id="feedbackBody" class="feedback-body"></div>
+        <p class="auth-note feedback-note"><span class="material-icons">lock</span><span id="feedbackPrivacy"></span></p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="view-games" class="view">
-    <div id="gamesHub" class="grid three"></div>
-    <div id="gameStage" class="card" hidden>
-      <div class="stage-head">
-        <button class="btn text" id="backToHub"><span class="material-icons">arrow_back</span><span data-i18n="games.back">До ігор</span></button>
-        <h2 id="gameTitle"></h2>
-        <div class="chip" id="gameScore">0</div>
+    <!-- PROFILE -->
+    <section class="view" id="view-profile">
+      <div class="section-head"><h2 data-i18n="profile.title">Профіль</h2></div>
+      <div id="authPanel" class="card elev2 auth-panel">
+        <div class="auth-tabs">
+          <button class="tab-btn active" data-authtab="login" data-i18n="profile.login">Вхід</button>
+          <button class="tab-btn" data-authtab="register" data-i18n="profile.register">Реєстрація</button>
+        </div>
+        <form id="loginForm" class="auth-form">
+          <div class="field"><input id="loginUser" type="text" placeholder=" " autocomplete="username" required><label data-i18n="profile.username">Ім'я</label></div>
+          <div class="field"><input id="loginPass" type="password" placeholder=" " autocomplete="current-password" required><label data-i18n="profile.password">Пароль</label></div>
+          <button class="btn contained" type="submit"><span data-i18n="profile.signIn">Увійти</span></button>
+          <p class="auth-msg" id="loginMsg"></p>
+        </form>
+        <form id="registerForm" class="auth-form hidden">
+          <div class="field"><input id="regUser" type="text" placeholder=" " autocomplete="username" minlength="3" required><label data-i18n="profile.username">Ім'я</label></div>
+          <div class="field"><input id="regPass" type="password" placeholder=" " autocomplete="new-password" minlength="4" required><label data-i18n="profile.password">Пароль</label></div>
+          <button class="btn contained" type="submit"><span data-i18n="profile.createAccount">Створити акаунт</span></button>
+          <p class="auth-msg" id="regMsg"></p>
+        </form>
+        <p class="auth-note"><span class="material-icons">info</span><span data-i18n="profile.localNote">Акаунт зберігається лише локально у вашому браузері (демо, без сервера).</span></p>
       </div>
-      <div id="gameBox" class="gamebox"></div>
-    </div>
-  </section>
-
-  <section id="view-tools" class="view">
-    <div class="grid two">
-      <div class="card" id="calcBox"></div>
-      <div class="card" id="convertBox"></div>
-      <div class="card" id="randomBox"></div>
-      <div class="card" id="timerBox"></div>
-      <div class="card" id="passBox"></div>
-      <div class="card" id="colorBox"></div>
-      <div class="card" id="unitBox"></div>
-      <div class="card" id="textBox"></div>
-    </div>
-  </section>
-
-  <section id="view-feedback" class="view">
-    <div class="card narrow">
-      <h2 data-i18n="fb.title">Відгуки</h2>
-      <p class="muted" data-i18n="fb.text">Поділись ідеєю чи подякою — повідомлення збережеться локально (демо, без сервера).</p>
-      <div class="field">
-        <label data-i18n="fb.name">Ім'я</label>
-        <input id="fbName" class="input" type="text" maxlength="40">
+      <div id="profilePanel" class="card elev2 profile-panel hidden">
+        <div class="profile-head">
+          <div class="avatar big" id="avatarBig" title="Avatar">&#128100;</div>
+          <div><h3 id="profileDisplayName">—</h3><p class="muted" id="profileMeta"></p></div>
+          <button id="renameBtn" class="icon-btn" title="Rename"><span class="material-icons">edit</span></button>
+          <button id="logoutBtn" class="btn outlined danger"><span class="material-icons">logout</span><span data-i18n="profile.logout">Вийти</span></button>
+        </div>
+        <h4 data-i18n="profile.records">Рекорди</h4>
+        <div id="recordsGrid" class="records-grid"></div>
       </div>
-      <div class="field">
-        <label data-i18n="fb.msg">Повідомлення</label>
-        <textarea id="fbMsg" class="input" rows="4" maxlength="600"></textarea>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="view" id="view-settings">
+      <div class="section-head"><h2 data-i18n="settings.title">Налаштування</h2></div>
+      <div class="card elev1 settings-card" id="settingsBody"></div>
+      <div class="card elev1 settings-card about-card">
+        <h4 class="settings-group" data-i18n="settings.about">Про застосунок</h4>
+        <p class="about-text"><span class="material-icons">info</span><span data-i18n="settings.aboutText">Python у браузері через Pyodide — без встановлення.</span></p>
       </div>
-      <button class="btn contained" id="fbSend" data-i18n="fb.send">Надіслати</button>
-      <div id="fbList" class="fb-list"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="snackbar" role="status" aria-live="polite"></div>
+  <footer class="footer"><span data-i18n="footer.made">Зроблено з ❤ для навчання</span></footer>
+
+  <!-- Teacher Secret Greeting -->
+  <div id="teacherGreet" class="teacher-greet" role="dialog" aria-modal="true">
+    <div class="teacher-card">
+      <div class="teacher-flower">🌹</div>
+      <h2 data-i18n="teacher.title">З Днем учителя!</h2>
+      <div class="to" data-i18n="teacher.to">Шановному Олексію Олександровичу</div>
+      <p data-i18n="teacher.text">Дякуємо за знання, терпіння та віру в кожного з нас. Ваші уроки — не лише про код, а про те, як мислити. Ви надихнули нас творити — і ця сторінка є доказом того, що з вашого зерна виростає справжня справа.</p>
+      <p data-i18n="teacher.wish">Нехай кожен ваш день буде сповнений радості, вдячних учнів і нових ідей. Здоров'я, миру і натхнення! 💙💛</p>
+      <div class="signature" data-i18n="teacher.sig">— з повагою і вдячністю</div>
+      <div class="teacher-close"><button class="btn contained" id="teacherClose"><span data-i18n="teacher.close">Дякую, закрити</span></button></div>
     </div>
-  </section>
-
-  <section id="view-profile" class="view">
-    <div class="grid two">
-      <div class="card" id="profileCard"></div>
-      <div class="card" id="recordsCard"></div>
-    </div>
-  </section>
-
-  <section id="view-settings" class="view">
-    <div class="card" id="settingsCard">
-      <h2 data-i18n="settings.title">Налаштування</h2>
-      <div id="settingsBody"></div>
-    </div>
-  </section>
-
-</main>
-
-<div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
-<aside class="sheet" id="musicSheet" hidden>
-  <div class="sheet-head">
-    <h3 data-i18n="audio.playlist">Плейлист</h3>
-    <button class="icon-btn" id="sheetClose"><span class="material-icons">close</span></button>
   </div>
-  <div class="sheet-body" id="musicList"></div>
-  <div class="sheet-foot">
-    <button class="btn text" id="addTrackBtn"><span class="material-icons">add</span><span data-i18n="audio.add">Додати трек</span></button>
-    <input type="file" id="trackFile" accept="audio/*" hidden>
-  </div>
-</aside>
 
-<div class="toast-wrap" id="toastWrap"></div>
-
-<div class="secret-overlay" id="secretOverlay" hidden>
-  <div class="secret-card">
-    <div class="secret-emoji" id="secretEmoji">&#127891;</div>
-    <h2 id="secretTitle">Секретна кімната</h2>
-    <p class="muted" id="secretText">Ти знайшов приховану сторінку. Тримай цукерку!</p>
-    <button class="btn contained" id="secretClose" data-i18n="secret.close">Закрити</button>
-  </div>
-</div>
-<div class="teacher-greet" id="teacherGreet" hidden></div>
-
-<script src="shield.js?v=26.10.06"></script>
-<script src="i18n.js?v=26.10.06"></script>
-<script src="settings.js?v=26.10.06"></script>
-<script src="profile.js?v=26.10.06"></script>
-<script src="audio.js?v=26.10.06"></script>
-<script src="python.js?v=26.10.06"></script>
-<script src="games.js?v=26.10.06"></script>
-<script src="tools.js?v=26.10.06"></script>
-<script src="feedback.js?v=26.10.06"></script>
-<script src="app.js?v=26.10.06"></script>
-<script src="onboarding.js?v=26.10.06"></script>
-<script src="secret.js?v=26.10.06"></script>
-<script src="teacher.js?v=26.10.06"></script>
-<script src="fix.js?v=26.10.06"></script>
+  <script src="i18n.js?v=26.10.06"></script>
+  <script src="audio.js?v=26.10.06"></script>
+  <script src="profile.js?v=26.10.06"></script>
+  <script src="settings.js?v=26.10.06"></script>
+  <script src="python.js?v=26.10.06"></script>
+  <script src="games.js?v=26.10.06"></script>
+  <script src="tools.js?v=26.10.06"></script>
+  <script src="feedback.js?v=26.10.06"></script>
+  <script src="shield.js?v=26.10.06"></script>
+  <script src="app.js?v=26.10.06"></script>
+  <script src="onboarding.js?v=26.10.06"></script>
+  <script src="secret.js?v=26.10.06"></script>
+  <script src="teacher.js?v=26.10.06"></script>
+  <script src="fix.js?v=26.10.06"></script>
 </body>
 </html>
