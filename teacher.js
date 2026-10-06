@@ -122,10 +122,19 @@
       drop.classList.add("on");
       if (!animate) { void drop.offsetWidth; drop.style.transition = ""; }
     }
-    new MutationObserver(() => place(true)).observe(nav, { subtree: true, attributes: true, attributeFilter: ["class"] });
-    new MutationObserver(() => place(false)).observe(document.body, { attributes: true, attributeFilter: ["data-nav", "data-nav-size", "data-nav-pos"] });
-    window.addEventListener("resize", () => place(false));
-    document.addEventListener("settingschange", () => setTimeout(() => place(false), 0));
+    // БЕЗ MutationObserver: спостерігач за class у nav породжував шквал
+    // зворотних викликів (place змінює клас drop у тому ж піддереві) ->
+    // зависання вкладки. Тепер розміщуємо бульбку не частіше разу на кадр.
+    let raf = 0;
+    function schedule(animate) {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; place(animate); });
+    }
+    nav.addEventListener("click", () => schedule(true));            // клік по пункту меню
+    window.addEventListener("hashchange", () => schedule(true));    // route() змінює location.hash
+    window.addEventListener("resize", () => schedule(false));
+    document.addEventListener("settingschange", () => schedule(false));
+    document.addEventListener("langchange", () => schedule(false));
     setTimeout(() => place(false), 60);
   }
 
