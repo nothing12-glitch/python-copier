@@ -1,21 +1,491 @@
-/* python.js SAFE-STUB v26.10.02g — Pyodide НЕ завантажується взагалі. */
+/* Python-майданчик на Pyodide: запуск, приклади, підказки та автодоповнення */
 (function (global) {
-  function init() {
-    var run = document.getElementById("run");
-    var out = document.getElementById("out");
-    var chip = document.getElementById("pyStatus");
-    var code = document.getElementById("code");
-    var ln = document.getElementById("lineNumbers");
-    if (code && !code.value) code.value = 'print("Hello, World!")';
-    function lines() { if (ln && code) ln.textContent = code.value.split("\n").map(function (_, i) { return i + 1; }).join("\n"); }
-    if (code) { code.addEventListener("input", lines); lines(); }
-    if (chip) { chip.className = "md-chip error"; chip.textContent = "Python: safe-mode"; }
-    if (run) { run.disabled = false; run.onclick = function () { if (out) out.textContent = "Python тимчасово вимкнено (safe-mode) для стабільності сайту."; }; }
-    var co = document.getElementById("clearOut");
-    if (co) co.onclick = function () { if (out) out.innerHTML = ""; };
-    console.info("[python.js] safe-stub g active");
+  const $ = (s) => document.querySelector(s);
+
+  const EXAMPLES = {
+    hello: {
+      label: { uk: "Hello World", en: "Hello World", tr: "Hello World" },
+      code: `print("Hello World!")`
+    },
+    greet: {
+      label: { uk: "Привітання", en: "Greeting", tr: "Selamlama" },
+      code: `def greet(name):\n    return f"Привіт, {name}!"\n\nprint(greet("your name"))`
+    },
+    fizzbuzz: {
+      label: { uk: "FizzBuzz", en: "FizzBuzz", tr: "FizzBuzz" },
+      code: `for i in range(1, 21):\n    if i % 15 == 0:\n        print("FizzBuzz")\n    elif i % 3 == 0:\n        print("Fizz")\n    elif i % 5 == 0:\n        print("Buzz")\n    else:\n        print(i)`
+    },
+    fib: {
+      label: { uk: "Фібоначчі", en: "Fibonacci", tr: "Fibonacci" },
+      code: `def fib(n):\n    a, b = 0, 1\n    for _ in range(n):\n        yield a\n        a, b = b, a + b\n\nprint(list(fib(10)))`
+    },
+    list: {
+      label: { uk: "Робота зі списком", en: "List ops", tr: "Liste işlemleri" },
+      code: `nums = [5, 3, 9, 1, 7]\nprint("sum:", sum(nums))\nprint("max:", max(nums))\nprint("sorted:", sorted(nums))\nprint("squares:", [n*n for n in nums])`
+    },
+    dict: {
+      label: { uk: "Словник", en: "Dictionary", tr: "Sözlük" },
+      code: `student = {"name": "Ana", "age": 17, "grades": [9, 10, 8]}\nfor k, v in student.items():\n    print(k, "=", v)\nprint("average:", sum(student["grades"]) / len(student["grades"]))`
+    },
+    strings: {
+      label: { uk: "Рядки", en: "Strings", tr: "Metinler" },
+      code: `s = "  Hello, Python  "\nprint(s.strip())\nprint(s.strip().upper())\nprint(s.strip().replace("Python", "World"))\nprint("len:", len(s.strip()))\nprint("split:", "a,b,c".split(","))`
+    },
+    mathmod: {
+      label: { uk: "Математика (math)", en: "Math module", tr: "Matematik (math)" },
+      code: `import math\nprint("sqrt:", math.sqrt(144))\nprint("pi:", round(math.pi, 4))\nprint("pow:", math.pow(2, 10))\nprint("ceil/floor:", math.ceil(4.2), math.floor(4.8))\nprint("factorial:", math.factorial(5))`
+    },
+    randommod: {
+      label: { uk: "Випадковість (random)", en: "Random module", tr: "Rastgele (random)" },
+      code: `import random\nprint("int 1..10:", random.randint(1, 10))\nprint("choice:", random.choice(["apple", "pear", "plum"]))\ncards = list(range(1, 11))\nrandom.shuffle(cards)\nprint("shuffled:", cards)\nprint("sample:", random.sample(cards, 3))`
+    },
+    datetimemod: {
+      label: { uk: "Дата й час", en: "Date & time", tr: "Tarih ve saat" },
+      code: `import datetime\nnow = datetime.datetime.now()\nprint("now:", now)\nprint("date:", now.date())\nprint("formatted:", now.strftime("%Y-%m-%d %H:%M"))\nbday = datetime.date(2010, 5, 20)\nprint("days since bday:", (now.date() - bday).days)`
+    },
+    statsmod: {
+      label: { uk: "Статистика", en: "Statistics", tr: "İstatistik" },
+      code: `import statistics\ndata = [4, 8, 15, 16, 23, 42]\nprint("mean:", statistics.mean(data))\nprint("median:", statistics.median(data))\nprint("stdev:", round(statistics.stdev(data), 3))\nprint("min/max:", min(data), max(data))`
+    },
+    itertoolsmod: {
+      label: { uk: "itertools", en: "itertools", tr: "itertools" },
+      code: `import itertools\nprint("count 3..7:", list(itertools.islice(itertools.count(3), 5)))\nprint("permutations:", list(itertools.permutations("AB", 2)))\nprint("combinations:", list(itertools.combinations([1, 2, 3], 2)))\nprint("chain:", list(itertools.chain([1, 2], [3, 4])))`
+    },
+    comprehensions: {
+      label: { uk: "Генератори списків", en: "Comprehensions", tr: "Liste üreteçleri" },
+      code: `squares = [n * n for n in range(1, 11)]\nevens = [n for n in range(20) if n % 2 == 0]\npairs = [(x, y) for x in range(3) for y in range(3) if x != y]\nwords = ["hi", "there", "you"]\nupper = [w.upper() for w in words]\nprint(squares)\nprint(evens)\nprint(pairs)\nprint(upper)`
+    },
+    classes: {
+      label: { uk: "Класи (ООП)", en: "Classes (OOP)", tr: "Sınıflar (OOP)" },
+      code: `class Animal:\n    def __init__(self, name):\n        self.name = name\n    def speak(self):\n        return "..."\n\nclass Cat(Animal):\n    def speak(self):\n        return f"{self.name}: meow"\n\nclass Dog(Animal):\n    def speak(self):\n        return f"{self.name}: woof"\n\nfor a in [Cat("Tom"), Dog("Rex")]:\n    print(a.speak())`
+    },
+    guessgame: {
+      label: { uk: "Гра: вгадай число", en: "Game: guess number", tr: "Oyun: sayı bil" },
+      code: `import random\nsecret = random.randint(1, 5)\nguesses = [3, 5, 2, secret]\nfor i, g in enumerate(guesses, 1):\n    if g == secret:\n        print(f"attempt {i}: {g} -- win!")\n        break\n    print(f"attempt {i}: {g} -- " + ("higher" if g < secret else "lower"))\nelse:\n    print("no luck")`
+    },
+    errors: {
+      label: { uk: "Помилки (try/except)", en: "Errors (try/except)", tr: "Hatalar (try/except)" },
+      code: `def safe_div(a, b):\n    try:\n        return a / b\n    except ZeroDivisionError:\n        return "cannot divide by zero"\n\nprint(safe_div(10, 2))\nprint(safe_div(10, 0))\n\ntry:\n    int("abc")\nexcept ValueError as e:\n    print("ValueError:", e)`
+    },
+    matrix: {
+      label: { uk: "Матриці", en: "Matrices", tr: "Matrisler" },
+      code: `a = [[1, 2], [3, 4]]\nb = [[5, 6], [7, 8]]\nrows = len(a); cols = len(b[0]); inner = len(b)\nc = [[sum(a[i][k] * b[k][j] for k in range(inner)) for j in range(cols)] for i in range(rows)]\nfor row in c:\n    print(row)`
+    },
+    collections: {
+      label: { uk: "Колекції (collections)", en: "Collections", tr: "Koleksiyonlar" },
+      code: `import collections\nc = collections.Counter("abracadabra")\nprint("counts:", c.most_common(3))\nd = collections.defaultdict(list)\nfor k, v in [("a", 1), ("b", 2), ("a", 3)]:\n    d[k].append(v)\nprint("grouped:", dict(d))\nprint("deque:", collections.deque([1, 2, 3]))`
+    },
+    stringmod: {
+      label: { uk: "Рядки (string)", en: "String module", tr: "String modülü" },
+      code: `import string\nprint("lower:", string.ascii_lowercase)\nprint("digits:", string.digits)\nprint("punct:", string.punctuation)\ntmpl = string.Template("Hello, $name!")\nprint(tmpl.substitute(name="World"))`
+    },
+    jsonmod: {
+      label: { uk: "JSON", en: "JSON", tr: "JSON" },
+      code: `import json\ndata = {"name": "Ana", "age": 17, "tags": ["py", "js"]}\ntext = json.dumps(data, ensure_ascii=False, indent=2)\nprint(text)\nback = json.loads(text)\nprint("keys:", list(back.keys()))`
+    },
+    decimalmod: {
+      label: { uk: "Точні числа (decimal)", en: "Decimal", tr: "Decimal" },
+      code: `from decimal import Decimal\nprint("decimal:", Decimal("0.1") + Decimal("0.2"))\nprint("float trap:", 0.1 + 0.2)\nprint("rounded:", round(Decimal("3.14159"), 2))`
+    },
+    fractionsmod: {
+      label: { uk: "Дроби (fractions)", en: "Fractions", tr: "Kesirler" },
+      code: `from fractions import Fraction\nprint(Fraction(1, 3) + Fraction(1, 6))\nprint(Fraction(3, 4) * Fraction(2, 5))\nprint("from string:", Fraction("0.25"))\nprint("limit:", Fraction(355, 113).limit_denominator(100))`
+    },
+    timemod: {
+      label: { uk: "Час і виміри (time)", en: "Time & timing", tr: "Zaman ve ölçüm" },
+      code: `import time\nstart = time.perf_counter()\ntotal = sum(i * i for i in range(100000))\nelapsed = time.perf_counter() - start\nprint("sum:", total)\nprint("took ms:", round(elapsed * 1000, 3))\nprint("timestamp:", int(time.time()))`
+    },
+    functoolsmod: {
+      label: { uk: "functools", en: "functools", tr: "functools" },
+      code: `import functools\nnums = [1, 2, 3, 4, 5]\nprint("product:", functools.reduce(lambda a, b: a * b, nums))\n\n@functools.lru_cache(maxsize=None)\ndef fib(n):\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\nprint("fib(30):", fib(30))\nprint("cache hits:", fib.cache_info().hits)`
+    },
+    remod: {
+      label: { uk: "Регулярні вирази (re)", en: "Regex (re)", tr: "Düzenli ifadeler (re)" },
+      code: `import re\ntext = "Contact: anna@mail.com or +380 67 123 4567"\nemails = re.findall(r"[\\w.]+@[\\w.]+", text)\nphones = re.findall(r"\\+?\\d[\\d\\s]{6,}", text)\nprint("emails:", emails)\nprint("phones:", phones)\nprint("mask:", re.sub(r"\\d", "*", "a1b2c3"))`
+    }
+  };
+
+  // Підказки-чіпи (вставляють шаблон коду)
+  const HINTS = [
+    { label: "print()", code: 'print("Hello")' },
+    { label: "for", code: "for i in range(5):\n    print(i)" },
+    { label: "while", code: "n = 0\nwhile n < 5:\n    print(n)\n    n += 1" },
+    { label: "def", code: 'def my_func(x):\n    return x * 2\n\nprint(my_func(3))' },
+    { label: "if/else", code: 'x = 10\nif x > 5:\n    print("big")\nelse:\n    print("small")' },
+    { label: "list", code: 'a = [1, 2, 3]\nprint(a)' },
+    { label: "dict", code: 'd = {"key": "value"}\nprint(d)' },
+    { label: "import math", code: "import math\nprint(math.sqrt(16))" },
+    { label: "class", code: "class Cat:\n    def __init__(self, name):\n        self.name = name\n    def speak(self):\n        print(f\"{self.name}: meow\")\n\nCat(\"Tom\").speak()" },
+    { label: "try/except", code: 'try:\n    print(1/0)\nexcept ZeroDivisionError as e:\n    print("error:", e)' }
+  ];
+
+  // Ключові слова / вбудовані функції для автодоповнення
+  const KEYWORDS = [
+    "False","None","True","and","as","assert","async","await","break","class","continue","def","del","elif","else","except","finally","for","from","global","if","import","in","is","lambda","nonlocal","not","or","pass","raise","return","try","while","with","yield",
+    "abs","all","any","bool","dict","dir","enumerate","filter","float","format","help","input","int","isinstance","len","list","map","max","min","print","range","reversed","round","set","sorted","str","sum","tuple","type","zip",
+    "math","random","string","json","datetime","statistics","itertools","collections","decimal","fractions","time","functools","re",
+  ];
+
+  const SNKEY = "app.snippets";
+  const SN = {
+    uk: { title: "Особистий код", namePh: "Назва програми", save: "Зберегти", open: "Відкрити", del: "Видалити", empty: "Поки немає збережених програм. Напиши код і натисни «Зберегти».", saved: "Збережено!", needName: "Спершу введи назву", loaded: "Код завантажено" },
+    en: { title: "Personal code", namePh: "Program name", save: "Save", open: "Open", del: "Delete", empty: "No saved programs yet. Write some code and press Save.", saved: "Saved!", needName: "Enter a name first", loaded: "Code loaded" },
+    tr: { title: "Kişisel kod", namePh: "Program adı", save: "Kaydet", open: "Aç", del: "Sil", empty: "Henüz kayıtlı program yok. Kod yaz ve Kaydet'e bas.", saved: "Kaydedildi!", needName: "Önce bir ad gir", loaded: "Kod yüklendi" }
+  };
+  const IDLE = {
+    uk: "Натисни «Запуск», щоб завантажити Python",
+    en: "Press Run to load Python",
+    tr: "Python'u yüklemek için Çalıştır'a bas"
+  };
+  const L = (obj) => obj[global.I18n ? global.I18n.lang : "uk"] || obj.uk;
+  const toast = (m) => { if (global.App && global.App.toast) global.App.toast(m); };
+
+  let py = null;
+  let pyState = "idle";
+  let out, codeEl, runBtn, statusEl, lineNums, hintList, exSel, acBox;
+  let snList, snName;
+
+  function setStatus(state) {
+    pyState = state;
+    if (state === "idle") {
+      statusEl.className = "md-chip loading";
+      statusEl.textContent = L(IDLE);
+      return;
+    }
+    const map = { loading: "python.loading", ready: "python.ready", error: "python.error", running: "python.running" };
+    statusEl.className = "md-chip " + state;
+    statusEl.textContent = global.I18n.t(map[state] || "python.loading");
   }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
-  else init();
-  global.PythonPad = { init: function () {}, run: function () {}, get ready() { return false; } };
+
+  function setOutput(text, isErr) {
+    const line = document.createElement("div");
+    if (isErr) line.className = "err";
+    const ts = global.Settings && global.Settings.get("timestamps")
+      ? "[" + new Date().toLocaleTimeString() + "] " : "";
+    line.textContent = ts + text;
+    out.appendChild(line);
+    out.scrollTop = out.scrollHeight;
+  }
+
+  function updateLineNumbers() {
+    const lines = codeEl.value.split("\n").length;
+    lineNums.textContent = Array.from({ length: lines }, (_, i) => i + 1).join("\n");
+  }
+
+  function insertAtCursor(text) {
+    const s = codeEl.selectionStart, e = codeEl.selectionEnd;
+    codeEl.value = codeEl.value.slice(0, s) + text + codeEl.value.slice(e);
+    codeEl.selectionStart = codeEl.selectionEnd = s + text.length;
+    codeEl.focus();
+    updateLineNumbers();
+  }
+
+  function buildHints() {
+    hintList.innerHTML = "";
+    HINTS.forEach((h) => {
+      const c = document.createElement("button");
+      c.className = "chip";
+      c.type = "button";
+      c.textContent = h.label;
+      c.title = h.code;
+      c.onclick = () => { global.Audio2 && global.Audio2.SFX.pop(); insertAtCursor(h.code); };
+      hintList.appendChild(c);
+    });
+  }
+
+  function buildExamples(loadDefaultCode) {
+    const prev = exSel.value;
+    exSel.innerHTML = "";
+    const lang = global.I18n.lang;
+    Object.keys(EXAMPLES).forEach((k) => {
+      const o = document.createElement("option");
+      o.value = k;
+      o.textContent = EXAMPLES[k].label[lang] || EXAMPLES[k].label.uk;
+      exSel.appendChild(o);
+    });
+    if (prev && EXAMPLES[prev]) exSel.value = prev;
+    if (loadDefaultCode) {
+      codeEl.value = EXAMPLES.hello.code;
+      updateLineNumbers();
+    }
+  }
+
+  /* ---------- Особистий код (збережені снипети) ---------- */
+  function loadSnippets() {
+    try { const a = JSON.parse(localStorage.getItem(SNKEY) || "[]"); return Array.isArray(a) ? a : []; }
+    catch (e) { return []; }
+  }
+  function persistSnippets(list) { localStorage.setItem(SNKEY, JSON.stringify(list)); }
+
+  function renderSnippets() {
+    if (!snList) return;
+    const items = loadSnippets();
+    snList.innerHTML = "";
+    if (!items.length) {
+      const e = document.createElement("div");
+      e.className = "snippet-empty";
+      e.textContent = L(SN).empty;
+      snList.appendChild(e);
+      return;
+    }
+    items.forEach((it, idx) => {
+      const row = document.createElement("div");
+      row.className = "snippet-row";
+      const title = document.createElement("span");
+      title.className = "snippet-title";
+      title.textContent = it.name;
+      const acts = document.createElement("div");
+      acts.className = "snippet-actions";
+      const openB = document.createElement("button");
+      openB.className = "btn text";
+      openB.textContent = L(SN).open;
+      openB.onclick = () => {
+        codeEl.value = it.code || "";
+        updateLineNumbers();
+        if (global.Settings && global.Settings.get("autosaveCode")) localStorage.setItem("app.code", codeEl.value);
+        codeEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        global.Audio2 && global.Audio2.SFX.pop();
+        toast(L(SN).loaded);
+      };
+      const delB = document.createElement("button");
+      delB.className = "btn outlined danger";
+      delB.textContent = L(SN).del;
+      delB.onclick = () => {
+        const list = loadSnippets();
+        list.splice(idx, 1);
+        persistSnippets(list);
+        renderSnippets();
+        global.Audio2 && global.Audio2.SFX.click();
+      };
+      acts.append(openB, delB);
+      row.append(title, acts);
+      snList.appendChild(row);
+    });
+  }
+
+  function buildSnippets() {
+    const view = document.getElementById("view-python");
+    if (!view || view.querySelector(".snippets-card")) return;
+    const card = document.createElement("div");
+    card.className = "card elev1 snippets-card";
+
+    const bar = document.createElement("div");
+    bar.className = "card-bar";
+    const bt = document.createElement("span");
+    bt.className = "bar-title";
+    const btIco = document.createElement("span");
+    btIco.className = "material-icons";
+    btIco.textContent = "save";
+    const btText = document.createElement("span");
+    btText.className = "snippets-title";
+    btText.textContent = L(SN).title;
+    bt.append(btIco, btText);
+    bar.appendChild(bt);
+    card.appendChild(bar);
+
+    const body = document.createElement("div");
+    body.className = "snippets-body";
+    const saveRow = document.createElement("div");
+    saveRow.className = "snippet-save";
+    snName = document.createElement("input");
+    snName.className = "snippet-name";
+    snName.type = "text";
+    snName.maxLength = 40;
+    snName.placeholder = L(SN).namePh;
+    const saveB = document.createElement("button");
+    saveB.className = "btn contained snippet-save-btn";
+    saveB.textContent = L(SN).save;
+    const doSave = () => {
+      const name = (snName.value || "").trim();
+      if (!name) { toast(L(SN).needName); snName.focus(); return; }
+      const list = loadSnippets();
+      list.unshift({ name: name, code: codeEl.value, ts: Date.now() });
+      persistSnippets(list);
+      snName.value = "";
+      renderSnippets();
+      global.Audio2 && global.Audio2.SFX.success();
+      toast(L(SN).saved);
+    };
+    saveB.onclick = doSave;
+    snName.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); doSave(); } });
+    saveRow.append(snName, saveB);
+    snList = document.createElement("div");
+    snList.className = "snippet-list";
+    body.append(saveRow, snList);
+    card.appendChild(body);
+
+    const layout = view.querySelector(".py-layout");
+    if (layout) layout.insertAdjacentElement("afterend", card);
+    else view.appendChild(card);
+    renderSnippets();
+  }
+
+  // --- Autocomplete ---
+  let acItems = [], acIdx = -1;
+  function currentWord() {
+    const pos = codeEl.selectionStart;
+    const before = codeEl.value.slice(0, pos);
+    const m = before.match(/[A-Za-z_][A-Za-z0-9_]*$/);
+    return m ? m[0] : "";
+  }
+  function showAutocomplete() {
+    if (!(global.Settings && global.Settings.get("autocomplete"))) { hideAutocomplete(); return; }
+    const w = currentWord();
+    if (w.length < 2) { hideAutocomplete(); return; }
+    const matches = KEYWORDS.filter((k) => k.startsWith(w) && k !== w).slice(0, 8);
+    if (!matches.length) { hideAutocomplete(); return; }
+    acItems = matches; acIdx = 0;
+    acBox.innerHTML = "";
+    matches.forEach((m, i) => {
+      const d = document.createElement("div");
+      d.textContent = m;
+      if (i === 0) d.classList.add("sel");
+      d.onmousedown = (ev) => { ev.preventDefault(); accept(i); };
+      acBox.appendChild(d);
+    });
+    positionAutocomplete();
+    acBox.style.display = "block";
+  }
+  function positionAutocomplete() {
+    const rect = codeEl.getBoundingClientRect();
+    // absolute позиціювання від документа — додаємо scroll-зсув
+    acBox.style.left = rect.left + window.scrollX + 20 + "px";
+    acBox.style.top = rect.top + window.scrollY + 60 + "px";
+  }
+  function hideAutocomplete() { acBox.style.display = "none"; acItems = []; acIdx = -1; }
+  function accept(i) {
+    const word = acItems[i]; if (!word) return;
+    const cur = currentWord();
+    const pos = codeEl.selectionStart;
+    codeEl.value = codeEl.value.slice(0, pos - cur.length) + word + codeEl.value.slice(pos);
+    codeEl.selectionStart = codeEl.selectionEnd = pos - cur.length + word.length;
+    hideAutocomplete();
+    global.Audio2 && global.Audio2.SFX.pop();
+  }
+  function moveAc(delta) {
+    if (!acItems.length) return false;
+    acIdx = (acIdx + delta + acItems.length) % acItems.length;
+    [...acBox.children].forEach((c, i) => c.classList.toggle("sel", i === acIdx));
+    return true;
+  }
+
+  /* ---------- Ліниве завантаження Pyodide (лише при першому запуску) ---------- */
+  const PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/";
+  let pyPromise = null;
+  function ensurePyodide() {
+    if (py) return Promise.resolve(py);
+    if (pyPromise) return pyPromise;
+    setStatus("loading");
+    pyPromise = (async () => {
+      if (typeof global.loadPyodide !== "function") {
+        await new Promise((res, rej) => {
+          const s = document.createElement("script");
+          s.src = PYODIDE_URL + "pyodide.js";
+          s.onload = res;
+          s.onerror = () => rej(new Error("pyodide.js not loaded"));
+          document.head.appendChild(s);
+        });
+      }
+      py = await global.loadPyodide({ indexURL: PYODIDE_URL });
+      return py;
+    })();
+    return pyPromise;
+  }
+
+  async function run() {
+    out.innerHTML = "";
+    runBtn.disabled = true;
+    global.Audio2 && global.Audio2.SFX.click();
+    try {
+      await ensurePyodide();
+    } catch (e) {
+      pyPromise = null;
+      setStatus("error");
+      setOutput("Pyodide: " + e.message, true);
+      global.Audio2 && global.Audio2.SFX.error();
+      runBtn.disabled = false;
+      return;
+    }
+    setStatus("running");
+    py.setStdout({ batched: (s) => setOutput(s) });
+    py.setStderr({ batched: (s) => setOutput(s, true) });
+    try {
+      await py.runPythonAsync(codeEl.value);
+      global.Audio2 && global.Audio2.SFX.success();
+    } catch (e) {
+      setOutput(e.message, true);
+      global.Audio2 && global.Audio2.SFX.error();
+    } finally {
+      runBtn.disabled = false;
+      setStatus("ready");
+    }
+  }
+
+  function init() {
+    out = $("#out"); codeEl = $("#code"); runBtn = $("#run"); statusEl = $("#pyStatus");
+    lineNums = $("#lineNumbers"); hintList = $("#hintList"); exSel = $("#examples");
+    if (!codeEl) return;
+
+    acBox = document.createElement("div");
+    acBox.className = "autocomplete";
+    document.body.appendChild(acBox);
+
+    buildHints();
+    buildExamples(true);
+    buildSnippets();
+    setStatus("idle");
+    runBtn.disabled = false;
+    const saved = localStorage.getItem("app.code");
+    if (saved && global.Settings && global.Settings.get("autosaveCode")) {
+      codeEl.value = saved; updateLineNumbers();
+    }
+    const applyWrap = () => { codeEl.wrap = global.Settings.get("wordWrap") ? "soft" : "off"; };
+    applyWrap();
+    document.addEventListener("settingschange", (e) => { if (e.detail.key === "wordWrap") applyWrap(); });
+
+    codeEl.addEventListener("input", () => { updateLineNumbers(); showAutocomplete(); });
+    codeEl.addEventListener("scroll", () => { lineNums.scrollTop = codeEl.scrollTop; });
+    codeEl.addEventListener("blur", () => setTimeout(hideAutocomplete, 120));
+    codeEl.addEventListener("keydown", (e) => {
+      if (acBox.style.display === "block") {
+        if (e.key === "ArrowDown") { e.preventDefault(); moveAc(1); return; }
+        if (e.key === "ArrowUp") { e.preventDefault(); moveAc(-1); return; }
+        if (e.key === "Tab" || e.key === "Enter") { e.preventDefault(); accept(acIdx < 0 ? 0 : acIdx); return; }
+        if (e.key === "Escape") { hideAutocomplete(); return; }
+      }
+      // Гарячі клавіші (якщо увімкнені в налаштуваннях)
+      const sc = global.Settings && global.Settings.get("shortcuts");
+      if (sc && (e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); run(); return; }
+      if (sc && e.key === "Tab") {
+        e.preventDefault();
+        insertAtCursor(" ".repeat(Number(global.Settings.get("tabSize")) || 4));
+      }
+    });
+
+    // Автозбереження коду
+    codeEl.addEventListener("input", () => {
+      if (global.Settings && global.Settings.get("autosaveCode")) localStorage.setItem("app.code", codeEl.value);
+    });
+
+    runBtn.onclick = run;
+    $("#clearCode").onclick = () => { codeEl.value = ""; updateLineNumbers(); global.Audio2 && global.Audio2.SFX.click(); };
+    $("#clearOut").onclick = () => { out.innerHTML = ""; };
+    exSel.onchange = () => {
+      const k = exSel.value;
+      if (EXAMPLES[k]) { codeEl.value = EXAMPLES[k].code; updateLineNumbers(); global.Audio2 && global.Audio2.SFX.pop(); }
+    };
+
+    document.addEventListener("langchange", () => {
+      buildExamples(false); // лише оновити назви прикладів, код не чіпати
+      renderSnippets();
+      if (snName) snName.placeholder = L(SN).namePh;
+      const titleEl = document.querySelector(".snippets-card .snippets-title");
+      if (titleEl) titleEl.textContent = L(SN).title;
+      const saveBtn = document.querySelector(".snippets-card .snippet-save-btn");
+      if (saveBtn) saveBtn.textContent = L(SN).save;
+      setStatus(pyState);
+    });
+  }
+
+  global.PythonPad = { init, run };
 })(window);
