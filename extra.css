@@ -1,0 +1,72 @@
+/* extra.css — доповнення до style.css (вантажиться ПІСЛЯ нього, тому має пріоритет).
+   Тут: картка «Особистий код», анімація перемикання вкладок, обертання шестерні,
+   захист від горизонтального скролу. */
+
+/* ---------- 1) Захист від горизонтального «гортання» ---------- */
+html, body { overflow-x: hidden; }
+
+/* ---------- 2) Анімація перемикання вкладок (м'яке «стрибання») ---------- */
+@keyframes viewin {
+  0%   { opacity: 0; transform: translateY(16px) scale(.985); }
+  60%  { opacity: 1; transform: translateY(-5px) scale(1.006); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.view.active { animation: viewin .42s cubic-bezier(.22,.61,.36,1) both; }
+
+/* іконка активного пункту меню підстрибує */
+@keyframes icopop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.24); }
+  70%  { transform: scale(.96); }
+  100% { transform: scale(1); }
+}
+.rail-btn.active .rail-ico { animation: icopop .45s ease; }
+
+/* ---------- 3) Шестерня налаштувань крутиться ---------- */
+@keyframes spin360 { to { transform: rotate(360deg); } }
+.rail-btn[data-route="settings"]:hover .rail-ico .material-icons,
+.rail-btn[data-route="settings"].active .rail-ico .material-icons {
+  animation: spin360 .9s cubic-bezier(.4,0,.2,1);
+}
+
+/* ---------- 4) Картка «Особистий код» (збережені сніпети) ---------- */
+.snippets-card { margin-top: 16px; }
+.snippets-body { padding: 14px 16px 16px; }
+.snippet-save { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+.snippet-name {
+  flex: 1 1 200px; min-width: 0;
+  border: 1px solid var(--md-outline-var);
+  background: var(--md-surface);
+  color: var(--md-on-surface);
+  border-radius: 10px; padding: 10px 12px;
+  font-family: var(--md-font); font-size: 14px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.snippet-name:focus {
+  outline: none; border-color: var(--md-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--md-primary) 22%, transparent);
+}
+.snippet-save-btn { flex: none; white-space: nowrap; }
+
+.snippet-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.snippet-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 8px 12px; border: 1px solid var(--md-outline-var);
+  border-radius: 10px; background: var(--md-surface);
+  transition: box-shadow .2s, transform .15s, border-color .2s;
+}
+.snippet-row:hover { box-shadow: var(--md-elev1); transform: translateY(-1px); border-color: var(--md-primary); }
+.snippet-title {
+  font-weight: 500; font-size: 14px; color: var(--md-on-surface);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.snippet-actions { display: flex; gap: 6px; flex: none; }
+.snippet-empty { color: var(--md-on-surface-var); font-size: 13px; padding: 6px 2px; }
+
+/* ---------- 5) Повага до «зменшити рух» ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .view.active,
+  .rail-btn.active .rail-ico,
+  .rail-btn[data-route="settings"]:hover .rail-ico .material-icons,
+  .rail-btn[data-route="settings"].active .rail-ico .material-icons { animation: none !important; }
+}
