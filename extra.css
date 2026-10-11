@@ -78,3 +78,6 @@ html, body { overflow-x: hidden; }
 @media (max-width: 560px) {
   .lang-switch button { padding: 6px 8px; font-size: 12px; }
 }
+
+/* ---------- 7) Номери рядків у редакторі — стовпчиком, а не в один ряд ---------- */
+.line-numbers { white-space: pre; }
