@@ -118,7 +118,7 @@
       { id: "shortcuts", type: "switch", label: "set.shortcuts" }
     ]},
     { group: "settings.language", items: [
-      { id: "language", type: "select", label: "settings.language", options: [["uk", "Українська"], ["en", "English"], ["tr", "Türkçe"], ["de", "Deutsch"], ["pl", "Polski"], ["es", "Español"], ["fr", "Français"], ["ja", "日本語"]] }
+      { id: "language", type: "select", label: "settings.language", options: [["uk", "Українська"], ["en", "English"], ["tr", "Türkçe"]] }
     ]},
     { group: "set.account", items: [
       { id: "google", type: "button", label: "set.google", icon: "login", variant: "contained" },
