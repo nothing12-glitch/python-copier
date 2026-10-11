@@ -70,3 +70,11 @@ html, body { overflow-x: hidden; }
   .rail-btn[data-route="settings"]:hover .rail-ico .material-icons,
   .rail-btn[data-route="settings"].active .rail-ico .material-icons { animation: none !important; }
 }
+
+/* ---------- 6) Шапка не переноситься і не спричиняє гортання ---------- */
+.appbar { flex-wrap: nowrap; }
+.appbar-title { min-width: 0; }
+.lang-switch { flex-wrap: nowrap; flex: none; }
+@media (max-width: 560px) {
+  .lang-switch button { padding: 6px 8px; font-size: 12px; }
+}
