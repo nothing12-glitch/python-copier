@@ -85,10 +85,6 @@
       { id: "fontSize", type: "range", label: "set.fontSize", min: 12, max: 20, step: 1 }
     ]},
     { group: "settings.navPanel", items: [
-      { id: "navDesign", type: "select", label: "set.navDesign", options: [
-        ["classic", "set.navClassic"], ["pill", "set.navPill"] ] },
-      { id: "navSize", type: "select", label: "set.navSize", options: [
-        ["small", "set.szSmall"], ["medium", "set.szMedium"], ["large", "set.szLarge"] ] },
       { id: "navPos", type: "select", label: "set.navPos", options: [
         ["top", "set.posTop"], ["bottom", "set.posBottom"], ["left", "set.posLeft"], ["right", "set.posRight"] ] }
     ]},
