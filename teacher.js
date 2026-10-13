@@ -1,76 +1,100 @@
-/* teacher.js — пасхалки + привітання вчителя + фікси UI.
-   1) Пасхалка: 10 кліків по НАЗВІ в шапці (.appbar-title) -> привітання. (Бонус: Ctrl+Shift+T)
+/* teacher.js — фікси UI + секретний екран.
+   1) Пасхалка: 10 кліків по НАЗВІ в шапці (.appbar-title) -> секретний екран
+      із написом «тут нічого немає (поки що…)». (Бонус: Ctrl+Shift+T)
    2) Кнопка музики: повторний клік НЕ вимикає музику, а лише відкриває панель.
    3) Анімована «бульбка» в дизайні «пігулка».
    4) Помідоро-таймер у #pomoBox (щоб tools.js не треба було чіпати).
+   Привітання з Днем учителя прибрано на прохання.
 */
 (function (global) {
   const t = (k, v) => (global.I18n ? global.I18n.t(k, v) : k);
   const toast = (m) => { if (global.App && global.App.toast) global.App.toast(m); };
 
   const SL = {
-    uk: { soon: "Ще {n} кліків…", hint: "Секретний подарунок розблоковано! 🌹" },
-    en: { soon: "{n} clicks to go…", hint: "Secret gift unlocked! 🌹" },
-    tr: { soon: "{n} tıklama kaldı…", hint: "Gizli hediye açıldı! 🌹" },
-    de: { soon: "Noch {n} Klicks…", hint: "Geheimes Geschenk! 🌹" },
-    pl: { soon: "Jeszcze {n} kliknięć…", hint: "Sekretny prezent! 🌹" },
-    es: { soon: "Faltan {n} clics…", hint: "¡Regalo secreto! 🌹" },
-    fr: { soon: "Encore {n} clics…", hint: "Cadeau secret ! 🌹" },
-    ja: { soon: "あと{n}回…", hint: "秘密のプレゼント！ 🌹" }
+    uk: { soon: "Ще {n} кліків…", empty: "тут нічого немає (поки що…)", close: "Закрити" },
+    en: { soon: "{n} clicks to go…", empty: "there is nothing here (yet…)", close: "Close" },
+    tr: { soon: "{n} tıklama kaldı…", empty: "burada hiçbir şey yok (şimdilik…)", close: "Kapat" }
   };
   const T = () => SL[global.I18n ? global.I18n.lang : "uk"] || SL.uk;
 
-  /* ---------- 1) Пасхалка: 10 кліків по назві ---------- */
-  let clicks = 0, lastClick = 0;
-  function bindTitleEgg() {
-    const title = document.querySelector(".appbar-title");
-    if (!title) return;
-    title.addEventListener("click", () => {
-      const now = Date.now();
-      if (now - lastClick > 2000) clicks = 0;   // пауза >2с скидає лічильник
-      lastClick = now;
-      clicks++;
-      if (clicks === 7) toast(T().soon.replace("{n}", "3"));
-      if (clicks >= 10) { clicks = 0; openGreet(); }
-    });
-    document.addEventListener("keydown", (e) => {
-      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "t") { e.preventDefault(); openGreet(); }
-    });
+  /* ---------- 1) Секретний екран «тут нічого немає» ---------- */
+  function ensureRoom() {
+    let el = document.getElementById("teacherGreet");
+    if (el) return el;
+    el = document.createElement("div");
+    el.id = "teacherGreet";
+    el.className = "teacher-greet";
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-modal", "true");
+
+    const card = document.createElement("div");
+    card.className = "teacher-card";
+
+    const ico = document.createElement("span");
+    ico.className = "material-icons room-ico";
+    ico.textContent = "search_off";
+
+    const p = document.createElement("p");
+    p.className = "room-empty";
+    p.dataset.roomText = "1";
+    p.textContent = T().empty;
+
+    const row = document.createElement("div");
+    row.className = "teacher-close";
+    const btn = document.createElement("button");
+    btn.className = "btn contained";
+    btn.id = "teacherClose";
+    btn.dataset.roomClose = "1";
+    btn.textContent = T().close;
+    btn.addEventListener("click", closeRoom);
+    row.appendChild(btn);
+
+    card.append(ico, p, row);
+    el.appendChild(card);
+    el.addEventListener("click", (e) => { if (e.target === el) closeRoom(); });
+    document.body.appendChild(el);
+    return el;
   }
 
-  /* ---------- Привітання вчителя ---------- */
-  function openGreet() {
-    const el = document.getElementById("teacherGreet");
-    if (!el || el.classList.contains("show")) return;
+  function openRoom() {
+    const el = ensureRoom();
+    if (el.classList.contains("show")) return;
     el.style.display = "grid";
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("show")));
-    const colors = ["#6750A4", "#22d3ee", "#f0b429", "#FFD700", "#C2185B", "#2E7D32"];
-    for (let i = 0; i < 60; i++) {
-      const c = document.createElement("div");
-      c.className = "confetti";
-      c.style.left = Math.random() * 100 + "%";
-      c.style.background = colors[Math.floor(Math.random() * colors.length)];
-      c.style.animationDelay = (Math.random() * 2) + "s";
-      el.appendChild(c);
-      setTimeout(() => c.remove(), 5200);
-    }
-    if (global.Audio2 && global.Audio2.SFX) global.Audio2.SFX.win();
-    toast(T().hint);
+    if (global.Audio2 && global.Audio2.SFX) global.Audio2.SFX.pop();
   }
-  function closeGreet() {
+
+  function closeRoom() {
     const el = document.getElementById("teacherGreet");
     if (!el) return;
     el.classList.remove("show");
     setTimeout(() => { el.style.display = "none"; }, 450);
   }
-  function bindGreet() {
-    const el = document.getElementById("teacherGreet");
-    if (!el) return;
-    el.style.display = "none";           // надійно ховаємо навіть без CSS
-    const btn = document.getElementById("teacherClose");
-    if (btn) btn.addEventListener("click", closeGreet);
-    el.addEventListener("click", (e) => { if (e.target === el) closeGreet(); });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeGreet(); });
+
+  function retextRoom() {
+    const txt = document.querySelector("[data-room-text]");
+    if (txt) txt.textContent = T().empty;
+    const btn = document.querySelector("[data-room-close]");
+    if (btn) btn.textContent = T().close;
+  }
+
+  let clicks = 0, lastClick = 0;
+  function bindTitleEgg() {
+    const title = document.querySelector(".appbar-title");
+    if (title) {
+      title.addEventListener("click", () => {
+        const now = Date.now();
+        if (now - lastClick > 2000) clicks = 0;   // пауза >2с скидає лічильник
+        lastClick = now;
+        clicks++;
+        if (clicks === 7) toast(T().soon.replace("{n}", "3"));
+        if (clicks >= 10) { clicks = 0; openRoom(); }
+      });
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "t") { e.preventDefault(); openRoom(); }
+      else if (e.key === "Escape") closeRoom();
+    });
   }
 
   /* ---------- 2) Фікс кнопки музики (не вимикати при повторному кліку) ---------- */
@@ -205,12 +229,12 @@
   }
 
   function init() {
-    bindGreet();
     bindTitleEgg();
     bindMusicFix();
     initDrop();
     renderPomo(true);
     document.addEventListener("langchange", () => {
+      retextRoom();
       const b = document.getElementById("pomoBox");
       if (b) b.dataset.rendered = "";
       renderPomo(true);
@@ -218,6 +242,7 @@
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
-
-  global.TeacherSecret = { open: openGreet, close: closeGreet };
+  // Маркер TeacherSecret обов'язковий: fix.js перевіряє його наявність і без нього
+  // поставив би дубльований фікс кнопки музики.
+  global.TeacherSecret = { open: openRoom, close: closeRoom };
 })(window);
