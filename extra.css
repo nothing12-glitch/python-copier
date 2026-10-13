@@ -122,3 +122,49 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .device-card { animation: none; }
 }
+/* ---------- 9) Секретний екран «тут нічого немає» + вибір пристрою v2 ---------- */
+.room-ico {
+  display: block; font-size: 58px; line-height: 1;
+  color: #6750A4; margin: 0 auto 10px;
+}
+.room-empty {
+  margin: 0 0 6px !important;
+  font-size: 19px; font-weight: 500; color: #333;
+}
+
+.device-opt.is-rec {
+  border-color: var(--md-primary);
+  background: color-mix(in srgb, var(--md-primary) 10%, transparent);
+}
+.device-opt.is-locked { cursor: not-allowed; opacity: .72; }
+.device-opt.is-locked .material-icons { color: var(--md-on-surface-var); }
+.device-opt.is-locked:hover {
+  border-color: var(--md-error);
+  background: color-mix(in srgb, var(--md-error) 8%, transparent);
+  transform: none;
+}
+.device-rec {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  background: var(--md-primary); color: var(--md-on-primary, #fff);
+  font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: lowercase;
+}
+.device-denied {
+  margin: 16px 0 0; padding: 10px 14px; border-radius: 12px;
+  background: color-mix(in srgb, var(--md-error) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--md-error) 40%, transparent);
+  color: var(--md-error); font-size: 13px; line-height: 1.45; text-align: left;
+}
+.device-denied b { display: block; font-size: 14px; margin-bottom: 2px; }
+
+@keyframes deviceshake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(7px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(4px); }
+}
+.device-card.shake { animation: deviceshake .4s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .device-card.shake { animation: none; }
+}
