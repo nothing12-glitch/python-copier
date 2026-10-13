@@ -81,3 +81,44 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 
 /* ---------- 7) Номери рядків у редакторі — стовпчиком, а не в один ряд ---------- */
 .line-numbers { white-space: pre; }
+
+/* ---------- 8) Діалог «з якого пристрою зайшли» ---------- */
+@keyframes devicein {
+  0%   { opacity: 0; transform: translateY(14px) scale(.96); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.device-ask {
+  position: fixed; inset: 0; z-index: 90;
+  display: grid; place-items: center;
+  background: rgba(0, 0, 0, .55);
+  backdrop-filter: blur(4px);
+}
+.device-card {
+  width: min(92vw, 440px);
+  background: var(--md-surface); color: var(--md-on-surface);
+  border-radius: 24px; padding: 26px 22px;
+  box-shadow: var(--md-elev3);
+  text-align: center;
+  animation: devicein .3s cubic-bezier(.22,.61,.36,1) both;
+}
+.device-card h3 { margin: 0 0 6px; font-size: 20px; font-weight: 600; }
+.device-card p { margin: 0 0 18px; font-size: 14px; color: var(--md-on-surface-var); }
+.device-opts { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.device-opt {
+  flex: 1 1 150px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 18px 12px;
+  border: 1px solid var(--md-outline-var); border-radius: 18px;
+  background: transparent; color: var(--md-on-surface);
+  font-family: var(--md-font); font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: border-color .2s, background .2s, transform .15s;
+}
+.device-opt .material-icons { font-size: 40px; color: var(--md-primary); }
+.device-opt:hover {
+  border-color: var(--md-primary);
+  background: color-mix(in srgb, var(--md-primary) 10%, transparent);
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .device-card { animation: none; }
+}
