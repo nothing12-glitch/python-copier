@@ -168,3 +168,60 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .device-card.shake { animation: none; }
 }
+/* ---------- 10) Свічка пам'яті: кнопка в шапці + повноекранна заставка ---------- */
+.memorial-btn .mem-ico { font-size: 20px; line-height: 1; }
+
+.memorial {
+  position: fixed; inset: 0; z-index: 120;
+  display: grid; place-items: center; padding: 24px;
+  background: radial-gradient(70% 55% at 50% 32%, #17171c 0%, #0a0a0c 72%);
+  color: #e8e6e3; text-align: center;
+  opacity: 0; visibility: hidden;
+  transition: opacity .5s ease, visibility .5s ease;
+}
+.memorial.show { opacity: 1; visibility: visible; }
+
+.mem-candle { position: relative; width: 60px; height: 160px; margin: 0 auto 28px; }
+.mem-wax {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 44px; height: 112px; border-radius: 9px 9px 6px 6px;
+  background: linear-gradient(180deg, #f6ecd4 0%, #e2d2ac 55%, #cbb88e 100%);
+  box-shadow: inset 0 -14px 20px rgba(0, 0, 0, .28), inset 0 6px 8px rgba(255, 255, 255, .5);
+}
+.mem-wick {
+  position: absolute; bottom: 110px; left: 50%; transform: translateX(-50%);
+  width: 3px; height: 10px; border-radius: 2px; background: #3a2c1a;
+}
+.mem-flame {
+  position: absolute; bottom: 118px; left: 50%;
+  width: 22px; height: 34px; transform-origin: 50% 100%;
+  border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+  background: radial-gradient(50% 62% at 50% 72%, #fff8cf 0%, #ffd766 45%, #ff9d2e 78%, rgba(255, 120, 20, 0) 100%);
+  box-shadow: 0 0 26px 10px rgba(255, 170, 60, .35), 0 0 80px 34px rgba(255, 140, 40, .14);
+  animation: memflicker 1.7s ease-in-out infinite;
+}
+.mem-glow {
+  position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+  width: 220px; height: 220px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 176, 76, .18) 0%, rgba(255, 176, 76, 0) 70%);
+  animation: membreathe 3.4s ease-in-out infinite;
+}
+@keyframes memflicker {
+  0%, 100% { transform: translateX(-50%) scale(1) rotate(-1.5deg); }
+  25%      { transform: translateX(-53%) scale(1.06, .95) rotate(1.6deg); }
+  50%      { transform: translateX(-48%) scale(.94, 1.06) rotate(-1deg); }
+  75%      { transform: translateX(-51%) scale(1.03, .98) rotate(1deg); }
+}
+@keyframes membreathe {
+  0%, 100% { opacity: .8; transform: translateX(-50%) scale(1); }
+  50%      { opacity: 1; transform: translateX(-50%) scale(1.08); }
+}
+
+.mem-title { margin: 0 0 14px; font-size: 26px; font-weight: 600; letter-spacing: .6px; }
+.mem-text { max-width: 560px; margin: 0 auto 28px; font-size: 15px; line-height: 1.75; color: #cfccc7; }
+.mem-close { border-color: rgba(255, 255, 255, .35); color: #e8e6e3; }
+.mem-close:hover { border-color: #e8e6e3; background: rgba(255, 255, 255, .08); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mem-flame, .mem-glow { animation: none; }
+}
