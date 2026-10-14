@@ -20,12 +20,18 @@
   /* ---------- 1) Секретний екран «тут нічого немає» ---------- */
   function ensureRoom() {
     let el = document.getElementById("teacherGreet");
-    if (el) return el;
-    el = document.createElement("div");
-    el.id = "teacherGreet";
+    if (el && el.querySelector(".teacher-card")) return el;
+    // shield.js створює ПОРОЖНІЙ #teacherGreet (в index.html його вже немає),
+    // тому картку будуємо самі й витираємо будь-який старий вміст (конфеті).
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "teacherGreet";
+      document.body.appendChild(el);
+    }
     el.className = "teacher-greet";
     el.setAttribute("role", "dialog");
     el.setAttribute("aria-modal", "true");
+    el.innerHTML = "";
 
     const card = document.createElement("div");
     card.className = "teacher-card";
@@ -51,8 +57,10 @@
 
     card.append(ico, p, row);
     el.appendChild(card);
-    el.addEventListener("click", (e) => { if (e.target === el) closeRoom(); });
-    document.body.appendChild(el);
+    if (!el.dataset.roomBound) {
+      el.dataset.roomBound = "1";
+      el.addEventListener("click", (e) => { if (e.target === el) closeRoom(); });
+    }
     return el;
   }
 
