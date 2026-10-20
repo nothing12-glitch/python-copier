@@ -1,10 +1,33 @@
-/* updates.js — версія застосунку + вікно "Що нового" після оновлень.
+/* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.02";
+  const VERSION = "26.10.20";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.20": {
+      uk: [
+        "Свічку пам'яті прибрано",
+        "Замість питання про пристрій при вході тепер показується це вікно «Що нового»",
+        "Виправлено вхід у профіль — тепер логін і реєстрація працюють",
+        "Ім'я та аватар знову з'являються у шапці одразу після входу",
+        "Версія застосунку відображається в Налаштуваннях (кнопка «Показати що нового»)"
+      ],
+      en: [
+        "The memorial candle has been removed",
+        "The device question on entry is replaced by this “What's new” window",
+        "Profile sign-in fixed — login and registration now work",
+        "Your name and avatar reappear in the top bar right after signing in",
+        "App version shown in Settings (with a “Show what's new” button)"
+      ],
+      tr: [
+        "Anma mumu kaldırıldı",
+        "Girişteki cihaz sorusu yerine bu “Yenilikler” penceresi gösteriliyor",
+        "Profil girişi düzeltildi — artık giriş ve kayıt çalışıyor",
+        "Giriş yaptıktan sonra adın ve avatarın üst çubukta hemen görünüyor",
+        "Uygulama sürümü Ayarlar'da gösteriliyor (“Yenilikleri göster” düğmesiyle)"
+      ]
+    },
     "26.10.02": {
       uk: [
         "Плаваюча «пігулка» з анімованою бульбкою, що перестрибує між пунктами",
@@ -39,9 +62,12 @@
   };
 
   const T = {
-    title: { uk: "Що нового у версії {v}", en: "What's new in {v}", tr: "{v} sürümünde yenilikler" },
+    title: { uk: "Що нового", en: "What's new", tr: "Yenilikler" },
+    newUp: { uk: "Нове оновлення!", en: "New update!", tr: "Yeni güncelleme!" },
+    sub:   { uk: "Сайт щойно оновився до версії", en: "The site just updated to", tr: "Site yeni sürüme güncellendi:" },
     ok:    { uk: "Класно!", en: "Nice!", tr: "Harika!" },
-    ver:   { uk: "Версія", en: "Version", tr: "Sürüm" }
+    ver:   { uk: "Версія", en: "Version", tr: "Sürüm" },
+    show:  { uk: "Показати що нового", en: "Show what's new", tr: "Yenilikleri göster" }
   };
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
   const pick = (o) => o[lang()] || o.uk || o.en;
@@ -49,59 +75,112 @@
   function showWhatsNew(v) {
     const entry = LOG[v];
     if (!entry) return;
+    const old = document.getElementById("whatsNewModal");
+    if (old) old.remove();
+    if (global.Audio2 && global.Audio2.SFX) global.Audio2.SFX.pop();
+
     const bd = document.createElement("div");
-    bd.className = "ob-backdrop";
+    bd.id = "whatsNewModal";
+    bd.className = "wn-backdrop";
+
     const card = document.createElement("div");
-    card.className = "ob-card";
-    card.style.textAlign = "left";
+    card.className = "wn-card";
+    card.setAttribute("role", "dialog");
+    card.setAttribute("aria-modal", "true");
+    card.setAttribute("aria-label", pick(T.newUp));
+
+    /* Шапка: емодзі + заголовок + бейдж версії */
+    const head = document.createElement("div");
+    head.className = "wn-head";
 
     const emoji = document.createElement("div");
-    emoji.className = "ob-emoji";
+    emoji.className = "wn-emoji";
     emoji.textContent = "🎉";
+    emoji.setAttribute("aria-hidden", "true");
+
+    const headText = document.createElement("div");
+    headText.className = "wn-headtext";
     const h = document.createElement("h3");
-    h.textContent = pick(T.title).replace("{v}", v);
+    h.className = "wn-title";
+    h.textContent = pick(T.newUp);
+    const sub = document.createElement("p");
+    sub.className = "wn-sub";
+    sub.textContent = pick(T.sub) + " " + v;
+    headText.append(h, sub);
+
+    const chip = document.createElement("span");
+    chip.className = "wn-chip";
+    chip.textContent = "v" + v;
+
+    head.append(emoji, headText, chip);
+
+    /* Окрема віконце-панель зі списком змін */
+    const panel = document.createElement("div");
+    panel.className = "wn-panel";
+
+    const panelTitle = document.createElement("div");
+    panelTitle.className = "wn-panel-title";
+    panelTitle.innerHTML = '<span class="material-icons" aria-hidden="true">auto_awesome</span><span>' + pick(T.title) + "</span>";
+    panel.appendChild(panelTitle);
+
     const ul = document.createElement("ul");
-    ul.style.margin = "0 0 18px";
-    ul.style.paddingLeft = "20px";
-    ul.style.color = "var(--md-on-surface-var)";
-    ul.style.lineHeight = "1.7";
-    ul.style.fontSize = "14px";
+    ul.className = "wn-list";
     (entry[lang()] || entry.uk || entry.en).forEach((line) => {
       const li = document.createElement("li");
       li.textContent = line;
       ul.appendChild(li);
     });
+    panel.appendChild(ul);
+
+    /* Кнопка внизу */
     const row = document.createElement("div");
-    row.className = "ob-actions";
+    row.className = "wn-actions";
     const ok = document.createElement("button");
-    ok.className = "btn contained";
-    ok.textContent = pick(T.ok);
-    ok.onclick = () => bd.remove();
+    ok.className = "btn contained wn-ok";
+    ok.innerHTML = '<span class="material-icons" aria-hidden="true">celebration</span><span>' + pick(T.ok) + "</span>";
+    ok.onclick = close;
     row.appendChild(ok);
 
-    card.append(emoji, h, ul, row);
+    card.append(head, panel, row);
     bd.appendChild(card);
-    bd.onclick = (e) => { if (e.target === bd) bd.remove(); };
+    bd.onclick = (e) => { if (e.target === bd) close(); };
     document.body.appendChild(bd);
+
+    const esc = (e) => { if (e.key === "Escape") { close(); document.removeEventListener("keydown", esc); } };
+    document.addEventListener("keydown", esc);
+
+    function close() {
+      bd.classList.add("wn-out");
+      setTimeout(() => bd.remove(), 180);
+      document.removeEventListener("keydown", esc);
+    }
   }
 
   function addVersionToSettings() {
     const about = document.querySelector(".about-card .about-text");
-    if (!about || document.getElementById("appVersionRow")) return;
-    const p = document.createElement("p");
-    p.id = "appVersionRow";
-    p.className = "about-text";
-    p.style.marginTop = "4px";
-    p.innerHTML = '<span class="material-icons">new_releases</span><span>' + pick(T.ver) + ": " + VERSION + "</span>";
-    about.parentElement.appendChild(p);
+    if (!about) return;
+    if (!document.getElementById("appVersionRow")) {
+      const p = document.createElement("p");
+      p.id = "appVersionRow";
+      p.className = "about-text";
+      p.style.marginTop = "4px";
+      p.innerHTML = '<span class="material-icons">new_releases</span><span>' + pick(T.ver) + ": " + VERSION + "</span>";
+      about.parentElement.appendChild(p);
+    }
+    if (!document.getElementById("whatsNewBtn")) {
+      const b = document.createElement("button");
+      b.id = "whatsNewBtn";
+      b.className = "btn outlined";
+      b.style.marginTop = "10px";
+      b.innerHTML = '<span class="material-icons">celebration</span><span>' + pick(T.show) + "</span>";
+      b.onclick = () => showWhatsNew(VERSION);
+      about.parentElement.appendChild(b);
+    }
   }
 
   function init() {
-    const seen = localStorage.getItem(KEY_SEEN);
-    if (seen && seen !== VERSION) {
-      // показуємо "що нового", тільки якщо користувач уже був раніше (не перший візит)
-      setTimeout(() => showWhatsNew(VERSION), 600);
-    }
+    // показуємо "Що нового" при КОЖНОМУ вході на сайт
+    setTimeout(() => showWhatsNew(VERSION), 700);
     localStorage.setItem(KEY_SEEN, VERSION);
     addVersionToSettings();
     document.addEventListener("langchange", addVersionToSettings);
