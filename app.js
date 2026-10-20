@@ -150,33 +150,46 @@
       };
     });
     if (loginForm) {
-      loginForm.onsubmit = (e) => {
+      loginForm.onsubmit = async (e) => {
         e.preventDefault();
         if (!global.Profile) return;
         const u = ($("#loginUser") || {}).value || "";
         const p = ($("#loginPass") || {}).value || "";
         const msg = $("#loginMsg");
-        const res = global.Profile.login(u.trim(), p);
-        if (res && res.ok) {
-          if (msg) { msg.className = "auth-msg ok"; msg.textContent = t("profile.okLogin"); }
-          toast(t("profile.okLogin"));
-          renderProfile();
-        } else if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errLogin"); }
+        try {
+          const res = await global.Profile.login(u.trim(), p);
+          if (res && res.ok) {
+            if (msg) { msg.className = "auth-msg ok"; msg.textContent = t("profile.okLogin"); }
+            toast(t("profile.okLogin"));
+            renderProfile();
+          } else if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errLogin"); }
+        } catch (err) {
+          console.warn("login", err);
+          if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errLogin"); }
+        }
       };
     }
     if (registerForm) {
-      registerForm.onsubmit = (e) => {
+      registerForm.onsubmit = async (e) => {
         e.preventDefault();
         if (!global.Profile) return;
         const u = ($("#regUser") || {}).value || "";
         const p = ($("#regPass") || {}).value || "";
         const msg = $("#regMsg");
-        const res = global.Profile.register(u.trim(), p);
-        if (res && res.ok) {
-          if (msg) { msg.className = "auth-msg ok"; msg.textContent = t("profile.okRegister"); }
-          toast(t("profile.okRegister"));
-          renderProfile();
-        } else if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errExists"); }
+        try {
+          const res = await global.Profile.register(u.trim(), p);
+          if (res && res.ok) {
+            if (msg) { msg.className = "auth-msg ok"; msg.textContent = t("profile.okRegister"); }
+            toast(t("profile.okRegister"));
+            renderProfile();
+          } else if (msg) {
+            msg.className = "auth-msg err";
+            msg.textContent = t(res && res.code === "exists" ? "profile.errExists" : "profile.errLogin");
+          }
+        } catch (err) {
+          console.warn("register", err);
+          if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errLogin"); }
+        }
       };
     }
     const logoutBtn = $("#logoutBtn");
@@ -196,22 +209,23 @@
     if (!global.Profile || !global.Profile.current()) {
       auth.classList.remove("hidden");
       prof.classList.add("hidden");
-      updateHeaderProfile(null);
+      updateHeaderProfile();
       return;
     }
     auth.classList.add("hidden");
     prof.classList.remove("hidden");
-    const u = global.Profile.current();
+    const info = global.Profile.info() || {};
+    const avatarChar = global.Profile.getAvatar() || "\u{1F9D1}";
     const nameEl = $("#profileDisplayName");
     const meta = $("#profileMeta");
     const avatar = $("#avatarBig");
-    if (nameEl) nameEl.textContent = u.name || "—";
-    if (meta) meta.textContent = (t("profile.memberSince") || "member since") + " " + (u.created ? new Date(u.created).toLocaleDateString() : "");
-    if (avatar) avatar.textContent = u.avatar || "\u{1F9D1}";
+    if (nameEl) nameEl.textContent = info.name || global.Profile.getNickname() || "—";
+    if (meta) meta.textContent = (t("profile.memberSince") || "member since") + " " + (info.created ? new Date(info.created).toLocaleDateString() : "");
+    if (avatar) avatar.textContent = avatarChar;
     const grid = $("#recordsGrid");
     if (grid) {
       grid.innerHTML = "";
-      const recs = global.Profile.records ? global.Profile.records() : {};
+      const recs = global.Profile.getRecords() || {};
       const keys = Object.keys(recs);
       if (!keys.length) {
         const p = document.createElement("p");
@@ -227,14 +241,16 @@
         });
       }
     }
-    updateHeaderProfile(u);
+    updateHeaderProfile();
   }
 
-  function updateHeaderProfile(u) {
+  function updateHeaderProfile() {
     const nameEl = $("#profileName");
     const avatar = $("#avatarTop");
-    if (nameEl) nameEl.textContent = u ? (u.name || t("profile.guest")) : t("profile.guest");
-    if (avatar) avatar.textContent = u ? (u.avatar || "\u{1F9D1}") : "\u{1F9D1}";
+    const loggedIn = !!(global.Profile && global.Profile.current());
+    const info = loggedIn ? (global.Profile.info() || {}) : {};
+    if (nameEl) nameEl.textContent = loggedIn ? (info.name || global.Profile.getNickname()) : t("profile.guest");
+    if (avatar) avatar.textContent = (loggedIn && global.Profile.getAvatar()) || "\u{1F9D1}";
   }
 
   function bindProfileEdit() {
@@ -244,7 +260,7 @@
     if (rename) {
       rename.onclick = () => {
         if (!global.Profile || !global.Profile.current()) return;
-        const n = prompt("Нік:", global.Profile.current().name || "");
+        const n = prompt("Нік:", global.Profile.getNickname() || "");
         if (n !== null && n.trim()) { global.Profile.rename(n.trim()); renderProfile(); }
       };
     }
@@ -252,7 +268,7 @@
       big.onclick = () => {
         if (!global.Profile || !global.Profile.current()) return;
         const emojis = ["\u{1F9D1}", "\u{1F469}", "\u{1F468}", "\u{1F9D2}", "\u{1F47B}", "\u{1F916}", "\u{1F431}", "\u{1F436}", "\u{1F981}", "\u{1F43C}", "\u{1F984}", "\u{1F430}"];
-        const cur = global.Profile.current().avatar || "\u{1F9D1}";
+        const cur = global.Profile.getAvatar() || "\u{1F9D1}";
         const choice = prompt("Аватар (emoji): " + emojis.join(" "), cur);
         if (choice !== null && choice.trim()) { global.Profile.setAvatar(choice.trim()); renderProfile(); }
       };
@@ -267,7 +283,7 @@
       if (!id) return;
       if (id === "export") {
         if (!global.Profile) return;
-        const data = JSON.stringify({ profile: global.Profile.current(), records: global.Profile.records ? global.Profile.records() : {} }, null, 2);
+        const data = JSON.stringify({ profile: global.Profile.info(), nickname: global.Profile.getNickname(), records: global.Profile.getRecords() || {} }, null, 2);
         const blob = new Blob([data], { type: "application/json" });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
@@ -275,7 +291,7 @@
         a.click();
         toast(t("set.exportDone"));
       } else if (id === "resetRecords") {
-        if (global.Profile && global.Profile.resetRecords) global.Profile.resetRecords();
+        if (global.Profile && global.Profile.clearRecords) global.Profile.clearRecords();
         toast(t("settings.recordsCleared"));
         renderProfile();
       } else if (id === "clearAll") {
@@ -333,7 +349,7 @@
     try { bindAudio(); } catch (e) { console.warn("bindAudio", e); }
     try { bindAuth(); } catch (e) { console.warn("bindAuth", e); }
     try { bindProfileEdit(); } catch (e) { console.warn("bindProfileEdit", e); }
-    try { updateHeaderProfile(null); } catch (e) {}
+    try { renderProfile(); } catch (e) { console.warn("renderProfile", e); }
     try {
       if (global.Settings) {
         global.Settings.init();
