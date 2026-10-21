@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Фон: градієнт фіолетовий → синій -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6750A4"/>
+      <stop offset="100%" style="stop-color:#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="snake" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3ddc97"/>
+      <stop offset="100%" style="stop-color:#22d3ee"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Круглий фон -->
+  <circle cx="256" cy="256" r="240" fill="url(#bg)"/>
+  
+  <!-- Термінал (рамка) -->
+  <rect x="120" y="140" width="272" height="232" rx="20" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.2)" stroke-width="4"/>
+  
+  <!-- Змія Python (стилізована) -->
+  <path d="M 200 220 Q 200 180 240 180 L 280 180 Q 320 180 320 220 L 320 240 Q 320 260 300 260 L 260 260 Q 240 260 240 280 L 240 320 Q 240 340 260 340 L 300 340 Q 320 340 320 320" 
+        fill="none" stroke="url(#snake)" stroke-width="24" stroke-linecap="round"/>
+  
+  <!-- Око змії -->
+  <circle cx="290" cy="200" r="12" fill="#fff"/>
+  <circle cx="293" cy="200" r="6" fill="#000"/>
+  
+  <!-- Символ коду ">_" -->
+  <text x="160" y="340" font-family="monospace" font-size="48" font-weight="bold" fill="#fff" opacity="0.9">&gt;_</text>
+</svg>
