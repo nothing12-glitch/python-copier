@@ -277,7 +277,8 @@
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("sw.js").catch(() => {});
+        const swUrl = new URL("sw.js", window.location.href).href;
+        navigator.serviceWorker.register(swUrl).catch((e) => console.warn("SW registration failed:", e));
       });
     }
   </script>
