@@ -112,8 +112,7 @@
   const pick = (o) => o[lang()] || o.uk || o.en;
 
   function isDarkTheme() {
-    if (!global.Settings) return false;
-    return global.Settings.isDark();
+    return document.body.classList.contains("dark");
   }
 
   function getBgKey() {

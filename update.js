@@ -1,10 +1,21 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.31";
+  const VERSION = "26.10.32";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.32": {
+      uk: [
+        "Виправлено визначення теми для фону профілю"
+      ],
+      en: [
+        "Fixed theme detection for profile background"
+      ],
+      tr: [
+        "Profil arka planı için tema algılama düzeltildi"
+      ]
+    },
     "26.10.31": {
       uk: [
         "Окремі фони для світлої та темної теми — перемикаються автоматично",
