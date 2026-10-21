@@ -1,22 +1,28 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.28";
+  const VERSION = "26.10.29";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
-    "26.10.28": {
+    "26.10.29": {
       uk: [
-        "Оновлено фото в секретній кімнаті (пасхалка 200 кліків)",
-        "Піднято версію Service Worker для очищення кешу"
+        "Оновлено фото в секретній кімнаті (пасхалка 200 кліків) — нова зелена іконка термінала",
+        "Піднято CACHE_VERSION до pc-v6 для очищення кешу Service Worker",
+        "Виправлено кнопку «Що нового» — тепер працює і відкривається автоматично при вході",
+        "Оновлено ?v= параметри до 26.10.29 для пробиття кешу браузера"
       ],
       en: [
-        "Updated secret room photo (200-click easter egg)",
-        "Bumped Service Worker version to clear cache"
+        "Updated secret room photo (200-click easter egg) — new green terminal icon",
+        "Bumped CACHE_VERSION to pc-v6 to clear Service Worker cache",
+        "Fixed 'What's new' button — now works and opens automatically on site entry",
+        "Updated ?v= params to 26.10.29 to bust browser cache"
       ],
       tr: [
-        "Gizli oda fotoğrafı güncellendi (200 tıklama easter egg)",
-        "Önbelleği temizlemek için Service Worker sürümü yükseltildi"
+        "Gizli oda fotoğrafı güncellendi (200 tıklama easter egg) — yeni yeşil terminal simgesi",
+        "Service Worker önbelleğini temizlemek için CACHE_VERSION pc-v6'ya yükseltildi",
+        "'Yenilikler' düğmesi düzeltildi — artık çalışıyor ve siteye girişte otomatik açılıyor",
+        "Tarayıcı önbelleğini aşmak için ?v= parametreleri 26.10.29'a güncellendi"
       ]
     },
     "26.10.26": {
