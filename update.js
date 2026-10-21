@@ -267,7 +267,6 @@
     addVersionToSettings();
     document.addEventListener("langchange", addVersionToSettings);
   }
-
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 

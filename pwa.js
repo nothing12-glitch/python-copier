@@ -25,7 +25,8 @@
   function createInstallButton() {
     const btn = document.createElement("button");
     btn.id = "pwaInstallBtn";
-    btn.className = "btn contained pwa-install-btn";
+    btn.className = "btn contained";
+    btn.style.marginTop = "10px";
     btn.innerHTML = '<span class="material-icons">download</span><span>' + pick(T.install) + "</span>";
 
     btn.onclick = async () => {
@@ -44,19 +45,19 @@
     return btn;
   }
 
-  function showInstallButton() {
-    const hero = document.querySelector(".hero-cta");
-    if (!hero || document.getElementById("pwaInstallBtn")) return;
+  function addInstallButtonToSettings() {
+    const aboutCard = document.querySelector(".about-card");
+    if (!aboutCard || document.getElementById("pwaInstallBtn")) return;
 
     const btn = createInstallButton();
-    hero.appendChild(btn);
+    aboutCard.appendChild(btn);
   }
 
   function init() {
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      showInstallButton();
+      addInstallButtonToSettings();
     });
 
     window.addEventListener("appinstalled", () => {
@@ -74,7 +75,7 @@
       }
     });
 
-    showInstallButton();
+    addInstallButtonToSettings();
   }
 
   if (document.readyState === "loading") {
@@ -83,5 +84,5 @@
     init();
   }
 
-  global.PWA = { init, showInstallButton };
+  global.PWA = { init, addInstallButtonToSettings };
 })(window);
