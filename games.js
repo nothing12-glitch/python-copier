@@ -17,6 +17,42 @@
     { id: "guess", ico: "\u{1F3AF}", name: "game.guess", desc: "game.guessDesc", best: "low" }
   ];
 
+  const HOW_TO_PLAY = {
+    uk: {
+      ttt: "Ставиш хрестики, ШІ — нулики. Збери 3 в ряд, щоб виграти.",
+      snake: "Керуй змією стрілками або WASD. Їж їжу, не врізайся в стіни та себе.",
+      memory: "Перевертай картки по дві. Знайди всі пари за мінімум ходів.",
+      g2048: "Зсувай плитки стрілками. Однакові числа зливаються. Збери 2048!",
+      rps: "Обери камінь, ножиці або папір. Переможи комп'ютер.",
+      react: "Чекай зеленого сигналу, потім клікни якнайшвидше.",
+      simon: "Запам'ятай послідовність кольорів і повтори її.",
+      mines: "Відкривай клітинки, уникай мін. Права кнопка — прапорець.",
+      guess: "Вгадай число від 1 до 100 за мінімум спроб."
+    },
+    en: {
+      ttt: "Place X marks, AI plays O. Get 3 in a row to win.",
+      snake: "Control the snake with arrows or WASD. Eat food, avoid walls and yourself.",
+      memory: "Flip cards two at a time. Find all pairs in as few moves as possible.",
+      g2048: "Slide tiles with arrows. Matching numbers merge. Reach 2048!",
+      rps: "Choose rock, paper, or scissors. Beat the computer.",
+      react: "Wait for the green signal, then click as fast as you can.",
+      simon: "Memorize the color sequence and repeat it.",
+      mines: "Open cells, avoid mines. Right-click to flag.",
+      guess: "Guess the number from 1 to 100 in as few tries as possible."
+    },
+    tr: {
+      ttt: "X koy, AI O oynar. Kazanmak için 3 taneyi yan yana getir.",
+      snake: "Yılanı oklar veya WASD ile kontrol et. Yem ye, duvarlara ve kendine çarpma.",
+      memory: "Kartları ikişer ikişer çevir. Tüm çiftleri en az hamlede bul.",
+      g2048: "Karoları oklarla kaydır. Aynı sayılar birleşir. 2048'e ulaş!",
+      rps: "Taş, kağıt veya makas seç. Bilgisayarı yen.",
+      react: "Yeşil sinyali bekle, sonra olabildiğince hızlı tıkla.",
+      simon: "Renk sırasını ezberle ve tekrarla.",
+      mines: "Hücreleri aç, mayınlardan kaçın. Sağ tık bayrak için.",
+      guess: "1'den 100'e kadar sayıyı en az denemede tahmin et."
+    }
+  };
+
   function toast(msg) {
     const el = $("#toast");
     el.textContent = msg;
@@ -48,12 +84,118 @@
     title.textContent = t(game.name);
     const score = document.createElement("span");
     score.className = "game-score";
-    top.append(back, title, score);
+    
+    // Кнопка налаштувань
+    const settingsBtn = document.createElement("button");
+    settingsBtn.className = "icon-btn";
+    settingsBtn.innerHTML = '<span class="material-icons">tune</span>';
+    settingsBtn.title = t("game.settings") || "Settings";
+    settingsBtn.onclick = () => showGameSettings(game.id);
+    
+    top.append(back, title, score, settingsBtn);
+
+    // Інструкція "як грати"
+    const lang = global.I18n ? global.I18n.lang : "uk";
+    const howTo = HOW_TO_PLAY[lang]?.[game.id] || HOW_TO_PLAY.uk[game.id];
+    if (howTo) {
+      const instr = document.createElement("div");
+      instr.className = "game-instruction";
+      instr.textContent = howTo;
+      stage.appendChild(instr);
+    }
 
     const area = document.createElement("div");
     area.className = "game-area";
     stage.append(top, area);
     return { area, score };
+  }
+
+  function showGameSettings(gameId) {
+    const old = document.getElementById("gameSettingsModal");
+    if (old) old.remove();
+    if (SFX() && SFX().pop) SFX().pop();
+
+    const bd = document.createElement("div");
+    bd.id = "gameSettingsModal";
+    bd.className = "gs-backdrop";
+
+    const card = document.createElement("div");
+    card.className = "gs-card";
+    card.setAttribute("role", "dialog");
+    card.setAttribute("aria-modal", "true");
+
+    const h = document.createElement("h3");
+    h.textContent = t("game.settings") || "Game Settings";
+    card.appendChild(h);
+
+    const body = document.createElement("div");
+    body.className = "gs-body";
+
+    // Налаштування для змійки
+    if (gameId === "snake") {
+      const label = document.createElement("label");
+      label.className = "gs-label";
+      label.textContent = t("game.snakeSpeed") || "Speed";
+      body.appendChild(label);
+      
+      const select = document.createElement("select");
+      select.className = "md-select";
+      const speeds = [
+        { v: "slow", uk: "Повільно", en: "Slow", tr: "Yavaş" },
+        { v: "normal", uk: "Нормально", en: "Normal", tr: "Normal" },
+        { v: "fast", uk: "Швидко", en: "Fast", tr: "Hızlı" }
+      ];
+      const current = global.Settings.get("snakeSpeed") || "normal";
+      speeds.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.v;
+        opt.textContent = s[global.I18n ? global.I18n.lang : "uk"] || s.en;
+        if (s.v === current) opt.selected = true;
+        select.appendChild(opt);
+      });
+      select.onchange = () => {
+        global.Settings.set("snakeSpeed", select.value);
+        toast(t("set.saved") || "Saved");
+      };
+      body.appendChild(select);
+    }
+
+    // Налаштування для Memory
+    if (gameId === "memory") {
+      const label = document.createElement("label");
+      label.className = "gs-label";
+      label.textContent = t("game.memorySize") || "Pairs";
+      body.appendChild(label);
+      
+      const select = document.createElement("select");
+      select.className = "md-select";
+      const sizes = [4, 6, 8, 10];
+      const current = Number(global.Settings.get("memorySize")) || 8;
+      sizes.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s;
+        opt.textContent = s + " " + (t("game.pairs") || "pairs");
+        if (s === current) opt.selected = true;
+        select.appendChild(opt);
+      });
+      select.onchange = () => {
+        global.Settings.set("memorySize", select.value);
+        toast(t("set.saved") || "Saved");
+      };
+      body.appendChild(select);
+    }
+
+    card.appendChild(body);
+
+    const closeBtn = document.createElement("button");
+    closeBtn.className = "btn contained";
+    closeBtn.textContent = t("games.back") || "Close";
+    closeBtn.onclick = () => { bd.classList.add("gs-out"); setTimeout(() => bd.remove(), 180); };
+    card.appendChild(closeBtn);
+
+    bd.appendChild(card);
+    bd.onclick = (e) => { if (e.target === bd) { bd.classList.add("gs-out"); setTimeout(() => bd.remove(), 180); } };
+    document.body.appendChild(bd);
   }
 
   function setScore(el, label, value) {
@@ -119,7 +261,7 @@
     cv.id="snakeCanvas"; cv.width=N*size; cv.height=N*size;
     area.appendChild(cv);
     const ctx=cv.getContext("2d");
-    let snake=[{x:8,y:9}], dir={x:1,y:0}, next=dir, food=place(), pts=0, dead=false, timer=null;
+    let snake=[{x:8,y:9}], dir={x:1,y:0}, next=dir, food=place(), pts=0, dead=false, timer=null, closed=false;
     setScore(score,t("games.score"),0);
     function place(){ let p; do{ p={x:(Math.random()*N)|0,y:(Math.random()*N)|0}; }while(snake.some(s=>s.x===p.x&&s.y===p.y)); return p; }
     function draw(){
@@ -128,6 +270,7 @@
       snake.forEach((s,i)=>{ ctx.fillStyle=i===0?"#22d3ee":"#5b8cff"; ctx.fillRect(s.x*size+1,s.y*size+1,size-2,size-2); });
     }
     function step(){
+      if(closed) return;
       dir=next; const h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
       if(h.x<0||h.y<0||h.x>=N||h.y>=N||snake.some(s=>s.x===h.x&&s.y===h.y)){ return gameOver(); }
       snake.unshift(h);
@@ -135,8 +278,8 @@
       else snake.pop();
       draw();
     }
-    function gameOver(){ dead=true; clearInterval(timer); SFX()&&SFX().lose(); saveRecord("snake",pts,"high"); draw(); ctx.fillStyle="#000a"; ctx.fillRect(0,0,cv.width,cv.height); ctx.fillStyle="#fff"; ctx.font="20px sans-serif"; ctx.textAlign="center"; ctx.fillText(t("games.over"),cv.width/2,cv.height/2); setTimeout(start,1600); }
-    function start(){ snake=[{x:8,y:9}]; dir={x:1,y:0}; next=dir; food=place(); pts=0; dead=false; setScore(score,t("games.score"),0); clearInterval(timer); const sp={slow:160,normal:110,fast:70}[global.Settings.get("snakeSpeed")]||110; timer=setInterval(step,sp); draw(); }
+    function gameOver(){ dead=true; clearInterval(timer); timer=null; SFX()&&SFX().lose(); saveRecord("snake",pts,"high"); draw(); ctx.fillStyle="#000a"; ctx.fillRect(0,0,cv.width,cv.height); ctx.fillStyle="#fff"; ctx.font="20px sans-serif"; ctx.textAlign="center"; ctx.fillText(t("games.over"),cv.width/2,cv.height/2); if(!closed) setTimeout(start,1600); }
+    function start(){ if(closed) return; snake=[{x:8,y:9}]; dir={x:1,y:0}; next=dir; food=place(); pts=0; dead=false; setScore(score,t("games.score"),0); clearInterval(timer); const sp={slow:160,normal:110,fast:70}[global.Settings.get("snakeSpeed")]||110; timer=setInterval(step,sp); draw(); }
     function setDir(x,y){ if(snake.length>1&&(x===-dir.x&&y===-dir.y))return; next={x,y}; }
     const key=(e)=>{ const k=e.key; if(k==="ArrowUp"||k==="w"){setDir(0,-1);e.preventDefault();} else if(k==="ArrowDown"||k==="s"){setDir(0,1);e.preventDefault();} else if(k==="ArrowLeft"||k==="a"){setDir(-1,0);e.preventDefault();} else if(k==="ArrowRight"||k==="d"){setDir(1,0);e.preventDefault();} };
     window.addEventListener("keydown",key);
@@ -146,7 +289,7 @@
     area.appendChild(dp);
     dp.querySelectorAll("button").forEach(b=>b.onclick=()=>{const d=b.dataset.d; if(d==="up")setDir(0,-1); if(d==="down")setDir(0,1); if(d==="left")setDir(-1,0); if(d==="right")setDir(1,0);});
     start();
-    return ()=>{ clearInterval(timer); window.removeEventListener("keydown",key); };
+    return ()=>{ closed=true; clearInterval(timer); timer=null; window.removeEventListener("keydown",key); };
   }
 
   /* ---------------- Memory ---------------- */

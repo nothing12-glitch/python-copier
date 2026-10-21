@@ -1,10 +1,30 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.20";
+  const VERSION = "26.10.21";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.21": {
+      uk: [
+        "Пофікшено баг зі змійкою — тепер гра зупиняється при виході",
+        "Додано інструкції «як грати» над кожною грою",
+        "Додано панель налаштувань для ігор (швидкість змійки, розмір Memory)",
+        "Кнопка налаштувань з'являється у верхній панелі кожної гри"
+      ],
+      en: [
+        "Fixed snake bug — game now stops when you exit",
+        "Added 'how to play' instructions above each game",
+        "Added game settings panel (snake speed, memory size)",
+        "Settings button appears in the top bar of each game"
+      ],
+      tr: [
+        "Yılan hatası düzeltildi — oyundan çıkınca duruyor",
+        "Her oyunun üstüne 'nasıl oynanır' talimatları eklendi",
+        "Oyun ayarları paneli eklendi (yılan hızı, memory boyutu)",
+        "Her oyunun üst çubuğunda ayarlar düğmesi görünüyor"
+      ]
+    },
     "26.10.20": {
       uk: [
         "Свічку пам'яті прибрано",

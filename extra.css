@@ -277,3 +277,87 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .wn-backdrop, .wn-card, .wn-emoji { animation: none !important; }
 }
+
+/* ---------- 11) Ігрові інструкції та налаштування ---------- */
+.game-instruction {
+  margin: 8px 16px 12px;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--md-primary) 8%, var(--md-surface));
+  border: 1px solid var(--md-outline-var);
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--md-on-surface);
+  text-align: center;
+}
+
+.game-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--md-outline-var);
+}
+
+.game-top .icon-btn {
+  margin-left: auto;
+}
+
+/* Модальне вікно налаштувань ігор */
+@keyframes gsfade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes gsin {
+  0%   { opacity: 0; transform: translateY(18px) scale(.95); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+@keyframes gsout { to { opacity: 0; transform: translateY(8px) scale(.97); } }
+
+.gs-backdrop {
+  position: fixed; inset: 0; z-index: 97;
+  display: grid; place-items: center; padding: 16px;
+  background: rgba(8, 6, 14, .6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: gsfade .2s ease both;
+}
+.gs-backdrop.gs-out { animation: gsout .18s ease both; }
+
+.gs-card {
+  width: min(92vw, 400px);
+  background: var(--md-surface); color: var(--md-on-surface);
+  border-radius: 22px; padding: 20px 22px 18px;
+  box-shadow: var(--md-elev3);
+  border: 1px solid color-mix(in srgb, var(--md-primary) 20%, transparent);
+  animation: gsin .3s cubic-bezier(.22, .61, .36, 1) both;
+}
+.gs-card h3 {
+  margin: 0 0 16px;
+  font-size: 18px; font-weight: 600;
+  color: var(--md-primary);
+}
+.gs-body {
+  display: flex; flex-direction: column; gap: 12px;
+  margin-bottom: 16px;
+}
+.gs-label {
+  font-size: 13px; font-weight: 500;
+  color: var(--md-on-surface);
+  margin-bottom: 4px;
+}
+.gs-card .md-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--md-outline-var);
+  background: var(--md-surface);
+  color: var(--md-on-surface);
+  font-size: 14px;
+  cursor: pointer;
+}
+.gs-card .btn {
+  width: 100%;
+  margin-top: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gs-backdrop, .gs-card { animation: none !important; }
+}
