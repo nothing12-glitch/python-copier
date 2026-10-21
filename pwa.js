@@ -1,11 +1,16 @@
 /* pwa.js — кнопка «Встановити застосунок» через beforeinstallprompt. */
 (function (global) {
   let deferredPrompt = null;
+  let installAttempted = false;
 
   const T = {
     install: { uk: "Встановити як застосунок", en: "Install as app", tr: "Uygulama olarak kur" },
     installed: { uk: "Застосунок встановлено!", en: "App installed!", tr: "Uygulama kuruldu!" },
-    notSupported: { uk: "Встановлення не підтримується в цьому браузері", en: "Installation not supported in this browser", tr: "Bu tarayıcıda kurulum desteklenmiyor" }
+    manualInstall: {
+      uk: "Натисни «⋮» або «Поділитися» → «Встановити застосунок»",
+      en: "Click «» or «Share» → «Install app»",
+      tr: "«⋮» veya «Paylaş» → «Uygulamayı yükle»"
+    }
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
@@ -22,20 +27,18 @@
     btn.id = "pwaInstallBtn";
     btn.className = "btn contained pwa-install-btn";
     btn.innerHTML = '<span class="material-icons">download</span><span>' + pick(T.install) + "</span>";
-    btn.style.display = "none";
 
     btn.onclick = async () => {
-      if (!deferredPrompt) {
-        toast(pick(T.notSupported));
-        return;
+      if (deferredPrompt && !installAttempted) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === "accepted") {
+          toast(pick(T.installed));
+        }
+        installAttempted = true;
+      } else {
+        toast(pick(T.manualInstall));
       }
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === "accepted") {
-        toast(pick(T.installed));
-      }
-      deferredPrompt = null;
-      btn.style.display = "none";
     };
 
     return btn;
@@ -47,12 +50,6 @@
 
     const btn = createInstallButton();
     hero.appendChild(btn);
-    btn.style.display = "";
-  }
-
-  function hideInstallButton() {
-    const btn = document.getElementById("pwaInstallBtn");
-    if (btn) btn.style.display = "none";
   }
 
   function init() {
@@ -64,7 +61,8 @@
 
     window.addEventListener("appinstalled", () => {
       deferredPrompt = null;
-      hideInstallButton();
+      const btn = document.getElementById("pwaInstallBtn");
+      if (btn) btn.remove();
       toast(pick(T.installed));
     });
 
@@ -76,9 +74,7 @@
       }
     });
 
-    if (deferredPrompt) {
-      showInstallButton();
-    }
+    showInstallButton();
   }
 
   if (document.readyState === "loading") {
@@ -87,5 +83,5 @@
     init();
   }
 
-  global.PWA = { init, showInstallButton, hideInstallButton };
+  global.PWA = { init, showInstallButton };
 })(window);
