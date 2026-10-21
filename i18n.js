@@ -2,7 +2,7 @@
 (function (global) {
   const dict = {
     uk: {
-      "app.title": "Мої проєкти та завдання",
+      "app.title": "python-copier",
       "nav.home": "Головна", "nav.python": "Python", "nav.games": "Ігри", "nav.profile": "Профіль", "nav.settings": "Налаштування",
       "home.heroTitle": "Вчись, грай, кодуй — усе в браузері",
       "home.heroText": "Інтерактивний майданчик: запускай Python прямо тут, грай в ігри та зберігай прогрес у профілі.",
