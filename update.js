@@ -1,10 +1,24 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.24";
+  const VERSION = "26.10.25";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.25": {
+      uk: [
+        "Додано пункт «Тема» в Персоналізацію: Авто, Світла, Темна",
+        "Тема автоматично визначається за системою, можна змінити вручну"
+      ],
+      en: [
+        "Added 'Theme' item in Personalization: Auto, Light, Dark",
+        "Theme auto-detects from system, can be changed manually"
+      ],
+      tr: [
+        "Kişiselleştirme'ye 'Tema' eklendi: Otomatik, Açık, Koyu",
+        "Tema sistemden otomatik algılanır, elle değiştirilebilir"
+      ]
+    },
     "26.10.24": {
       uk: [
         "Секцію «Вигляд» перейменовано на «Персоналізація»",

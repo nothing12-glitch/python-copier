@@ -3,7 +3,7 @@
   const KEY = "app.settings";
 
   const DEFAULTS = {
-    style: "classic", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
+    style: "classic", theme: "auto", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
     glass: false, reduceMotion: false, compact: false, fontSize: 14,
     navDesign: "pill",
     navSize: "medium",
@@ -33,7 +33,11 @@
   function resetAll() { state = Object.assign({}, DEFAULTS); save(); apply(); document.dispatchEvent(new CustomEvent("settingschange", { detail: { key: "*", value: null } })); }
 
   const darkMQ = global.matchMedia ? global.matchMedia("(prefers-color-scheme: dark)") : null;
-  function isDark() { return state.style === "dark"; }
+  function isDark() {
+    if (state.theme === "dark") return true;
+    if (state.theme === "light") return false;
+    return !!(darkMQ && darkMQ.matches);
+  }
 
   function apply() {
     const b = document.body;
@@ -73,6 +77,8 @@
     { group: "settings.personalization", items: [
       { id: "style", type: "select", label: "set.style", options: [
         ["classic", "set.styleClassic"] ] },
+      { id: "theme", type: "select", label: "settings.theme", options: [
+        ["auto", "set.themeAuto"], ["light", "set.themeLight"], ["dark", "set.themeDark"] ] },
       { id: "accent", type: "select", label: "set.accent", options: [
         ["purple", "set.acc.purple"], ["blue", "set.acc.blue"], ["green", "set.acc.green"], ["orange", "set.acc.orange"], ["pink", "set.acc.pink"],
         ["cyan", "set.acc.cyan"], ["red", "set.acc.red"], ["gold", "set.acc.gold"], ["mint", "set.acc.mint"] ] },
@@ -208,6 +214,11 @@
   function init() {
     apply();
     initCursorGlow();
+    if (darkMQ) {
+      const onScheme = () => { if (state.theme === "auto") apply(); };
+      if (darkMQ.addEventListener) darkMQ.addEventListener("change", onScheme);
+      else darkMQ.addListener(onScheme);
+    }
     document.addEventListener("langchange", () => {
       const c = document.getElementById("settingsBody");
       if (c) render(c);
