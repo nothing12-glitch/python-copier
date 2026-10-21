@@ -435,3 +435,15 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .gs-backdrop, .gs-card { animation: none !important; }
 }
+
+/* Посилання в картці "Про застосунок" */
+.about-link {
+  color: var(--md-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color .2s, text-decoration .2s;
+}
+.about-link:hover {
+  color: color-mix(in srgb, var(--md-primary) 80%, white);
+  text-decoration: underline;
+}

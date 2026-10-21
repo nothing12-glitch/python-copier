@@ -106,13 +106,6 @@
       { id: "sfxVolume", type: "range", label: "set.sfxVolume", min: 0, max: 1, step: 0.05 },
       { id: "musicVolume", type: "range", label: "set.musicVolume", min: 0, max: 1, step: 0.05 }
     ]},
-    { group: "set.games", items: [
-      { id: "snakeSpeed", type: "select", label: "set.snakeSpeed", options: [["slow", "set.slow"], ["normal", "set.normal"], ["fast", "set.fast"]] },
-      { id: "memorySize", type: "select", label: "set.memorySize", options: [["6", "6"], ["8", "8"], ["10", "10"]], cast: Number },
-      { id: "trackRecords", type: "switch", label: "set.trackRecords" },
-      { id: "showHints", type: "switch", label: "set.showHints" },
-      { id: "shortcuts", type: "switch", label: "set.shortcuts" }
-    ]},
     { group: "settings.language", items: [
       { id: "language", type: "select", label: "settings.language", options: [["uk", "Українська"], ["en", "English"], ["tr", "Türkçe"]] }
     ]},
