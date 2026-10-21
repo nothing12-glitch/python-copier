@@ -344,18 +344,28 @@
   }
 
   /* ---------- Слухачі подій ---------- */
+  function rerenderIfActive() {
+    const view = document.getElementById("view-achievements");
+    if (view && view.classList.contains("active")) {
+      const el = document.getElementById("achGrid");
+      if (el) render(el);
+    }
+  }
+
   function init() {
     bumpStat("visit");
 
     document.addEventListener("pythonrun", () => {
       bumpStat("pyRuns");
       checkAll();
+      rerenderIfActive();
     });
 
     document.addEventListener("gameplayed", (e) => {
       if (e.detail && e.detail.id) {
         bumpStat("game", e.detail.id);
         checkAll();
+        rerenderIfActive();
       }
     });
 
@@ -363,6 +373,7 @@
       if (e.detail) {
         bumpStat("record", { game: e.detail.game, val: e.detail.value });
         checkAll();
+        rerenderIfActive();
       }
     });
 
@@ -370,6 +381,7 @@
       if (e.detail) {
         bumpStat("route", e.detail);
         checkAll();
+        rerenderIfActive();
       }
     });
 
@@ -377,6 +389,7 @@
       if (e.detail && e.detail.tool) {
         bumpStat("tool", e.detail.tool);
         checkAll();
+        rerenderIfActive();
       }
     });
 

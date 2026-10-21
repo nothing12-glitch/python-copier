@@ -1,10 +1,21 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.36";
+  const VERSION = "26.10.37";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.37": {
+      uk: [
+        "Виправлено оновлення прогрес-барів — тепер змінюються в реальному часі"
+      ],
+      en: [
+        "Fixed progress bar updates — now refresh in real-time"
+      ],
+      tr: [
+        "İlerleme çubukları güncellemesi düzeltildi — artık gerçek zamanlı yenileniyor"
+      ]
+    },
     "26.10.36": {
       uk: [
         "Прогрес-бари для кожного досягнення — видно скільки відсотків залишилось",
