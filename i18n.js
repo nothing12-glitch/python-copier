@@ -125,7 +125,7 @@
       "react.go": "ТИСНИ!", "react.result": "Твій час: {ms} мс", "react.tooSoon": "За рано! Спробуй ще."
     },
     en: {
-      "app.title": "My Projects & Tasks",
+      "app.title": "python-copier",
       "nav.home": "Home", "nav.python": "Python", "nav.games": "Games", "nav.profile": "Profile", "nav.settings": "Settings",
       "home.heroTitle": "Learn, play, code — all in the browser",
       "home.heroText": "An interactive playground: run Python right here, play games and keep your progress in your profile.",
@@ -248,7 +248,7 @@
       "react.go": "TAP!", "react.result": "Your time: {ms} ms", "react.tooSoon": "Too soon! Try again."
     },
     tr: {
-      "app.title": "Projelerim ve Görevlerim",
+      "app.title": "python-copier",
       "nav.home": "Ana Sayfa", "nav.python": "Python", "nav.games": "Oyunlar", "nav.profile": "Profil", "nav.settings": "Ayarlar",
       "home.heroTitle": "Öğren, oyna, kod yaz — hepsi tarayıcıda",
       "home.heroText": "Etkileşimli bir alan: Python'u burada çalıştır, oyun oyna ve ilerlemeni profilinde sakla.",

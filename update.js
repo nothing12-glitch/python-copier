@@ -1,34 +1,45 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.21";
+  const VERSION = "26.10.22";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.22": {
+      uk: [
+        "Назву сайту змінено на python-copier",
+        "Додано контакти та посилання на інші проєкти у розділі «Про застосунок»",
+        "Прибрано вкладку «Ігри» з Налаштувань — тепер усе налаштовується у самих іграх"
+      ],
+      en: [
+        "Site name changed to python-copier",
+        "Added contact info and links to other projects in the About section",
+        "Removed Games section from Settings — all game settings are now in-game"
+      ],
+      tr: [
+        "Site adı python-copier olarak değiştirildi",
+        "Hakkında bölümüne iletişim bilgileri ve diğer projelere bağlantılar eklendi",
+        "Ayarlar'dan Oyunlar bölümü kaldırıldı — tüm oyun ayarları artık oyun içinde"
+      ]
+    },
     "26.10.21": {
       uk: [
         "Пофікшено баг зі змійкою — тепер гра зупиняється при виході",
         "Додано інструкції «як грати» над кожною грою",
         "Додано панель налаштувань для ігор (швидкість змійки, розмір Memory)",
-        "Кнопка налаштувань з'являється у верхній панелі кожної гри",
-        "Прибрано вкладку «Ігри» з Налаштувань — тепер усе налаштовується у самих іграх",
-        "Додано контакти та посилання на інші проєкти у розділі «Про застосунок»"
+        "Кнопка налаштувань з'являється у верхній панелі кожної гри"
       ],
       en: [
         "Fixed snake bug — game now stops when you exit",
         "Added 'how to play' instructions above each game",
         "Added game settings panel (snake speed, memory size)",
-        "Settings button appears in the top bar of each game",
-        "Removed Games section from Settings — all game settings are now in-game",
-        "Added contact info and links to other projects in the About section"
+        "Settings button appears in the top bar of each game"
       ],
       tr: [
         "Yılan hatası düzeltildi — oyundan çıkınca duruyor",
         "Her oyunun üstüne 'nasıl oynanır' talimatları eklendi",
         "Oyun ayarları paneli eklendi (yılan hızı, memory boyutu)",
-        "Her oyunun üst çubuğunda ayarlar düğmesi görünüyor",
-        "Ayarlar'dan Oyunlar bölümü kaldırıldı — tüm oyun ayarları artık oyun içinde",
-        "Hakkında bölümüne iletişim bilgileri ve diğer projelere bağlantılar eklendi"
+        "Her oyunun üst çubuğunda ayarlar düğmesi görünüyor"
       ]
     },
     "26.10.20": {
