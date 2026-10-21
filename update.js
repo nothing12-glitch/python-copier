@@ -1,10 +1,24 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.27";
+  const VERSION = "26.10.28";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.28": {
+      uk: [
+        "Оновлено фото в секретній кімнаті (пасхалка 200 кліків)",
+        "Піднято версію Service Worker для очищення кешу"
+      ],
+      en: [
+        "Updated secret room photo (200-click easter egg)",
+        "Bumped Service Worker version to clear cache"
+      ],
+      tr: [
+        "Gizli oda fotoğrafı güncellendi (200 tıklama easter egg)",
+        "Önbelleği temizlemek için Service Worker sürümü yükseltildi"
+      ]
+    },
     "26.10.26": {
       uk: [
         "Додано PWA-підтримку — сайт можна встановити як застосунок",
