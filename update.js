@@ -1,27 +1,10 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.23";
+  const VERSION = "26.10.22";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
-    "26.10.23": {
-      uk: [
-        "Додано тему Spotify — темний стиль із зеленим акцентом",
-        "Музичний плеєр у Spotify-стилі: велика обкладинка, зелена кнопка play",
-        "Напис «ЗАРАЗ ГРАЄ» над плеєром у темі Spotify"
-      ],
-      en: [
-        "Added Spotify theme — dark style with green accent",
-        "Spotify-style music player: large cover art, green play button",
-        "'NOW PLAYING' label above the player in Spotify theme"
-      ],
-      tr: [
-        "Spotify teması eklendi — yeşil vurgulu koyu stil",
-        "Spotify tarzı müzik çalar: büyük kapak, yeşil oynat düğmesi",
-        "Spotify temasında çalıcının üstünde 'ŞİMDİ ÇALIYOR' yazısı"
-      ]
-    },
     "26.10.22": {
       uk: [
         "Назву сайту змінено на python-copier",

@@ -139,10 +139,6 @@
     const playing = audio && !audio.paused;
     const L = new Set(likes());
 
-    const npHeader = document.createElement("div");
-    npHeader.className = "mp-now-playing";
-    npHeader.textContent = global.I18n ? global.I18n.t("audio.nowPlaying") : "NOW PLAYING";
-
     const hero = document.createElement("div");
     hero.className = "mp-hero-wrap";
     const bg = document.createElement("div");
@@ -243,7 +239,7 @@
     );
 
     panel.innerHTML = "";
-    panel.append(npHeader, hero, prog, body, extra, ctrls, foot);
+    panel.append(hero, prog, body, extra, ctrls, foot);
     updateProgress();
   }
 

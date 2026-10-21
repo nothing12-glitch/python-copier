@@ -33,12 +33,11 @@
   function resetAll() { state = Object.assign({}, DEFAULTS); save(); apply(); document.dispatchEvent(new CustomEvent("settingschange", { detail: { key: "*", value: null } })); }
 
   const darkMQ = global.matchMedia ? global.matchMedia("(prefers-color-scheme: dark)") : null;
-  function isDark() { return state.theme === "dark" || state.theme === "spotify" || (state.theme === "auto" && !!darkMQ && darkMQ.matches); }
+  function isDark() { return state.theme === "dark" || (state.theme === "auto" && !!darkMQ && darkMQ.matches); }
 
   function apply() {
     const b = document.body;
     b.classList.toggle("dark", isDark());
-    b.classList.toggle("spotify", state.theme === "spotify");
     b.dataset.accent = state.accent;
     b.classList.toggle("bg-glow-on", !!state.bgGlow);
     b.classList.toggle("bg-animate-on", !!state.bgAnimate);
@@ -73,7 +72,7 @@
   const SCHEMA = [
     { group: "settings.appearance", items: [
       { id: "theme", type: "select", label: "settings.theme", options: [
-        ["auto", "set.themeAuto"], ["light", "set.themeLight"], ["dark", "set.themeDark"], ["spotify", "set.themeSpotify"] ] },
+        ["auto", "set.themeAuto"], ["light", "set.themeLight"], ["dark", "set.themeDark"] ] },
       { id: "accent", type: "select", label: "set.accent", options: [
         ["purple", "set.acc.purple"], ["blue", "set.acc.blue"], ["green", "set.acc.green"], ["orange", "set.acc.orange"], ["pink", "set.acc.pink"],
         ["cyan", "set.acc.cyan"], ["red", "set.acc.red"], ["gold", "set.acc.gold"], ["mint", "set.acc.mint"] ] },
