@@ -303,6 +303,80 @@ html, body { overflow-x: hidden; overflow-x: clip; }
   margin-left: auto;
 }
 
+/* Кнопка "i" на картках ігор */
+.game-card {
+  position: relative;
+}
+.game-info-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: color-mix(in srgb, var(--md-primary) 20%, transparent);
+  color: var(--md-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, transform .15s;
+  padding: 0;
+}
+.game-info-btn .material-icons {
+  font-size: 18px;
+}
+.game-info-btn:hover {
+  background: color-mix(in srgb, var(--md-primary) 35%, transparent);
+  transform: scale(1.1);
+}
+
+/* Модальне вікно "Як грати" */
+@keyframes htfade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes htin {
+  0%   { opacity: 0; transform: translateY(18px) scale(.95); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+@keyframes htout { to { opacity: 0; transform: translateY(8px) scale(.97); } }
+
+.ht-backdrop {
+  position: fixed; inset: 0; z-index: 98;
+  display: grid; place-items: center; padding: 16px;
+  background: rgba(8, 6, 14, .6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: htfade .2s ease both;
+}
+.ht-backdrop.ht-out { animation: htout .18s ease both; }
+
+.ht-card {
+  width: min(92vw, 420px);
+  background: var(--md-surface); color: var(--md-on-surface);
+  border-radius: 22px; padding: 24px 22px 20px;
+  box-shadow: var(--md-elev3);
+  border: 1px solid color-mix(in srgb, var(--md-primary) 20%, transparent);
+  animation: htin .3s cubic-bezier(.22, .61, .36, 1) both;
+}
+.ht-card h3 {
+  margin: 0 0 16px;
+  font-size: 20px; font-weight: 600;
+  color: var(--md-primary);
+}
+.ht-text {
+  margin: 0 0 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--md-on-surface);
+}
+.ht-card .btn {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ht-backdrop, .ht-card { animation: none !important; }
+}
+
 /* Модальне вікно налаштувань ігор */
 @keyframes gsfade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes gsin {

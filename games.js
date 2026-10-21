@@ -94,16 +94,6 @@
     
     top.append(back, title, score, settingsBtn);
 
-    // Інструкція "як грати"
-    const lang = global.I18n ? global.I18n.lang : "uk";
-    const howTo = HOW_TO_PLAY[lang]?.[game.id] || HOW_TO_PLAY.uk[game.id];
-    if (howTo) {
-      const instr = document.createElement("div");
-      instr.className = "game-instruction";
-      instr.textContent = howTo;
-      stage.appendChild(instr);
-    }
-
     const area = document.createElement("div");
     area.className = "game-area";
     stage.append(top, area);
@@ -202,7 +192,7 @@
     el.textContent = label + ": " + value;
   }
 
-  /* ---------------- Tic-Tac-Toe (з мінімакс ШІ) ---------------- */
+  /* ---------------- Tic-Tac-Toe (з ШІ середньої складності) ---------------- */
   function mountTTT(area, score) {
     let board = Array(9).fill(null), over = false, wins = 0;
     setScore(score, t("games.score"), wins);
@@ -227,8 +217,17 @@
       board[i]="X"; render(); SFX()&&SFX().pop();
       let w=winner(board);
       if(w) return finish(w);
-      const mv=bestMove(); if(mv!=null){ board[mv]="O"; render(); }
+      const mv=aiMove(); if(mv!=null){ board[mv]="O"; render(); }
       w=winner(board); if(w) finish(w);
+    }
+    // ШІ: 50% розумний хід, 50% випадковий (середня складність)
+    function aiMove(){
+      if(Math.random() < 0.5) return randomMove();
+      return bestMove();
+    }
+    function randomMove(){
+      const empty=[]; for(let i=0;i<9;i++) if(!board[i]) empty.push(i);
+      return empty.length ? empty[(Math.random()*empty.length)|0] : null;
     }
     function bestMove(){
       let best=-Infinity,move=null;
@@ -542,14 +541,66 @@
   function renderHub() {
     const hub=$("#gamesHub"); if(!hub) return;
     hub.innerHTML="";
+    const lang = global.I18n ? global.I18n.lang : "uk";
     GAMES.forEach(g=>{
       const best=global.Profile.getRecord(g.id);
       const card=document.createElement("div"); card.className="game-card";
       card.innerHTML=`<div class="ico">${g.ico}</div><h3>${t(g.name)}</h3><p>${t(g.desc)}</p>`+
         (best!=null?`<div class="best">${t("games.best")}: ${best}</div>`:"");
+      
+      // Кнопка "i" для інструкції
+      const infoBtn = document.createElement("button");
+      infoBtn.className = "game-info-btn";
+      infoBtn.innerHTML = '<span class="material-icons">info</span>';
+      infoBtn.title = t("game.howToPlay") || "How to play";
+      infoBtn.onclick = (e) => {
+        e.stopPropagation();
+        SFX() && SFX().click();
+        showHowToPlay(g.id);
+      };
+      card.appendChild(infoBtn);
+      
       card.onclick=()=>{ SFX()&&SFX().click(); Games.open(g.id); };
       hub.appendChild(card);
     });
+  }
+
+  function showHowToPlay(gameId) {
+    const lang = global.I18n ? global.I18n.lang : "uk";
+    const howTo = HOW_TO_PLAY[lang]?.[gameId] || HOW_TO_PLAY.uk[gameId];
+    if (!howTo) return;
+
+    const old = document.getElementById("howToModal");
+    if (old) old.remove();
+    if (SFX() && SFX().pop) SFX().pop();
+
+    const bd = document.createElement("div");
+    bd.id = "howToModal";
+    bd.className = "ht-backdrop";
+
+    const card = document.createElement("div");
+    card.className = "ht-card";
+    card.setAttribute("role", "dialog");
+    card.setAttribute("aria-modal", "true");
+
+    const h = document.createElement("h3");
+    h.textContent = t("game.howToPlay") || "How to Play";
+    card.appendChild(h);
+
+    const p = document.createElement("p");
+    p.className = "ht-text";
+    p.textContent = howTo;
+    card.appendChild(p);
+
+    const closeBtn = document.createElement("button");
+    closeBtn.className = "btn contained";
+    closeBtn.textContent = t("games.back") || "Close";
+    closeBtn.onclick = () => { bd.classList.add("ht-out"); setTimeout(() => bd.remove(), 180); };
+    card.appendChild(closeBtn);
+
+    bd.appendChild(card);
+    bd.onclick = (e) => { if (e.target === bd) { bd.classList.add("ht-out"); setTimeout(() => bd.remove(), 180); } };
+    document.body.appendChild(bd);
   }
 
   const Games = {
