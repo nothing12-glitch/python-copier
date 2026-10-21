@@ -26,6 +26,13 @@
     { id: "simon_5",      ico: "🎨",            cat: "specific", tier: "silver",   check: (s) => (s.records.simon || 0) >= 5 },
     { id: "memory_win",   ico: "🧠",            cat: "specific", tier: "bronze",   check: (s) => s.records.memory != null },
 
+    { id: "tool_first",   ico: "build",         cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.length >= 1 },
+    { id: "tool_calc",    ico: "calculate",     cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("calc") },
+    { id: "tool_conv",    ico: "straighten",    cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("conv") },
+    { id: "tool_rand",    ico: "casino",        cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("rand") },
+    { id: "tool_pwd",     ico: "password",      cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("pwd") },
+    { id: "tool_all",     ico: "handyman",      cat: "tools",    tier: "gold",     check: (s) => ["calc", "conv", "rand", "pwd"].every((t) => s.toolsUsed.includes(t)) },
+
     { id: "profile_create", ico: "person_add",  cat: "profile",  tier: "bronze",   check: () => !!(global.Profile && global.Profile.current()) },
     { id: "avatar_custom",  ico: "face",        cat: "profile",  tier: "silver",   check: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:"); } },
     { id: "bg_custom",      ico: "palette",     cat: "profile",  tier: "silver",   check: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return (d && d.startsWith("data:")) || (l && l.startsWith("data:")); } },
@@ -49,6 +56,7 @@
     python:   { uk: "Python",   en: "Python",   tr: "Python" },
     games:    { uk: "Ігри",     en: "Games",     tr: "Oyunlar" },
     specific: { uk: "Рекорди",  en: "Records",   tr: "Rekorlar" },
+    tools:    { uk: "Інструменти", en: "Tools",  tr: "Araçlar" },
     profile:  { uk: "Профіль",  en: "Profile",   tr: "Profil" },
     explore:  { uk: "Дослідник",en: "Explorer",  tr: "Kaşif" },
     streak:   { uk: "Серії",    en: "Streaks",   tr: "Seriler" }
@@ -69,6 +77,12 @@
     react_300:      { uk: "Блискавка",           en: "Lightning",          tr: "Yıldırım" },
     simon_5:        { uk: "Пам'ять",             en: "Memory King",        tr: "Hafıza Kralı" },
     memory_win:     { uk: "Знахідка",            en: "Finder",             tr: "Bulucu" },
+    tool_first:     { uk: "Майстер",             en: "Handyman",           tr: "Tamirci" },
+    tool_calc:      { uk: "Рахівник",            en: "Calculator",         tr: "Hesapçı" },
+    tool_conv:      { uk: "Конвертер",           en: "Converter",          tr: "Dönüştürücü" },
+    tool_rand:      { uk: "Випадковість",        en: "Randomizer",         tr: "Rastgeleci" },
+    tool_pwd:       { uk: "Криптограф",          en: "Cryptographer",      tr: "Kriptograf" },
+    tool_all:       { uk: "Універсал",           en: "Renaissance",        tr: "Rönesans" },
     profile_create: { uk: "Ласкаво просимо",     en: "Welcome",            tr: "Hoş Geldin" },
     avatar_custom:  { uk: "Стиляга",             en: "Trendsetter",        tr: "Modacı" },
     bg_custom:      { uk: "Естет",               en: "Aesthete",           tr: "Estet" },
@@ -94,6 +108,12 @@
     react_300:      { uk: "Реакція швидше 300мс",                  en: "Reaction under 300ms",                tr: "300ms altı refleks" },
     simon_5:        { uk: "Досягни рівня 5 у Simon",               en: "Reach level 5 in Simon",              tr: "Simon'da 5. seviyeye ulaş" },
     memory_win:     { uk: "Пройди Memory гру",                     en: "Complete Memory game",                tr: "Memory oyununu tamamla" },
+    tool_first:     { uk: "Використай перший інструмент",          en: "Use your first tool",                 tr: "İlk aracını kullan" },
+    tool_calc:      { uk: "Використай калькулятор",                en: "Use the calculator",                  tr: "Hesap makinesini kullan" },
+    tool_conv:      { uk: "Використай конвертер величин",          en: "Use the unit converter",              tr: "Birim dönüştürücüyü kullan" },
+    tool_rand:      { uk: "Використай генератор випадкових чисел", en: "Use the random generator",            tr: "Rastgele sayı oluşturucuyu kullan" },
+    tool_pwd:       { uk: "Згенеруй пароль",                       en: "Generate a password",                 tr: "Parola oluştur" },
+    tool_all:       { uk: "Використай усі 4 інструменти",          en: "Use all 4 tools",                     tr: "Tüm 4 aracı kullan" },
     profile_create: { uk: "Створи акаунт",                         en: "Create an account",                   tr: "Hesap oluştur" },
     avatar_custom:  { uk: "Завантаж власний аватар",               en: "Upload a custom avatar",              tr: "Özel avatar yükle" },
     bg_custom:      { uk: "Завантаж власний фон профілю",          en: "Upload a custom profile background",  tr: "Özel profil arka planı yükle" },
@@ -114,7 +134,7 @@
   }
 
   function defaultStats() {
-    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [] };
+    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [], toolsUsed: [] };
   }
 
   function saveStats(s) { localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
@@ -136,6 +156,7 @@
         if (s.visitDates.length > 30) s.visitDates = s.visitDates.slice(-30);
       }
     }
+    else if (key === "tool" && value && !s.toolsUsed.includes(value)) s.toolsUsed.push(value);
     saveStats(s);
     return s;
   }
@@ -221,7 +242,7 @@
       '</h3><span class="ach-counter">' + count + ' / ' + total + '</span>';
     container.appendChild(header);
 
-    const cats = ["python", "games", "specific", "profile", "explore", "streak"];
+    const cats = ["python", "games", "specific", "tools", "profile", "explore", "streak"];
     cats.forEach((cat) => {
       const catAchs = ACHIEVEMENTS.filter((a) => a.cat === cat);
       if (catAchs.length === 0) return;
@@ -327,6 +348,13 @@
     document.addEventListener("routechange", (e) => {
       if (e.detail) {
         bumpStat("route", e.detail);
+        checkAll();
+      }
+    });
+
+    document.addEventListener("tooluse", (e) => {
+      if (e.detail && e.detail.tool) {
+        bumpStat("tool", e.detail.tool);
         checkAll();
       }
     });

@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.34";
+  const VERSION = "26.10.35";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.35": {
+      uk: [
+        "Додано 6 нових досягнень за використання інструментів",
+        "Категорія «Інструменти»: калькулятор, конвертер, генератор випадкових чисел, генератор паролів",
+        "Досягнення: перший інструмент, кожен інструмент окремо, усі 4 інструменти"
+      ],
+      en: [
+        "Added 6 new achievements for using tools",
+        "New 'Tools' category: calculator, converter, random generator, password generator",
+        "Achievements: first tool, each tool individually, all 4 tools"
+      ],
+      tr: [
+        "Araç kullanımı için 6 yeni başarı eklendi",
+        "Yeni 'Araçlar' kategorisi: hesap makinesi, dönüştürücü, rastgele sayı, parola oluşturucu",
+        "Başarımlar: ilk araç, her araç ayrı ayrı, tüm 4 araç"
+      ]
+    },
     "26.10.34": {
       uk: [
         "Нова секція «Досягнення» з 22 ачівками у 6 категоріях",

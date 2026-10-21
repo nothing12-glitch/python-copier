@@ -70,6 +70,7 @@
       expr = r === S().err ? "" : r;
       const d = $("#calcDisplay");
       if (d) d.textContent = r;
+      document.dispatchEvent(new CustomEvent("tooluse", { detail: { tool: "calc" } }));
       return;
     }
     else if (label === "\u{00B1}") expr = expr.startsWith("-") ? expr.slice(1) : (expr ? "-" + expr : expr);
@@ -154,7 +155,7 @@
     valInp.className = "md-input";
     valInp.placeholder = s.value;
     valInp.value = conv.val;
-    valInp.oninput = () => { conv.val = valInp.value; res.textContent = convCalc() + " " + conv.to; };
+    valInp.oninput = () => { conv.val = valInp.value; res.textContent = convCalc() + " " + conv.to; document.dispatchEvent(new CustomEvent("tooluse", { detail: { tool: "conv" } })); };
     valRow.appendChild(valInp);
     box.appendChild(valRow);
 
@@ -215,6 +216,7 @@
       const a = parseInt(minI.value, 10), b = parseInt(maxI.value, 10);
       if (isNaN(a) || isNaN(b) || a >= b) { out1.textContent = s.badRange; return; }
       out1.textContent = String(Math.floor(Math.random() * (b - a + 1)) + a);
+      document.dispatchEvent(new CustomEvent("tooluse", { detail: { tool: "rand" } }));
     };
     b1.append(h1, row, gen, out1);
     box.appendChild(b1);
@@ -230,7 +232,7 @@
     const flip = document.createElement("button");
     flip.className = "btn outlined";
     flip.textContent = s.flip;
-    flip.onclick = () => { out2.textContent = Math.random() < 0.5 ? s.heads : s.tails; };
+    flip.onclick = () => {out2.textContent = Math.random() < 0.5 ? s.heads : s.tails; document.dispatchEvent(new CustomEvent("tooluse", { detail: { tool: "rand" } })); };
     b2.append(h2, flip, out2);
     box.appendChild(b2);
 
@@ -248,6 +250,7 @@
     roll.onclick = () => {
       const n = Math.floor(Math.random() * 6) + 1;
       out3.textContent = String.fromCodePoint(0x267F + n) + "  " + n;
+      document.dispatchEvent(new CustomEvent("tooluse", { detail: { tool: "rand" } }));
     };
     b3.append(h3, roll, out3);
     box.appendChild(b3);
@@ -292,7 +295,7 @@
     const gen = document.createElement("button");
     gen.className = "btn contained";
     gen.textContent = s.pwdGen;
-    gen.onclick = () => { out.textContent = genPwd(pwdLen); };
+    gen.onclick = () => { out.textContent = genPwd(pwdLen); document.dispatchEvent(new CustomEvent("tooluse", { detail: { tool: "pwd" } })); };
     const copy = document.createElement("button");
     copy.className = "btn outlined";
     copy.textContent = s.pwdCopy;
