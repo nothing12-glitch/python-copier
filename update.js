@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.32";
+  const VERSION = "26.10.33";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.33": {
+      uk: [
+        "Темні фони для темної теми — глибокі, насичені кольори (ніч, космос, індиго, граніт...)",
+        "Світлі фони для світлої теми — м'які пастельні градієнти (небо, ранок, луг, м'ята...)",
+        "Прибрано яскраві/світлі градієнти з темної теми та навпаки"
+      ],
+      en: [
+        "Dark backgrounds for dark theme — deep, saturated colors (night, cosmos, indigo, granite...)",
+        "Light backgrounds for light theme — soft pastel gradients (sky, morning, meadow, mint...)",
+        "Removed bright/light gradients from dark theme and vice versa"
+      ],
+      tr: [
+        "Koyu tema için koyu arka planlar — derin, doygun renkler (gece, kozmos, indigo, granit...)",
+        "Açık tema için açık arka planlar — yumuşak pastel gradyanlar (gökyüzü, sabah, çayır, nane...)",
+        "Koyu temadan açık/aydınlık gradyanlar kaldırıldı ve tam tersi"
+      ]
+    },
     "26.10.32": {
       uk: [
         "Виправлено визначення теми для фону профілю"
