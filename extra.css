@@ -477,3 +477,258 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 .pwa-install-btn .material-icons {
   font-size: 20px;
 }
+
+/* ---------- 13) Модал вибору аватара та фону ---------- */
+@keyframes avfade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes avin {
+  0%   { opacity: 0; transform: translateY(20px) scale(.94); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+@keyframes avout { to { opacity: 0; transform: translateY(10px) scale(.96); } }
+
+.av-modal-backdrop {
+  position: fixed; inset: 0; z-index: 99;
+  display: grid; place-items: center; padding: 16px;
+  background: rgba(8, 6, 14, .6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: avfade .2s ease both;
+}
+
+.av-modal-card {
+  width: min(94vw, 520px);
+  max-height: 85vh;
+  background: var(--md-surface); color: var(--md-on-surface);
+  border-radius: 26px; padding: 22px 22px 18px;
+  box-shadow: var(--md-elev3, 0 24px 64px rgba(0, 0, 0, .35));
+  border: 1px solid color-mix(in srgb, var(--md-primary) 22%, transparent);
+  animation: avin .35s cubic-bezier(.22, .61, .36, 1) both;
+  overflow-y: auto;
+}
+
+.av-modal-title {
+  margin: 0 0 14px;
+  font-size: 20px; font-weight: 700;
+  color: var(--md-primary);
+  text-align: center;
+}
+
+/* Tabs */
+.av-tabs {
+  display: flex; gap: 8px; margin-bottom: 14px;
+  border-bottom: 1px solid var(--md-outline-var);
+  padding-bottom: 0;
+}
+.av-tab {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--md-on-surface-var);
+  font-family: var(--md-font);
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.av-tab:hover { color: var(--md-primary); }
+.av-tab.active {
+  color: var(--md-primary);
+  border-bottom-color: var(--md-primary);
+}
+
+.av-tab-content.hidden { display: none; }
+
+/* Emoji grid */
+.av-modal-card .emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  margin: 0;
+  padding: 4px 0;
+}
+.av-modal-card .emoji-btn {
+  font-size: 24px;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: var(--md-surface-dim);
+  cursor: pointer;
+  transition: .15s;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+.av-modal-card .emoji-btn:hover {
+  background: color-mix(in srgb, var(--md-primary) 15%, transparent);
+  transform: scale(1.1);
+}
+.av-modal-card .emoji-btn.selected {
+  border-color: var(--md-primary);
+  background: color-mix(in srgb, var(--md-primary) 20%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--md-primary) 30%, transparent);
+}
+
+/* Background grid */
+.av-bg-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 0;
+  padding: 4px 0;
+}
+.av-bg-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 6px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+  transition: .15s;
+  font-family: var(--md-font);
+}
+.av-bg-btn:hover {
+  background: color-mix(in srgb, var(--md-primary) 10%, transparent);
+  transform: translateY(-2px);
+}
+.av-bg-btn.selected {
+  border-color: var(--md-primary);
+  background: color-mix(in srgb, var(--md-primary) 15%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--md-primary) 30%, transparent);
+}
+.av-bg-swatch {
+  width: 100%;
+  aspect-ratio: 16/10;
+  border-radius: 10px;
+  border: 1px solid var(--md-outline-var);
+}
+.av-bg-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--md-on-surface);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Upload area */
+.av-upload-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+}
+.av-upload-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.av-upload-label .material-icons {
+  font-size: 20px;
+}
+.av-upload-preview {
+  width: 100%;
+  max-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--md-surface-dim);
+  border: 1px dashed var(--md-outline-var);
+  min-height: 80px;
+}
+.av-preview-img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+/* Actions */
+.av-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--md-outline-var);
+}
+
+/* Avatar image in profile */
+.av-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Profile card background */
+.profile-bg {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: background .3s;
+}
+.profile-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  opacity: 0.15;
+  z-index: 0;
+}
+.profile-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Background button in profile */
+.bg-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--md-outline-var);
+  background: var(--md-surface);
+  color: var(--md-on-surface);
+  font-family: var(--md-font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: .2s;
+  margin-top: 8px;
+}
+.bg-edit-btn:hover {
+  border-color: var(--md-primary);
+  color: var(--md-primary);
+  background: color-mix(in srgb, var(--md-primary) 8%, transparent);
+}
+.bg-edit-btn .material-icons {
+  font-size: 16px;
+}
+
+@media (max-width: 480px) {
+  .av-modal-card .emoji-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .av-bg-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .av-modal-backdrop, .av-modal-card { animation: none !important; }
+}

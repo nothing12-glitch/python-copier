@@ -1,10 +1,30 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.29";
+  const VERSION = "26.10.30";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.30": {
+      uk: [
+        "Новий модал вибору аватара — 40 emoji + завантаження фото з ПК",
+        "Вибір фону профілю — 36 готових градієнтів з назвами + завантаження з ПК",
+        "Кнопка «Змінити фон» в профілі для швидкого доступу",
+        "Піднято CACHE_VERSION до pc-v8 для очищення кешу"
+      ],
+      en: [
+        "New avatar picker modal — 40 emojis + upload photo from PC",
+        "Profile background selector — 36 named gradients + upload from PC",
+        "'Change background' button in profile for quick access",
+        "Bumped CACHE_VERSION to pc-v8 to clear cache"
+      ],
+      tr: [
+        "Yeni avatar seçici modal — 40 emoji + PC'den fotoğraf yükleme",
+        "Profil arka plan seçici — 36 isimli gradyan + PC'den yükleme",
+        "Hızlı erişim için profilde 'Arka planı değiştir' düğmesi",
+        "Önbelleği temizlemek için CACHE_VERSION pc-v8'e yükseltildi"
+      ]
+    },
     "26.10.29": {
       uk: [
         "Оновлено фото в секретній кімнаті (пасхалка 200 кліків) — нова зелена іконка термінала",

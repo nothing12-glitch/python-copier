@@ -219,9 +219,15 @@
     const nameEl = $("#profileDisplayName");
     const meta = $("#profileMeta");
     const avatar = $("#avatarBig");
+    const panel = $("#profilePanel");
     if (nameEl) nameEl.textContent = info.name || global.Profile.getNickname() || "—";
     if (meta) meta.textContent = (t("profile.memberSince") || "member since") + " " + (info.created ? new Date(info.created).toLocaleDateString() : "");
-    if (avatar) avatar.textContent = avatarChar;
+    if (global.Avatar) {
+      global.Avatar.renderAvatar(avatar, avatarChar);
+      global.Avatar.renderBackground(panel, global.Avatar.getBg());
+    } else {
+      if (avatar) avatar.textContent = avatarChar;
+    }
     const grid = $("#recordsGrid");
     if (grid) {
       grid.innerHTML = "";
@@ -250,13 +256,19 @@
     const loggedIn = !!(global.Profile && global.Profile.current());
     const info = loggedIn ? (global.Profile.info() || {}) : {};
     if (nameEl) nameEl.textContent = loggedIn ? (info.name || global.Profile.getNickname()) : t("profile.guest");
-    if (avatar) avatar.textContent = (loggedIn && global.Profile.getAvatar()) || "\u{1F9D1}";
+    const avatarVal = (loggedIn && global.Profile.getAvatar()) || "\u{1F9D1}";
+    if (global.Avatar) {
+      global.Avatar.renderAvatar(avatar, avatarVal);
+    } else if (avatar) {
+      avatar.textContent = avatarVal;
+    }
   }
 
   function bindProfileEdit() {
     const rename = $("#renameBtn");
     const big = $("#avatarBig");
     const name = $("#profileDisplayName");
+    const bgBtn = $("#bgEditBtn");
     if (rename) {
       rename.onclick = () => {
         if (!global.Profile || !global.Profile.current()) return;
@@ -267,10 +279,28 @@
     if (big) {
       big.onclick = () => {
         if (!global.Profile || !global.Profile.current()) return;
-        const emojis = ["\u{1F9D1}", "\u{1F469}", "\u{1F468}", "\u{1F9D2}", "\u{1F47B}", "\u{1F916}", "\u{1F431}", "\u{1F436}", "\u{1F981}", "\u{1F43C}", "\u{1F984}", "\u{1F430}"];
-        const cur = global.Profile.getAvatar() || "\u{1F9D1}";
-        const choice = prompt("Аватар (emoji): " + emojis.join(" "), cur);
-        if (choice !== null && choice.trim()) { global.Profile.setAvatar(choice.trim()); renderProfile(); }
+        if (global.Avatar) {
+          global.Avatar.openAvatarModal((val) => {
+            global.Profile.setAvatar(val);
+            renderProfile();
+          });
+        } else {
+          const emojis = ["\u{1F9D1}", "\u{1F469}", "\u{1F468}", "\u{1F9D2}", "\u{1F47B}", "\u{1F916}", "\u{1F431}", "\u{1F436}", "\u{1F981}", "\u{1F43C}", "\u{1F984}", "\u{1F430}"];
+          const cur = global.Profile.getAvatar() || "\u{1F9D1}";
+          const choice = prompt("Аватар (emoji): " + emojis.join(" "), cur);
+          if (choice !== null && choice.trim()) { global.Profile.setAvatar(choice.trim()); renderProfile(); }
+        }
+      };
+    }
+    if (bgBtn) {
+      bgBtn.onclick = () => {
+        if (!global.Profile || !global.Profile.current()) return;
+        if (global.Avatar) {
+          global.Avatar.openBackgroundModal((val) => {
+            global.Avatar.setBg(val);
+            renderProfile();
+          });
+        }
       };
     }
     if (name) name.onclick = () => { if (rename) rename.click(); };
