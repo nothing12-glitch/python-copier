@@ -1,7 +1,7 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.26";
+  const VERSION = "26.10.27";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
@@ -9,17 +9,29 @@
       uk: [
         "Додано PWA-підтримку — сайт можна встановити як застосунок",
         "Офлайн-режим: інтерфейс, ігри та інструменти працюють без інтернету",
-        "Service Worker кешує статичні ресурси для швидкого завантаження"
+        "Service Worker кешує статичні ресурси для швидкого завантаження",
+        "Кнопка «Встановити як застосунок» в розділі «Про застосунок»",
+        "Виправлено шлях до Service Worker для підпапок",
+        "Додано PNG-іконку для PWA",
+        "Вирівняно кнопки в hero-секції"
       ],
       en: [
         "Added PWA support — the site can be installed as an app",
         "Offline mode: interface, games and tools work without internet",
-        "Service Worker caches static assets for fast loading"
+        "Service Worker caches static assets for fast loading",
+        "Install button in About section",
+        "Fixed Service Worker path for subdirectories",
+        "Added PNG icon for PWA",
+        "Fixed hero button alignment"
       ],
       tr: [
         "PWA desteği eklendi — site uygulama olarak kurulabilir",
         "Çevrimdışı mod: arayüz, oyunlar ve araçlar internetsiz çalışır",
-        "Service Worker statik dosyaları hızlı yükleme için önbelleğe alır"
+        "Service Worker statik dosyaları hızlı yükleme için önbelleğe alır",
+        "Hakkında bölümüne kurulum düğmesi eklendi",
+        "Alt dizinler için Service Worker yolu düzeltildi",
+        "PWA için PNG simgesi eklendi",
+        "Hero düğme hizalaması düzeltildi"
       ]
     },
     "26.10.25": {
