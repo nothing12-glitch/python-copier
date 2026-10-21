@@ -447,3 +447,33 @@ html, body { overflow-x: hidden; overflow-x: clip; }
   color: color-mix(in srgb, var(--md-primary) 80%, white);
   text-decoration: underline;
 }
+
+/* ---------- 12) Кнопка «Встановити як застосунок» (PWA) ---------- */
+.pwa-install-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: var(--md-primary);
+  color: var(--md-on-primary, #fff);
+  border: none;
+  font-family: var(--md-font);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 2px 8px rgba(103, 80, 164, .3);
+}
+.pwa-install-btn:hover {
+  background: color-mix(in srgb, var(--md-primary) 88%, black);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(103, 80, 164, .4);
+}
+.pwa-install-btn:active {
+  transform: translateY(0);
+}
+.pwa-install-btn .material-icons {
+  font-size: 20px;
+}

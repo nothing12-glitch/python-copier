@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.25";
+  const VERSION = "26.10.26";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.26": {
+      uk: [
+        "Додано PWA-підтримку — сайт можна встановити як застосунок",
+        "Офлайн-режим: інтерфейс, ігри та інструменти працюють без інтернету",
+        "Service Worker кешує статичні ресурси для швидкого завантаження"
+      ],
+      en: [
+        "Added PWA support — the site can be installed as an app",
+        "Offline mode: interface, games and tools work without internet",
+        "Service Worker caches static assets for fast loading"
+      ],
+      tr: [
+        "PWA desteği eklendi — site uygulama olarak kurulabilir",
+        "Çevrimdışı mod: arayüz, oyunlar ve araçlar internetsiz çalışır",
+        "Service Worker statik dosyaları hızlı yükleme için önbelleğe alır"
+      ]
+    },
     "26.10.25": {
       uk: [
         "Додано пункт «Тема» в Персоналізацію: Авто, Світла, Темна",
