@@ -1,6 +1,8 @@
-/* avatar.js — модал вибору аватара (emoji / завантажити з ПК) та фону профілю. */
+/* avatar.js — модал вибору аватара, нікнейму та фону профілю.
+   Фони зберігаються окремо для світлої та темної теми. */
 (function (global) {
-  const AVATAR_BG_KEY = "app.avatarBg";
+  const AVATAR_BG_DARK_KEY = "app.avatarBg.dark";
+  const AVATAR_BG_LIGHT_KEY = "app.avatarBg.light";
   const AVATAR_KEY = "app.avatar";
 
   const AVATAR_LIST = [
@@ -14,7 +16,8 @@
     "\u{1F680}", "\u{1F3AE}", "\u{1F3B5}", "\u{1F3A8}", "\u{1F4BB}"
   ];
 
-  const BACKGROUND_LIST = [
+  /* Темні фони — насичені, глибокі кольори */
+  const BACKGROUND_DARK = [
     { name: "Океан",    css: "linear-gradient(135deg, #0077B6, #00B4D8, #90E0EF)" },
     { name: "Захід",    css: "linear-gradient(135deg, #FF6B35, #F7C59F, #EFEFD0)" },
     { name: "Ліс",      css: "linear-gradient(135deg, #2D6A4F, #40916C, #74C69D)" },
@@ -41,35 +44,91 @@
     { name: "Смарагд",  css: "linear-gradient(135deg, #004B23, #006400, #38B000)" },
     { name: "Топаз",    css: "linear-gradient(135deg, #FFB703, #FB8500, #FFD166)" },
     { name: "Граніт",   css: "linear-gradient(135deg, #343A40, #495057, #6C757D)" },
-    { name: "Мармур",   css: "linear-gradient(135deg, #F8F9FA, #E9ECEF, #DEE2E6)" },
     { name: "Мідь",     css: "linear-gradient(135deg, #B87333, #DA8A67, #E8B4A0)" },
     { name: "Бронза",   css: "linear-gradient(135deg, #8B5A2B, #A0724A, #C4956A)" },
     { name: "Нефрит",   css: "linear-gradient(135deg, #00A86B, #2ECC71, #A8E6CF)" },
     { name: "Лазурит",  css: "linear-gradient(135deg, #03045E, #0077B6, #00B4D8)" },
     { name: "Янтар",    css: "linear-gradient(135deg, #FF9F1C, #FFBF69, #CBF3F0)" },
-    { name: "Кварц",    css: "linear-gradient(135deg, #F4ACB7, #F8C8DC, #FFF0F5)" },
     { name: "Обсидіан", css: "linear-gradient(135deg, #000000, #14213D, #2B2D42)" },
     { name: "Перламутр",css: "linear-gradient(135deg, #E0C3FC, #8EC5FC, #A8EDC6)" },
     { name: "Веселка",  css: "linear-gradient(135deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #9400D3)" }
   ];
 
+  /* Світлі фони — м'які, пастельні кольори */
+  const BACKGROUND_LIGHT = [
+    { name: "Небо",     css: "linear-gradient(135deg, #E3F2FD, #BBDEFB, #90CAF9)" },
+    { name: "Ранок",    css: "linear-gradient(135deg, #FFF3E0, #FFE0B2, #FFCC80)" },
+    { name: "Луг",      css: "linear-gradient(135deg, #E8F5E9, #C8E6C9, #A5D6A7)" },
+    { name: "Хмара",    css: "linear-gradient(135deg, #F5F5F5, #EEEEEE, #E0E0E0)" },
+    { name: "Пісок",    css: "linear-gradient(135deg, #FFF8E1, #FFECB3, #FFE082)" },
+    { name: "Фіалка",   css: "linear-gradient(135deg, #F3E5F5, #E1BEE7, #CE93D8)" },
+    { name: "М'ята",    css: "linear-gradient(135deg, #E0F2F1, #B2DFDB, #80CBC4)" },
+    { name: "Троянда",  css: "linear-gradient(135deg, #FCE4EC, #F8BBD0, #F48FB1)" },
+    { name: "Лимон",    css: "linear-gradient(135deg, #FFFDE7, #FFF9C4, #FFF59D)" },
+    { name: "Попіл",    css: "linear-gradient(135deg, #ECEFF1, #CFD8DC, #B0BEC5)" },
+    { name: "Полум'я",  css: "linear-gradient(135deg, #FBE9E7, #FFCCBC, #FFAB91)" },
+    { name: "Сніг",     css: "linear-gradient(135deg, #FAFAFA, #F5F5F5, #EEEEEE)" },
+    { name: "Туман",    css: "linear-gradient(135deg, #ECEFF1, #CFD8DC, #B0BEC5)" },
+    { name: "Цвіт",     css: "linear-gradient(135deg, #FCE4EC, #F8BBD0, #F48FB1)" },
+    { name: "Огірок",   css: "linear-gradient(135deg, #F1F8E9, #DCEDC8, #C5E1A5)" },
+    { name: "Ягода",    css: "linear-gradient(135deg, #FCE4EC, #F8BBD0, #F48FB1)" },
+    { name: "Чорниця",  css: "linear-gradient(135deg, #E8EAF6, #C5CAE9, #9FA8DA)" },
+    { name: "Апельсин", css: "linear-gradient(135deg, #FFF3E0, #FFE0B2, #FFCC80)" },
+    { name: "Ківі",     css: "linear-gradient(135deg, #F1F8E9, #DCEDC8, #C5E1A5)" },
+    { name: "Персик",   css: "linear-gradient(135deg, #FFF3E0, #FFE0B2, #FFCC80)" },
+    { name: "Лаванда",  css: "linear-gradient(135deg, #F3E5F5, #E1BEE7, #CE93D8)" },
+    { name: "Бірюза",   css: "linear-gradient(135deg, #E0F7FA, #B2EBF2, #80DEEA)" },
+    { name: "Малина",   css: "linear-gradient(135deg, #FCE4EC, #F8BBD0, #F48FB1)" },
+    { name: "Смарагд",  css: "linear-gradient(135deg, #E8F5E9, #C8E6C9, #A5D6A7)" },
+    { name: "Золото",   css: "linear-gradient(135deg, #FFFDE7, #FFF9C4, #FFF59D)" },
+    { name: "Камінь",   css: "linear-gradient(135deg, #F5F5F5, #EEEEEE, #E0E0E0)" },
+    { name: "Мармур",   css: "linear-gradient(135deg, #FAFAFA, #F5F5F5, #EEEEEE)" },
+    { name: "Мідь",     css: "linear-gradient(135deg, #FBE9E7, #FFCCBC, #FFAB91)" },
+    { name: "Бронза",   css: "linear-gradient(135deg, #EFEBE9, #D7CCC8, #BCAAA4)" },
+    { name: "Нефрит",   css: "linear-gradient(135deg, #E0F2F1, #B2DFDB, #80CBC4)" },
+    { name: "Лазур",    css: "linear-gradient(135deg, #E3F2FD, #BBDEFB, #90CAF9)" },
+    { name: "Янтар",    css: "linear-gradient(135deg, #FFF8E1, #FFECB3, #FFE082)" },
+    { name: "Кварц",    css: "linear-gradient(135deg, #FCE4EC, #F8BBD0, #F48FB1)" },
+    { name: "Крема",    css: "linear-gradient(135deg, #FFF8E1, #FFECB3, #FFE082)" },
+    { name: "Перлина",  css: "linear-gradient(135deg, #F5F5F5, #EEEEEE, #E0E0E0)" },
+    { name: "Веселка",  css: "linear-gradient(135deg, #FFCDD2, #FFF9C4, #C8E6C9, #BBDEFB, #E1BEE7)" }
+  ];
+
   const T = {
     title: { uk: "Аватар", en: "Avatar", tr: "Avatar" },
     bgTitle: { uk: "Фон профілю", en: "Profile background", tr: "Profil arka planı" },
+    nickTitle: { uk: "Нікнейм", en: "Nickname", tr: "Takma ad" },
     emoji: { uk: "Emoji", en: "Emoji", tr: "Emoji" },
     upload: { uk: "Завантажити", en: "Upload", tr: "Yükle" },
     uploadHint: { uk: "Оберіть файл з ПК", en: "Choose a file from PC", tr: "PC'den dosya seçin" },
     cancel: { uk: "Скасувати", en: "Cancel", tr: "İptal" },
     save: { uk: "Зберегти", en: "Save", tr: "Kaydet" },
     noBg: { uk: "Без фону", en: "No background", tr: "Arka plan yok" },
-    current: { uk: "Поточний", en: "Current", tr: "Mevcut" }
+    changeBg: { uk: "Змінити фон", en: "Change background", tr: "Arka planı değiştir" },
+    changeNick: { uk: "Змінити нік", en: "Change nickname", tr: "Takma adı değiştir" }
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
   const pick = (o) => o[lang()] || o.uk || o.en;
 
-  function getBg() { return localStorage.getItem(AVATAR_BG_KEY) || ""; }
-  function setBg(v) { if (v) localStorage.setItem(AVATAR_BG_KEY, v); else localStorage.removeItem(AVATAR_BG_KEY); }
+  function isDarkTheme() {
+    if (!global.Settings) return false;
+    return global.Settings.isDark();
+  }
+
+  function getBgKey() {
+    return isDarkTheme() ? AVATAR_BG_DARK_KEY : AVATAR_BG_LIGHT_KEY;
+  }
+
+  function getBg() { return localStorage.getItem(getBgKey()) || ""; }
+  function getBgForTheme(dark) {
+    const key = dark ? AVATAR_BG_DARK_KEY : AVATAR_BG_LIGHT_KEY;
+    return localStorage.getItem(key) || "";
+  }
+  function setBg(v) {
+    const key = getBgKey();
+    if (v) localStorage.setItem(key, v); else localStorage.removeItem(key);
+  }
 
   function closeAll() {
     document.querySelectorAll(".av-modal-backdrop").forEach((el) => el.remove());
@@ -219,6 +278,44 @@
     document.addEventListener("keydown", esc);
   }
 
+  /* ---------- Нікнейм модал ---------- */
+  function openNicknameModal(onSave) {
+    const bd = createBackdrop();
+    const card = createCard(bd);
+    card.setAttribute("aria-label", pick(T.nickTitle));
+
+    const title = document.createElement("h3");
+    title.className = "av-modal-title";
+    title.textContent = pick(T.nickTitle);
+    card.appendChild(title);
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "av-nick-input";
+    input.value = global.Profile.getNickname() || "";
+    input.maxLength = 30;
+    input.placeholder = pick(T.nickTitle);
+    card.appendChild(input);
+
+    setTimeout(() => input.focus(), 100);
+
+    createActions(card, () => {
+      const val = input.value.trim();
+      if (val) { if (onSave) onSave(val); }
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const val = input.value.trim();
+        if (val) { closeAll(); if (onSave) onSave(val); }
+      }
+    });
+
+    const esc = (e) => { if (e.key === "Escape") { closeAll(); document.removeEventListener("keydown", esc); } };
+    document.addEventListener("keydown", esc);
+  }
+
   /* ---------- Фон модал ---------- */
   function openBackgroundModal(onSave) {
     const bd = createBackdrop();
@@ -227,11 +324,13 @@
 
     const title = document.createElement("h3");
     title.className = "av-modal-title";
-    title.textContent = pick(T.bgTitle);
+    const dark = isDarkTheme();
+    title.textContent = pick(T.bgTitle) + (dark ? " (🌙)" : " (☀️)");
     card.appendChild(title);
 
     createTabs(card, [pick(T.emoji), pick(T.upload)]);
 
+    const bgList = dark ? BACKGROUND_DARK : BACKGROUND_LIGHT;
     let selectedBg = getBg();
 
     /* Tab 0: Pre-made backgrounds */
@@ -250,7 +349,7 @@
     };
     grid.appendChild(noBgBtn);
 
-    BACKGROUND_LIST.forEach((bg) => {
+    bgList.forEach((bg) => {
       const btn = document.createElement("button");
       btn.className = "av-bg-btn" + (bg.css === selectedBg ? " selected" : "");
       btn.innerHTML = '<span class="av-bg-swatch" style="background:' + bg.css + '"></span><span class="av-bg-name">' + bg.name + "</span>";
@@ -289,7 +388,7 @@
     }
   }
 
-  /* ---------- Рендер фону ---------- */
+  /* ---------- Рендер фону для поточної теми ---------- */
   function renderBackground(el, value) {
     if (!el) return;
     if (!value) { el.style.background = ""; return; }
@@ -300,13 +399,40 @@
     }
   }
 
+  /* ---------- Застосувати фон для поточної теми ---------- */
+  function applyThemeBackground() {
+    const panel = document.getElementById("profilePanel");
+    if (!panel) return;
+    const bg = getBg();
+    renderBackground(panel, bg);
+  }
+
+  /* ---------- Ініціалізація: слухати зміну теми ---------- */
+  function init() {
+    document.addEventListener("settingschange", (e) => {
+      if (e.detail && e.detail.key === "theme") {
+        setTimeout(applyThemeBackground, 50);
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
   global.Avatar = {
     openAvatarModal,
+    openNicknameModal,
     openBackgroundModal,
     renderAvatar,
     renderBackground,
+    applyThemeBackground,
     getBg,
+    getBgForTheme,
     setBg,
-    BACKGROUND_LIST
+    BACKGROUND_DARK,
+    BACKGROUND_LIGHT
   };
 })(window);

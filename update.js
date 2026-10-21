@@ -1,10 +1,30 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.30";
+  const VERSION = "26.10.31";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.31": {
+      uk: [
+        "Окремі фони для світлої та темної теми — перемикаються автоматично",
+        "36 темних градієнтів + 36 світлих пастельних градієнтів",
+        "Модал для нікнейму замість prompt() — гарніший інтерфейс",
+        "Додано переклади для кнопок «Змінити фон» та «Змінити нік»"
+      ],
+      en: [
+        "Separate backgrounds for light and dark themes — switch automatically",
+        "36 dark gradients + 36 light pastel gradients",
+        "Nickname modal instead of prompt() — nicer interface",
+        "Added translations for 'Change background' and 'Change nickname' buttons"
+      ],
+      tr: [
+        "Açık ve koyu temalar için ayrı arka planlar — otomatik geçiş",
+        "36 koyu gradyan + 36 açık pastel gradyan",
+        "prompt() yerine takma ad modalı — daha güzel arayüz",
+        "'Arka planı değiştir' ve 'Takma adı değiştir' düğmeleri için çeviriler eklendi"
+      ]
+    },
     "26.10.30": {
       uk: [
         "Новий модал вибору аватара — 40 emoji + завантаження фото з ПК",

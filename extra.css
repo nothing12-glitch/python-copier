@@ -656,6 +656,25 @@ html, body { overflow-x: hidden; overflow-x: clip; }
   border-radius: 10px;
 }
 
+/* Nickname input */
+.av-nick-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--md-outline-var);
+  background: var(--md-surface);
+  color: var(--md-on-surface);
+  font-family: var(--md-font);
+  font-size: 16px;
+  margin: 12px 0 16px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.av-nick-input:focus {
+  outline: none;
+  border-color: var(--md-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--md-primary) 22%, transparent);
+}
+
 /* Actions */
 .av-actions {
   display: flex;

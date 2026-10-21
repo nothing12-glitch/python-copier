@@ -272,8 +272,15 @@
     if (rename) {
       rename.onclick = () => {
         if (!global.Profile || !global.Profile.current()) return;
-        const n = prompt("Нік:", global.Profile.getNickname() || "");
-        if (n !== null && n.trim()) { global.Profile.rename(n.trim()); renderProfile(); }
+        if (global.Avatar) {
+          global.Avatar.openNicknameModal((val) => {
+            global.Profile.rename(val);
+            renderProfile();
+          });
+        } else {
+          const n = prompt("Нік:", global.Profile.getNickname() || "");
+          if (n !== null && n.trim()) { global.Profile.rename(n.trim()); renderProfile(); }
+        }
       };
     }
     if (big) {
