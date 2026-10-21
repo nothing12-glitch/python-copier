@@ -155,7 +155,7 @@
       });
       select.onchange = () => {
         global.Settings.set("snakeSpeed", select.value);
-        if (global.App && global.App.toast) global.App.toast(t("set.saved") || "Saved");
+        toast(t("set.saved") || "Saved");
       };
       body.appendChild(select);
     }
@@ -180,7 +180,7 @@
       });
       select.onchange = () => {
         global.Settings.set("memorySize", select.value);
-        if (global.App && global.App.toast) global.App.toast(t("set.saved") || "Saved");
+        toast(t("set.saved") || "Saved");
       };
       body.appendChild(select);
     }
