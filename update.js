@@ -8,24 +8,24 @@
     "26.10.20": {
       uk: [
         "Свічку пам'яті прибрано",
-        "Замість питання про пристрій при вході тепер показується це вікно «Що нового»",
         "Виправлено вхід у профіль — тепер логін і реєстрація працюють",
         "Ім'я та аватар знову з'являються у шапці одразу після входу",
-        "Версія застосунку відображається в Налаштуваннях (кнопка «Показати що нового»)"
+        "Версія застосунку відображається в Налаштуваннях (кнопка «Показати що нового»)",
+        "Нове гарне вікно «Що нового» з окремим віконцем списку змін"
       ],
       en: [
         "The memorial candle has been removed",
-        "The device question on entry is replaced by this “What's new” window",
         "Profile sign-in fixed — login and registration now work",
         "Your name and avatar reappear in the top bar right after signing in",
-        "App version shown in Settings (with a “Show what's new” button)"
+        "App version shown in Settings (with a "Show what's new" button)",
+        "New polished "What's new" window with a separate changes panel"
       ],
       tr: [
         "Anma mumu kaldırıldı",
-        "Girişteki cihaz sorusu yerine bu “Yenilikler” penceresi gösteriliyor",
         "Profil girişi düzeltildi — artık giriş ve kayıt çalışıyor",
         "Giriş yaptıktan sonra adın ve avatarın üst çubukta hemen görünüyor",
-        "Uygulama sürümü Ayarlar'da gösteriliyor (“Yenilikleri göster” düğmesiyle)"
+        "Uygulama sürümü Ayarlar'da gösteriliyor ("Yenilikleri göster" düğmesiyle)",
+        "Ayrı değişiklik paneliyle yeni "Yenilikler" penceresi"
       ]
     },
     "26.10.02": {
@@ -45,7 +45,7 @@
         "Music panel: progress bar, likes, shuffle, loop; re-click no longer stops music",
         "Pomodoro timer in Tools",
         "Easter egg: 10 clicks on the site title → teacher greeting 🌹",
-        "“What’s new” window after updates + version in Settings"
+        ""What's new" window after updates + version in Settings"
       ],
       tr: [
         "Yüzen hap gezinme ve öğeler arasında zıplayan animasyonlu baloncuk",
@@ -54,7 +54,7 @@
         "Müzik paneli: ilerleme çubuğu, beğeniler, shuffle, loop",
         "Araçlarda Pomodoro sayacı",
         "Easter egg: başlığa 10 tık → öğretmen kutlaması 🌹",
-        "Güncellemelerden sonra “Yenilikler” penceresi + Ayarlar'da sürüm"
+        "Güncellemelerden sonra "Yenilikler" penceresi + Ayarlar'da sürüm"
       ]
     }
     // Нові версії додавай сюди, наприклад:
