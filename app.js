@@ -31,6 +31,9 @@
     if (name === "settings" && global.Settings) {
       try { global.Settings.render($("#settingsBody")); } catch (e) { console.warn(e); }
     }
+    if (name === "achievements" && global.Achievements) {
+      try { global.Achievements.render($("#achGrid")); } catch (e) { console.warn(e); }
+    }
     location.hash = name;
     console.info("[app.js] route ->", name);
     document.dispatchEvent(new CustomEvent("routechange", { detail: name }));
@@ -402,7 +405,7 @@
     // початковий маршрут
     try {
       const hash = (location.hash || "#home").slice(1);
-      route(["home", "python", "games", "tools", "feedback", "profile", "settings"].includes(hash) ? hash : "home");
+      route(["home", "python", "games", "tools", "feedback", "profile", "achievements", "settings"].includes(hash) ? hash : "home");
     } catch (e) { console.warn("initial route", e); }
 
     if (global.I18n && global.I18n.apply) { try { global.I18n.apply(); } catch (e) {} }

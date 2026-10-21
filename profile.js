@@ -88,7 +88,7 @@
     const prev = recs[game];
     // better: "high" (більше = краще) | "low" (менше = краще)
     const isNew = prev == null || (better === "low" ? value < prev : value > prev);
-    if (isNew) { recs[game] = value; localStorage.setItem(recKey(handle()), JSON.stringify(recs)); }
+    if (isNew) { recs[game] = value; localStorage.setItem(recKey(handle()), JSON.stringify(recs)); document.dispatchEvent(new CustomEvent("recordchange", { detail: { game, value, prev } })); }
     return { isNew, value, prev };
   }
 

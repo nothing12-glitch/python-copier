@@ -1,10 +1,33 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.33";
+  const VERSION = "26.10.34";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.34": {
+      uk: [
+        "Нова секція «Досягнення» з 22 ачівками у 6 категоріях",
+        "Категорії: Python, Ігри, Рекорди, Профіль, Дослідник, Серії",
+        "Три рівні досягнень: Бронза, Срібло, Золото",
+        "Автоматичне відстеження: запуск коду, ігри, рекорди, відвідування",
+        "Тост-сповіщення при розблокуванні нового досягнення"
+      ],
+      en: [
+        "New 'Achievements' section with 22 achievements in 6 categories",
+        "Categories: Python, Games, Records, Profile, Explorer, Streaks",
+        "Three achievement tiers: Bronze, Silver, Gold",
+        "Automatic tracking: code runs, games, records, visits",
+        "Toast notification when unlocking a new achievement"
+      ],
+      tr: [
+        "6 kategoride 22 başarımla yeni 'Başarımlar' bölümü",
+        "Kategoriler: Python, Oyunlar, Rekorlar, Profil, Kaşif, Seriler",
+        "Üç başarı seviyesi: Bronz, Gümüş, Altın",
+        "Otomatik izleme: kod çalıştırma, oyunlar, rekorlar, ziyaretler",
+        "Yeni başarı açıldığında bildirim"
+      ]
+    },
     "26.10.33": {
       uk: [
         "Темні фони для темної теми — глибокі, насичені кольори (ніч, космос, індиго, граніт...)",

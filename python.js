@@ -412,6 +412,7 @@
     try {
       await py.runPythonAsync(codeEl.value);
       global.Audio2 && global.Audio2.SFX.success();
+      document.dispatchEvent(new CustomEvent("pythonrun"));
     } catch (e) {
       setOutput(e.message, true);
       global.Audio2 && global.Audio2.SFX.error();

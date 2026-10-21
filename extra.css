@@ -751,3 +751,129 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .av-modal-backdrop, .av-modal-card { animation: none !important; }
 }
+
+/* ========== 14. Achievements ========== */
+.ach-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+}
+.ach-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.ach-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.ach-counter {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--md-primary);
+  background: color-mix(in srgb, var(--md-primary) 10%, transparent);
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+.ach-section {
+  margin-bottom: 24px;
+}
+.ach-section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--md-on-surface-variant);
+  margin: 0 0 12px 4px;
+}
+.ach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.ach-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--md-surface-variant);
+  border: 1px solid var(--md-outline-variant);
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.ach-card.unlocked {
+  border-color: transparent;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.ach-card.locked {
+  opacity: 0.55;
+}
+.ach-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.ach-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--md-outline);
+  flex-shrink: 0;
+  background: var(--md-surface);
+}
+.ach-icon .material-icons {
+  font-size: 22px;
+}
+.ach-info {
+  flex: 1;
+  min-width: 0;
+}
+.ach-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ach-desc {
+  font-size: 0.8rem;
+  color: var(--md-on-surface-variant);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ach-tier {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.ach-lock, .ach-check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+.ach-lock .material-icons {
+  font-size: 16px;
+  color: var(--md-on-surface-variant);
+  opacity: 0.5;
+}
+.ach-check .material-icons {
+  font-size: 18px;
+}
+
+@media (max-width: 480px) {
+  .ach-grid {
+    grid-template-columns: 1fr;
+  }
+  .ach-container {
+    padding: 12px;
+  }
+}

@@ -605,7 +605,7 @@
 
   const Games = {
     init(){ renderHub(); document.addEventListener("langchange",()=>{ if(!$("#gamesHub").classList.contains("hidden")) renderHub(); }); },
-    open(id){ const g=GAMES.find(x=>x.id===id); if(!g)return; const {area,score}=stageShell(g); if(cleanupFn){cleanupFn();cleanupFn=null;} cleanupFn=MOUNTS[id](area,score)||null; },
+    open(id){ const g=GAMES.find(x=>x.id===id); if(!g)return; const {area,score}=stageShell(g); if(cleanupFn){cleanupFn();cleanupFn=null;} cleanupFn=MOUNTS[id](area,score)||null; document.dispatchEvent(new CustomEvent("gameplayed", { detail: { id } })); },
     close(){ if(cleanupFn){cleanupFn();cleanupFn=null;} const st=$("#gameStage"); st.innerHTML=""; st.classList.add("hidden"); $("#gamesHub").classList.remove("hidden"); renderHub(); },
     renderHub
   };

@@ -3,7 +3,8 @@
   const dict = {
     uk: {
       "app.title": "python-copier",
-      "nav.home": "Головна", "nav.python": "Python", "nav.games": "Ігри", "nav.profile": "Профіль", "nav.settings": "Налаштування",
+      "nav.home": "Головна", "nav.python": "Python", "nav.games": "Ігри", "nav.profile": "Профіль", "nav.achievements": "Досягнення", "nav.settings": "Налаштування",
+      "ach.title": "Досягнення",
       "home.heroTitle": "Вчись, грай, кодуй — усе в браузері",
       "home.heroText": "Інтерактивний майданчик: запускай Python прямо тут, грай в ігри та зберігай прогрес у профілі.",
       "home.ctaPython": "Відкрити Python", "home.ctaGames": "До ігор",
@@ -133,7 +134,8 @@
     },
     en: {
       "app.title": "python-copier",
-      "nav.home": "Home", "nav.python": "Python", "nav.games": "Games", "nav.profile": "Profile", "nav.settings": "Settings",
+      "nav.home": "Home", "nav.python": "Python", "nav.games": "Games", "nav.profile": "Profile", "nav.achievements": "Achievements", "nav.settings": "Settings",
+      "ach.title": "Achievements",
       "home.heroTitle": "Learn, play, code — all in the browser",
       "home.heroText": "An interactive playground: run Python right here, play games and keep your progress in your profile.",
       "home.ctaPython": "Open Python", "home.ctaGames": "To games",
@@ -263,7 +265,8 @@
     },
     tr: {
       "app.title": "python-copier",
-      "nav.home": "Ana Sayfa", "nav.python": "Python", "nav.games": "Oyunlar", "nav.profile": "Profil", "nav.settings": "Ayarlar",
+      "nav.home": "Ana Sayfa", "nav.python": "Python", "nav.games": "Oyunlar", "nav.profile": "Profil", "nav.achievements": "Başarımlar", "nav.settings": "Ayarlar",
+      "ach.title": "Başarımlar",
       "home.heroTitle": "Öğren, oyna, kod yaz — hepsi tarayıcıda",
       "home.heroText": "Etkileşimli bir alan: Python'u burada çalıştır, oyun oyna ve ilerlemeni profilinde sakla.",
       "home.ctaPython": "Python'u Aç", "home.ctaGames": "Oyunlara git",
