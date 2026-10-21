@@ -9,40 +9,40 @@
 
   /* ---------- Визначення досягнень ---------- */
   const ACHIEVEMENTS = [
-    { id: "py_first",     ico: "code",          cat: "python",   tier: "bronze",   check: (s) => s.pyRuns >= 1 },
-    { id: "py_10",        ico: "terminal",      cat: "python",   tier: "silver",   check: (s) => s.pyRuns >= 10 },
-    { id: "py_50",        ico: "rocket_launch", cat: "python",   tier: "gold",     check: (s) => s.pyRuns >= 50 },
-    { id: "py_snippet",   ico: "save",          cat: "python",   tier: "bronze",   check: (s) => s.snippets >= 1 },
+    { id: "py_first",     ico: "code",          cat: "python",   tier: "bronze",   check: (s) => s.pyRuns >= 1,                       progress: (s) => Math.min(s.pyRuns / 1, 1) },
+    { id: "py_10",        ico: "terminal",      cat: "python",   tier: "silver",   check: (s) => s.pyRuns >= 10,                      progress: (s) => Math.min(s.pyRuns / 10, 1) },
+    { id: "py_50",        ico: "rocket_launch", cat: "python",   tier: "gold",     check: (s) => s.pyRuns >= 50,                      progress: (s) => Math.min(s.pyRuns / 50, 1) },
+    { id: "py_snippet",   ico: "save",          cat: "python",   tier: "bronze",   check: (s) => s.snippets >= 1,                     progress: (s) => Math.min(s.snippets / 1, 1) },
 
-    { id: "game_first",   ico: "sports_esports",cat: "games",    tier: "bronze",   check: (s) => s.gamesPlayed.length >= 1 },
-    { id: "game_5",       ico: "stadia_controller", cat: "games", tier: "silver",  check: (s) => s.gamesPlayed.length >= 5 },
-    { id: "game_all",     ico: "emoji_events",  cat: "games",    tier: "gold",     check: (s) => s.gamesPlayed.length >= 9 },
-    { id: "game_record",  ico: "track_changes", cat: "games",    tier: "bronze",   check: (s) => s.recordGames.length >= 1 },
-    { id: "game_5rec",    ico: "military_tech", cat: "games",    tier: "silver",   check: (s) => s.recordGames.length >= 5 },
+    { id: "game_first",   ico: "sports_esports",cat: "games",    tier: "bronze",   check: (s) => s.gamesPlayed.length >= 1,           progress: (s) => Math.min(s.gamesPlayed.length / 1, 1) },
+    { id: "game_5",       ico: "stadia_controller", cat: "games", tier: "silver",  check: (s) => s.gamesPlayed.length >= 5,           progress: (s) => Math.min(s.gamesPlayed.length / 5, 1) },
+    { id: "game_all",     ico: "emoji_events",  cat: "games",    tier: "gold",     check: (s) => s.gamesPlayed.length >= 9,           progress: (s) => Math.min(s.gamesPlayed.length / 9, 1) },
+    { id: "game_record",  ico: "track_changes", cat: "games",    tier: "bronze",   check: (s) => s.recordGames.length >= 1,           progress: (s) => Math.min(s.recordGames.length / 1, 1) },
+    { id: "game_5rec",    ico: "military_tech", cat: "games",    tier: "silver",   check: (s) => s.recordGames.length >= 5,           progress: (s) => Math.min(s.recordGames.length / 5, 1) },
 
-    { id: "snake_20",     ico: "🐍",            cat: "specific", tier: "silver",   check: (s) => (s.records.snake || 0) >= 20 },
-    { id: "g2048_500",    ico: "🔢",            cat: "specific", tier: "silver",   check: (s) => (s.records.g2048 || 0) >= 500 },
-    { id: "react_300",    ico: "⚡",             cat: "specific", tier: "gold",     check: (s) => s.records.react && s.records.react <= 300 },
-    { id: "simon_5",      ico: "🎨",            cat: "specific", tier: "silver",   check: (s) => (s.records.simon || 0) >= 5 },
-    { id: "memory_win",   ico: "🧠",            cat: "specific", tier: "bronze",   check: (s) => s.records.memory != null },
+    { id: "snake_20",     ico: "🐍",            cat: "specific", tier: "silver",   check: (s) => (s.records.snake || 0) >= 20,        progress: (s) => Math.min((s.records.snake || 0) / 20, 1) },
+    { id: "g2048_500",    ico: "🔢",            cat: "specific", tier: "silver",   check: (s) => (s.records.g2048 || 0) >= 500,       progress: (s) => Math.min((s.records.g2048 || 0) / 500, 1) },
+    { id: "react_300",    ico: "⚡",             cat: "specific", tier: "gold",     check: (s) => s.records.react && s.records.react <= 300, progress: (s) => s.records.react ? Math.min(Math.max((600 - s.records.react) / 300, 0), 1) : 0 },
+    { id: "simon_5",      ico: "🎨",            cat: "specific", tier: "silver",   check: (s) => (s.records.simon || 0) >= 5,         progress: (s) => Math.min((s.records.simon || 0) / 5, 1) },
+    { id: "memory_win",   ico: "🧠",            cat: "specific", tier: "bronze",   check: (s) => s.records.memory != null,            progress: (s) => s.records.memory != null ? 1 : 0 },
 
-    { id: "tool_first",   ico: "build",         cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.length >= 1 },
-    { id: "tool_calc",    ico: "calculate",     cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("calc") },
-    { id: "tool_conv",    ico: "straighten",    cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("conv") },
-    { id: "tool_rand",    ico: "casino",        cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("rand") },
-    { id: "tool_pwd",     ico: "password",      cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("pwd") },
-    { id: "tool_all",     ico: "handyman",      cat: "tools",    tier: "gold",     check: (s) => ["calc", "conv", "rand", "pwd"].every((t) => s.toolsUsed.includes(t)) },
+    { id: "tool_first",   ico: "build",         cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.length >= 1,             progress: (s) => Math.min(s.toolsUsed.length / 1, 1) },
+    { id: "tool_calc",    ico: "calculate",     cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("calc"),        progress: (s) => s.toolsUsed.includes("calc") ? 1 : 0 },
+    { id: "tool_conv",    ico: "straighten",    cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("conv"),        progress: (s) => s.toolsUsed.includes("conv") ? 1 : 0 },
+    { id: "tool_rand",    ico: "casino",        cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("rand"),        progress: (s) => s.toolsUsed.includes("rand") ? 1 : 0 },
+    { id: "tool_pwd",     ico: "password",      cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("pwd"),         progress: (s) => s.toolsUsed.includes("pwd") ? 1 : 0 },
+    { id: "tool_all",     ico: "handyman",      cat: "tools",    tier: "gold",     check: (s) => ["calc", "conv", "rand", "pwd"].every((t) => s.toolsUsed.includes(t)), progress: (s) => ["calc", "conv", "rand", "pwd"].filter((t) => s.toolsUsed.includes(t)).length / 4 },
 
-    { id: "profile_create", ico: "person_add",  cat: "profile",  tier: "bronze",   check: () => !!(global.Profile && global.Profile.current()) },
-    { id: "avatar_custom",  ico: "face",        cat: "profile",  tier: "silver",   check: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:"); } },
-    { id: "bg_custom",      ico: "palette",     cat: "profile",  tier: "silver",   check: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return (d && d.startsWith("data:")) || (l && l.startsWith("data:")); } },
+    { id: "profile_create", ico: "person_add",  cat: "profile",  tier: "bronze",   check: () => !!(global.Profile && global.Profile.current()), progress: () => (global.Profile && global.Profile.current()) ? 1 : 0 },
+    { id: "avatar_custom",  ico: "face",        cat: "profile",  tier: "silver",   check: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:"); }, progress: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:") ? 1 : 0; } },
+    { id: "bg_custom",      ico: "palette",     cat: "profile",  tier: "silver",   check: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return (d && d.startsWith("data:")) || (l && l.startsWith("data:")); }, progress: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return ((d && d.startsWith("data:")) || (l && l.startsWith("data:"))) ? 1 : 0; } },
 
-    { id: "secret_found", ico: "lock_open",     cat: "explore",  tier: "gold",     check: () => localStorage.getItem("app.secretFound") === "1" },
-    { id: "all_routes",   ico: "explore",       cat: "explore",  tier: "silver",   check: (s) => ALL_ROUTES.every((r) => s.routesVisited.includes(r)) },
-    { id: "night_owl",    ico: "nightlight",    cat: "explore",  tier: "bronze",   check: () => { const h = new Date().getHours(); return h >= 0 && h < 5; } },
+    { id: "secret_found", ico: "lock_open",     cat: "explore",  tier: "gold",     check: () => localStorage.getItem("app.secretFound") === "1", progress: () => localStorage.getItem("app.secretFound") === "1" ? 1 : 0 },
+    { id: "all_routes",   ico: "explore",       cat: "explore",  tier: "silver",   check: (s) => ALL_ROUTES.every((r) => s.routesVisited.includes(r)), progress: (s) => ALL_ROUTES.filter((r) => s.routesVisited.includes(r)).length / ALL_ROUTES.length },
+    { id: "night_owl",    ico: "nightlight",    cat: "explore",  tier: "bronze",   check: () => { const h = new Date().getHours(); return h >= 0 && h < 5; }, progress: () => { const h = new Date().getHours(); return (h >= 0 && h < 5) ? 1 : 0; } },
 
-    { id: "visit_3",      ico: "calendar_today",cat: "streak",   tier: "silver",   check: (s) => s.visitDays >= 3 },
-    { id: "visit_7",      ico: "date_range",    cat: "streak",   tier: "gold",     check: (s) => s.visitDays >= 7 }
+    { id: "visit_3",      ico: "calendar_today",cat: "streak",   tier: "silver",   check: (s) => s.visitDays >= 3,                    progress: (s) => Math.min(s.visitDays / 3, 1) },
+    { id: "visit_7",      ico: "date_range",    cat: "streak",   tier: "gold",     check: (s) => s.visitDays >= 7,                    progress: (s) => Math.min(s.visitDays / 7, 1) }
   ];
 
   const TIER_COLORS = { bronze: "#CD7F32", silver: "#C0C0C0", gold: "#FFD700" };
@@ -299,6 +299,27 @@
         tierEl.style.color = tierColor;
 
         info.append(nameEl, descEl, tierEl);
+
+        if (!isDone && ach.progress) {
+          const s = getStats();
+          s.visitDays = getVisitDays();
+          let pct = 0;
+          try { pct = Math.round(ach.progress(s) * 100); } catch { pct = 0; }
+          if (pct > 0 && pct < 100) {
+            const progressWrap = document.createElement("div");
+            progressWrap.className = "ach-progress";
+            const bar = document.createElement("div");
+            bar.className = "ach-progress-bar";
+            bar.style.width = pct + "%";
+            bar.style.background = tierColor;
+            const label = document.createElement("span");
+            label.className = "ach-progress-label";
+            label.textContent = pct + "%";
+            progressWrap.append(bar, label);
+            info.appendChild(progressWrap);
+          }
+        }
+
         card.append(iconWrap, info);
 
         if (!isDone) {

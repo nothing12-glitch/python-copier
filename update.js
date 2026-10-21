@@ -1,10 +1,24 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.35";
+  const VERSION = "26.10.36";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.36": {
+      uk: [
+        "Прогрес-бари для кожного досягнення — видно скільки відсотків залишилось",
+        "Автоматичний розрахунок прогресу на основі статистики"
+      ],
+      en: [
+        "Progress bars for each achievement — see how many percent remaining",
+        "Automatic progress calculation based on stats"
+      ],
+      tr: [
+        "Her başarı için ilerleme çubukları — yüzde kaç kaldığı görünür",
+        "İstatistiklere göre otomatik ilerleme hesaplama"
+      ]
+    },
     "26.10.35": {
       uk: [
         "Додано 6 нових досягнень за використання інструментів",

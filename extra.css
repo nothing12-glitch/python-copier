@@ -868,6 +868,27 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 .ach-check .material-icons {
   font-size: 18px;
 }
+.ach-progress {
+  position: relative;
+  height: 6px;
+  background: var(--md-outline-variant);
+  border-radius: 3px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.ach-progress-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+.ach-progress-label {
+  position: absolute;
+  right: 4px;
+  top: -14px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--md-on-surface-variant);
+}
 
 @media (max-width: 480px) {
   .ach-grid {
