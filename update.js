@@ -1,10 +1,24 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.22";
+  const VERSION = "26.10.24";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.24": {
+      uk: [
+        "Секцію «Вигляд» перейменовано на «Персоналізація»",
+        "Додано вибір стилю: поки що «Класичний» (нові стилі додамо пізніше)"
+      ],
+      en: [
+        "Renamed 'Appearance' section to 'Personalization'",
+        "Added style selector: currently 'Classic' (new styles coming soon)"
+      ],
+      tr: [
+        "'Görünüm' bölümü 'Kişiselleştirme' olarak yeniden adlandırıldı",
+        "Stil seçici eklendi: şu anda 'Klasik' (yeni stiller yakında)"
+      ]
+    },
     "26.10.22": {
       uk: [
         "Назву сайту змінено на python-copier",
