@@ -8,24 +8,24 @@
     "26.10.20": {
       uk: [
         "Свічку пам'яті прибрано",
+        "Повернуто питання про пристрій при вході — тепер воно з'являється першим, а слідом за ним це вікно «Що нового»",
         "Виправлено вхід у профіль — тепер логін і реєстрація працюють",
         "Ім'я та аватар знову з'являються у шапці одразу після входу",
-        "Версія застосунку відображається в Налаштуваннях (кнопка «Показати що нового»)",
-        "Нове гарне вікно «Що нового» з окремим віконцем списку змін"
+        "Версія застосунку відображається в Налаштуваннях (кнопка «Показати що нового»)"
       ],
       en: [
         "The memorial candle has been removed",
+        "The device question is back on entry — it appears first, followed by this “What's new” window",
         "Profile sign-in fixed — login and registration now work",
         "Your name and avatar reappear in the top bar right after signing in",
-        "App version shown in Settings (with a "Show what's new" button)",
-        "New polished "What's new" window with a separate changes panel"
+        "App version shown in Settings (with a “Show what's new” button)"
       ],
       tr: [
         "Anma mumu kaldırıldı",
+        "Girişteki cihaz sorusu geri geldi — önce o, ardından bu “Yenilikler” penceresi görünüyor",
         "Profil girişi düzeltildi — artık giriş ve kayıt çalışıyor",
         "Giriş yaptıktan sonra adın ve avatarın üst çubukta hemen görünüyor",
-        "Uygulama sürümü Ayarlar'da gösteriliyor ("Yenilikleri göster" düğmesiyle)",
-        "Ayrı değişiklik paneliyle yeni "Yenilikler" penceresi"
+        "Uygulama sürümü Ayarlar'da gösteriliyor (“Yenilikleri göster” düğmesiyle)"
       ]
     },
     "26.10.02": {
@@ -45,7 +45,7 @@
         "Music panel: progress bar, likes, shuffle, loop; re-click no longer stops music",
         "Pomodoro timer in Tools",
         "Easter egg: 10 clicks on the site title → teacher greeting 🌹",
-        ""What's new" window after updates + version in Settings"
+        "“What’s new” window after updates + version in Settings"
       ],
       tr: [
         "Yüzen hap gezinme ve öğeler arasında zıplayan animasyonlu baloncuk",
@@ -54,7 +54,7 @@
         "Müzik paneli: ilerleme çubuğu, beğeniler, shuffle, loop",
         "Araçlarda Pomodoro sayacı",
         "Easter egg: başlığa 10 tık → öğretmen kutlaması 🌹",
-        "Güncellemelerden sonra "Yenilikler" penceresi + Ayarlar'da sürüm"
+        "Güncellemelerden sonra “Yenilikler” penceresi + Ayarlar'da sürüm"
       ]
     }
     // Нові версії додавай сюди, наприклад:
@@ -179,11 +179,17 @@
   }
 
   function init() {
-    // показуємо "Що нового" при КОЖНОМУ вході на сайт
-    setTimeout(() => showWhatsNew(VERSION), 700);
     localStorage.setItem(KEY_SEEN, VERSION);
     addVersionToSettings();
     document.addEventListener("langchange", addVersionToSettings);
+
+    // показуємо "Що нового" при КОЖНОМУ вході, але після діалогу про пристрій
+    const open = () => setTimeout(() => showWhatsNew(VERSION), 220);
+    if (document.getElementById("deviceAsk")) {
+      document.addEventListener("deviceanswered", open, { once: true });
+    } else {
+      setTimeout(open, 700);
+    }
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

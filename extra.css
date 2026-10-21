@@ -82,13 +82,23 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 /* ---------- 7) Номери рядків у редакторі — стовпчиком, а не в один ряд ---------- */
 .line-numbers { white-space: pre; }
 
-/* ---------- 8) Діалог «з якого пристрою зайшли» ---------- */
+/* ---------- 8) Секретний екран «тут нічого немає» ---------- */
+.room-ico {
+  display: block; font-size: 58px; line-height: 1;
+  color: #6750A4; margin: 0 auto 10px;
+}
+.room-empty {
+  margin: 0 0 6px !important;
+  font-size: 19px; font-weight: 500; color: #333;
+}
+
+/* ---------- 9) Діалог «з якого пристрою зайшли» ---------- */
 @keyframes devicein {
   0%   { opacity: 0; transform: translateY(14px) scale(.96); }
   100% { opacity: 1; transform: translateY(0)    scale(1); }
 }
 .device-ask {
-  position: fixed; inset: 0; z-index: 90;
+  position: fixed; inset: 0; z-index: 100;
   display: grid; place-items: center;
   background: rgba(0, 0, 0, .55);
   backdrop-filter: blur(4px);
@@ -155,16 +165,6 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .device-card { animation: none; }
   .device-card.shake { animation: none; }
-}
-
-/* ---------- 9) Секретний екран «тут нічого немає» ---------- */
-.room-ico {
-  display: block; font-size: 58px; line-height: 1;
-  color: #6750A4; margin: 0 auto 10px;
-}
-.room-empty {
-  margin: 0 0 6px !important;
-  font-size: 19px; font-weight: 500; color: #333;
 }
 
 /* ---------- 10) Вікно «Нове оновлення!» з вкладеною панеллю «Що нового» ---------- */
