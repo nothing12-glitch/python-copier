@@ -124,10 +124,7 @@
     note.className = "device-denied hidden";
 
     const ctx = {
-      close: () => {
-        wrap.remove();
-        document.dispatchEvent(new CustomEvent("deviceanswered"));
-      },
+      close: () => wrap.remove(),
       deny: () => {
         note.innerHTML = "";
         const b = document.createElement("b");
