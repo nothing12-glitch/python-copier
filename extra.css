@@ -453,8 +453,8 @@ html, body { overflow-x: hidden; overflow-x: clip; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 12px;
-  padding: 12px 24px;
+  height: 40px;
+  padding: 0 24px;
   border-radius: 999px;
   background: var(--md-primary);
   color: var(--md-on-primary, #fff);

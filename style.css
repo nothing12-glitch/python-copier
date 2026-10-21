@@ -195,7 +195,8 @@ main{max-width:1200px;margin:0 auto;padding:24px 16px 80px var(--nav-w)}
 .hero{text-align:center;padding:40px 16px 28px}
 .hero h2{font-size:clamp(28px,5vw,44px);font-weight:400;letter-spacing:.25px;margin:0 0 12px;color:var(--md-on-surface)}
 .hero p{color:var(--md-on-surface-var);max-width:640px;margin:0 auto 24px;font-size:16px;line-height:1.6}
-.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;align-items:center}
+.hero-cta .btn{flex:0 1 auto;white-space:nowrap;min-width:0}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:8px}
 .card{background:var(--md-surface);border-radius:var(--md-radius);overflow:hidden}
 .elev1{box-shadow:var(--md-elev1)}
