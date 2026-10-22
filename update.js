@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.37";
+  const VERSION = "26.10.38";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.38": {
+      uk: [
+        "Додано мобільну адаптацію (mobile.css) для Capacitor",
+        "Нижня навігація, safe area для notch, збільшені touch-targets",
+        "Підготовка до створення .apk та .ipa додатків"
+      ],
+      en: [
+        "Added mobile adaptation (mobile.css) for Capacitor",
+        "Bottom navigation, safe area for notch, larger touch targets",
+        "Preparation for building .apk and .ipa mobile apps"
+      ],
+      tr: [
+        "Capacitor için mobil uyarlama eklendi (mobile.css)",
+        "Alt gezinme, notch için güvenli alan, daha büyük dokunma hedefleri",
+        ".apk ve .ipa mobil uygulamaları oluşturmaya hazırlık"
+      ]
+    },
     "26.10.37": {
       uk: [
         "Виправлено оновлення прогрес-барів — тепер змінюються в реальному часі"

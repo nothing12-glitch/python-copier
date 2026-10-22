@@ -1,0 +1,13 @@
+{
+  "name": "python-copier",
+  "version": "26.10.37",
+  "description": "Навчальний майданчик: Python, ігри, інструменти",
+  "main": "index.html",
+  "scripts": {
+    "build:android": "npx cap sync android && npx cap open android",
+    "build:ios": "npx cap sync ios && npx cap open ios"
+  },
+  "keywords": ["python", "education", "games"],
+  "author": "nothing12-glitch",
+  "license": "MIT"
+}
