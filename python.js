@@ -392,6 +392,39 @@
     return pyPromise;
   }
 
+  /* ---------- Модулі: авто-довантаження з імпортів коду ---------- */
+  // Модулі, яких у Pyodide немає взагалі (браузерні обмеження) — даємо зрозумілу підказку
+  const UNSUPPORTED_MODULES = {
+    tkinter: "tkinter (графічний інтерфейс) не працює у браузері. Спробуй намалювати інтерфейс через matplotlib, turtle-подібні бібліотеки або просто вивести текст.",
+    turtle: "turtle у Pyodide обмежений, але зазвичай доступний як пакет — спробуй ще раз, або намалюй графіку через matplotlib.",
+    cv2: "cv2 (OpenCV) недоступний у Pyodide. Спробуй обробку зображень через numpy / Pillow (PIL).",
+    pygame: "pygame не працює у браузері (немає доступу до вікна/звуку ОС). Для ігор спробуй простий текстовий цикл або matplotlib для графіки.",
+    PyQt5: "PyQt5 не працює у браузері. Графічний інтерфейс у Pyodide обмежений — виводи результат текстом або через matplotlib.",
+    PyQt6: "PyQt6 не працює у браузері. Графічний інтерфейс у Pyodide обмежений — виводи результат текстом або через matplotlib.",
+    wx: "wxPython не працює у браузері. Виводи результат текстом або через matplotlib.",
+    kivy: "Kivy не працює у браузері. Виводи результат текстом або через matplotlib.",
+    selenium: "selenium не працює у браузері (немає доступу до драйвера браузера).",
+    requests: "requests доступний у Pyodide як пакет — він має довантажитись автоматично. Якщо помилка лишилась, спробуй urllib.request (вбудований модуль)."
+  };
+  function unsupportedHint(code) {
+    const hits = [];
+    for (const mod of Object.keys(UNSUPPORTED_MODULES)) {
+      const re = new RegExp("(^|[^\\w.])(import|from)\\s+" + mod + "\\b", "m");
+      if (re.test(code)) hits.push(mod);
+    }
+    return hits;
+  }
+
+  async function loadModulesFromCode(code) {
+    // Pyodide сам визначає імпорти в коді та довантажує доступні пакети
+    // (numpy, pandas, matplotlib, sympy, requests, Pillow, scipy тощо)
+    try {
+      await py.loadPackagesFromImports(code);
+    } catch (e) {
+      setOutput("Попередження: не вдалось довантажити деякі модулі: " + e.message, true);
+    }
+  }
+
   async function run() {
     out.innerHTML = "";
     runBtn.disabled = true;
@@ -406,6 +439,8 @@
       runBtn.disabled = false;
       return;
     }
+    setStatus("loading");
+    await loadModulesFromCode(codeEl.value);
     setStatus("running");
     py.setStdout({ batched: (s) => setOutput(s) });
     py.setStderr({ batched: (s) => setOutput(s, true) });
@@ -415,6 +450,11 @@
       document.dispatchEvent(new CustomEvent("pythonrun"));
     } catch (e) {
       setOutput(e.message, true);
+      const hits = unsupportedHint(codeEl.value);
+      if (hits.length) {
+        setOutput("", true);
+        for (const m of hits) setOutput("💡 " + UNSUPPORTED_MODULES[m], true);
+      }
       global.Audio2 && global.Audio2.SFX.error();
     } finally {
       runBtn.disabled = false;

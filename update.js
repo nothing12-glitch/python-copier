@@ -1,10 +1,24 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.38";
+  const VERSION = "26.10.39";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.39": {
+      uk: [
+        "Python-майданчик тепер автоматично довантажує модулі з імпортів коду (numpy, pandas, matplotlib, sympy, requests, Pillow тощо)",
+        "Зрозумілі підказки для модулів, які не працюють у браузері (tkinter, pygame, cv2 та інші)"
+      ],
+      en: [
+        "Python playground now auto-loads modules from code imports (numpy, pandas, matplotlib, sympy, requests, Pillow, etc.)",
+        "Clear hints for modules that don't work in the browser (tkinter, pygame, cv2, and others)"
+      ],
+      tr: [
+        "Python oyun alanı artık kod içe aktarımlarından modülleri otomatik yüklüyor (numpy, pandas, matplotlib, sympy, requests, Pillow vb.)",
+        "Tarayıcıda çalışmayan modüller için anlaşılır ipuçları (tkinter, pygame, cv2 ve diğerleri)"
+      ]
+    },
     "26.10.38": {
       uk: [
         "Додано мобільну адаптацію (mobile.css) для Capacitor",
