@@ -8,7 +8,7 @@
     navDesign: "pill",
     navSize: "medium",
     navPos: "bottom",
-    lineNumbers: true, wordWrap: true, autocomplete: true, tabSize: 4, autosaveCode: true, timestamps: false,
+    lineNumbers: true, wordWrap: true, autocomplete: true, autoIndent: true, tabSize: 4, autosaveCode: true, timestamps: false,
     sfx: true, music: false, sfxVolume: 0.25, musicVolume: 0.12,
     musicTrack: 0,
     musicShuffle: false,
@@ -98,6 +98,7 @@
       { id: "lineNumbers", type: "switch", label: "set.lineNumbers" },
       { id: "wordWrap", type: "switch", label: "set.wordWrap" },
       { id: "autocomplete", type: "switch", label: "set.autocomplete" },
+      { id: "autoIndent", type: "switch", label: "set.autoIndent" },
       { id: "tabSize", type: "select", label: "set.tabSize", options: [["2", "2"], ["4", "4"]] , cast: Number },
       { id: "autosaveCode", type: "switch", label: "set.autosaveCode" },
       { id: "timestamps", type: "switch", label: "set.timestamps" }

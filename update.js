@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.40";
+  const VERSION = "26.10.41";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.41": {
+      uk: [
+        "«Розумний Enter» у редакторі Python: зберігає відступ, а після «:» додає новий рівень",
+        "Ctrl+/ коментує або розкоментовує позначені рядки",
+        "Авто-відступ можна вимкнути в Налаштуваннях → Редактор коду"
+      ],
+      en: [
+        "Smart Enter in the Python editor: keeps the indent and adds a new level after “:”",
+        "Ctrl+/ comments or uncomments the selected lines",
+        "Auto-indent can be turned off in Settings → Code editor"
+      ],
+      tr: [
+        "Python düzenleyicide akıllı Enter: girintiyi korur, “:” sonrası yeni seviye ekler",
+        "Ctrl+/ seçili satırları yorumlar veya yorumdan çıkarır",
+        "Otomatik girinti Ayarlar → Kod düzenleyici bölümünden kapatılabilir"
+      ]
+    },
     "26.10.40": {
       uk: [
         "Python-майданчик: кнопки «Копіювати код» і «Зберегти як .py» (Ctrl+S)",

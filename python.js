@@ -253,6 +253,48 @@
     updateLineNumbers();
   }
 
+  function indentUnit() {
+    return " ".repeat(Number(global.Settings && global.Settings.get("tabSize")) || 4);
+  }
+
+  // Enter зберігає відступ поточного рядка, а після «:» додає ще один рівень
+  function smartEnter(e) {
+    const value = codeEl.value;
+    const pos = codeEl.selectionStart;
+    const lineStart = value.lastIndexOf("\n", pos - 1) + 1;
+    const typed = value.slice(lineStart, pos);
+    const indent = (typed.match(/^[ \t]*/) || [""])[0];
+    const opensBlock = /:[ \t]*(#.*)?$/.test(typed);
+    const insert = "\n" + indent + (opensBlock ? indentUnit() : "");
+    e.preventDefault();
+    codeEl.value = value.slice(0, pos) + insert + value.slice(codeEl.selectionEnd);
+    codeEl.selectionStart = codeEl.selectionEnd = pos + insert.length;
+    updateLineNumbers();
+  }
+
+  // Ctrl+/ — закоментувати або розкоментувати позначені рядки
+  function toggleComment() {
+    const value = codeEl.value;
+    const from = codeEl.selectionStart, to = codeEl.selectionEnd;
+    const start = value.lastIndexOf("\n", from - 1) + 1;
+    let end = value.indexOf("\n", to);
+    if (end === -1) end = value.length;
+    const lines = value.slice(start, end).split("\n");
+    const allCommented = lines.every((l) => !l.trim() || /^\s*#/.test(l));
+    const next = lines.map((l) => {
+      if (!l.trim()) return l;
+      const lead = (l.match(/^[ \t]*/) || [""])[0];
+      return allCommented
+        ? lead + l.slice(lead.length).replace(/^#[ \t]?/, "")
+        : lead + "# " + l.slice(lead.length);
+    }).join("\n");
+    codeEl.value = value.slice(0, start) + next + value.slice(end);
+    codeEl.selectionStart = start;
+    codeEl.selectionEnd = start + next.length;
+    updateLineNumbers();
+    global.Audio2 && global.Audio2.SFX.pop();
+  }
+
   function buildHints() {
     hintList.innerHTML = "";
     HINTS.forEach((h) => {
@@ -583,9 +625,14 @@
       const sc = global.Settings && global.Settings.get("shortcuts");
       if (sc && (e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); run(); return; }
       if (sc && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") { e.preventDefault(); savePyFile(); return; }
+      if (sc && (e.ctrlKey || e.metaKey) && e.key === "/") { e.preventDefault(); toggleComment(); return; }
+      if (e.key === "Enter" && !e.ctrlKey && !e.metaKey && global.Settings && global.Settings.get("autoIndent")) {
+        smartEnter(e);
+        return;
+      }
       if (sc && e.key === "Tab") {
         e.preventDefault();
-        insertAtCursor(" ".repeat(Number(global.Settings.get("tabSize")) || 4));
+        insertAtCursor(indentUnit());
       }
     });
 
