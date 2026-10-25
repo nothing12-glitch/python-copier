@@ -18,6 +18,7 @@
     ["examples", "select", "md-select"],
     ["code", "textarea"],
     ["lineNumbers", "div", "line-numbers"],
+    ["highlight", "pre", "highlight"],
     ["out", "output", "console"],
     ["hintList", "div", "hint-list"],
     ["learnSection", "div", "cards learn-cards"],

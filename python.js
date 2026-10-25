@@ -119,12 +119,53 @@
     { label: "try/except", code: 'try:\n    print(1/0)\nexcept ZeroDivisionError as e:\n    print("error:", e)' }
   ];
 
-  // Ключові слова / вбудовані функції для автодоповнення
-  const KEYWORDS = [
-    "False","None","True","and","as","assert","async","await","break","class","continue","def","del","elif","else","except","finally","for","from","global","if","import","in","is","lambda","nonlocal","not","or","pass","raise","return","try","while","with","yield",
-    "abs","all","any","bool","dict","dir","enumerate","filter","float","format","help","input","int","isinstance","len","list","map","max","min","print","range","reversed","round","set","sorted","str","sum","tuple","type","zip",
-    "math","random","string","json","datetime","statistics","itertools","collections","decimal","fractions","time","functools","re",
+  // Ключові слова / вбудовані функції для автодоповнення та підсвітки синтаксису
+  const PY_KEYWORDS = [
+    "False","None","True","and","as","assert","async","await","break","class","continue","def","del","elif","else","except","finally","for","from","global","if","import","in","is","lambda","nonlocal","not","or","pass","raise","return","try","while","with","yield"
   ];
+  const PY_BUILTINS = [
+    "abs","all","any","bool","dict","dir","enumerate","filter","float","format","help","input","int","isinstance","len","list","map","max","min","print","range","reversed","round","set","sorted","str","sum","tuple","type","zip"
+  ];
+  const PY_MODULES = [
+    "math","random","string","json","datetime","statistics","itertools","collections","decimal","fractions","time","functools","re"
+  ];
+  const KEYWORDS = PY_KEYWORDS.concat(PY_BUILTINS, PY_MODULES);
+
+  /* ---------- Підсвітка синтаксису ---------- */
+  // Порядок альтернатив важливий: коментарі й рядки «з'їдають» текст раніше за ключові слова
+  const TOKEN_RE = new RegExp(
+    "(#[^\\n]*)"
+    + "|(\"\"\"[\\s\\S]*?\"\"\"|'''[\\s\\S]*?'''|\"(?:\\\\.|[^\"\\\\\\n])*\"|'(?:\\\\.|[^'\\\\\\n])*')"
+    + "|\\b(" + PY_KEYWORDS.join("|") + ")\\b"
+    + "|\\b(" + PY_BUILTINS.join("|") + ")\\b"
+    + "|\\b(\\d[\\d_]*(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)\\b",
+    "g"
+  );
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function highlightCode(code) {
+    let html = "";
+    let last = 0;
+    let m;
+    TOKEN_RE.lastIndex = 0;
+    while ((m = TOKEN_RE.exec(code)) !== null) {
+      const cls = m[1] ? "tk-com" : m[2] ? "tk-str" : m[3] ? "tk-kw" : m[4] ? "tk-bi" : "tk-num";
+      html += escapeHtml(code.slice(last, m.index)) + '<span class="' + cls + '">' + escapeHtml(m[0]) + "</span>";
+      last = m.index + m[0].length;
+      if (m[0].length === 0) TOKEN_RE.lastIndex++;
+    }
+    return html + escapeHtml(code.slice(last)) + "\n";
+  }
+
+  function updateHighlight() {
+    if (!hlEl || !codeEl) return;
+    hlEl.innerHTML = highlightCode(codeEl.value);
+    hlEl.scrollTop = codeEl.scrollTop;
+    hlEl.scrollLeft = codeEl.scrollLeft;
+  }
 
   const SNKEY = "app.snippets";
   const SN = {
@@ -142,7 +183,7 @@
 
   let py = null;
   let pyState = "idle";
-  let out, codeEl, runBtn, statusEl, lineNums, hintList, exSel, acBox;
+  let out, codeEl, runBtn, statusEl, lineNums, hintList, exSel, acBox, hlEl;
   let statsText, statsTime, copyBtn, saveBtn;
   let lastLoadMs = null, lastExecMs = null;
   let snList, snName;
@@ -174,6 +215,7 @@
     const lines = codeEl.value.split("\n").length;
     lineNums.textContent = Array.from({ length: lines }, (_, i) => i + 1).join("\n");
     updateStats();
+    updateHighlight();
   }
 
   /* ---------- Статистика коду, час виконання, копіювання та експорт ---------- */
@@ -659,6 +701,7 @@
     lineNums = $("#lineNumbers"); hintList = $("#hintList"); exSel = $("#examples");
     statsText = $("#pyStatsText"); statsTime = $("#pyStatsTime");
     copyBtn = $("#copyCode"); saveBtn = $("#savePy");
+    hlEl = $("#highlight");
     if (!codeEl) return;
 
     acBox = document.createElement("div");
@@ -676,12 +719,16 @@
       codeEl.value = saved; updateLineNumbers();
     }
     updateStats();
+    if (hlEl) hlEl.innerHTML = highlightCode(codeEl.value);
     const applyWrap = () => { codeEl.wrap = global.Settings.get("wordWrap") ? "soft" : "off"; };
     applyWrap();
     document.addEventListener("settingschange", (e) => { if (e.detail.key === "wordWrap") applyWrap(); });
 
     codeEl.addEventListener("input", () => { updateLineNumbers(); showAutocomplete(); });
-    codeEl.addEventListener("scroll", () => { lineNums.scrollTop = codeEl.scrollTop; });
+    codeEl.addEventListener("scroll", () => {
+      lineNums.scrollTop = codeEl.scrollTop;
+      if (hlEl) { hlEl.scrollTop = codeEl.scrollTop; hlEl.scrollLeft = codeEl.scrollLeft; }
+    });
     codeEl.addEventListener("blur", () => setTimeout(hideAutocomplete, 120));
     codeEl.addEventListener("keydown", (e) => {
       if (acBox.style.display === "block") {

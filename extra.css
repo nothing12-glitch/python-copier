@@ -922,3 +922,27 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 
 /* ---------- Попередження міні-лінтера у виводі Python ---------- */
 .console .warn { color: #F9E2AF; }
+
+/* ---------- Підсвітка синтаксису в редакторі Python ---------- */
+.code-area { position: relative; flex: 1; display: flex; min-width: 0; }
+.highlight {
+  position: absolute; inset: 0; margin: 0; padding: 16px;
+  overflow: hidden; pointer-events: none;
+  background: transparent; color: #CDD6F4;
+  font-family: var(--md-mono); font-size: var(--editor-font); line-height: 1.6;
+  white-space: pre-wrap; overflow-wrap: break-word;
+  tab-size: var(--tab-size);
+}
+.code-area #code { position: relative; width: 100%; color: transparent; caret-color: #F5E0DC; }
+.code-area #code::selection { background: rgba(137, 180, 250, .32); color: transparent; }
+body.no-wrap .highlight { white-space: pre; overflow-wrap: normal; }
+body.no-highlight .highlight { display: none; }
+body.no-highlight #code { color: #CDD6F4; }
+.highlight .tk-com { color: #6C7086; font-style: italic; }
+.highlight .tk-str { color: #A6E3A1; }
+.highlight .tk-kw { color: #CBA6F7; }
+.highlight .tk-bi { color: #89B4FA; }
+.highlight .tk-num { color: #FAB387; }
+@media (max-width: 768px) {
+  .highlight { font-size: 14px !important; }
+}

@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.42";
+  const VERSION = "26.10.43";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.43": {
+      uk: [
+        "Підсвітка синтаксису в редакторі Python: ключові слова, вбудовані функції, рядки, коментарі та числа тепер різнокольорові",
+        "Підсвітку можна вимкнути в Налаштуваннях → Редактор коду",
+        "Колір курсора й виділення тексту залишилися звичними, підсвітка не заважає вводу"
+      ],
+      en: [
+        "Syntax highlighting in the Python editor: keywords, built-in functions, strings, comments and numbers are now colored",
+        "Highlighting can be turned off in Settings → Code editor",
+        "Caret and selection colors stay familiar; highlighting never gets in the way of typing"
+      ],
+      tr: [
+        "Python düzenleyicide sözdizimi renklendirmesi: anahtar sözcükler, yerleşik fonksiyonlar, metinler, yorumlar ve sayılar artık renkli",
+        "Renklendirme Ayarlar → Kod düzenleyici bölümünden kapatılabilir",
+        "İmleç ve seçim renkleri alışıldık kalır; renklendirme yazmayı engellemez"
+      ]
+    },
     "26.10.42": {
       uk: [
         "Перевірка коду перед запуском: незакриті дужки й лапки, відсутня двокрапка після if/for/def, відступи з табуляцією навпіл із пробілами",
