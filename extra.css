@@ -919,3 +919,6 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 @media (max-width: 560px) {
   .py-stats { padding: 6px 10px; font-size: 11px; }
 }
+
+/* ---------- Попередження міні-лінтера у виводі Python ---------- */
+.console .warn { color: #F9E2AF; }

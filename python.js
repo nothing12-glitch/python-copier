@@ -159,9 +159,10 @@
     statusEl.textContent = global.I18n.t(map[state] || "python.loading");
   }
 
-  function setOutput(text, isErr) {
+  function setOutput(text, isErr, cls) {
     const line = document.createElement("div");
     if (isErr) line.className = "err";
+    else if (cls) line.className = cls;
     const ts = global.Settings && global.Settings.get("timestamps")
       ? "[" + new Date().toLocaleTimeString() + "] " : "";
     line.textContent = ts + text;
@@ -540,10 +541,78 @@
     }
   }
 
+  /* ---------- Міні-перевірка коду перед запуском ---------- */
+  // Правила навмисно консервативні: краще промовчати, ніж показати хибне попередження
+  const LINT_MAX = 5;
+  function lintCode(code) {
+    const t = (k, v) => global.I18n.t(k, v);
+    const warns = [];
+    const openers = { "(": ")", "[": "]", "{": "}" };
+    const closers = { ")": "(", "]": "[", "}": "{" };
+    const stack = [];
+    const lines = code.split("\n");
+    let quote = null;
+    let triple = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const raw = lines[i];
+      const lineNo = i + 1;
+      let codePart = raw;
+
+      for (let j = 0; j < raw.length; j++) {
+        const ch = raw[j];
+        if (quote) {
+          if (triple && raw.startsWith(quote.repeat(3), j)) { quote = null; triple = false; j += 2; }
+          else if (!triple && ch === quote && raw[j - 1] !== "\\") { quote = null; }
+          continue;
+        }
+        if (ch === "#") { codePart = raw.slice(0, j); break; }
+        if (ch === '"' || ch === "'") {
+          triple = raw.startsWith(ch.repeat(3), j);
+          quote = ch;
+          if (triple) j += 2;
+          continue;
+        }
+        if (openers[ch]) stack.push({ ch: ch, line: lineNo });
+        else if (closers[ch]) {
+          const top = stack.pop();
+          if (top && top.ch !== closers[ch]) warns.push(t("python.lint.bracket", { ch: top.ch, line: top.line }));
+        }
+      }
+
+      if (quote && !triple) {
+        warns.push(t("python.lint.quote", { line: lineNo }));
+        quote = null;
+      }
+
+      const lead = (raw.match(/^[ \t]*/) || [""])[0];
+      if (lead.includes("\t") && lead.includes(" ")) warns.push(t("python.lint.indentMix", { line: lineNo }));
+
+      const kw = codePart.match(/^\s*(if|elif|else|for|while|def|class|try|except|finally|with)\b/);
+      if (kw && stack.length === 0) {
+        const stmt = codePart.trim();
+        if (stmt && !stmt.endsWith(":") && !stmt.endsWith("\\")) {
+          warns.push(t("python.lint.colon", { kw: kw[1], line: lineNo }));
+        }
+      }
+    }
+
+    stack.forEach((item) => warns.push(t("python.lint.bracket", { ch: item.ch, line: item.line })));
+    return warns;
+  }
+
+  function showLintWarnings(code) {
+    if (!(global.Settings && global.Settings.get("codeCheck"))) return;
+    const warns = lintCode(code);
+    warns.slice(0, LINT_MAX).forEach((w) => setOutput("⚠️ " + w, false, "warn"));
+    if (warns.length > LINT_MAX) setOutput("⚠️ " + global.I18n.t("python.lint.more", { n: warns.length - LINT_MAX }), false, "warn");
+  }
+
   async function run() {
     out.innerHTML = "";
     runBtn.disabled = true;
     global.Audio2 && global.Audio2.SFX.click();
+    showLintWarnings(codeEl.value);
     lastLoadMs = null; lastExecMs = null;
     renderExecInfo();
     const firstLoad = !py;

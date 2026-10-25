@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.41";
+  const VERSION = "26.10.42";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.42": {
+      uk: [
+        "Перевірка коду перед запуском: незакриті дужки й лапки, відсутня двокрапка після if/for/def, відступи з табуляцією навпіл із пробілами",
+        "Попередження показано жовтим у виводі — вони не блокують запуск коду",
+        "Перевірку можна вимкнути в Налаштуваннях → Редактор коду"
+      ],
+      en: [
+        "Code check before running: unclosed brackets and quotes, missing colon after if/for/def, indents that mix tabs with spaces",
+        "Warnings appear in yellow in the output and never block the run",
+        "The check can be turned off in Settings → Code editor"
+      ],
+      tr: [
+        "Çalıştırmadan önce kod denetimi: kapatılmamış parantez ve tırnaklar, if/for/def sonrası eksik iki nokta, sekme ile boşluğu karıştıran girintiler",
+        "Uyarılar çıktıda sarı renkte görünür ve çalıştırmayı engellemez",
+        "Denetim Ayarlar → Kod düzenleyici bölümünden kapatılabilir"
+      ]
+    },
     "26.10.41": {
       uk: [
         "«Розумний Enter» у редакторі Python: зберігає відступ, а після «:» додає новий рівень",
