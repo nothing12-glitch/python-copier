@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.39";
+  const VERSION = "26.10.40";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.40": {
+      uk: [
+        "Python-майданчик: кнопки «Копіювати код» і «Зберегти як .py» (Ctrl+S)",
+        "Рядок статистики під редактором: кількість рядків і символів",
+        "Показуємо час завантаження Python і час виконання коду"
+      ],
+      en: [
+        "Python playground: “Copy code” and “Save as .py” buttons (Ctrl+S)",
+        "Stats line under the editor: line and character counts",
+        "Now shows Python load time and code execution time"
+      ],
+      tr: [
+        "Python alanı: “Kodu kopyala” ve “.py olarak kaydet” düğmeleri (Ctrl+S)",
+        "Düzenleyicinin altında istatistik satırı: satır ve karakter sayısı",
+        "Python yükleme süresi ve kodun çalıştırılma süresi artık görünüyor"
+      ]
+    },
     "26.10.39": {
       uk: [
         "Python-майданчик тепер автоматично довантажує модулі з імпортів коду (numpy, pandas, matplotlib, sympy, requests, Pillow тощо)",

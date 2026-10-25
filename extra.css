@@ -898,3 +898,24 @@ html, body { overflow-x: hidden; overflow-x: clip; }
     padding: 12px;
   }
 }
+
+/* ---------- Рядок статистики під редактором Python ---------- */
+.py-stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 6px 14px;
+  background: #181825;
+  border-top: 1px solid #313244;
+  font-family: var(--md-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: #A6ADC8;
+}
+.py-stats .material-icons { font-size: 15px; opacity: .75; }
+.py-stats-time { color: #89B4FA; }
+.py-stats-time:empty { display: none; }
+@media (max-width: 560px) {
+  .py-stats { padding: 6px 10px; font-size: 11px; }
+}

@@ -143,6 +143,8 @@
   let py = null;
   let pyState = "idle";
   let out, codeEl, runBtn, statusEl, lineNums, hintList, exSel, acBox;
+  let statsText, statsTime, copyBtn, saveBtn;
+  let lastLoadMs = null, lastExecMs = null;
   let snList, snName;
 
   function setStatus(state) {
@@ -170,6 +172,77 @@
   function updateLineNumbers() {
     const lines = codeEl.value.split("\n").length;
     lineNums.textContent = Array.from({ length: lines }, (_, i) => i + 1).join("\n");
+    updateStats();
+  }
+
+  /* ---------- Статистика коду, час виконання, копіювання та експорт ---------- */
+  function fmtTime(ms) {
+    return ms < 1000
+      ? global.I18n.t("python.timeMs", { v: Math.round(ms) })
+      : global.I18n.t("python.timeSec", { v: (ms / 1000).toFixed(1) });
+  }
+
+  function updateStats() {
+    if (!statsText || !codeEl) return;
+    const value = codeEl.value;
+    statsText.textContent = global.I18n.t("python.stats", {
+      lines: value.split("\n").length,
+      chars: value.length
+    });
+  }
+
+  function renderExecInfo() {
+    if (!statsTime) return;
+    const parts = [];
+    if (lastLoadMs != null) parts.push(global.I18n.t("python.loadTime", { time: fmtTime(lastLoadMs) }));
+    if (lastExecMs != null) parts.push(global.I18n.t("python.execTime", { time: fmtTime(lastExecMs) }));
+    statsTime.textContent = parts.join(" · ");
+  }
+
+  function applyBtnTitles() {
+    if (copyBtn) { copyBtn.title = global.I18n.t("python.copy"); copyBtn.setAttribute("aria-label", copyBtn.title); }
+    if (saveBtn) { saveBtn.title = global.I18n.t("python.savePy"); saveBtn.setAttribute("aria-label", saveBtn.title); }
+  }
+
+  async function copyCode() {
+    const text = codeEl.value;
+    if (!text.trim()) { toast(global.I18n.t("python.emptyCode")); return; }
+    let ok = false;
+    try {
+      if (navigator.clipboard && global.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      }
+    } catch (e) { ok = false; }
+    if (!ok) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      ta.remove();
+    }
+    toast(global.I18n.t(ok ? "python.copied" : "python.copyFail"));
+    global.Audio2 && global.Audio2.SFX[ok ? "pop" : "error"]();
+  }
+
+  function savePyFile() {
+    const text = codeEl.value;
+    if (!text.trim()) { toast(global.I18n.t("python.emptyCode")); return; }
+    const url = URL.createObjectURL(new Blob([text], { type: "text/x-python;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "program.py";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast(global.I18n.t("python.fileSaved"));
+    global.Audio2 && global.Audio2.SFX.success();
   }
 
   function insertAtCursor(text) {
@@ -429,6 +502,10 @@
     out.innerHTML = "";
     runBtn.disabled = true;
     global.Audio2 && global.Audio2.SFX.click();
+    lastLoadMs = null; lastExecMs = null;
+    renderExecInfo();
+    const firstLoad = !py;
+    const t0 = performance.now();
     try {
       await ensurePyodide();
     } catch (e) {
@@ -439,11 +516,13 @@
       runBtn.disabled = false;
       return;
     }
+    if (firstLoad) { lastLoadMs = performance.now() - t0; renderExecInfo(); }
     setStatus("loading");
     await loadModulesFromCode(codeEl.value);
     setStatus("running");
     py.setStdout({ batched: (s) => setOutput(s) });
     py.setStderr({ batched: (s) => setOutput(s, true) });
+    const t1 = performance.now();
     try {
       await py.runPythonAsync(codeEl.value);
       global.Audio2 && global.Audio2.SFX.success();
@@ -457,6 +536,8 @@
       }
       global.Audio2 && global.Audio2.SFX.error();
     } finally {
+      lastExecMs = performance.now() - t1;
+      renderExecInfo();
       runBtn.disabled = false;
       setStatus("ready");
     }
@@ -465,6 +546,8 @@
   function init() {
     out = $("#out"); codeEl = $("#code"); runBtn = $("#run"); statusEl = $("#pyStatus");
     lineNums = $("#lineNumbers"); hintList = $("#hintList"); exSel = $("#examples");
+    statsText = $("#pyStatsText"); statsTime = $("#pyStatsTime");
+    copyBtn = $("#copyCode"); saveBtn = $("#savePy");
     if (!codeEl) return;
 
     acBox = document.createElement("div");
@@ -476,10 +559,12 @@
     buildSnippets();
     setStatus("idle");
     runBtn.disabled = false;
+    applyBtnTitles();
     const saved = localStorage.getItem("app.code");
     if (saved && global.Settings && global.Settings.get("autosaveCode")) {
       codeEl.value = saved; updateLineNumbers();
     }
+    updateStats();
     const applyWrap = () => { codeEl.wrap = global.Settings.get("wordWrap") ? "soft" : "off"; };
     applyWrap();
     document.addEventListener("settingschange", (e) => { if (e.detail.key === "wordWrap") applyWrap(); });
@@ -497,6 +582,7 @@
       // Гарячі клавіші (якщо увімкнені в налаштуваннях)
       const sc = global.Settings && global.Settings.get("shortcuts");
       if (sc && (e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); run(); return; }
+      if (sc && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") { e.preventDefault(); savePyFile(); return; }
       if (sc && e.key === "Tab") {
         e.preventDefault();
         insertAtCursor(" ".repeat(Number(global.Settings.get("tabSize")) || 4));
@@ -509,6 +595,8 @@
     });
 
     runBtn.onclick = run;
+    if (copyBtn) copyBtn.onclick = copyCode;
+    if (saveBtn) saveBtn.onclick = savePyFile;
     $("#clearCode").onclick = () => { codeEl.value = ""; updateLineNumbers(); global.Audio2 && global.Audio2.SFX.click(); };
     $("#clearOut").onclick = () => { out.innerHTML = ""; };
     exSel.onchange = () => {
@@ -522,8 +610,11 @@
       if (snName) snName.placeholder = L(SN).namePh;
       const titleEl = document.querySelector(".snippets-card .snippets-title");
       if (titleEl) titleEl.textContent = L(SN).title;
-      const saveBtn = document.querySelector(".snippets-card .snippet-save-btn");
-      if (saveBtn) saveBtn.textContent = L(SN).save;
+      const snippetSave = document.querySelector(".snippets-card .snippet-save-btn");
+      if (snippetSave) snippetSave.textContent = L(SN).save;
+      applyBtnTitles();
+      updateStats();
+      renderExecInfo();
       setStatus(pyState);
     });
   }
