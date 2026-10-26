@@ -200,15 +200,65 @@
     statusEl.textContent = global.I18n.t(map[state] || "python.loading");
   }
 
-  function setOutput(text, isErr, cls) {
+  function setOutput(text, isErr, cls, jumpLine) {
     const line = document.createElement("div");
     if (isErr) line.className = "err";
     else if (cls) line.className = cls;
     const ts = global.Settings && global.Settings.get("timestamps")
       ? "[" + new Date().toLocaleTimeString() + "] " : "";
-    line.textContent = ts + text;
+    line.appendChild(document.createTextNode(ts + text));
+    const n = Number(jumpLine);
+    if (Number.isInteger(n) && n > 0 && codeEl && n <= codeEl.value.split("\n").length) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "goto-line";
+      btn.textContent = "→ " + n;
+      const label = global.I18n.t("python.gotoLine", { n: n });
+      btn.title = label;
+      btn.setAttribute("aria-label", label);
+      btn.onclick = () => gotoLine(n);
+      line.appendChild(document.createTextNode(" "));
+      line.appendChild(btn);
+    }
     out.appendChild(line);
     out.scrollTop = out.scrollHeight;
+  }
+
+  // Номер рядка з трейсбека Python: спершу кадри коду користувача (<exec>),
+  // інакше помилка всередині бібліотеки вела б на чужий номер рядка
+  function tracebackLine(msg) {
+    const text = String(msg || "");
+    let n = null;
+    let m;
+    const userRe = /File "<exec>", line (\d+)/g;
+    while ((m = userRe.exec(text)) !== null) n = parseInt(m[1], 10);
+    if (n === null) {
+      const anyRe = /\bline (\d+)/g;
+      while ((m = anyRe.exec(text)) !== null) n = parseInt(m[1], 10);
+    }
+    return Number.isInteger(n) && n > 0 ? n : null;
+  }
+
+  function gotoLine(n) {
+    if (!codeEl) return;
+    const lines = codeEl.value.split("\n");
+    const idx = Math.min(Math.max(n, 1), lines.length);
+    let start = 0;
+    for (let i = 0; i < idx - 1; i++) start += lines[i].length + 1;
+    codeEl.focus();
+    codeEl.setSelectionRange(start, start + lines[idx - 1].length);
+    const lh = parseFloat(getComputedStyle(codeEl).lineHeight) || 22;
+    codeEl.scrollTop = Math.max(0, (idx - 1) * lh - codeEl.clientHeight / 2);
+    if (hlEl) { hlEl.scrollTop = codeEl.scrollTop; hlEl.scrollLeft = codeEl.scrollLeft; }
+    if (lineNums) lineNums.scrollTop = codeEl.scrollTop;
+    global.Audio2 && global.Audio2.SFX.pop();
+    const wrap = codeEl.closest(".editor-wrap");
+    if (wrap) {
+      wrap.classList.remove("jump-flash");
+      void wrap.offsetWidth;
+      wrap.classList.add("jump-flash");
+      setTimeout(() => wrap.classList.remove("jump-flash"), 800);
+    }
   }
 
   function updateLineNumbers() {
@@ -618,35 +668,35 @@
         if (openers[ch]) stack.push({ ch: ch, line: lineNo });
         else if (closers[ch]) {
           const top = stack.pop();
-          if (top && top.ch !== closers[ch]) warns.push(t("python.lint.bracket", { ch: top.ch, line: top.line }));
+          if (top && top.ch !== closers[ch]) warns.push({ text: t("python.lint.bracket", { ch: top.ch, line: top.line }), line: top.line });
         }
       }
 
       if (quote && !triple) {
-        warns.push(t("python.lint.quote", { line: lineNo }));
+        warns.push({ text: t("python.lint.quote", { line: lineNo }), line: lineNo });
         quote = null;
       }
 
       const lead = (raw.match(/^[ \t]*/) || [""])[0];
-      if (lead.includes("\t") && lead.includes(" ")) warns.push(t("python.lint.indentMix", { line: lineNo }));
+      if (lead.includes("\t") && lead.includes(" ")) warns.push({ text: t("python.lint.indentMix", { line: lineNo }), line: lineNo });
 
       const kw = codePart.match(/^\s*(if|elif|else|for|while|def|class|try|except|finally|with)\b/);
       if (kw && stack.length === 0) {
         const stmt = codePart.trim();
         if (stmt && !stmt.endsWith(":") && !stmt.endsWith("\\")) {
-          warns.push(t("python.lint.colon", { kw: kw[1], line: lineNo }));
+          warns.push({ text: t("python.lint.colon", { kw: kw[1], line: lineNo }), line: lineNo });
         }
       }
     }
 
-    stack.forEach((item) => warns.push(t("python.lint.bracket", { ch: item.ch, line: item.line })));
+    stack.forEach((item) => warns.push({ text: t("python.lint.bracket", { ch: item.ch, line: item.line }), line: item.line }));
     return warns;
   }
 
   function showLintWarnings(code) {
     if (!(global.Settings && global.Settings.get("codeCheck"))) return;
     const warns = lintCode(code);
-    warns.slice(0, LINT_MAX).forEach((w) => setOutput("⚠️ " + w, false, "warn"));
+    warns.slice(0, LINT_MAX).forEach((w) => setOutput("⚠️ " + w.text, false, "warn", w.line));
     if (warns.length > LINT_MAX) setOutput("⚠️ " + global.I18n.t("python.lint.more", { n: warns.length - LINT_MAX }), false, "warn");
   }
 
@@ -674,14 +724,14 @@
     await loadModulesFromCode(codeEl.value);
     setStatus("running");
     py.setStdout({ batched: (s) => setOutput(s) });
-    py.setStderr({ batched: (s) => setOutput(s, true) });
+    py.setStderr({ batched: (s) => setOutput(s, true, null, tracebackLine(s)) });
     const t1 = performance.now();
     try {
       await py.runPythonAsync(codeEl.value);
       global.Audio2 && global.Audio2.SFX.success();
       document.dispatchEvent(new CustomEvent("pythonrun"));
     } catch (e) {
-      setOutput(e.message, true);
+      setOutput(e.message, true, null, tracebackLine(e.message));
       const hits = unsupportedHint(codeEl.value);
       if (hits.length) {
         setOutput("", true);

@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.43";
+  const VERSION = "26.10.44";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.44": {
+      uk: [
+        "Номери рядків у консолі стали клікабельними: біля помилки або попередження з'явилася кнопка «→ N»",
+        "Клік переносить у редактор — потрібний рядок виділяється, а рамка редактора коротко підсвічується",
+        "Працює і з трейсбеком Python, і з попередженнями перевірки коду перед запуском"
+      ],
+      en: [
+        "Line numbers in the console are now clickable: a “→ N” button appears next to an error or warning",
+        "Clicking jumps into the editor — the line is selected and the editor frame flashes briefly",
+        "Works for both Python tracebacks and pre-run code check warnings"
+      ],
+      tr: [
+        "Konsoldaki satır numaraları artık tıklanabilir: bir hata veya uyarının yanında “→ N” düğmesi çıkıyor",
+        "Tıklayınca düzenleyiciye geçilir — ilgili satır seçilir ve çerçeve kısa bir süre vurgulanır",
+        "Hem Python hata izlerinde hem de çalıştırma öncesi kod denetimi uyarılarında çalışır"
+      ]
+    },
     "26.10.43": {
       uk: [
         "Підсвітка синтаксису в редакторі Python: ключові слова, вбудовані функції, рядки, коментарі та числа тепер різнокольорові",

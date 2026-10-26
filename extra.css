@@ -946,3 +946,26 @@ body.no-highlight #code { color: #CDD6F4; }
 @media (max-width: 768px) {
   .highlight { font-size: 14px !important; }
 }
+
+/* ---------- Перехід до рядка з консолі ---------- */
+.console .goto-line {
+  display: inline-block; margin-left: 6px; padding: 0 6px;
+  font-family: var(--md-mono); font-size: 12px; line-height: 1.6;
+  color: #89B4FA; background: rgba(137, 180, 250, .12);
+  border: 1px solid rgba(137, 180, 250, .35); border-radius: 6px;
+  cursor: pointer; vertical-align: baseline;
+}
+.console .goto-line:hover { background: rgba(137, 180, 250, .24); }
+.console .goto-line:focus-visible { outline: 2px solid #89B4FA; outline-offset: 1px; }
+.console .err .goto-line {
+  color: #F38BA8; background: rgba(243, 139, 168, .12);
+  border-color: rgba(243, 139, 168, .35);
+}
+.console .err .goto-line:hover { background: rgba(243, 139, 168, .24); }
+.console .err .goto-line:focus-visible { outline-color: #F38BA8; }
+.editor-wrap.jump-flash { animation: jumpFlash .8s ease-out; }
+@keyframes jumpFlash {
+  0% { box-shadow: inset 0 0 0 2px rgba(137, 180, 250, .6); }
+  100% { box-shadow: inset 0 0 0 2px rgba(137, 180, 250, 0); }
+}
+body.reduce-motion .editor-wrap.jump-flash { animation: none; }
