@@ -27,6 +27,7 @@
     }
     if (name === "tasks" && global.Tasks) {
       try { global.Tasks.render(); } catch (e) { console.warn(e); }
+      try { if (global.Contest) global.Contest.render(); } catch (e) { console.warn(e); }
     }
     if (name === "profile") {
       try { renderProfile(); } catch (e) { console.warn(e); }
@@ -402,6 +403,7 @@
     try { bindSettingsActions(); } catch (e) { console.warn("bindSettingsActions", e); }
     try { if (global.PythonPad) global.PythonPad.init(); } catch (e) { console.warn("PythonPad", e); }
     try { if (global.Tasks) global.Tasks.init(); } catch (e) { console.warn("Tasks", e); }
+    try { if (global.Contest) global.Contest.init(); } catch (e) { console.warn("Contest", e); }
     try { if (global.Games) global.Games.init(); } catch (e) { console.warn("Games", e); }
     try { if (global.Tools) global.Tools.init(); } catch (e) { console.warn("Tools", e); }
     try { renderLearn(); } catch (e) { console.warn("renderLearn", e); }

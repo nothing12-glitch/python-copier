@@ -38,6 +38,10 @@
     { id: "task_5",       ico: "school",          cat: "tasks",    tier: "silver",   check: (s) => (s.tasksSolved || []).length >= 5, progress: (s) => Math.min((s.tasksSolved || []).length / 5, 1) },
     { id: "task_all",     ico: "workspace_premium", cat: "tasks",  tier: "gold",     check: (s) => (s.tasksSolved || []).length >= tasksTotal(), progress: (s) => Math.min((s.tasksSolved || []).length / tasksTotal(), 1) },
 
+    { id: "contest_first",  ico: "flag",   cat: "contest", tier: "bronze", check: (s) => (s.contestsRun || 0) >= 1, progress: (s) => Math.min(s.contestsRun || 0, 1) },
+    { id: "contest_5",      ico: "timer",  cat: "contest", tier: "silver", check: (s) => (s.contestsRun || 0) >= 5, progress: (s) => Math.min((s.contestsRun || 0) / 5, 1) },
+    { id: "contest_perfect", ico: "stars", cat: "contest", tier: "gold",   check: (s) => (s.contestPerfect || 0) >= 1, progress: (s) => Math.min(s.contestPerfect || 0, 1) },
+
     { id: "profile_create", ico: "person_add",  cat: "profile",  tier: "bronze",   check: () => !!(global.Profile && global.Profile.current()), progress: () => (global.Profile && global.Profile.current()) ? 1 : 0 },
     { id: "avatar_custom",  ico: "face",        cat: "profile",  tier: "silver",   check: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:"); }, progress: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:") ? 1 : 0; } },
     { id: "bg_custom",      ico: "palette",     cat: "profile",  tier: "silver",   check: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return (d && d.startsWith("data:")) || (l && l.startsWith("data:")); }, progress: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return ((d && d.startsWith("data:")) || (l && l.startsWith("data:"))) ? 1 : 0; } },
@@ -63,6 +67,7 @@
     specific: { uk: "Рекорди",  en: "Records",   tr: "Rekorlar" },
     tools:    { uk: "Інструменти", en: "Tools",  tr: "Araçlar" },
     tasks:    { uk: "Задачі",     en: "Tasks",    tr: "Görevler" },
+    contest:  { uk: "Тренажер",   en: "Trainer",  tr: "Antrenör" },
     profile:  { uk: "Профіль",  en: "Profile",   tr: "Profil" },
     explore:  { uk: "Дослідник",en: "Explorer",  tr: "Kaşif" },
     streak:   { uk: "Серії",    en: "Streaks",   tr: "Seriler" }
@@ -92,6 +97,9 @@
     task_first:     { uk: "Перша задача",        en: "First Task",         tr: "İlk Görev" },
     task_5:         { uk: "Розв'язувач",         en: "Problem Solver",     tr: "Problem Çözen" },
     task_all:       { uk: "Олімпієць",           en: "Olympiad Star",      tr: "Olimpiyat Yıldızı" },
+    contest_first:  { uk: "Перший тур",          en: "First Round",        tr: "İlk Tur" },
+    contest_5:      { uk: "Тренування",          en: "In Training",        tr: "Antrenmanda" },
+    contest_perfect:{ uk: "Ідеальний тур",       en: "Perfect Round",      tr: "Kusursuz Tur" },
     profile_create: { uk: "Ласкаво просимо",     en: "Welcome",            tr: "Hoş Geldin" },
     avatar_custom:  { uk: "Стиляга",             en: "Trendsetter",        tr: "Modacı" },
     bg_custom:      { uk: "Естет",               en: "Aesthete",           tr: "Estet" },
@@ -126,6 +134,9 @@
     task_first:     { uk: "Розв'яжи першу задачу",                 en: "Solve your first task",               tr: "İlk görevini çöz" },
     task_5:         { uk: "Розв'яжи 5 задач",                      en: "Solve 5 tasks",                       tr: "5 görev çöz" },
     task_all:       { uk: "Розв'яжи всі задачі з банку",           en: "Solve every task in the bank",        tr: "Bankadaki tüm görevleri çöz" },
+    contest_first:  { uk: "Зіграй перший олімпіадний тур",         en: "Complete your first olympiad round",  tr: "İlk olimpiyat turunu tamamla" },
+    contest_5:      { uk: "Зіграй 5 олімпіадних турів",            en: "Complete 5 olympiad rounds",          tr: "5 olimpiyat turu tamamla" },
+    contest_perfect:{ uk: "Набери 100% балів у турі",              en: "Score 100% of the points in a round", tr: "Bir turda puanların %100'ünü topla" },
     profile_create: { uk: "Створи акаунт",                         en: "Create an account",                   tr: "Hesap oluştur" },
     avatar_custom:  { uk: "Завантаж власний аватар",               en: "Upload a custom avatar",              tr: "Özel avatar yükle" },
     bg_custom:      { uk: "Завантаж власний фон профілю",          en: "Upload a custom profile background",  tr: "Özel profil arka planı yükle" },
@@ -146,7 +157,7 @@
   }
 
   function defaultStats() {
-    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [], toolsUsed: [], tasksSolved: [] };
+    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [], toolsUsed: [], tasksSolved: [], contestsRun: 0, contestPerfect: 0, contestBest: 0 };
   }
 
   function saveStats(s) { localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
@@ -172,6 +183,11 @@
     else if (key === "task" && value) {
       if (!Array.isArray(s.tasksSolved)) s.tasksSolved = [];
       if (!s.tasksSolved.includes(value)) s.tasksSolved.push(value);
+    }
+    else if (key === "contest" && value) {
+      s.contestsRun = (s.contestsRun || 0) + 1;
+      if (value.perfect) s.contestPerfect = (s.contestPerfect || 0) + 1;
+      if ((value.score || 0) > (s.contestBest || 0)) s.contestBest = value.score;
     }
     saveStats(s);
     return s;
@@ -258,7 +274,7 @@
       '</h3><span class="ach-counter">' + count + ' / ' + total + '</span>';
     container.appendChild(header);
 
-    const cats = ["python", "games", "specific", "tools", "profile", "explore", "streak"];
+    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "profile", "explore", "streak"];
     cats.forEach((cat) => {
       const catAchs = ACHIEVEMENTS.filter((a) => a.cat === cat);
       if (catAchs.length === 0) return;
@@ -412,6 +428,14 @@
     document.addEventListener("tasksolved", (e) => {
       if (e.detail && e.detail.id) {
         bumpStat("task", e.detail.id);
+        checkAll();
+        rerenderIfActive();
+      }
+    });
+
+    document.addEventListener("contestdone", (e) => {
+      if (e.detail) {
+        bumpStat("contest", e.detail);
         checkAll();
         rerenderIfActive();
       }

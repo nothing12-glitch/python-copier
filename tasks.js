@@ -52,6 +52,46 @@
       ]
     },
     {
+      id: "swap", level: 1,
+      title: { uk: "Поміняти місцями", en: "Swap the values", tr: "Değerleri değiştir" },
+      text: {
+        uk: "На вхід надходять два цілих числа, кожне в окремому рядку. Виведи їх у зворотному порядку: спочатку друге, потім перше.",
+        en: "Two integers are given, one per line. Print them in reverse order: the second one first, then the first.",
+        tr: "Her biri ayrı satırda iki tam sayı veriliyor. Ters sırada yazdır: önce ikinciyi, sonra birinciyi."
+      },
+      hint: {
+        uk: "Достатньо двох print() у потрібному порядку — змінні місцями міняти не обов'язково.",
+        en: "Two print() calls in the right order are enough — you do not have to swap the variables.",
+        tr: "Doğru sırada iki print() çağrısı yeterlidir — değişkenleri takas etmen gerekmez."
+      },
+      starter: "a = int(input())\nb = int(input())\n",
+      tests: [
+        { in: "3\n5\n", out: "5\n3" },
+        { in: "-1\n4\n", out: "4\n-1" },
+        { in: "7\n7\n", out: "7\n7" }
+      ]
+    },
+    {
+      id: "min2", level: 1,
+      title: { uk: "Менше з двох", en: "Smaller of two", tr: "İkisinin küçüğü" },
+      text: {
+        uk: "Дано два цілих числа, кожне в окремому рядку. Виведи менше з них.",
+        en: "Two integers are given, one per line. Print the smaller of them.",
+        tr: "Her biri ayrı satırda iki tam sayı veriliyor. Küçük olanı yazdır."
+      },
+      hint: {
+        uk: "Порівняй числа через if a < b або скористайся функцією min().",
+        en: "Compare the numbers with if a < b or use the min() function.",
+        tr: "Sayıları if a < b ile karşılaştır ya da min() fonksiyonunu kullan."
+      },
+      starter: "a = int(input())\nb = int(input())\n",
+      tests: [
+        { in: "4\n9\n", out: "4" },
+        { in: "12\n3\n", out: "3" },
+        { in: "-5\n-8\n", out: "-8" }
+      ]
+    },
+    {
       id: "digitsum", level: 1,
       title: { uk: "Сума цифр числа", en: "Sum of digits", tr: "Rakamlar toplamı" },
       text: {
@@ -172,6 +212,46 @@
       ]
     },
     {
+      id: "counteven", level: 2,
+      title: { uk: "Скільки парних", en: "How many are even", tr: "Kaç tanesi çift" },
+      text: {
+        uk: "У першому рядку дано кількість чисел n, у другому — n цілих чисел через пробіл. Виведи, скільки серед них парних.",
+        en: "The first line contains the amount of numbers n, the second line contains n integers separated by spaces. Print how many of them are even.",
+        tr: "İlk satırda sayı adedi n, ikinci satırda boşlukla ayrılmış n tam sayı veriliyor. Kaç tanesinin çift olduğunu yazdır."
+      },
+      hint: {
+        uk: "Рядок чисел перетворить на список: numbers = list(map(int, input().split())). Далі — цикл і лічильник.",
+        en: "Turn the line of numbers into a list: numbers = list(map(int, input().split())). Then use a loop and a counter.",
+        tr: "Sayı satırını listeye çevir: numbers = list(map(int, input().split())). Sonra bir döngü ve sayaç kullan."
+      },
+      starter: "n = int(input())\nnumbers = list(map(int, input().split()))\ncount = 0\n",
+      tests: [
+        { in: "5\n1 2 3 4 6\n", out: "3" },
+        { in: "3\n1 3 5\n", out: "0" },
+        { in: "4\n2 4 6 8\n", out: "4" }
+      ]
+    },
+    {
+      id: "gcd", level: 2,
+      title: { uk: "Найбільший спільний дільник", en: "Greatest common divisor", tr: "En büyük ortak bölen" },
+      text: {
+        uk: "Дано два натуральні числа, кожне в окремому рядку. Виведи їхній найбільший спільний дільник.",
+        en: "Two natural numbers are given, one per line. Print their greatest common divisor.",
+        tr: "Her biri ayrı satırda iki doğal sayı veriliyor. En büyük ortak bölenlerini yazdır."
+      },
+      hint: {
+        uk: "Перебирай усі числа від меншого до 1 і шукай те, на яке обидва діляться без остачі. Або скористайся math.gcd().",
+        en: "Walk through the numbers from the smaller one down to 1 and look for the one that divides both. Or use math.gcd().",
+        tr: "Küçük olandan 1'e kadar sayıları dolaş ve ikisini de kalansız böleni bul. Ya da math.gcd() kullan."
+      },
+      starter: "a = int(input())\nb = int(input())\n",
+      tests: [
+        { in: "12\n18\n", out: "6" },
+        { in: "7\n13\n", out: "1" },
+        { in: "100\n75\n", out: "25" }
+      ]
+    },
+    {
       id: "fib", level: 3,
       title: { uk: "Число Фібоначчі", en: "Fibonacci number", tr: "Fibonacci sayısı" },
       text: {
@@ -249,6 +329,46 @@
         { in: "hello world\n", out: "2" },
         { in: "one two three four\n", out: "4" },
         { in: "python\n", out: "1" }
+      ]
+    },
+    {
+      id: "reversewords", level: 3,
+      title: { uk: "Слова у зворотному порядку", en: "Words in reverse order", tr: "Sözcükler ters sırada" },
+      text: {
+        uk: "Дано один рядок тексту. Виведи ті самі слова у зворотному порядку, розділяючи їх одним пробілом.",
+        en: "One line of text is given. Print the same words in reverse order, separated by a single space.",
+        tr: "Bir satır metin veriliyor. Aynı sözcükleri tek boşlukla ayrılmış olarak ters sırada yazdır."
+      },
+      hint: {
+        uk: "Список можна перевернути зрізом words[::-1], а з'єднати назад — методом \" \".join(...).",
+        en: "A list can be reversed with the slice words[::-1] and joined back with \" \".join(...).",
+        tr: "Bir liste words[::-1] dilimiyle tersine çevrilir ve \" \".join(...) ile yeniden birleştirilir."
+      },
+      starter: "s = input()\nwords = s.split()\n",
+      tests: [
+        { in: "one two three\n", out: "three two one" },
+        { in: "hello world\n", out: "world hello" },
+        { in: "python\n", out: "python" }
+      ]
+    },
+    {
+      id: "listmax", level: 3,
+      title: { uk: "Найбільше у списку", en: "Largest in the list", tr: "Listedeki en büyük" },
+      text: {
+        uk: "У першому рядку дано кількість чисел n, у другому — n цілих чисел через пробіл (можуть бути від'ємними). Виведи найбільше з них.",
+        en: "The first line contains the amount of numbers n, the second line contains n integers separated by spaces (they may be negative). Print the largest of them.",
+        tr: "İlk satırda sayı adedi n, ikinci satırda boşlukla ayrılmış n tam sayı veriliyor (negatif olabilirler). En büyüğünü yazdır."
+      },
+      hint: {
+        uk: "Якщо брати власний цикл, початкове значення максимуму — перший елемент списку, а не нуль: інакше від'ємні числа дадуть хибну відповідь.",
+        en: "If you write your own loop, start the maximum from the first list element rather than zero: otherwise negative numbers give a wrong answer.",
+        tr: "Kendi döngünü yazıyorsan maksimumu listenin ilk elemanıyla başlat, sıfırla değil: aksi halde negatif sayılar yanlış sonuç verir."
+      },
+      starter: "n = int(input())\nnumbers = list(map(int, input().split()))\n",
+      tests: [
+        { in: "4\n3 9 2 7\n", out: "9" },
+        { in: "1\n5\n", out: "5" },
+        { in: "3\n-1 -5 -2\n", out: "-1" }
       ]
     }
   ];
@@ -433,6 +553,30 @@
   }
 
   /* ---------- Перевірка розв'язку ---------- */
+  // Спільна для розділу «Задачі» й олімпіадного тренажера: проганяє всі тести й повертає вердикт
+  async function judge(code, task) {
+    const results = [];
+    let error = null;
+    let errorLine = null;
+    const started = performance.now();
+    for (const test of task.tests) {
+      const r = await global.PythonPad.execute(code, test.in);
+      if (r.error) {
+        error = r.error;
+        errorLine = r.line || null;
+        results.push({ ok: false, test: test, got: r.output, error: r.error, line: errorLine });
+        break;
+      }
+      results.push({ ok: normalize(r.output) === normalize(test.out), test: test, got: r.output });
+    }
+    const passed = !error && results.length === task.tests.length && results.every((r) => r.ok);
+    return {
+      passed: passed, results: results, error: error, line: errorLine,
+      okCount: results.filter((r) => r.ok).length,
+      ms: Math.round(performance.now() - started)
+    };
+  }
+
   async function check() {
     if (busy || !current) return;
     const code = codeEl.value;
@@ -450,42 +594,26 @@
     sfx("click");
 
     const task = current;
-    const results = [];
-    let runtimeError = null;
-    let errorLine = null;
-    const started = performance.now();
-
+    let verdict;
     try {
-      for (const test of task.tests) {
-        const r = await global.PythonPad.execute(code, test.in);
-        if (r.error) {
-          runtimeError = r.error;
-          errorLine = r.line || null;
-          results.push({ ok: false, test: test, got: r.output, error: r.error, line: errorLine });
-          break;
-        }
-        results.push({ ok: normalize(r.output) === normalize(test.out), test: test, got: r.output });
-      }
+      verdict = await judge(code, task);
     } catch (e) {
-      runtimeError = e && e.message ? e.message : String(e);
+      verdict = { passed: false, results: [], error: (e && e.message) || String(e), line: null, okCount: 0, ms: 0 };
     }
 
-    const ms = Math.round(performance.now() - started);
-    const passed = !runtimeError && results.length === task.tests.length && results.every((r) => r.ok);
-    registerAttempt(task, passed);
-    renderResults(task, results, runtimeError, ms, passed);
+    registerAttempt(task, verdict.passed);
+    renderResults(task, verdict.results, verdict.error, verdict.ms, verdict.passed);
     busy = false;
     checkBtn.disabled = false;
 
-    if (passed) {
+    if (verdict.passed) {
       setStatus(t("tasks.accepted"), "ok");
       sfx("success");
-    } else if (runtimeError) {
+    } else if (verdict.error) {
       setStatus(t("tasks.runtimeError"), "error");
       sfx("error");
     } else {
-      const okCount = results.filter((r) => r.ok).length;
-      setStatus(t("tasks.failed", { n: okCount, total: task.tests.length }), "bad");
+      setStatus(t("tasks.failed", { n: verdict.okCount, total: task.tests.length }), "bad");
       sfx("error");
     }
   }
@@ -630,5 +758,12 @@
     if (current) renderDetail(); else renderList();
   }
 
-  global.Tasks = { init, render, open: openTask, list: () => TASKS.slice(), count: TASKS.length };
+  global.Tasks = {
+    init, render, open: openTask,
+    list: () => TASKS.slice(),
+    count: TASKS.length,
+    maxPoints: TASKS.reduce((sum, task) => sum + points(task), 0),
+    judge, points, normalize, isSolved,
+    localize: pick, POINTS, LEVEL_KEYS
+  };
 })(window);

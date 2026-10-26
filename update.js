@@ -1,10 +1,30 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.45";
+  const VERSION = "26.10.46";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.46": {
+      uk: [
+        "Олімпіадний тренажер: тур на час із випадковими задачами, живим таймером, балами та екраном результатів",
+        "Налаштуй тривалість (10, 20 або 30 хвилин) і кількість задач (4, 6 або 8) — тренажер сам набирає тур із різних рівнів складності",
+        "Банк задач виріс із 12 до 18: додалися задачі на списки, найбільший спільний дільник, порядок слів і роботу з послідовностями",
+        "З'явилася історія турів, особистий рекорд і три нові досягнення — за перший тур, п'ять турів та ідеальні 100% балів"
+      ],
+      en: [
+        "Olympiad trainer: a timed round with random tasks, a live timer, points and a results screen",
+        "Choose the duration (10, 20 or 30 minutes) and the number of tasks (4, 6 or 8) — the trainer builds a mixed-difficulty round for you",
+        "The task bank grew from 12 to 18: lists, greatest common divisor, word order and sequence problems were added",
+        "Round history, a personal best and three new achievements appeared — for the first round, five rounds and a perfect 100% score"
+      ],
+      tr: [
+        "Olimpiyat antrenörü: rastgele görevler, canlı sayaç, puanlar ve sonuç ekranıyla süreli tur",
+        "Süreyi (10, 20 veya 30 dakika) ve görev sayısını (4, 6 veya 8) seç — antrenör farklı zorluklarda bir tur hazırlar",
+        "Görev havuzu 12'den 18'e çıktı: listeler, en büyük ortak bölen, sözcük sırası ve dizi soruları eklendi",
+        "Tur geçmişi, kişisel rekor ve üç yeni başarı geldi — ilk tur, beş tur ve kusursuz %100 puan için"
+      ]
+    },
     "26.10.45": {
       uk: [
         "Новий розділ «Задачі»: 12 задач трьох рівнів складності з автоматичною перевіркою коду",
