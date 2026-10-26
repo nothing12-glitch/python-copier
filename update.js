@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.48";
+  const VERSION = "26.10.49";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.49": {
+      uk: [
+        "Головна: усі картки тепер течуть однією рівною сіткою — без дірок і незаповнених рядків",
+        "Панель навігації стискається на невисоких екранах, щоб усі 11 розділів лишались видимі",
+        "Горизонтальна панель (зверху чи знизу) більше не переповнюється, коли розділів багато"
+      ],
+      en: [
+        "Home: all cards now flow in one even grid — no holes or half-empty rows",
+        "The navigation rail compacts on short screens so all 11 sections stay visible",
+        "The horizontal nav (top or bottom) no longer overflows when there are many sections"
+      ],
+      tr: [
+        "Ana sayfa: tüm kartlar artık tek düzgün ızgarada akıyor — boşluksuz ve yarı boş satırsız",
+        "Gezinme çubuğu kısa ekranlarda sıkışır, böylece 11 bölümün tümü görünür kalır",
+        "Yatay gezinme (üst veya alt) çok bölüm varken artık taşmıyor"
+      ]
+    },
     "26.10.48": {
       uk: [
         "Новий розділ «Курс Python»: покроковий навчальний шлях із 5 розділів і 12 уроків",
