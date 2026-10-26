@@ -5,8 +5,9 @@
   const STATS_KEY = "app.achStats";
 
   const ALL_GAMES = ["ttt", "snake", "memory", "g2048", "rps", "react", "simon", "mines", "guess"];
-  const ALL_ROUTES = ["home", "python", "modules", "tasks", "games", "tools", "feedback", "profile", "settings", "achievements"];
+  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "games", "tools", "feedback", "profile", "settings", "achievements"];
   const tasksTotal = () => (global.Tasks && global.Tasks.count) || 12;
+  const courseTotal = () => (global.Course && global.Course.count) || 12;
 
   /* ---------- Визначення досягнень ---------- */
   const ACHIEVEMENTS = [
@@ -45,6 +46,10 @@
     { id: "pkg_first",     ico: "inventory_2", cat: "modules", tier: "bronze", check: (s) => (s.packagesInstalled || 0) >= 1, progress: (s) => Math.min((s.packagesInstalled || 0) / 1, 1) },
     { id: "pkg_10",        ico: "deployed_code", cat: "modules", tier: "silver", check: (s) => (s.packagesInstalled || 0) >= 10, progress: (s) => Math.min((s.packagesInstalled || 0) / 10, 1) },
 
+    { id: "course_first",  ico: "menu_book",    cat: "course", tier: "bronze", check: (s) => (s.lessonsDone || 0) >= 1, progress: (s) => Math.min((s.lessonsDone || 0) / 1, 1) },
+    { id: "course_5",      ico: "auto_stories", cat: "course", tier: "silver", check: (s) => (s.lessonsDone || 0) >= 5, progress: (s) => Math.min((s.lessonsDone || 0) / 5, 1) },
+    { id: "course_all",    ico: "workspace_premium", cat: "course", tier: "gold", check: (s) => (s.lessonsDone || 0) >= courseTotal(), progress: (s) => Math.min((s.lessonsDone || 0) / courseTotal(), 1) },
+
     { id: "profile_create", ico: "person_add",  cat: "profile",  tier: "bronze",   check: () => !!(global.Profile && global.Profile.current()), progress: () => (global.Profile && global.Profile.current()) ? 1 : 0 },
     { id: "avatar_custom",  ico: "face",        cat: "profile",  tier: "silver",   check: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:"); }, progress: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:") ? 1 : 0; } },
     { id: "bg_custom",      ico: "palette",     cat: "profile",  tier: "silver",   check: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return (d && d.startsWith("data:")) || (l && l.startsWith("data:")); }, progress: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return ((d && d.startsWith("data:")) || (l && l.startsWith("data:"))) ? 1 : 0; } },
@@ -72,6 +77,7 @@
     tasks:    { uk: "Задачі",     en: "Tasks",    tr: "Görevler" },
     contest:  { uk: "Тренажер",   en: "Trainer",  tr: "Antrenör" },
     modules:  { uk: "Модулі",     en: "Modules",   tr: "Modüller" },
+    course:   { uk: "Курс",       en: "Course",    tr: "Kurs" },
     profile:  { uk: "Профіль",  en: "Profile",   tr: "Profil" },
     explore:  { uk: "Дослідник",en: "Explorer",  tr: "Kaşif" },
     streak:   { uk: "Серії",    en: "Streaks",   tr: "Seriler" }
@@ -106,6 +112,9 @@
     contest_perfect:{ uk: "Ідеальний тур",       en: "Perfect Round",      tr: "Kusursuz Tur" },
     pkg_first:      { uk: "Перший пакет",        en: "First Package",      tr: "İlk Paket" },
     pkg_10:         { uk: "Колекціонер",         en: "Collector",          tr: "Koleksiyoncu" },
+    course_first:   { uk: "Перший урок",         en: "First Lesson",       tr: "İlk Ders" },
+    course_5:       { uk: "Учень",               en: "Student",            tr: "Öğrenci" },
+    course_all:     { uk: "Випускник",           en: "Graduate",           tr: "Mezun" },
     profile_create: { uk: "Ласкаво просимо",     en: "Welcome",            tr: "Hoş Geldin" },
     avatar_custom:  { uk: "Стиляга",             en: "Trendsetter",        tr: "Modacı" },
     bg_custom:      { uk: "Естет",               en: "Aesthete",           tr: "Estet" },
@@ -145,6 +154,9 @@
     contest_perfect:{ uk: "Набери 100% балів у турі",              en: "Score 100% of the points in a round", tr: "Bir turda puanların %100'ünü topla" },
     pkg_first:      { uk: "Встанови перший пакет із каталогу",      en: "Install your first package from the catalog", tr: "Katalogdan ilk paketini yükle" },
     pkg_10:         { uk: "Встанови 10 пакетів",                    en: "Install 10 packages",                tr: "10 paket yükle" },
+    course_first:   { uk: "Пройди перший урок курсу",               en: "Complete your first course lesson",   tr: "İlk kurs dersini tamamla" },
+    course_5:       { uk: "Пройди 5 уроків курсу",                  en: "Complete 5 course lessons",           tr: "5 kurs dersi tamamla" },
+    course_all:     { uk: "Пройди весь курс Python",                en: "Complete the entire Python course",   tr: "Tüm Python kursunu tamamla" },
     profile_create: { uk: "Створи акаунт",                         en: "Create an account",                   tr: "Hesap oluştur" },
     avatar_custom:  { uk: "Завантаж власний аватар",               en: "Upload a custom avatar",              tr: "Özel avatar yükle" },
     bg_custom:      { uk: "Завантаж власний фон профілю",          en: "Upload a custom profile background",  tr: "Özel profil arka planı yükle" },
@@ -165,7 +177,7 @@
   }
 
   function defaultStats() {
-    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [], toolsUsed: [], tasksSolved: [], contestsRun: 0, contestPerfect: 0, contestBest: 0, packagesInstalled: 0 };
+    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [], toolsUsed: [], tasksSolved: [], contestsRun: 0, contestPerfect: 0, contestBest: 0, packagesInstalled: 0, lessonsDone: 0 };
   }
 
   function saveStats(s) { localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
@@ -198,6 +210,7 @@
       if ((value.score || 0) > (s.contestBest || 0)) s.contestBest = value.score;
     }
     else if (key === "package") s.packagesInstalled = (s.packagesInstalled || 0) + 1;
+    else if (key === "lesson" && value) s.lessonsDone = Math.max(s.lessonsDone || 0, value.done || 0);
     saveStats(s);
     return s;
   }
@@ -283,7 +296,7 @@
       '</h3><span class="ach-counter">' + count + ' / ' + total + '</span>';
     container.appendChild(header);
 
-    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "profile", "explore", "streak"];
+    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "course", "profile", "explore", "streak"];
     cats.forEach((cat) => {
       const catAchs = ACHIEVEMENTS.filter((a) => a.cat === cat);
       if (catAchs.length === 0) return;
@@ -454,6 +467,14 @@
       bumpStat("package");
       checkAll();
       rerenderIfActive();
+    });
+
+    document.addEventListener("lessondone", (e) => {
+      if (e.detail) {
+        bumpStat("lesson", e.detail);
+        checkAll();
+        rerenderIfActive();
+      }
     });
 
     document.addEventListener("langchange", () => {

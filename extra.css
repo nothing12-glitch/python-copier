@@ -1282,3 +1282,82 @@ body.reduce-motion .contest-timer-value.urgent { animation: none; }
   .mod-grid { grid-template-columns: 1fr; }
   .mod-actions .btn { flex: 1 1 auto; justify-content: center; }
 }
+
+/* ---------- Курс Python ---------- */
+.course-list { display: flex; flex-direction: column; gap: 16px; }
+.course-progress { display: flex; flex-direction: column; gap: 8px; }
+.course-progress-label { font-size: 14px; color: var(--md-on-surface-var); }
+
+.course-chapter {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 16px; border-radius: 18px;
+  border: 1px solid var(--md-outline-var); background: var(--md-surface-dim);
+}
+.course-chapter-head { display: flex; align-items: center; gap: 12px; }
+.course-chapter-num {
+  width: 34px; height: 34px; flex: 0 0 34px; border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--md-mono); font-weight: 600;
+  background: var(--md-primary); color: var(--md-on-primary);
+}
+.course-chapter-name { display: flex; flex-direction: column; gap: 2px; }
+.course-chapter-title { font-size: 16px; font-weight: 600; color: var(--md-on-surface); }
+.course-chapter-meta { font-size: 12px; color: var(--md-on-surface-var); }
+
+.course-lessons { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.course-lesson {
+  display: flex; align-items: center; gap: 12px; text-align: left;
+  padding: 12px 14px; border-radius: 14px; cursor: pointer;
+  border: 1px solid var(--md-outline-var); background: transparent;
+  color: var(--md-on-surface); font: inherit;
+  transition: background .15s, border-color .15s;
+}
+.course-lesson:hover { background: var(--md-surface); }
+.course-lesson.done { border-color: rgba(166, 227, 161, .5); }
+.course-lesson-ico { font-size: 26px; color: var(--md-on-surface-var); }
+.course-lesson.done .course-lesson-ico { color: var(--md-success); }
+.course-lesson-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.course-lesson-title { font-size: 14px; font-weight: 500; }
+.course-lesson-sub { font-size: 12px; color: var(--md-on-surface-var); }
+
+.course-detail { display: flex; flex-direction: column; gap: 18px; }
+.course-detail-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.course-lesson-header { display: flex; flex-direction: column; gap: 4px; }
+.course-chapter-tag {
+  align-self: flex-start; font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+  padding: 3px 10px; border-radius: 999px;
+  background: var(--md-primary-container); color: var(--md-on-primary-container);
+}
+.course-lesson-h { margin: 4px 0 0; font-size: 22px; color: var(--md-on-surface); }
+
+.course-theory-wrap, .course-example-wrap, .course-task-wrap { display: flex; flex-direction: column; gap: 10px; }
+.course-block-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--md-on-surface-var);
+}
+.course-theory { margin: 0; font-size: 15px; line-height: 1.6; color: var(--md-on-surface); }
+.course-example {
+  margin: 0; padding: 14px 16px; border-radius: 12px; overflow-x: auto;
+  font-family: var(--md-mono); font-size: 13px; line-height: 1.5;
+  background: var(--md-surface-dim); border: 1px solid var(--md-outline-var);
+  color: var(--md-on-surface); white-space: pre;
+}
+.course-example-actions, .course-actions, .course-nav { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.course-nav { justify-content: space-between; margin-top: 4px; }
+.course-nav .btn.contained { margin-left: auto; }
+.course-task-text { margin: 0; font-size: 14px; line-height: 1.55; color: var(--md-on-surface-var); }
+.course-code {
+  width: 100%; min-height: 160px; box-sizing: border-box;
+  padding: 14px 16px; border-radius: 12px; resize: vertical;
+  font-family: var(--md-mono); font-size: 14px; line-height: 1.55;
+  background: var(--md-surface-dim); border: 1px solid var(--md-outline-var);
+  color: var(--md-on-surface); outline: none; tab-size: 4;
+}
+.course-code:focus { border-color: var(--md-primary); }
+
+@media (max-width: 768px) {
+  .course-lessons { grid-template-columns: 1fr; }
+  .course-nav { flex-direction: column-reverse; align-items: stretch; }
+  .course-nav .btn { width: 100%; justify-content: center; margin-left: 0; }
+  .course-actions .btn { flex: 1 1 auto; justify-content: center; }
+}

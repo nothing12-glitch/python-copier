@@ -32,6 +32,9 @@
     if (name === "modules" && global.Modules) {
       try { global.Modules.render(); } catch (e) { console.warn(e); }
     }
+    if (name === "course" && global.Course) {
+      try { global.Course.render(); } catch (e) { console.warn(e); }
+    }
     if (name === "profile") {
       try { renderProfile(); } catch (e) { console.warn(e); }
     }
@@ -407,6 +410,7 @@
     try { if (global.PythonPad) global.PythonPad.init(); } catch (e) { console.warn("PythonPad", e); }
     try { if (global.Tasks) global.Tasks.init(); } catch (e) { console.warn("Tasks", e); }
     try { if (global.Contest) global.Contest.init(); } catch (e) { console.warn("Contest", e); }
+    try { if (global.Course) global.Course.init(); } catch (e) { console.warn("Course", e); }
     try { if (global.Games) global.Games.init(); } catch (e) { console.warn("Games", e); }
     try { if (global.Tools) global.Tools.init(); } catch (e) { console.warn("Tools", e); }
     try { renderLearn(); } catch (e) { console.warn("renderLearn", e); }
@@ -414,7 +418,7 @@
     // початковий маршрут
     try {
       const hash = (location.hash || "#home").slice(1);
-      route(["home", "python", "modules", "tasks", "games", "tools", "feedback", "profile", "achievements", "settings"].includes(hash) ? hash : "home");
+      route(["home", "python", "modules", "course", "tasks", "games", "tools", "feedback", "profile", "achievements", "settings"].includes(hash) ? hash : "home");
     } catch (e) { console.warn("initial route", e); }
 
     if (global.I18n && global.I18n.apply) { try { global.I18n.apply(); } catch (e) {} }

@@ -1,10 +1,30 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.47";
+  const VERSION = "26.10.48";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.48": {
+      uk: [
+        "Новий розділ «Курс Python»: покроковий навчальний шлях із 5 розділів і 12 уроків",
+        "Кожен урок має коротку теорію, готовий приклад (можна запустити в майданчику) і практичну задачу з автоматичною перевіркою",
+        "Теми від основ до ООП: змінні, рядки, умови, цикли, списки, словники, функції, модулі та класи",
+        "Прогрес зберігається для кожного профілю, а за уроки додано три досягнення — перший урок, 5 уроків і весь курс"
+      ],
+      en: [
+        "New “Python course” section: a step-by-step learning path with 5 chapters and 12 lessons",
+        "Every lesson has short theory, a ready example (runnable in the playground) and a practice task with automatic checking",
+        "Topics from basics to OOP: variables, strings, conditions, loops, lists, dictionaries, functions, modules and classes",
+        "Progress is stored per profile, and lessons add three achievements — first lesson, 5 lessons and the whole course"
+      ],
+      tr: [
+        "Yeni “Python kursu” bölümü: 5 bölüm ve 12 dersle adım adım öğrenme yolu",
+        "Her derste kısa teori, hazır örnek (alanda çalıştırılabilir) ve otomatik denetimli bir pratik görev var",
+        "Temellerden OOP'ye konular: değişkenler, dizeler, koşullar, döngüler, listeler, sözlükler, fonksiyonlar, modüller ve sınıflar",
+        "İlerleme her profil için saklanır ve dersler üç başarı ekler — ilk ders, 5 ders ve tüm kurs"
+      ]
+    },
     "26.10.47": {
       uk: [
         "Новий розділ «Модулі»: каталог усіх бібліотек Pyodide з пошуком, фільтрами та встановленням у один клік",
