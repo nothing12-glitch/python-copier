@@ -633,6 +633,30 @@
     }
   }
 
+  /* ---------- Виконання коду зі stdin (для розділу «Задачі») ---------- */
+  // Навмисно не пише в консоль майданчика: повертає результат виклику
+  async function execute(code, stdinText) {
+    await ensurePyodide();
+    await loadModulesFromCode(code);
+    const lines = String(stdinText == null ? "" : stdinText).split("\n");
+    let idx = 0;
+    let output = "";
+    let error = null;
+    py.setStdin({ stdin: () => (idx < lines.length ? lines[idx++] + "\n" : "") });
+    py.setStdout({ batched: (s) => { output += s + "\n"; } });
+    py.setStderr({ batched: (s) => { output += s + "\n"; } });
+    try {
+      await py.runPythonAsync(code);
+    } catch (e) {
+      error = e && e.message ? e.message : String(e);
+    } finally {
+      py.setStdin({ stdin: () => "" });
+      py.setStdout({ batched: (s) => setOutput(s) });
+      py.setStderr({ batched: (s) => setOutput(s, true, null, tracebackLine(s)) });
+    }
+    return { output: output, error: error, line: tracebackLine(error) };
+  }
+
   /* ---------- Міні-перевірка коду перед запуском ---------- */
   // Правила навмисно консервативні: краще промовчати, ніж показати хибне попередження
   const LINT_MAX = 5;
@@ -832,5 +856,5 @@
     });
   }
 
-  global.PythonPad = { init, run };
+  global.PythonPad = { init, run, execute };
 })(window);

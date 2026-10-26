@@ -5,7 +5,8 @@
   const STATS_KEY = "app.achStats";
 
   const ALL_GAMES = ["ttt", "snake", "memory", "g2048", "rps", "react", "simon", "mines", "guess"];
-  const ALL_ROUTES = ["home", "python", "games", "tools", "feedback", "profile", "settings", "achievements"];
+  const ALL_ROUTES = ["home", "python", "tasks", "games", "tools", "feedback", "profile", "settings", "achievements"];
+  const tasksTotal = () => (global.Tasks && global.Tasks.count) || 12;
 
   /* ---------- Визначення досягнень ---------- */
   const ACHIEVEMENTS = [
@@ -33,6 +34,10 @@
     { id: "tool_pwd",     ico: "password",      cat: "tools",    tier: "bronze",   check: (s) => s.toolsUsed.includes("pwd"),         progress: (s) => s.toolsUsed.includes("pwd") ? 1 : 0 },
     { id: "tool_all",     ico: "handyman",      cat: "tools",    tier: "gold",     check: (s) => ["calc", "conv", "rand", "pwd"].every((t) => s.toolsUsed.includes(t)), progress: (s) => ["calc", "conv", "rand", "pwd"].filter((t) => s.toolsUsed.includes(t)).length / 4 },
 
+    { id: "task_first",   ico: "assignment_turned_in", cat: "tasks", tier: "bronze", check: (s) => (s.tasksSolved || []).length >= 1, progress: (s) => Math.min((s.tasksSolved || []).length, 1) },
+    { id: "task_5",       ico: "school",          cat: "tasks",    tier: "silver",   check: (s) => (s.tasksSolved || []).length >= 5, progress: (s) => Math.min((s.tasksSolved || []).length / 5, 1) },
+    { id: "task_all",     ico: "workspace_premium", cat: "tasks",  tier: "gold",     check: (s) => (s.tasksSolved || []).length >= tasksTotal(), progress: (s) => Math.min((s.tasksSolved || []).length / tasksTotal(), 1) },
+
     { id: "profile_create", ico: "person_add",  cat: "profile",  tier: "bronze",   check: () => !!(global.Profile && global.Profile.current()), progress: () => (global.Profile && global.Profile.current()) ? 1 : 0 },
     { id: "avatar_custom",  ico: "face",        cat: "profile",  tier: "silver",   check: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:"); }, progress: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:") ? 1 : 0; } },
     { id: "bg_custom",      ico: "palette",     cat: "profile",  tier: "silver",   check: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return (d && d.startsWith("data:")) || (l && l.startsWith("data:")); }, progress: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return ((d && d.startsWith("data:")) || (l && l.startsWith("data:"))) ? 1 : 0; } },
@@ -57,6 +62,7 @@
     games:    { uk: "Ігри",     en: "Games",     tr: "Oyunlar" },
     specific: { uk: "Рекорди",  en: "Records",   tr: "Rekorlar" },
     tools:    { uk: "Інструменти", en: "Tools",  tr: "Araçlar" },
+    tasks:    { uk: "Задачі",     en: "Tasks",    tr: "Görevler" },
     profile:  { uk: "Профіль",  en: "Profile",   tr: "Profil" },
     explore:  { uk: "Дослідник",en: "Explorer",  tr: "Kaşif" },
     streak:   { uk: "Серії",    en: "Streaks",   tr: "Seriler" }
@@ -83,6 +89,9 @@
     tool_rand:      { uk: "Випадковість",        en: "Randomizer",         tr: "Rastgeleci" },
     tool_pwd:       { uk: "Криптограф",          en: "Cryptographer",      tr: "Kriptograf" },
     tool_all:       { uk: "Універсал",           en: "Renaissance",        tr: "Rönesans" },
+    task_first:     { uk: "Перша задача",        en: "First Task",         tr: "İlk Görev" },
+    task_5:         { uk: "Розв'язувач",         en: "Problem Solver",     tr: "Problem Çözen" },
+    task_all:       { uk: "Олімпієць",           en: "Olympiad Star",      tr: "Olimpiyat Yıldızı" },
     profile_create: { uk: "Ласкаво просимо",     en: "Welcome",            tr: "Hoş Geldin" },
     avatar_custom:  { uk: "Стиляга",             en: "Trendsetter",        tr: "Modacı" },
     bg_custom:      { uk: "Естет",               en: "Aesthete",           tr: "Estet" },
@@ -114,6 +123,9 @@
     tool_rand:      { uk: "Використай генератор випадкових чисел", en: "Use the random generator",            tr: "Rastgele sayı oluşturucuyu kullan" },
     tool_pwd:       { uk: "Згенеруй пароль",                       en: "Generate a password",                 tr: "Parola oluştur" },
     tool_all:       { uk: "Використай усі 4 інструменти",          en: "Use all 4 tools",                     tr: "Tüm 4 aracı kullan" },
+    task_first:     { uk: "Розв'яжи першу задачу",                 en: "Solve your first task",               tr: "İlk görevini çöz" },
+    task_5:         { uk: "Розв'яжи 5 задач",                      en: "Solve 5 tasks",                       tr: "5 görev çöz" },
+    task_all:       { uk: "Розв'яжи всі задачі з банку",           en: "Solve every task in the bank",        tr: "Bankadaki tüm görevleri çöz" },
     profile_create: { uk: "Створи акаунт",                         en: "Create an account",                   tr: "Hesap oluştur" },
     avatar_custom:  { uk: "Завантаж власний аватар",               en: "Upload a custom avatar",              tr: "Özel avatar yükle" },
     bg_custom:      { uk: "Завантаж власний фон профілю",          en: "Upload a custom profile background",  tr: "Özel profil arka planı yükle" },
@@ -134,7 +146,7 @@
   }
 
   function defaultStats() {
-    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [], toolsUsed: [] };
+    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [], toolsUsed: [], tasksSolved: [] };
   }
 
   function saveStats(s) { localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
@@ -157,6 +169,10 @@
       }
     }
     else if (key === "tool" && value && !s.toolsUsed.includes(value)) s.toolsUsed.push(value);
+    else if (key === "task" && value) {
+      if (!Array.isArray(s.tasksSolved)) s.tasksSolved = [];
+      if (!s.tasksSolved.includes(value)) s.tasksSolved.push(value);
+    }
     saveStats(s);
     return s;
   }
@@ -388,6 +404,14 @@
     document.addEventListener("tooluse", (e) => {
       if (e.detail && e.detail.tool) {
         bumpStat("tool", e.detail.tool);
+        checkAll();
+        rerenderIfActive();
+      }
+    });
+
+    document.addEventListener("tasksolved", (e) => {
+      if (e.detail && e.detail.id) {
+        bumpStat("task", e.detail.id);
         checkAll();
         rerenderIfActive();
       }

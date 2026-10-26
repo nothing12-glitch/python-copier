@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.44";
+  const VERSION = "26.10.45";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.45": {
+      uk: [
+        "Новий розділ «Задачі»: 12 задач трьох рівнів складності з автоматичною перевіркою коду",
+        "Кожна задача проходить кілька тестів — видно ввід, очікуваний вивід і власний результат, а помилка виконання показує номер рядка",
+        "Прогрес і чернетки розв'язків зберігаються для кожного профілю; є підказки, бали та три нові досягнення"
+      ],
+      en: [
+        "New Tasks section: 12 problems across three difficulty levels with automatic code checking",
+        "Every task runs several tests — you see the input, the expected output and your own result, and a runtime error points to its line",
+        "Progress and solution drafts are stored per profile, with hints, points and three new achievements"
+      ],
+      tr: [
+        "Yeni Görevler bölümü: üç zorluk seviyesinde 12 görev ve otomatik kod denetimi",
+        "Her görev birkaç testten geçer — girdiyi, beklenen çıktıyı ve kendi sonucunu görürsün; çalışma zamanı hatası satır numarasını gösterir",
+        "İlerleme ve çözüm taslakları profile göre saklanır; ipuçları, puanlar ve üç yeni başarı eklendi"
+      ]
+    },
     "26.10.44": {
       uk: [
         "Номери рядків у консолі стали клікабельними: біля помилки або попередження з'явилася кнопка «→ N»",

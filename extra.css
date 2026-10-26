@@ -969,3 +969,103 @@ body.no-highlight #code { color: #CDD6F4; }
   100% { box-shadow: inset 0 0 0 2px rgba(137, 180, 250, 0); }
 }
 body.reduce-motion .editor-wrap.jump-flash { animation: none; }
+
+/* ---------- Розділ «Задачі» ---------- */
+.tasks-list { display: flex; flex-direction: column; gap: 22px; }
+.tasks-progress {
+  background: var(--md-surface);
+  border: 1px solid var(--md-outline-var);
+  border-radius: var(--md-radius);
+  padding: 16px;
+}
+.tasks-progress-label { font-size: 14px; color: var(--md-on-surface); margin-bottom: 10px; }
+.tasks-bar { height: 8px; border-radius: 999px; background: var(--md-surface-dim); overflow: hidden; }
+.tasks-bar-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--md-primary), var(--md-secondary));
+  transition: width .35s ease;
+}
+.tasks-level-title {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; margin: 0 0 10px; font-size: 16px; color: var(--md-on-surface);
+}
+.tasks-level-points { font-size: 12px; font-weight: 400; color: var(--md-on-surface-var); }
+.tasks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.task-card {
+  display: flex; gap: 12px; align-items: flex-start; text-align: left;
+  padding: 14px; border-radius: 14px; cursor: pointer; font: inherit;
+  border: 1px solid var(--md-outline-var); background: var(--md-surface); color: var(--md-on-surface);
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.task-card:hover { transform: translateY(-2px); border-color: var(--md-primary); }
+.task-card:focus-visible { outline: 2px solid var(--md-primary); outline-offset: 2px; }
+.task-card.done { border-color: var(--md-success); }
+.task-card-ico { font-size: 20px; color: var(--md-on-surface-var); }
+.task-card.done .task-card-ico { color: var(--md-success); }
+.task-card-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.task-card-title { font-weight: 500; font-size: 15px; }
+.task-card-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--md-on-surface-var); }
+.task-card-solved { color: var(--md-success); font-weight: 500; }
+
+.task-detail { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
+.task-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.task-badges { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.task-level-badge, .task-solved-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12px; padding: 4px 10px; border-radius: 999px;
+  background: var(--md-surface-dim); color: var(--md-on-surface);
+}
+.task-solved-badge { background: var(--md-primary-container); color: var(--md-on-primary-container); }
+.task-solved-badge .material-icons { font-size: 15px; }
+.task-title { margin: 0; font-size: 20px; color: var(--md-on-surface); }
+.task-text { margin: 0; line-height: 1.6; color: var(--md-on-surface-var); }
+
+/* Код і вивід — завжди темні, як консоль майданчика */
+.task-example { border: 1px solid #313244; border-radius: 12px; padding: 12px; background: #181825; }
+.task-example-title { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: #6C7086; margin-bottom: 8px; }
+.task-example-inner { display: flex; gap: 24px; flex-wrap: wrap; }
+.task-example-col { display: flex; flex-direction: column; gap: 4px; }
+.task-example-label { font-size: 12px; color: #A6ADC8; }
+.task-example-pre {
+  margin: 0; padding: 8px 10px; border-radius: 8px; background: #11111B; color: #A6E3A1;
+  font-family: var(--md-mono); font-size: 13px; white-space: pre-wrap; word-break: break-word;
+}
+.task-editor textarea {
+  width: 100%; min-height: 200px; resize: vertical;
+  background: #1E1E2E; color: #CDD6F4; caret-color: #F5E0DC;
+  border: 1px solid #313244; border-radius: 12px; padding: 16px;
+  font-family: var(--md-mono); font-size: var(--editor-font, 14px); line-height: 1.6;
+  tab-size: var(--tab-size, 4);
+}
+.task-editor textarea:focus { outline: none; border-color: #89B4FA; }
+.task-hint { border-left: 3px solid #F9E2AF; background: rgba(249, 226, 175, .12); border-radius: 0 10px 10px 0; padding: 10px 12px; }
+.task-hint-inner { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: #F9E2AF; }
+.task-hint-inner .material-icons { font-size: 18px; }
+.task-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.task-status-line { font-size: 14px; min-height: 20px; color: var(--md-on-surface-var); }
+.task-status-line.loading { color: #89B4FA; }
+.task-status-line.ok { color: #A6E3A1; font-weight: 500; }
+.task-status-line.bad { color: #F9E2AF; }
+.task-status-line.error { color: #F38BA8; }
+.task-results { display: flex; flex-direction: column; gap: 8px; }
+.task-results-head { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--md-on-surface-var); }
+.task-results-head .material-icons { font-size: 18px; }
+.test-row {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 12px; border-radius: 10px; border: 1px solid #313244; background: #181825;
+}
+.test-row.pass { border-color: rgba(166, 227, 161, .45); }
+.test-row.fail { border-color: rgba(243, 139, 168, .45); }
+.test-ico { font-size: 20px; color: #6C7086; }
+.test-row.pass .test-ico { color: #A6E3A1; }
+.test-row.fail .test-ico { color: #F38BA8; }
+.test-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; font-family: var(--md-mono); font-size: 12.5px; color: #CDD6F4; }
+.test-name { font-weight: 500; font-size: 13px; color: #A6ADC8; }
+.test-line { word-break: break-word; white-space: pre-wrap; }
+.test-line.got { color: #F38BA8; }
+.test-body .goto-line { align-self: flex-start; }
+@media (max-width: 768px) {
+  .task-detail { padding: 14px; }
+  .tasks-grid { grid-template-columns: 1fr; }
+  .task-editor textarea { font-size: 14px; }
+}
