@@ -29,6 +29,9 @@
       try { global.Tasks.render(); } catch (e) { console.warn(e); }
       try { if (global.Contest) global.Contest.render(); } catch (e) { console.warn(e); }
     }
+    if (name === "modules" && global.Modules) {
+      try { global.Modules.render(); } catch (e) { console.warn(e); }
+    }
     if (name === "profile") {
       try { renderProfile(); } catch (e) { console.warn(e); }
     }
@@ -411,7 +414,7 @@
     // початковий маршрут
     try {
       const hash = (location.hash || "#home").slice(1);
-      route(["home", "python", "tasks", "games", "tools", "feedback", "profile", "achievements", "settings"].includes(hash) ? hash : "home");
+      route(["home", "python", "modules", "tasks", "games", "tools", "feedback", "profile", "achievements", "settings"].includes(hash) ? hash : "home");
     } catch (e) { console.warn("initial route", e); }
 
     if (global.I18n && global.I18n.apply) { try { global.I18n.apply(); } catch (e) {} }

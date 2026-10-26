@@ -1,10 +1,30 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.46";
+  const VERSION = "26.10.47";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.47": {
+      uk: [
+        "Новий розділ «Модулі»: каталог усіх бібліотек Pyodide з пошуком, фільтрами та встановленням у один клік",
+        "Для популярних пакетів є короткий опис і готовий приклад коду, який одним дотиком вставляється в редактор",
+        "Готові набори (аналітика, наука, зображення, ML) встановлюють кілька пакетів одразу",
+        "Розумні підказки: якщо коду бракує модуля, сайт підкаже, з якого пакета його встановити. Додано два досягнення"
+      ],
+      en: [
+        "New “Modules” section: a catalog of every Pyodide library with search, filters and one-click install",
+        "Popular packages have a short description and a ready-made example that drops into the editor in one tap",
+        "Ready-made sets (analytics, science, images, ML) install several packages at once",
+        "Smart hints: if your code is missing a module, the site tells you which package provides it. Two new achievements added"
+      ],
+      tr: [
+        "Yeni “Modüller” bölümü: arama, filtreler ve tek tıkla kurulumla tüm Pyodide kitaplıklarının kataloğu",
+        "Popüler paketlerde kısa açıklama ve tek dokunuşla düzenleyiciye eklenen hazır örnek var",
+        "Hazır setler (analitik, bilim, görseller, ML) birden çok paketi aynı anda kurar",
+        "Akıllı ipuçları: kodunda bir modül eksikse site onun hangi pakette olduğunu söyler. İki yeni başarı eklendi"
+      ]
+    },
     "26.10.46": {
       uk: [
         "Олімпіадний тренажер: тур на час із випадковими задачами, живим таймером, балами та екраном результатів",

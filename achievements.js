@@ -5,7 +5,7 @@
   const STATS_KEY = "app.achStats";
 
   const ALL_GAMES = ["ttt", "snake", "memory", "g2048", "rps", "react", "simon", "mines", "guess"];
-  const ALL_ROUTES = ["home", "python", "tasks", "games", "tools", "feedback", "profile", "settings", "achievements"];
+  const ALL_ROUTES = ["home", "python", "modules", "tasks", "games", "tools", "feedback", "profile", "settings", "achievements"];
   const tasksTotal = () => (global.Tasks && global.Tasks.count) || 12;
 
   /* ---------- Визначення досягнень ---------- */
@@ -42,6 +42,9 @@
     { id: "contest_5",      ico: "timer",  cat: "contest", tier: "silver", check: (s) => (s.contestsRun || 0) >= 5, progress: (s) => Math.min((s.contestsRun || 0) / 5, 1) },
     { id: "contest_perfect", ico: "stars", cat: "contest", tier: "gold",   check: (s) => (s.contestPerfect || 0) >= 1, progress: (s) => Math.min(s.contestPerfect || 0, 1) },
 
+    { id: "pkg_first",     ico: "inventory_2", cat: "modules", tier: "bronze", check: (s) => (s.packagesInstalled || 0) >= 1, progress: (s) => Math.min((s.packagesInstalled || 0) / 1, 1) },
+    { id: "pkg_10",        ico: "deployed_code", cat: "modules", tier: "silver", check: (s) => (s.packagesInstalled || 0) >= 10, progress: (s) => Math.min((s.packagesInstalled || 0) / 10, 1) },
+
     { id: "profile_create", ico: "person_add",  cat: "profile",  tier: "bronze",   check: () => !!(global.Profile && global.Profile.current()), progress: () => (global.Profile && global.Profile.current()) ? 1 : 0 },
     { id: "avatar_custom",  ico: "face",        cat: "profile",  tier: "silver",   check: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:"); }, progress: () => { const a = localStorage.getItem("app.avatar") || ""; return a.startsWith("data:") ? 1 : 0; } },
     { id: "bg_custom",      ico: "palette",     cat: "profile",  tier: "silver",   check: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return (d && d.startsWith("data:")) || (l && l.startsWith("data:")); }, progress: () => { const d = localStorage.getItem("app.avatarBg.dark") || ""; const l = localStorage.getItem("app.avatarBg.light") || ""; return ((d && d.startsWith("data:")) || (l && l.startsWith("data:"))) ? 1 : 0; } },
@@ -68,6 +71,7 @@
     tools:    { uk: "Інструменти", en: "Tools",  tr: "Araçlar" },
     tasks:    { uk: "Задачі",     en: "Tasks",    tr: "Görevler" },
     contest:  { uk: "Тренажер",   en: "Trainer",  tr: "Antrenör" },
+    modules:  { uk: "Модулі",     en: "Modules",   tr: "Modüller" },
     profile:  { uk: "Профіль",  en: "Profile",   tr: "Profil" },
     explore:  { uk: "Дослідник",en: "Explorer",  tr: "Kaşif" },
     streak:   { uk: "Серії",    en: "Streaks",   tr: "Seriler" }
@@ -100,6 +104,8 @@
     contest_first:  { uk: "Перший тур",          en: "First Round",        tr: "İlk Tur" },
     contest_5:      { uk: "Тренування",          en: "In Training",        tr: "Antrenmanda" },
     contest_perfect:{ uk: "Ідеальний тур",       en: "Perfect Round",      tr: "Kusursuz Tur" },
+    pkg_first:      { uk: "Перший пакет",        en: "First Package",      tr: "İlk Paket" },
+    pkg_10:         { uk: "Колекціонер",         en: "Collector",          tr: "Koleksiyoncu" },
     profile_create: { uk: "Ласкаво просимо",     en: "Welcome",            tr: "Hoş Geldin" },
     avatar_custom:  { uk: "Стиляга",             en: "Trendsetter",        tr: "Modacı" },
     bg_custom:      { uk: "Естет",               en: "Aesthete",           tr: "Estet" },
@@ -137,6 +143,8 @@
     contest_first:  { uk: "Зіграй перший олімпіадний тур",         en: "Complete your first olympiad round",  tr: "İlk olimpiyat turunu tamamla" },
     contest_5:      { uk: "Зіграй 5 олімпіадних турів",            en: "Complete 5 olympiad rounds",          tr: "5 olimpiyat turu tamamla" },
     contest_perfect:{ uk: "Набери 100% балів у турі",              en: "Score 100% of the points in a round", tr: "Bir turda puanların %100'ünü topla" },
+    pkg_first:      { uk: "Встанови перший пакет із каталогу",      en: "Install your first package from the catalog", tr: "Katalogdan ilk paketini yükle" },
+    pkg_10:         { uk: "Встанови 10 пакетів",                    en: "Install 10 packages",                tr: "10 paket yükle" },
     profile_create: { uk: "Створи акаунт",                         en: "Create an account",                   tr: "Hesap oluştur" },
     avatar_custom:  { uk: "Завантаж власний аватар",               en: "Upload a custom avatar",              tr: "Özel avatar yükle" },
     bg_custom:      { uk: "Завантаж власний фон профілю",          en: "Upload a custom profile background",  tr: "Özel profil arka planı yükle" },
@@ -157,7 +165,7 @@
   }
 
   function defaultStats() {
-    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [], toolsUsed: [], tasksSolved: [], contestsRun: 0, contestPerfect: 0, contestBest: 0 };
+    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [], toolsUsed: [], tasksSolved: [], contestsRun: 0, contestPerfect: 0, contestBest: 0, packagesInstalled: 0 };
   }
 
   function saveStats(s) { localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
@@ -189,6 +197,7 @@
       if (value.perfect) s.contestPerfect = (s.contestPerfect || 0) + 1;
       if ((value.score || 0) > (s.contestBest || 0)) s.contestBest = value.score;
     }
+    else if (key === "package") s.packagesInstalled = (s.packagesInstalled || 0) + 1;
     saveStats(s);
     return s;
   }
@@ -274,7 +283,7 @@
       '</h3><span class="ach-counter">' + count + ' / ' + total + '</span>';
     container.appendChild(header);
 
-    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "profile", "explore", "streak"];
+    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "profile", "explore", "streak"];
     cats.forEach((cat) => {
       const catAchs = ACHIEVEMENTS.filter((a) => a.cat === cat);
       if (catAchs.length === 0) return;
@@ -439,6 +448,12 @@
         checkAll();
         rerenderIfActive();
       }
+    });
+
+    document.addEventListener("packageinstalled", () => {
+      bumpStat("package");
+      checkAll();
+      rerenderIfActive();
     });
 
     document.addEventListener("langchange", () => {

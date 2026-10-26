@@ -603,16 +603,13 @@
   /* ---------- Модулі: авто-довантаження з імпортів коду ---------- */
   // Модулі, яких у Pyodide немає взагалі (браузерні обмеження) — даємо зрозумілу підказку
   const UNSUPPORTED_MODULES = {
-    tkinter: "tkinter (графічний інтерфейс) не працює у браузері. Спробуй намалювати інтерфейс через matplotlib, turtle-подібні бібліотеки або просто вивести текст.",
-    turtle: "turtle у Pyodide обмежений, але зазвичай доступний як пакет — спробуй ще раз, або намалюй графіку через matplotlib.",
-    cv2: "cv2 (OpenCV) недоступний у Pyodide. Спробуй обробку зображень через numpy / Pillow (PIL).",
-    pygame: "pygame не працює у браузері (немає доступу до вікна/звуку ОС). Для ігор спробуй простий текстовий цикл або matplotlib для графіки.",
+    tkinter: "tkinter (графічний інтерфейс) не працює у браузері. Спробуй намалювати інтерфейс через matplotlib або вивести результат текстом.",
     PyQt5: "PyQt5 не працює у браузері. Графічний інтерфейс у Pyodide обмежений — виводи результат текстом або через matplotlib.",
     PyQt6: "PyQt6 не працює у браузері. Графічний інтерфейс у Pyodide обмежений — виводи результат текстом або через matplotlib.",
     wx: "wxPython не працює у браузері. Виводи результат текстом або через matplotlib.",
     kivy: "Kivy не працює у браузері. Виводи результат текстом або через matplotlib.",
     selenium: "selenium не працює у браузері (немає доступу до драйвера браузера).",
-    requests: "requests доступний у Pyodide як пакет — він має довантажитись автоматично. Якщо помилка лишилась, спробуй urllib.request (вбудований модуль)."
+    turtle: "turtle потребує tkinter, якого у браузері немає. Для графіки візьми matplotlib — він малює прямо на сторінці."
   };
   function unsupportedHint(code) {
     const hits = [];
@@ -623,6 +620,18 @@
     return hits;
   }
 
+  // З ModuleNotFoundError дізнаємось, чи є такий пакет у реєстрі Pyodide, і підказуємо розділ «Модулі»
+  function moduleHint(message) {
+    const m = /No module named ['"]([\w.]+)['"]/.exec(String(message || ""));
+    if (!m) return null;
+    const root = m[1].split(".")[0];
+    if (UNSUPPORTED_MODULES[root]) return null;
+    const provider = global.Modules && global.Modules.providerFor ? global.Modules.providerFor(root) : null;
+    return provider
+      ? global.I18n.t("python.moduleHintPkg", { name: root, pkg: provider })
+      : global.I18n.t("python.moduleHintNone", { name: root });
+  }
+
   async function loadModulesFromCode(code) {
     // Pyodide сам визначає імпорти в коді та довантажує доступні пакети
     // (numpy, pandas, matplotlib, sympy, requests, Pillow, scipy тощо)
@@ -631,6 +640,23 @@
     } catch (e) {
       setOutput("Попередження: не вдалось довантажити деякі модулі: " + e.message, true);
     }
+  }
+
+  /* ---------- Встановлення пакетів із каталогу модулів ---------- */
+  async function loadPackage(name) {
+    await ensurePyodide();
+    await py.loadPackage(name, { messageCallback: () => {}, errorCallback: () => {} });
+    return true;
+  }
+
+  function loadedPackages() {
+    if (!py || !py.loadedPackages) return [];
+    const names = {};
+    Object.keys(py.loadedPackages).forEach((imp) => {
+      const pkg = py.loadedPackages[imp];
+      if (pkg && pkg !== "default channel") names[pkg] = true;
+    });
+    return Object.keys(names);
   }
 
   /* ---------- Виконання коду зі stdin (для розділу «Задачі») ---------- */
@@ -761,6 +787,8 @@
         setOutput("", true);
         for (const m of hits) setOutput("💡 " + UNSUPPORTED_MODULES[m], true);
       }
+      const hint = moduleHint(e.message);
+      if (hint) setOutput("💡 " + hint, true);
       global.Audio2 && global.Audio2.SFX.error();
     } finally {
       lastExecMs = performance.now() - t1;
@@ -856,5 +884,5 @@
     });
   }
 
-  global.PythonPad = { init, run, execute };
+  global.PythonPad = { init, run, execute, loadPackage, loadedPackages };
 })(window);
