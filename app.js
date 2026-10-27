@@ -422,7 +422,16 @@
     } catch (e) { console.warn("initial route", e); }
 
     if (global.I18n && global.I18n.apply) { try { global.I18n.apply(); } catch (e) {} }
+    try { syncNavTitles(); } catch (e) { console.warn("syncNavTitles", e); }
+    document.addEventListener("langchange", () => { try { syncNavTitles(); } catch (e) {} });
     console.info("[app.js] init done");
+  }
+
+  function syncNavTitles() {
+    document.querySelectorAll("#mainnav .rail-btn").forEach((btn) => {
+      const lab = btn.querySelector(".rail-label");
+      if (lab) btn.title = lab.textContent.trim();
+    });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

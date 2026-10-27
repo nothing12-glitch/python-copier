@@ -8,6 +8,7 @@
     navDesign: "pill",
     navSize: "medium",
     navPos: "bottom",
+    navLabels: true,
     lineNumbers: true, wordWrap: true, autocomplete: true, autoIndent: true, codeCheck: true, syntaxHighlight: true, tabSize: 4, autosaveCode: true, timestamps: false,
     sfx: true, music: false, sfxVolume: 0.25, musicVolume: 0.12,
     musicTrack: 0,
@@ -56,6 +57,7 @@
     b.dataset.nav = state.navDesign;
     b.dataset.navSize = state.navSize;
     b.dataset.navPos = state.navPos;
+    b.classList.toggle("no-nav-labels", !state.navLabels);
     document.documentElement.style.setProperty("--editor-font", state.fontSize + "px");
     document.documentElement.style.setProperty("--tab-size", state.tabSize);
     if (global.Audio2) {
@@ -93,7 +95,8 @@
     ]},
     { group: "settings.navPanel", items: [
       { id: "navPos", type: "select", label: "set.navPos", options: [
-        ["top", "set.posTop"], ["bottom", "set.posBottom"], ["left", "set.posLeft"], ["right", "set.posRight"] ] }
+        ["top", "set.posTop"], ["bottom", "set.posBottom"], ["left", "set.posLeft"], ["right", "set.posRight"] ] },
+      { id: "navLabels", type: "switch", label: "set.navLabels" }
     ]},
     { group: "set.editor", items: [
       { id: "lineNumbers", type: "switch", label: "set.lineNumbers" },

@@ -38,6 +38,15 @@ body{
 }
 body[data-nav-size="small"]{--nav-w:88px;--nav-h:56px;--nav-ico:18px;--nav-font:10px}
 body[data-nav-size="large"]{--nav-w:140px;--nav-h:84px;--nav-ico:26px;--nav-font:13px}
+
+/* режим «лише іконки» (без підписів) */
+body.no-nav-labels{--nav-w:64px;--nav-h:48px}
+body[data-nav-size="small"].no-nav-labels{--nav-w:56px;--nav-h:44px}
+body[data-nav-size="large"].no-nav-labels{--nav-w:76px;--nav-h:56px}
+body.no-nav-labels .rail-label{display:none}
+body.no-nav-labels .rail-btn{gap:0}
+body.no-nav-labels .rail-ico{width:44px;height:36px}
+body.no-nav-labels .rail-ico .material-icons{font-size:calc(var(--nav-ico) + 2px)}
 .material-icons{font-size:20px;line-height:1;vertical-align:middle;user-select:none}
 .hidden{display:none!important}
 .muted{color:var(--md-on-surface-var)}

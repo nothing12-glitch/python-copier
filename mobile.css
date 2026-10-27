@@ -45,6 +45,14 @@
     gap: 2px !important;
   }
 
+  body.no-nav-labels .navrail {
+    height: 48px !important;
+  }
+
+  body.no-nav-labels .navrail .rail-btn {
+    padding: 10px 2px !important;
+  }
+
   .navrail .rail-ico {
     font-size: 24px !important;
     width: 40px !important;

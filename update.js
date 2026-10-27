@@ -1,10 +1,24 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.49";
+  const VERSION = "26.10.50";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.50": {
+      uk: [
+        "Нове налаштування «Підписи під іконками навігації»: вимкни його — і панель буде лише з іконок, а назви з'являтимуться у підказці при наведенні",
+        "Панель без підписів займає менше місця: вужча збоку, нижча зверху/знизу та на мобільних"
+      ],
+      en: [
+        "New setting “Labels under navigation icons”: switch it off for a compact icon-only panel with hover tooltips",
+        "The label-free panel takes less room: narrower on the side, shorter on top/bottom and on mobile"
+      ],
+      tr: [
+        "Yeni ayar “Gezinme simgelerinin altında etiketler”: kapatınca panel yalnızca simgelerden oluşur, üzerine gelince ipucu görünür",
+        "Etiketsiz panel daha az yer kaplar: yanda daha dar, üstte/altta ve mobilde daha kısa"
+      ]
+    },
     "26.10.49": {
       uk: [
         "Головна: усі картки тепер течуть однією рівною сіткою — без дірок і незаповнених рядків",
