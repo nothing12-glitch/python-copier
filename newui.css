@@ -1,0 +1,266 @@
+/* newui.css — візуальний шар «новий інтерфейс» (Figma).
+   Активується налаштуванням Стиль → «Новий», тобто body[data-style="new"].
+   Поведінка й вміст не змінюються: переписується лише оформлення. */
+
+/* ===== Токени ===== */
+body[data-style="new"]{
+  --nu-bg0:#08060F;
+  --nu-bg1:#0D0A18;
+  --nu-surface:rgba(255,255,255,.045);
+  --nu-surface-solid:#14101F;
+  --nu-surface-2:#1B1528;
+  --nu-line:rgba(255,255,255,.09);
+  --nu-line-strong:rgba(255,255,255,.16);
+  --nu-text:#F4F1FB;
+  --nu-dim:#A79FBC;
+  --nu-a2:#22D3EE;
+  --nu-grad:linear-gradient(135deg,var(--md-primary),var(--nu-a2));
+  --nu-grad-soft:linear-gradient(135deg,rgba(208,188,255,.22),rgba(34,211,238,.14));
+  --nu-ring:0 0 0 1px var(--nu-line) inset;
+  --nu-shadow:0 18px 45px -18px rgba(0,0,0,.85);
+  --nu-radius:20px;
+  --nu-font:"Inter",var(--md-font);
+  font-family:var(--nu-font);
+  background:
+    radial-gradient(120% 80% at 12% -10%,rgba(124,58,237,.30),transparent 55%),
+    radial-gradient(90% 70% at 92% 6%,rgba(34,211,238,.14),transparent 55%),
+    linear-gradient(180deg,var(--nu-bg1),var(--nu-bg0) 60%);
+  background-attachment:fixed;
+  color:var(--nu-text);
+}
+body[data-style="new"] .material-icons{font-variation-settings:"FILL" 0,"wght" 400,"GRAD" 0}
+
+/* ===== Світлий варіант нового стилю ===== */
+body[data-style="new"]:not(.dark){
+  --nu-bg0:#F7F5FC;
+  --nu-bg1:#FFFFFF;
+  --nu-surface:rgba(255,255,255,.78);
+  --nu-surface-solid:#FFFFFF;
+  --nu-surface-2:#EFEBF9;
+  --nu-line:rgba(29,27,32,.10);
+  --nu-line-strong:rgba(29,27,32,.20);
+  --nu-text:#1B1725;
+  --nu-dim:#5F5870;
+  --nu-a2:#0891B2;
+  --nu-grad-soft:linear-gradient(135deg,rgba(124,58,237,.14),rgba(34,211,238,.12));
+  --nu-shadow:0 18px 40px -22px rgba(38,24,80,.45);
+  background:
+    radial-gradient(120% 80% at 12% -10%,rgba(124,58,237,.14),transparent 55%),
+    radial-gradient(90% 70% at 92% 6%,rgba(34,211,238,.10),transparent 55%),
+    linear-gradient(180deg,var(--nu-bg1),var(--nu-bg0) 60%);
+  background-attachment:fixed;
+}
+body[data-style="new"]:not(.dark) .appbar{background:rgba(255,255,255,.78)}
+body[data-style="new"]:not(.dark) .navrail{background:rgba(255,255,255,.80)}
+body[data-style="new"]:not(.dark) .rail-btn.active,body[data-style="new"]:not(.dark) .btn.contained{color:#fff}
+body[data-style="new"]:not(.dark) .lang-switch button.active,body[data-style="new"]:not(.dark) .avatar{color:#fff}
+body[data-style="new"]:not(.dark) #focusToggle[aria-pressed="true"],
+body[data-style="new"]:not(.dark) #musicToggle[aria-pressed="true"]{color:#fff}
+body[data-style="new"]:not(.dark) .hero h2{background:linear-gradient(120deg,#2A1D4E,#7C3AED 55%,#0891B2);-webkit-background-clip:text;background-clip:text}
+body[data-style="new"]:not(.dark) .field input,body[data-style="new"]:not(.dark) .field textarea,
+body[data-style="new"]:not(.dark) .ob-input,body[data-style="new"]:not(.dark) .mod-search input,
+body[data-style="new"]:not(.dark) .course-code,body[data-style="new"]:not(.dark) .course-example,
+body[data-style="new"]:not(.dark) #code,body[data-style="new"]:not(.dark) .console{background:rgba(255,255,255,.9);color:var(--nu-text)}
+@media(max-width:768px){
+  body[data-style="new"]:not(.dark) .navrail{background:rgba(255,255,255,.94)}
+  body[data-style="new"]:not(.dark) .appbar{background:rgba(255,255,255,.92)}
+}
+
+/* ===== Верхня панель ===== */
+body[data-style="new"] .appbar{
+  position:sticky;top:0;
+  background:rgba(13,10,24,.72);
+  -webkit-backdrop-filter:blur(22px) saturate(1.5);
+  backdrop-filter:blur(22px) saturate(1.5);
+  border-bottom:1px solid var(--nu-line);
+  box-shadow:none;
+}
+body[data-style="new"] .appbar-logo{
+  background:var(--nu-grad);color:#0B0714;border-radius:14px;
+  box-shadow:0 8px 22px -8px rgba(124,58,237,.9);
+}
+body[data-style="new"] .appbar-title{
+  font-weight:600;letter-spacing:-.2px;
+  background:var(--nu-grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+body[data-style="new"] .lang-switch{background:var(--nu-surface);border:1px solid var(--nu-line)}
+body[data-style="new"] .lang-switch button{color:var(--nu-dim)}
+body[data-style="new"] .lang-switch button.active{background:var(--nu-grad);color:#0B0714;font-weight:600}
+body[data-style="new"] .icon-btn{color:var(--nu-dim)}
+body[data-style="new"] .icon-btn:hover{background:var(--nu-surface);color:var(--nu-text)}
+body[data-style="new"] #focusToggle[aria-pressed="true"],
+body[data-style="new"] #musicToggle[aria-pressed="true"]{color:#0B0714;background:var(--nu-grad)}
+body[data-style="new"] .chip-btn{
+  background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-text);border-radius:999px;
+}
+body[data-style="new"] .chip-btn:hover{background:var(--nu-surface-2)}
+body[data-style="new"] .avatar{background:var(--nu-grad);color:#0B0714;font-weight:600}
+
+/* ===== Бічна панель ===== */
+body[data-style="new"] .navrail{
+  top:76px;bottom:16px;left:16px;width:var(--nav-w);
+  background:rgba(16,12,28,.66);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  backdrop-filter:blur(20px) saturate(1.4);
+  border:1px solid var(--nu-line);border-right:1px solid var(--nu-line);
+  border-radius:26px;box-shadow:var(--nu-shadow);
+  padding:14px 8px;gap:6px;
+}
+body[data-style="new"] .rail-btn{
+  width:100%;border-radius:16px;color:var(--nu-dim);padding:8px 4px;gap:5px;
+  transition:background .2s,color .2s,transform .2s;
+}
+body[data-style="new"] .rail-btn:hover{background:var(--nu-surface);color:var(--nu-text);border-radius:16px}
+body[data-style="new"] .rail-ico{width:100%;background:transparent;color:inherit}
+body[data-style="new"] .rail-label{font-weight:500;letter-spacing:0}
+body[data-style="new"] .rail-btn.active{color:#0B0714}
+body[data-style="new"] .rail-btn.active .rail-ico{
+  background:var(--nu-grad);color:#0B0714;
+  box-shadow:0 10px 24px -10px rgba(124,58,237,.95);
+}
+body[data-style="new"] .rail-btn.active .rail-label{font-weight:600;color:var(--nu-text)}
+body[data-style="new"] .rail-btn.active::before{
+  content:"";position:absolute;left:-9px;top:22%;bottom:22%;width:3px;border-radius:3px;background:var(--nu-grad);
+}
+body[data-style="new"] .rail-btn:focus-visible,
+body[data-style="new"] .btn:focus-visible,
+body[data-style="new"] .icon-btn:focus-visible{outline:2px solid var(--nu-a2);outline-offset:2px}
+
+/* положення панелі у новому стилі */
+@media(min-width:761px){
+  body[data-style="new"][data-nav-pos="right"] .navrail{left:auto;right:16px}
+  body[data-style="new"][data-nav-pos="top"] .navrail,
+  body[data-style="new"][data-nav-pos="bottom"] .navrail{
+    left:16px;right:16px;width:auto;border-radius:22px;padding:8px 12px;
+  }
+  body[data-style="new"][data-nav-pos="top"] .navrail{top:72px;bottom:auto}
+  body[data-style="new"][data-nav-pos="bottom"] .navrail{top:auto;bottom:16px}
+  body[data-style="new"][data-nav-pos="top"] .rail-btn::before,
+  body[data-style="new"][data-nav-pos="bottom"] .rail-btn::before{display:none}
+}
+
+/* ===== Контент ===== */
+body[data-style="new"] main{max-width:1280px;padding-top:28px}
+body[data-style="new"] .section-head h2{font-weight:650;letter-spacing:-.4px}
+body[data-style="new"] .footer{border-top:1px solid var(--nu-line);color:var(--nu-dim)}
+
+/* hero */
+body[data-style="new"] .hero{
+  padding:56px 20px 36px;border-radius:28px;margin-bottom:8px;
+  background:
+    radial-gradient(80% 120% at 50% -20%,rgba(124,58,237,.35),transparent 60%),
+    var(--nu-surface);
+  border:1px solid var(--nu-line);
+}
+body[data-style="new"] .hero h2{
+  font-weight:700;letter-spacing:-1.2px;line-height:1.08;
+  background:linear-gradient(120deg,#fff 10%,var(--md-primary) 55%,var(--nu-a2) 95%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+body[data-style="new"] .hero p{color:var(--nu-dim);font-size:17px}
+
+/* картки */
+body[data-style="new"] .cards{grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:18px}
+body[data-style="new"] .card{
+  background:var(--nu-surface);border:1px solid var(--nu-line);
+  border-radius:var(--nu-radius);box-shadow:none;
+}
+body[data-style="new"] .card.elev1,body[data-style="new"] .card.elev2{box-shadow:var(--nu-shadow)}
+body[data-style="new"] .card[data-goto]{padding:26px}
+body[data-style="new"] .card[data-goto]:hover{
+  border-color:var(--nu-line-strong);
+  background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
+  box-shadow:0 22px 50px -22px rgba(0,0,0,.9),0 0 0 1px rgba(124,58,237,.25);
+  transform:translateY(-3px);
+}
+body[data-style="new"] .card-ico{
+  background:var(--nu-grad-soft);border:1px solid var(--nu-line);
+  color:var(--nu-text);border-radius:18px;
+}
+body[data-style="new"] .card h3{font-weight:600;letter-spacing:-.2px}
+body[data-style="new"] .card p{color:var(--nu-dim)}
+body[data-style="new"] .learn-card{border:1px solid var(--nu-line);background:var(--nu-surface)}
+body[data-style="new"] .muted,body[data-style="new"] .about-text{color:var(--nu-dim)}
+
+/* кнопки */
+body[data-style="new"] .btn{font-weight:600;letter-spacing:-.1px;border-radius:999px}
+body[data-style="new"] .btn.contained{
+  background:var(--nu-grad);color:#0B0714;
+  box-shadow:0 14px 30px -14px rgba(124,58,237,.95);
+}
+body[data-style="new"] .btn.contained:hover{box-shadow:0 18px 36px -14px rgba(124,58,237,1)}
+body[data-style="new"] .btn.outlined{border:1px solid var(--nu-line-strong);color:var(--nu-text);background:var(--nu-surface)}
+body[data-style="new"] .btn.outlined:hover{background:var(--nu-surface-2)}
+body[data-style="new"] .btn.text{color:var(--md-primary)}
+body[data-style="new"] .btn.text:hover{background:var(--nu-surface)}
+body[data-style="new"] .btn:disabled{background:rgba(255,255,255,.06);color:var(--nu-dim)}
+
+/* форми й панелі */
+body[data-style="new"] .field input,body[data-style="new"] .field textarea,
+body[data-style="new"] .ob-input,body[data-style="new"] .mod-search input,
+body[data-style="new"] .course-code,body[data-style="new"] .course-example,
+body[data-style="new"] #code,body[data-style="new"] .console{
+  background:rgba(8,6,15,.6);border:1px solid var(--nu-line);color:var(--nu-text);border-radius:14px;
+}
+body[data-style="new"] .field input:focus,body[data-style="new"] .field textarea:focus,
+body[data-style="new"] .mod-search input:focus,body[data-style="new"] .course-code:focus{
+  border-color:var(--md-primary);outline:none;box-shadow:0 0 0 3px rgba(124,58,237,.22);
+}
+body[data-style="new"] .setting-row{border-bottom:1px solid var(--nu-line)}
+body[data-style="new"] .setting-name{color:var(--nu-text)}
+body[data-style="new"] .md-chip{border:1px solid var(--nu-line)}
+body[data-style="new"] .task-hint,body[data-style="new"] .hint-list{border:1px solid var(--nu-line);background:var(--nu-surface)}
+body[data-style="new"] .course-theory,body[data-style="new"] .course-example{border:1px solid var(--nu-line)}
+body[data-style="new"] .ob-card,body[data-style="new"] .wn-card,body[data-style="new"] .av-modal-card{
+  background:var(--nu-surface-solid);border:1px solid var(--nu-line);box-shadow:var(--nu-shadow);
+}
+body[data-style="new"] .snackbar{background:var(--nu-surface-2);border:1px solid var(--nu-line);color:var(--nu-text)}
+
+/* фон-ефекти під нову тему */
+body[data-style="new"] .bg-glow{
+  background:radial-gradient(55% 45% at 15% 5%,rgba(124,58,237,.30),transparent 60%),
+             radial-gradient(45% 40% at 88% 85%,rgba(34,211,238,.16),transparent 60%);
+}
+body[data-style="new"] .blob{filter:blur(110px)}
+body[data-style="new"].bg-animate-on .blob{opacity:.22}
+
+/* ===== Масштабування під телефон ===== */
+@media(max-width:768px){
+  body[data-style="new"] .navrail{
+    top:auto!important;bottom:0!important;left:0!important;right:0!important;
+    width:100%!important;height:60px!important;
+    border:0!important;border-top:1px solid var(--nu-line)!important;border-radius:0!important;
+    background:rgba(10,8,18,.92)!important;
+    -webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);
+    box-shadow:0 -14px 34px -18px rgba(0,0,0,.9)!important;
+    padding:4px 4px calc(4px + env(safe-area-inset-bottom))!important;
+    gap:2px!important;
+    overflow-y:hidden!important;
+    scroll-snap-type:x proximity;
+  }
+  body[data-style="new"] .rail-btn{padding:6px 2px!important;gap:3px!important;scroll-snap-align:center}
+  body[data-style="new"] .rail-btn::before{display:none}
+  body[data-style="new"] .rail-btn.active::before{
+    display:block;left:16%;right:16%;top:-5px;bottom:auto;width:auto;height:3px;border-radius:3px;
+  }
+  body[data-style="new"] .rail-ico{width:auto!important;height:28px!important;border-radius:12px}
+  body[data-style="new"] .rail-label{font-size:9px!important}
+  body[data-style="new"] main{padding:16px 12px 88px!important}
+  body[data-style="new"] .hero{padding:28px 16px 22px;border-radius:22px}
+  body[data-style="new"] .hero h2{letter-spacing:-.6px}
+  body[data-style="new"] .hero p{font-size:15px}
+  body[data-style="new"] .cards{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  body[data-style="new"] .card[data-goto]{padding:18px}
+  body[data-style="new"] .card-ico{width:44px;height:44px;font-size:26px;border-radius:14px;margin-bottom:12px}
+  body[data-style="new"] .card h3{font-size:16px}
+  body[data-style="new"] .card p{font-size:13px}
+  body[data-style="new"] .section-head h2{font-size:20px}
+  body[data-style="new"] .appbar{background:rgba(10,8,18,.86)}
+}
+@media(max-width:420px){
+  body[data-style="new"] .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body[data-style="new"] .rail-label{font-size:8px!important}
+}
+@media(max-width:360px){
+  body[data-style="new"] .cards{grid-template-columns:1fr}
+}

@@ -3,7 +3,7 @@
   const KEY = "app.settings";
 
   const DEFAULTS = {
-    style: "classic", theme: "auto", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
+    style: "new", theme: "auto", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
     glass: false, reduceMotion: false, compact: false, fontSize: 14,
     navDesign: "pill",
     navSize: "medium",
@@ -21,8 +21,18 @@
   let state = load();
 
   function load() {
-    try { return Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem(KEY)) || {}); }
-    catch { return Object.assign({}, DEFAULTS); }
+    let s;
+    try { s = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem(KEY)) || {}); }
+    catch { s = Object.assign({}, DEFAULTS); }
+    // одноразова міграція на новий інтерфейс
+    try {
+      if (!localStorage.getItem("app.styleMigrated")) {
+        s.style = DEFAULTS.style;
+        localStorage.setItem("app.styleMigrated", "1");
+        localStorage.setItem(KEY, JSON.stringify(s));
+      }
+    } catch {}
+    return s;
   }
   function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
 
@@ -37,11 +47,13 @@
   function isDark() {
     if (state.theme === "dark") return true;
     if (state.theme === "light") return false;
+    if (state.style === "new") return true;
     return !!(darkMQ && darkMQ.matches);
   }
 
   function apply() {
     const b = document.body;
+    b.dataset.style = state.style;
     b.classList.toggle("dark", isDark());
     b.dataset.accent = state.accent;
     b.classList.toggle("bg-glow-on", !!state.bgGlow);
@@ -79,7 +91,7 @@
   const SCHEMA = [
     { group: "settings.personalization", items: [
       { id: "style", type: "select", label: "set.style", options: [
-        ["classic", "set.styleClassic"] ] },
+        ["new", "set.styleNew"], ["classic", "set.styleClassic"] ] },
       { id: "theme", type: "select", label: "settings.theme", options: [
         ["auto", "set.themeAuto"], ["light", "set.themeLight"], ["dark", "set.themeDark"] ] },
       { id: "accent", type: "select", label: "set.accent", options: [

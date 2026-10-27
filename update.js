@@ -1,10 +1,30 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.50";
+  const VERSION = "26.10.51";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.51": {
+      uk: [
+        "Новий інтерфейс: темна скляна панель, градієнтна бічна навігація, оновлені картки, кнопки та заголовок",
+        "Повне масштабування під телефон: нижня панель прокручується до активного розділу, картки стають компактнішими, відступи менші",
+        "Новий стиль увімкнено попри збережені ваші налаштування; класичний вигляд можна повернути в Налаштуваннях: Стиль → «Класичний»",
+        "Підписи під іконками лишаються керованими, а світла тема нового стилю також оформлена"
+      ],
+      en: [
+        "New interface: dark glass panel, gradient side navigation, refreshed cards, buttons and title",
+        "Full phone scaling: the bottom bar scrolls to the active section, cards get compact, paddings shrink",
+        "Your saved settings are kept; switch back any time in Settings → Style → “Classic”",
+        "Labels under icons stay optional, and the new style also has a light theme"
+      ],
+      tr: [
+        "Yeni arayüz: koyu cam panel, gradyanlı yan gezinme, yenilenen kartlar, düğmeler ve başlık",
+        "Telefon için tam ölçekleme: alt çubuk etkin bölüme kayar, kartlar derli toplu, boşluklar küçülür",
+        "Kayıtlı ayarlarınız korunur; istediğiniz an Ayarlar → Stil → “Klasik” ile dönebilirsiniz",
+        "Simge altındaki etiketler yine isteğe bağlı; yeni stilin açık teması da hazır"
+      ]
+    },
     "26.10.50": {
       uk: [
         "Нове налаштування «Підписи під іконками навігації»: вимкни його — і панель буде лише з іконок, а назви з'являтимуться у підказці при наведенні",

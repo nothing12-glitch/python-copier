@@ -22,6 +22,10 @@
     const view = $("#view-" + name);
     if (view) view.classList.add("active");
     document.querySelectorAll("[data-route]").forEach((b) => b.classList.toggle("active", b.dataset.route === name));
+    const activeRail = $("#mainnav .rail-btn.active");
+    if (activeRail && activeRail.scrollIntoView) {
+      try { activeRail.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" }); } catch (e) {}
+    }
     if (name === "games" && global.Games && global.Games.renderHub) {
       try { global.Games.renderHub(); } catch (e) { console.warn(e); }
     }
