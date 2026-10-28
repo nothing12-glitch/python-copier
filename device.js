@@ -4,6 +4,9 @@
    ПК/планшет -> класична панель, телефон -> пігулка.
    Відповідь навмисно не зберігається: питання з'явиться знову наступного разу. */
 (function (global) {
+  let markAnswered;
+  const answered = new Promise((r) => { markAnswered = r; });
+
   const STR = {
     uk: {
       q: "З якого пристрою ви заходите?",
@@ -99,7 +102,7 @@
   }
 
   function ask() {
-    if (document.getElementById("deviceAsk")) return;
+    if (document.getElementById("deviceAsk")) { markAnswered(); return; }
     const s = L();
     const detected = detect();
 
@@ -124,7 +127,7 @@
     note.className = "device-denied hidden";
 
     const ctx = {
-      close: () => wrap.remove(),
+      close: () => { wrap.remove(); markAnswered(); },
       deny: () => {
         note.innerHTML = "";
         const b = document.createElement("b");
@@ -151,10 +154,12 @@
 
   function init() {
     applyDesign(detect());   // інтерфейс одразу стає правильним, ще до відповіді
-    ask();
+    // саме питання показуємо вже після екрана завантаження
+    if (global.Splash) global.Splash.after(ask);
+    else ask();
   }
 
-  global.Device = { detect: detect, ask: ask, apply: applyDesign };
+  global.Device = { detect: detect, ask: ask, apply: applyDesign, answered };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();

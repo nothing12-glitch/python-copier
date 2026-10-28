@@ -1,10 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.53";
+  const VERSION = "26.10.54";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.54": {
+      uk: [
+        "Екран завантаження на 5 секунд: більше немає митті, коли на секунду мелькає старе оформлення",
+        "Після нього вікна вишикувались у чергу: спершу питання «з якого пристрою», і лише потім «Що нового»",
+        "На сплеші — емблема, назва, твій рядок-підзаголовок і смужка поступу, що заповнюється рівно за 5 секунд"
+      ],
+      en: [
+        "A 5-second loading screen: no more split second when the old skin flashes before the new one kicks in",
+        "Dialogs now queue up behind it: the 'which device' question first, 'What's new' only after it",
+        "The splash carries the emblem, the name, your tagline and a progress bar that fills in exactly 5 seconds"
+      ],
+      tr: [
+        "5 saniyelik yükleme ekranı: eski görünümün bir anlığına göründüğü an artık yok",
+        "Pencereler sıraya dizildi: önce 'hangi cihaz' sorusu, sonra 'Yenilikler'",
+        "Ekranda amblem, ad, sloganın ve tam 5 saniyede dolan bir ilerleme çubuğu var"
+      ]
+    },
     "26.10.53": {
       uk: [
         "Нижня панель на телефоні — як у макеті: 80px, активний пункт у фіолетовій капсулі навколо іконки й підпису",
@@ -713,11 +730,25 @@
   }
 
   function init() {
-    // показуємо "Що нового" при КОЖНОМУ вході на сайт
-    setTimeout(() => showWhatsNew(VERSION), 700);
     localStorage.setItem(KEY_SEEN, VERSION);
     addVersionToSettings();
     document.addEventListener("langchange", addVersionToSettings);
+    // «Що нового» показуємо при КОЖНОМУ вході, але вже після того,
+    // як людина відповіла на питання про пристрій (а обидва — після сплешу)
+    const tourOpen = () => {
+      const e = document.querySelector(".ob-backdrop");
+      return !!e && getComputedStyle(e).display !== "none";
+    };
+    const show = () => setTimeout(() => {
+      if (tourOpen()) { show(); return; }   // не стриємо поверх онбордингу
+      showWhatsNew(VERSION);
+    }, 260);
+    const afterDevice = () => {
+      if (global.Device && global.Device.answered) global.Device.answered.then(show);
+      else show();
+    };
+    if (global.Splash) global.Splash.done.then(afterDevice);
+    else afterDevice();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();

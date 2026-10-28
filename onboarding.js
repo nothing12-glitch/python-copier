@@ -276,7 +276,8 @@
 
   function init() {
     if (localStorage.getItem(KEY)) return;
-    start();
+    if (global.Splash) global.Splash.after(start);
+    else start();
     document.addEventListener("langchange", () => {
       if (phase === null) return;
       if (phase === "lang") renderLang();
