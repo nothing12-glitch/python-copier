@@ -629,7 +629,7 @@
     const provider = global.Modules && global.Modules.providerFor ? global.Modules.providerFor(root) : null;
     return provider
       ? global.I18n.t("python.moduleHintPkg", { name: root, pkg: provider })
-      : global.I18n.t("python.moduleHintNone", { name: root });
+      : global.I18n.t("python.moduleHintPypi", { name: root });
   }
 
   async function loadModulesFromCode(code) {
@@ -657,6 +657,28 @@
       if (pkg && pkg !== "default channel") names[pkg] = true;
     });
     return Object.keys(names);
+  }
+
+  /* ---------- Пакети просто з PyPI (через micropip) ---------- */
+  // Pyodide дає лише те, що зібрали під WASM. Решту чистих Python-пакетів
+  // ставимо з PyPI прямо в браузер — мікропіп сам завантажить wheel і залежності.
+  let micropipPromise = null;
+  function ensureMicropip() {
+    if (!micropipPromise) {
+      micropipPromise = (async () => {
+        await ensurePyodide();
+        await py.loadPackage("micropip", { messageCallback: () => {}, errorCallback: () => {} });
+        return true;
+      })().catch((e) => { micropipPromise = null; throw e; });
+    }
+    return micropipPromise;
+  }
+
+  async function installPypi(name) {
+    await ensureMicropip();
+    // JSON.stringify дає безпечний python-літерал рядка: лапки в назві не зламують код
+    await py.runPythonAsync("import micropip\nawait micropip.install(" + JSON.stringify(String(name)) + ")\n");
+    return true;
   }
 
   /* ---------- Виконання коду зі stdin (для розділу «Задачі») ---------- */
@@ -884,5 +906,5 @@
     });
   }
 
-  global.PythonPad = { init, run, execute, loadPackage, loadedPackages };
+  global.PythonPad = { init, run, execute, loadPackage, loadedPackages, installPypi };
 })(window);

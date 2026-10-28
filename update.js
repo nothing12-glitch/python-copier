@@ -1,10 +1,33 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.55";
+  const VERSION = "26.10.56";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.56": {
+      uk: [
+        "Розділ «Модулі» більше не обмежений Pyodide: 33 перевірені розширення, а все, чого немає в самому Pyodide, ставиться просто з PyPI прямо в браузері — art, pyfiglet, emoji, tabulate, Faker, tinydb, httpx, Flask, black, seaborn та інші",
+        "Живий пошук за PyPI: введи будь-яку назву пакета, якої немає в каталозі, і сайт спитає PyPI — покаже версію, опис і чесний вирок: чистий Python поставиться, а зібраний під C або Rust — ні",
+        "Новий фільтр «Розширення PyPI» і позначка PyPI на картках, щоб одразу бачити, звідки пакет",
+        "Додано готові набори: Текст і консоль, Дані й конфіг, Коди й ID, QR і штрих-коди — ставляться одним кліком",
+        "Помилка «No module named» тепер підказує, що модуль можна спробувати поставити з PyPI в розділі «Модулі»"
+      ],
+      en: [
+        "The “Modules” section is no longer limited to Pyodide: 33 verified extras, and anything Pyodide itself does not ship installs straight from PyPI inside the browser — art, pyfiglet, emoji, tabulate, Faker, tinydb, httpx, Flask, black, seaborn and more",
+        "Live PyPI lookup: type any package name that is not in the catalog and the site asks PyPI — it shows the version, the description and an honest verdict: pure Python installs, C or Rust builds do not",
+        "A new “PyPI extras” filter and a PyPI badge on the cards, so you can see where each package comes from",
+        "New ready-made sets: Text & console, Data & config, Codes & IDs, QR & barcodes — one click installs the whole group",
+        "The “No module named” error now suggests trying to install the module from PyPI in the “Modules” section"
+      ],
+      tr: [
+        "“Modüller” bölümü artık Pyodide ile sınırlı değil: 33 doğrulanmış ek — ve Pyodide'in hiç yayımlamadığı her şey tarayıcıda doğrudan PyPI'den kuruluyor: art, pyfiglet, emoji, tabulate, Faker, tinydb, httpx, Flask, black, seaborn ve diğerleri",
+        "Canlı PyPI araması: katalogda olmayan bir paket adı yaz, site PyPI'ye sorsun — sürümü, açıklamayı ve dürüst hükmü gösterir: salt Python kurulur, C veya Rust ile derlenen kurulmaz",
+        "Yeni “PyPI ekleri” filtresi ve kartlarda PyPI etiketi — paketin nereden geldiği hemen görülür",
+        "Yeni hazır takımlar: Metin ve konsol, Veri ve yapılandırma, Kodlar ve kimlikler, QR ve barkodlar — tek dokunuşla tüm grup kurulur",
+        "“No module named” hatası artık modülü “Modüller” bölümünde PyPI'den kurmayı öneriyor"
+      ]
+    },
     "26.10.55": {
       uk: [
         "Екран завантаження нарешті став непрозорим: темний фон малюється поверх сторінки, тож старе оформлення знову не проглядає крізь нього",

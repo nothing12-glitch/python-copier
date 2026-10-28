@@ -1278,6 +1278,34 @@ body.reduce-motion .contest-timer-value.urgent { animation: none; }
 .mod-error .material-icons { color: var(--md-error); font-size: 20px; }
 .mod-more { display: flex; justify-content: center; margin-top: 16px; }
 
+/* Пакети просто з PyPI (micropip) */
+.mod-card.ext, body[data-style="new"] .mod-card.ext { border-style: dashed; }
+.mod-src {
+  font-size: 10px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px; white-space: nowrap;
+  background: rgba(124, 58, 237, .18); color: #cbb4ff; border: 1px solid rgba(124, 58, 237, .45);
+}
+.mod-pypi-prompt {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 0 0 14px; padding: 12px 14px; border-radius: 14px;
+  border: 1px dashed rgba(124, 58, 237, .5); background: var(--md-surface-dim);
+}
+.mod-pypi-prompt .material-icons { color: #a78bfa; font-size: 20px; }
+.mod-pypi-text { font-size: 13px; color: var(--md-on-surface-var); }
+.mod-pypi-find { margin-left: auto; font-size: 13px; padding: 6px 14px; }
+.mod-pypi-find .material-icons { font-size: 18px; }
+.mod-pypi-card { margin-bottom: 14px; }
+.mod-pypi-note {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 12.5px; line-height: 1.45; padding: 8px 10px; border-radius: 10px;
+  background: var(--md-surface-dim); border: 1px solid var(--md-outline-var);
+}
+.mod-pypi-note .material-icons { font-size: 18px; }
+.mod-pypi-note.ok { color: #a6e3a1; border-color: rgba(166, 227, 161, .4); }
+.mod-pypi-note.ok .material-icons { color: #a6e3a1; }
+.mod-pypi-note.warn { color: var(--md-on-surface-var); border-color: rgba(243, 139, 168, .4); }
+.mod-pypi-note.warn .material-icons { color: var(--md-error); }
+
 @media (max-width: 768px) {
   .mod-grid { grid-template-columns: 1fr; }
   .mod-actions .btn { flex: 1 1 auto; justify-content: center; }
