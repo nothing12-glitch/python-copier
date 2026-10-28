@@ -298,6 +298,7 @@
     if (!hub) return;
     hub.querySelectorAll(".game-card").forEach((card) => {
       if (card.querySelector(".grules-btn")) return;
+      if (card.querySelector(".game-info-btn")) return; // «Як грати» уже є на картці — не дублюємо кнопку
       const h3 = card.querySelector("h3");
       const id = idByTitle(h3 ? h3.textContent.trim() : "");
       if (!id) return;

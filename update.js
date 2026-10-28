@@ -1,10 +1,33 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.52";
+  const VERSION = "26.10.53";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.53": {
+      uk: [
+        "Нижня панель на телефоні — як у макеті: 80px, активний пункт у фіолетовій капсулі навколо іконки й підпису",
+        "Мобільна шапка тепер з логотипом 40px, назвою, перемикачем мов UA/EN/TR й аватаром; пошук відкривається окремим піктограмним кнопкою на всю ширину",
+        "Пасхалки повернулися: 200 кліків по логотипу та 10 кліків по назві працюють і через бренд у бічній панелі, бо в новому стилі шапка без них",
+        "Всі вікна оформлені в новому стилі: затемнення з розмиттям, темні картки з м'якою тінню, ті ж поля й кнопки; у грі з'явилася кнопка «Правила», і це вікно вперше отримало власний дизайн",
+        "Модалки більше не ховаються під нижньою панеллю на телефоні"
+      ],
+      en: [
+        "Phone bottom bar matches the mockup: 80px tall, active item wrapped in a violet capsule around icon and label",
+        "Mobile header now carries the 40px logo, title, UA/EN/TR switch and avatar; search opens full width from its own icon button",
+        "Easter eggs are back: 200 clicks on the logo and 10 on the title also work on the sidebar brand, which the new header no longer has",
+        "Every dialog wears the new skin: blurred scrim, dark cards with a soft shadow, matching fields and buttons; games gained a 'Rules' button and that sheet finally has its own design",
+        "Modals no longer hide behind the bottom bar on phones"
+      ],
+      tr: [
+        "Telefondaki alt çubuk maketle aynı: 80px, etkin öğe simge ile etiketi saran mor kapsül içinde",
+        "Mobil başlık artık 40px logo, ad, UA/EN/TR seçici ve avatar taşıyor; arama kendi simge düğmesiyle tam genişlik açılıyor",
+        "Yumurta oyunlar geri döndü: logoya 200, ada 10 tıklama yan panel markasında da çalışıyor",
+        "Tüm pencereler yeni görünüme büründü: bulanık karartma, yumuşak gölgeli koyu kartlar, uyumlu alanlar ve düğmeler; oyunlarda 'Kurallar' düğmesi belirdi ve bu pencere ilk kez kendi tasarımına kavuştu",
+        "Pencereler telefonda alt çubuğun arkasında gizlenmiyor"
+      ]
+    },
     "26.10.52": {
       uk: [
         "Новий інтерфейс тепер 1:1 із дизайном: суцільна бічна панель із групами «Навігація» та «Акаунт» і карткою «Прогрес курсу»",

@@ -184,8 +184,8 @@
   }
 
   function init() {
-    const logo = document.querySelector(".appbar-logo");
-    if (logo) logo.addEventListener("click", hit);
+    // у новому стилі логотип живе ще й у бічній панелі — пасхалка працює з обох місць
+    document.querySelectorAll(".appbar-logo, .nav-brand-ico").forEach((logo) => logo.addEventListener("click", hit));
   }
 
   document.addEventListener("DOMContentLoaded", init);

@@ -88,8 +88,8 @@
 
   let clicks = 0, lastClick = 0;
   function bindTitleEgg() {
-    const title = document.querySelector(".appbar-title");
-    if (title) {
+    // у новому стилі назва сайту є ще й у бічній панелі — клікабельні обидві
+    document.querySelectorAll(".appbar-title, .nav-brand-name").forEach((title) => {
       title.addEventListener("click", () => {
         const now = Date.now();
         if (now - lastClick > 2000) clicks = 0;   // пауза >2с скидає лічильник
@@ -98,7 +98,7 @@
         if (clicks === 7) toast(T().soon.replace("{n}", "3"));
         if (clicks >= 10) { clicks = 0; openRoom(); }
       });
-    }
+    });
     document.addEventListener("keydown", (e) => {
       if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "t") { e.preventDefault(); openRoom(); }
       else if (e.key === "Escape") closeRoom();

@@ -534,6 +534,7 @@
       input.value = "";
       close();
       input.blur();
+      document.body.classList.remove("search-open");
     }
 
     input.addEventListener("input", () => {
@@ -567,6 +568,19 @@
       }
     });
     document.addEventListener("langchange", () => { if (!pop.hidden && input.value.trim()) render(fill(input.value)); });
+
+    const mBtn = $("#mobileSearchBtn");
+    if (mBtn) {
+      mBtn.addEventListener("click", () => {
+        document.body.classList.add("search-open");
+        input.focus();
+      });
+      input.addEventListener("blur", () => {
+        setTimeout(() => {
+          if (!input.value.trim()) { document.body.classList.remove("search-open"); close(); }
+        }, 160);
+      });
+    }
   }
 
   function bindMoreSheet() {
