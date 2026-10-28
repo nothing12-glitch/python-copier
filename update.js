@@ -1,13 +1,27 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.54";
+  const VERSION = "26.10.55";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.55": {
+      uk: [
+        "Екран завантаження нарешті став непрозорим: темний фон малюється поверх сторінки, тож старе оформлення знову не проглядає крізь нього",
+        "Причина була у записі фону — браузер відкидав її цілком, тому на сплеші видно лише емблему й смужку поступу"
+      ],
+      en: [
+        "The loading screen is finally opaque: the dark backdrop now paints over the page, so the old skin no longer shows through it",
+        "The culprit was the background declaration itself — the browser dropped it whole, leaving only the emblem and the progress bar on screen"
+      ],
+      tr: [
+        "Yükleme ekranı sonunda opak: koyu arka plan sayfanın üstünü boyuyor, eski görünüm artık içinden görünmüyor",
+        "Sebep arka plan tanımının kendisiydi — tarayıcı onu tümüyle atıyordu, ekranda sadece amblem ve ilerleme çubuğu kalıyordu"
+      ]
+    },
     "26.10.54": {
       uk: [
-        "Екран завантаження на 5 секунд: більше немає митті, коли на секунду мелькає старе оформлення",
+        "Екран завантаження на 5 секунд: інтерфейс більше не миготить старим оформленням на частину секунди",
         "Після нього вікна вишикувались у чергу: спершу питання «з якого пристрою», і лише потім «Що нового»",
         "На сплеші — емблема, назва, твій рядок-підзаголовок і смужка поступу, що заповнюється рівно за 5 секунд"
       ],
