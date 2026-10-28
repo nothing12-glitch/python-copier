@@ -7,7 +7,7 @@
     glass: false, reduceMotion: false, compact: false, fontSize: 14,
     navDesign: "pill",
     navSize: "medium",
-    navPos: "bottom",
+    navPos: "left",
     navLabels: true,
     lineNumbers: true, wordWrap: true, autocomplete: true, autoIndent: true, codeCheck: true, syntaxHighlight: true, tabSize: 4, autosaveCode: true, timestamps: false,
     sfx: true, music: false, sfxVolume: 0.25, musicVolume: 0.12,
@@ -29,6 +29,12 @@
       if (!localStorage.getItem("app.styleMigrated")) {
         s.style = DEFAULTS.style;
         localStorage.setItem("app.styleMigrated", "1");
+        localStorage.setItem(KEY, JSON.stringify(s));
+      }
+      // одноразова міграція: новий інтерфейс має бічну панель зліва
+      if (!localStorage.getItem("app.navLayoutMigrated")) {
+        s.navPos = DEFAULTS.navPos;
+        localStorage.setItem("app.navLayoutMigrated", "1");
         localStorage.setItem(KEY, JSON.stringify(s));
       }
     } catch {}

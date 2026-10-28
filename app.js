@@ -4,7 +4,7 @@
    - Усі блоки init у try/catch: одна помилка не вбиває решту. */
 (function (global) {
   const $ = (s) => document.querySelector(s);
-  const t = (k) => (global.I18n ? global.I18n.t(k) : k);
+  const t = (k, vars) => (global.I18n ? global.I18n.t(k, vars) : k);
 
   function toast(msg) {
     const el = $("#toast");
@@ -49,6 +49,8 @@
       try { global.Achievements.render($("#achGrid")); } catch (e) { console.warn(e); }
     }
     location.hash = name;
+    try { updateNavProgress(); } catch (e) { console.warn("updateNavProgress", e); }
+    try { decorateCards(); } catch (e) { console.warn("decorateCards", e); }
     console.info("[app.js] route ->", name);
     document.dispatchEvent(new CustomEvent("routechange", { detail: name }));
   }
@@ -395,6 +397,222 @@
     });
   }
 
+  /* ---------- Новий інтерфейс: підзаголовки, CTA карток, пошук, лист «Ще», прогрес ---------- */
+  const SUB_KEYS = {
+    python: "home.cardPythonText", modules: "home.cardModulesText", course: "home.cardCourseText",
+    tasks: "home.cardTasksText", games: "home.cardGamesText", profile: "home.cardProfileText",
+    tools: "tools.sub", feedback: "feedback.sub", achievements: "ach.sub", settings: "settings.sub"
+  };
+
+  function loc(obj) {
+    if (!obj) return "";
+    const l = global.I18n ? global.I18n.lang : "uk";
+    return obj[l] || obj.uk || "";
+  }
+
+  function decorateSections() {
+    Object.keys(SUB_KEYS).forEach((name) => {
+      const head = $("#view-" + name + " .section-head");
+      if (!head || head.querySelector(".section-sub")) return;
+      const p = document.createElement("p");
+      p.className = "section-sub";
+      p.setAttribute("data-i18n", SUB_KEYS[name]);
+      p.textContent = t(SUB_KEYS[name]);
+      head.appendChild(p);
+    });
+  }
+
+  function decorateCards() {
+    document.querySelectorAll("#view-home .cards .card[data-goto]").forEach((card) => {
+      if (card.querySelector(".card-cta")) return;
+      const s = document.createElement("span");
+      s.className = "card-cta";
+      s.setAttribute("data-i18n", "home.open");
+      s.textContent = t("home.open");
+      card.appendChild(s);
+    });
+  }
+
+  function searchIndex() {
+    const out = [];
+    document.querySelectorAll("#mainnav .rail-btn[data-route]").forEach((b) => {
+      const lab = b.querySelector(".rail-label");
+      const ico = b.querySelector(".material-icons");
+      const name = b.dataset.route;
+      out.push({
+        kind: "section", label: t("search.kindSection"), name: lab ? lab.textContent.trim() : name,
+        icon: ico ? ico.textContent : "arrow_forward", run: () => route(name)
+      });
+    });
+    try {
+      if (global.Modules) global.Modules.all().forEach((p) => out.push({
+        kind: "module", label: t("search.kindModule"), name: p.name, icon: "inventory_2",
+        run: () => {
+          route("modules");
+          const input = $("#modulesSearch");
+          if (input) { input.value = p.name; input.dispatchEvent(new Event("input", { bubbles: true })); }
+        }
+      }));
+    } catch (e) { console.warn("search modules", e); }
+    try {
+      if (global.Tasks) global.Tasks.list().forEach((x) => out.push({
+        kind: "task", label: t("search.kindTask"), name: loc(x.title), icon: "assignment",
+        run: () => { route("tasks"); global.Tasks.open(x.id); }
+      }));
+    } catch (e) { console.warn("search tasks", e); }
+    try {
+      if (global.Course) global.Course.lessons().forEach((x) => out.push({
+        kind: "lesson", label: t("search.kindLesson"), name: loc(x.title), icon: "school",
+        run: () => { route("course"); global.Course.open(x.id); }
+      }));
+    } catch (e) { console.warn("search course", e); }
+    try {
+      if (global.Games) global.Games.list().forEach((g) => out.push({
+        kind: "game", label: t("search.kindGame"), name: t(g.name), icon: "sports_esports",
+        run: () => { route("games"); global.Games.open(g.id); }
+      }));
+    } catch (e) { console.warn("search games", e); }
+    return out;
+  }
+
+  function bindGlobalSearch() {
+    const box = $("#appbarSearch");
+    const input = $("#globalSearch");
+    const pop = $("#searchPop");
+    if (!box || !input || !pop) return;
+    let hot = -1;
+
+    const close = () => { pop.hidden = true; hot = -1; };
+    const norm = (s) => String(s).toLowerCase().replace(/['’`]/g, "").replace(/i̇/g, "i");
+
+    function fill(query) {
+      const q = norm(query.trim());
+      if (!q) return [];
+      const items = searchIndex();
+      const hits = [];
+      for (const it of items) {
+        const n = norm(it.name);
+        if (n.startsWith(q)) hits.push({ it, rank: 0 });
+        else if (n.includes(q)) hits.push({ it, rank: 1 });
+      }
+      hits.sort((a, b) => a.rank - b.rank || a.it.name.length - b.it.name.length);
+      return hits.slice(0, 12).map((h) => h.it);
+    }
+
+    function render(hits) {
+      pop.innerHTML = "";
+      if (!hits.length) {
+        const empty = document.createElement("div");
+        empty.className = "search-empty";
+        empty.textContent = t("search.empty");
+        pop.appendChild(empty);
+        return;
+      }
+      hits.forEach((it, i) => {
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "search-row" + (i === hot ? " is-hot" : "");
+        const ico = document.createElement("span");
+        ico.className = "material-icons";
+        ico.textContent = it.icon;
+        const name = document.createElement("span");
+        name.className = "search-row-name";
+        name.textContent = it.name;
+        const kind = document.createElement("span");
+        kind.className = "search-row-kind";
+        kind.textContent = it.label;
+        row.append(ico, name, kind);
+        row.addEventListener("mousedown", (e) => { e.preventDefault(); });
+        row.addEventListener("click", () => pick(it));
+        pop.appendChild(row);
+      });
+    }
+
+    function pick(it) {
+      if (!it) return;
+      try { it.run(); } catch (e) { console.warn("search pick", e); }
+      input.value = "";
+      close();
+      input.blur();
+    }
+
+    input.addEventListener("input", () => {
+      const q = input.value.trim();
+      if (!q) { close(); return; }
+      hot = 0;
+      render(fill(q));
+      pop.hidden = false;
+    });
+    input.addEventListener("focus", () => {
+      if (input.value.trim()) { render(fill(input.value)); pop.hidden = false; }
+    });
+    input.addEventListener("keydown", (e) => {
+      const rows = pop.querySelectorAll(".search-row");
+      if (e.key === "Escape") { close(); input.blur(); return; }
+      if (!rows.length) return;
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        hot = (hot + (e.key === "ArrowDown" ? 1 : -1) + rows.length) % rows.length;
+        rows.forEach((r, i) => r.classList.toggle("is-hot", i === hot));
+        rows[hot].scrollIntoView({ block: "nearest" });
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        pick(fill(input.value)[Math.max(hot, 0)]);
+      }
+    });
+    document.addEventListener("click", (e) => { if (!box.contains(e.target)) close(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "/" && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) {
+        e.preventDefault(); input.focus();
+      }
+    });
+    document.addEventListener("langchange", () => { if (!pop.hidden && input.value.trim()) render(fill(input.value)); });
+  }
+
+  function bindMoreSheet() {
+    const sheet = $("#moreSheet");
+    const grid = $("#moreSheetGrid");
+    const btn = $("#navMore");
+    if (!sheet || !grid || !btn) return;
+
+    function build() {
+      grid.innerHTML = "";
+      document.querySelectorAll("#mainnav .rail-btn[data-route]").forEach((src) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.classList.toggle("active", src.classList.contains("active"));
+        const ico = document.createElement("span");
+        ico.className = "material-icons";
+        ico.textContent = (src.querySelector(".material-icons") || {}).textContent || "";
+        const lab = document.createElement("span");
+        lab.textContent = (src.querySelector(".rail-label") || {}).textContent || "";
+        b.append(ico, lab);
+        b.addEventListener("click", () => { route(src.dataset.route); close(); });
+        grid.appendChild(b);
+      });
+    }
+    const open = () => { build(); sheet.hidden = false; document.body.classList.add("sheet-open"); };
+    const close = () => { sheet.hidden = true; document.body.classList.remove("sheet-open"); };
+    btn.addEventListener("click", () => { sheet.hidden ? open() : close(); });
+    sheet.querySelectorAll("[data-more-close]").forEach((el) => el.addEventListener("click", close));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !sheet.hidden) close(); });
+    document.addEventListener("routechange", close);
+  }
+
+  function updateNavProgress() {
+    const fill = $("#navProgressFill");
+    const text = $("#navProgressText");
+    if (!fill || !text) return;
+    let done = 0, total = 0;
+    try {
+      if (global.Course) { total = global.Course.count || 0; done = global.Course.done(); }
+    } catch (e) { return; }
+    if (!total) return;
+    const pct = Math.round((done / total) * 100);
+    fill.style.width = pct + "%";
+    text.textContent = t("course.progress", { n: done, total: total, percent: pct });
+  }
+
   /* ---------- Init ---------- */
   function init() {
     try { bindNavDelegation(); } catch (e) { console.warn("bindNavDelegation", e); }
@@ -418,6 +636,11 @@
     try { if (global.Games) global.Games.init(); } catch (e) { console.warn("Games", e); }
     try { if (global.Tools) global.Tools.init(); } catch (e) { console.warn("Tools", e); }
     try { renderLearn(); } catch (e) { console.warn("renderLearn", e); }
+    try { decorateSections(); } catch (e) { console.warn("decorateSections", e); }
+    try { decorateCards(); } catch (e) { console.warn("decorateCards", e); }
+    try { bindGlobalSearch(); } catch (e) { console.warn("bindGlobalSearch", e); }
+    try { bindMoreSheet(); } catch (e) { console.warn("bindMoreSheet", e); }
+    try { updateNavProgress(); } catch (e) { console.warn("updateNavProgress", e); }
 
     // початковий маршрут
     try {

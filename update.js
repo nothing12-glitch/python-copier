@@ -1,10 +1,30 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.51";
+  const VERSION = "26.10.52";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.52": {
+      uk: [
+        "Новий інтерфейс тепер 1:1 із дизайном: суцільна бічна панель із групами «Навігація» та «Акаунт» і карткою «Прогрес курсу»",
+        "Пошук у верхній панелі: шукає розділи, модулі, задачі, уроки та ігри; швидкий виклик клавішею «/»",
+        "На телефоні нижня панель стала як у дизайні: Головна, Python, Задачі, Ігри та «Ще» — решта розділів у висувному листі",
+        "Заголовки сторінок отримали підказкові описи, картки розділів — посилання «Відкрити →», а герой-блок — бейдж і приклад коду"
+      ],
+      en: [
+        "The new interface now matches the design 1:1: a solid side panel with “Navigation” and “Account” groups plus a “Course progress” card",
+        "Top-bar search covers sections, modules, tasks, lessons and games; press “/” to jump into it",
+        "On phones the bottom bar follows the design: Home, Python, Tasks, Games and “More” — the rest live in a slide-up sheet",
+        "Page headers gained short descriptions, section cards got an “Open →” link, and the hero now has a badge plus a code sample"
+      ],
+      tr: [
+        "Yeni arayüz artık tasarımın birebir aynısı: “Gezinme” ve “Hesap” grupları ile “Kurs ilerlemesi” kartını içeren tam yükseklikte yan panel",
+        "Üst çubuktaki arama bölümleri, modülleri, görevleri, dersleri ve oyunları tarıyor; “/” tuşuyla hızlıca açılıyor",
+        "Telefonda alt çubuk tasarıma uyuyor: Ana sayfa, Python, Görevler, Oyunlar ve “Daha fazla” — kalanı alttan açılan listede",
+        "Sayfa başlıklarına kısa açıklamalar, bölüm kartlarına “Aç →” bağlantısı, kahraman bloğuna rozet ve kod örneği eklendi"
+      ]
+    },
     "26.10.51": {
       uk: [
         "Новий інтерфейс: темна скляна панель, градієнтна бічна навігація, оновлені картки, кнопки та заголовок",

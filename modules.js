@@ -505,6 +505,7 @@
   global.Modules = {
     init, render, load, providerFor,
     installed: () => installedNow.slice(),
+    all: () => packages.slice(),
     count: () => packages.length
   };
 })(window);
