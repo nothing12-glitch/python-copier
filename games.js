@@ -4,6 +4,7 @@
   const t = (k, v) => global.I18n.t(k, v);
   const SFX = () => global.Audio2 && global.Audio2.SFX;
   let cleanupFn = null;
+  let currentId = null;
 
   const GAMES = [
     { id: "ttt", ico: "\u{2B55}", name: "game.ttt", desc: "game.tttDesc", best: "high", unit: "rec.wins" },
@@ -100,6 +101,49 @@
     return { area, score };
   }
 
+  /* Схема налаштувань кожної гри: ключ Settings, підпис і варіанти. */
+  const GAME_OPTS = {
+    ttt: [
+      { key: "tttMode", label: "game.optMode", vals: [["ai", "game.optAi"], ["duo", "game.optDuo"]] },
+      { key: "tttAi", label: "game.optAiLevel", vals: [["easy", "game.optEasy"], ["normal", "game.optNormal"], ["hard", "game.optHard"]] }
+    ],
+    snake: [
+      { key: "snakeSpeed", label: "game.optSpeed", vals: [["slow", "game.optSlow"], ["normal", "game.optNormalF"], ["fast", "game.optFast"]] },
+      { key: "snakeField", label: "game.optField", vals: [["14", "game.optSmall"], ["18", "game.optMedium"], ["24", "game.optBig"]] },
+      { key: "snakeWrap", label: "game.optWalls", vals: [["off", "game.optWallsSolid"], ["on", "game.optWallsPortal"]] }
+    ],
+    memory: [
+      { key: "memorySize", label: "game.optPairs", vals: [["4", "4"], ["6", "6"], ["8", "8"], ["10", "10"]] },
+      { key: "memoryPeek", label: "game.optPeek", vals: [["0", "game.optOff"], ["2", "game.optPeek2"], ["4", "game.optPeek4"]] }
+    ],
+    g2048: [
+      { key: "g2048Size", label: "game.optField", vals: [["4", "4 × 4"], ["5", "5 × 5"]] },
+      { key: "g2048Start", label: "game.optStartTile", vals: [["2", "2"], ["4", "4"]] }
+    ],
+    rps: [
+      { key: "rpsTarget", label: "game.optRpsTarget", vals: [["1", "1"], ["3", "3"], ["5", "5"], ["10", "10"]] }
+    ],
+    react: [
+      { key: "reactRounds", label: "game.optRounds", vals: [["1", "1"], ["3", "3"], ["5", "5"]] }
+    ],
+    simon: [
+      { key: "simonSpeed", label: "game.optSpeed", vals: [["slow", "game.optSlow"], ["normal", "game.optNormalF"], ["fast", "game.optFast"]] },
+      { key: "simonStart", label: "game.optStartLen", vals: [["1", "1"], ["3", "3"], ["5", "5"]] }
+    ],
+    mines: [
+      { key: "minesField", label: "game.optField", vals: [["9", "9 × 9"], ["12", "12 × 12"], ["16", "16 × 16"]] },
+      { key: "minesCount", label: "game.optMines", vals: [["10", "10"], ["20", "20"], ["40", "40"]] }
+    ],
+    guess: [
+      { key: "guessMax", label: "game.optMax", vals: [["50", "50"], ["100", "100"], ["200", "200"]] }
+    ]
+  };
+
+  function opt(id, fallback) {
+    const v = global.Settings ? global.Settings.get(id) : null;
+    return v === null || v === undefined || v === "" ? fallback : v;
+  }
+
   function showGameSettings(gameId) {
     const old = document.getElementById("gameSettingsModal");
     if (old) old.remove();
@@ -121,58 +165,43 @@
     const body = document.createElement("div");
     body.className = "gs-body";
 
-    // Налаштування для змійки
-    if (gameId === "snake") {
-      const label = document.createElement("label");
-      label.className = "gs-label";
-      label.textContent = t("game.snakeSpeed") || "Speed";
-      body.appendChild(label);
-      
-      const select = document.createElement("select");
-      select.className = "md-select";
-      const speeds = [
-        { v: "slow", uk: "Повільно", en: "Slow", tr: "Yavaş" },
-        { v: "normal", uk: "Нормально", en: "Normal", tr: "Normal" },
-        { v: "fast", uk: "Швидко", en: "Fast", tr: "Hızlı" }
-      ];
-      const current = global.Settings.get("snakeSpeed") || "normal";
-      speeds.forEach(s => {
-        const opt = document.createElement("option");
-        opt.value = s.v;
-        opt.textContent = s[global.I18n ? global.I18n.lang : "uk"] || s.en;
-        if (s.v === current) opt.selected = true;
-        select.appendChild(opt);
-      });
-      select.onchange = () => {
-        global.Settings.set("snakeSpeed", select.value);
-        toast(t("set.saved") || "Saved");
-      };
-      body.appendChild(select);
+    const game = GAMES.find((g) => g.id === gameId);
+    if (game) {
+      const sub = document.createElement("div");
+      sub.className = "gs-sub";
+      sub.textContent = t(game.name) + " — " + t(game.desc);
+      body.appendChild(sub);
     }
 
-    // Налаштування для Memory
-    if (gameId === "memory") {
+    (GAME_OPTS[gameId] || []).forEach((o) => {
       const label = document.createElement("label");
       label.className = "gs-label";
-      label.textContent = t("game.memorySize") || "Pairs";
+      label.textContent = t(o.label);
       body.appendChild(label);
-      
+
       const select = document.createElement("select");
       select.className = "md-select";
-      const sizes = [4, 6, 8, 10];
-      const current = Number(global.Settings.get("memorySize")) || 8;
-      sizes.forEach(s => {
-        const opt = document.createElement("option");
-        opt.value = s;
-        opt.textContent = s + " " + (t("game.pairs") || "pairs");
-        if (s === current) opt.selected = true;
-        select.appendChild(opt);
+      const current = String(opt(o.key, o.vals[0][0]));
+      o.vals.forEach(([v, key]) => {
+        const el = document.createElement("option");
+        el.value = v;
+        el.textContent = /^[a-z]+\./.test(key) ? t(key) : key;
+        if (v === current) el.selected = true;
+        select.appendChild(el);
       });
       select.onchange = () => {
-        global.Settings.set("memorySize", select.value);
-        toast(t("set.saved") || "Saved");
+        global.Settings.set(o.key, select.value);
+        toast(t("set.saved"));
+        if (global.Games.restartIfOpen) global.Games.restartIfOpen(gameId);
       };
       body.appendChild(select);
+    });
+
+    if (!(GAME_OPTS[gameId] || []).length) {
+      const p = document.createElement("div");
+      p.className = "gs-sub";
+      p.textContent = t("game.noOpts");
+      body.appendChild(p);
     }
 
     card.appendChild(body);
@@ -186,7 +215,9 @@
     bd.appendChild(card);
     bd.onclick = (e) => { if (e.target === bd) { bd.classList.add("gs-out"); setTimeout(() => bd.remove(), 180); } };
     document.body.appendChild(bd);
+    if (global.UI) global.UI.enhance(card);
   }
+
 
   function setScore(el, label, value) {
     el.textContent = label + ": " + value;
@@ -194,7 +225,9 @@
 
   /* ---------------- Tic-Tac-Toe (з ШІ середньої складності) ---------------- */
   function mountTTT(area, score) {
-    let board = Array(9).fill(null), over = false, wins = 0;
+    let board = Array(9).fill(null), over = false, wins = 0, turn = "X";
+    const duo = opt("tttMode", "ai") === "duo";
+    const smart = { easy: 0, normal: 0.5, hard: 1 }[opt("tttAi", "normal")] ?? 0.5;
     setScore(score, t("games.score"), wins);
     const grid = document.createElement("div");
     grid.className = "ttt";
@@ -214,16 +247,18 @@
     function render(){ cells.forEach((c,i)=>{ c.textContent = board[i]==="X"?"X":board[i]==="O"?"O":""; c.style.color = board[i]==="X"?"var(--accent)":"var(--primary)"; }); }
     function play(i){
       if(over||board[i]) return;
-      board[i]="X"; render(); SFX()&&SFX().pop();
+      board[i]=turn; render(); SFX()&&SFX().pop();
       let w=winner(board);
       if(w) return finish(w);
+      if (duo) { turn = turn === "X" ? "O" : "X"; status.textContent = t("games.turn", { n: turn }); return; }
+      turn = "X";
       const mv=aiMove(); if(mv!=null){ board[mv]="O"; render(); }
       w=winner(board); if(w) finish(w);
     }
-    // ШІ: 50% розумний хід, 50% випадковий (середня складність)
+    // ШІ: частка «розумних» ходів залежить від складності
     function aiMove(){
-      if(Math.random() < 0.5) return randomMove();
-      return bestMove();
+      if(Math.random() < smart) return bestMove();
+      return randomMove();
     }
     function randomMove(){
       const empty=[]; for(let i=0;i<9;i++) if(!board[i]) empty.push(i);
@@ -243,24 +278,26 @@
     }
     function finish(w){
       over=true;
-      if(w==="X"){ wins++; setScore(score,t("games.score"),wins); status.textContent=t("games.youWin"); SFX()&&SFX().win(); saveRecord("ttt",wins,"high"); }
-      else if(w==="O"){ status.textContent=t("games.youLose"); SFX()&&SFX().lose(); }
+      if(w==="X"){ wins++; setScore(score,t("games.score"),wins); status.textContent= duo ? t("games.p1Win") : t("games.youWin"); SFX()&&SFX().win(); saveRecord("ttt",wins,"high"); }
+      else if(w==="O"){ status.textContent= duo ? t("games.p2Win") : t("games.youLose"); SFX()&&SFX().lose(); }
       else { status.textContent=t("games.draw"); SFX()&&SFX().pop(); }
       setTimeout(reset,1400);
     }
-    function reset(){ board=Array(9).fill(null); over=false; status.textContent=""; render(); }
+    function reset(){ board=Array(9).fill(null); over=false; turn="X"; status.textContent=""; render(); }
     render();
     return null;
   }
 
   /* ---------------- Snake ---------------- */
   function mountSnake(area, score) {
-    const N=18, size=20;
+    const N=Math.max(10, Number(opt("snakeField", 18)) || 18), size=N>20?16:20;
+    const wrap=opt("snakeWrap", "off") === "on";
+    const home=()=>({x:(N/2)|0,y:(N/2)|0});
     const cv=document.createElement("canvas");
     cv.id="snakeCanvas"; cv.width=N*size; cv.height=N*size;
     area.appendChild(cv);
     const ctx=cv.getContext("2d");
-    let snake=[{x:8,y:9}], dir={x:1,y:0}, next=dir, food=place(), pts=0, dead=false, timer=null, closed=false;
+    let snake=[home()], dir={x:1,y:0}, next=dir, food=place(), pts=0, dead=false, timer=null, closed=false;
     setScore(score,t("games.score"),0);
     function place(){ let p; do{ p={x:(Math.random()*N)|0,y:(Math.random()*N)|0}; }while(snake.some(s=>s.x===p.x&&s.y===p.y)); return p; }
     function draw(){
@@ -270,15 +307,17 @@
     }
     function step(){
       if(closed) return;
-      dir=next; const h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
-      if(h.x<0||h.y<0||h.x>=N||h.y>=N||snake.some(s=>s.x===h.x&&s.y===h.y)){ return gameOver(); }
+      dir=next; let h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+      if(wrap){ h.x=(h.x+N)%N; h.y=(h.y+N)%N; }
+      else if(h.x<0||h.y<0||h.x>=N||h.y>=N){ return gameOver(); }
+      if(snake.some(s=>s.x===h.x&&s.y===h.y)) return gameOver();
       snake.unshift(h);
       if(h.x===food.x&&h.y===food.y){ pts++; setScore(score,t("games.score"),pts); SFX()&&SFX().coin(); food=place(); }
       else snake.pop();
       draw();
     }
     function gameOver(){ dead=true; clearInterval(timer); timer=null; SFX()&&SFX().lose(); saveRecord("snake",pts,"high"); draw(); ctx.fillStyle="#000a"; ctx.fillRect(0,0,cv.width,cv.height); ctx.fillStyle="#fff"; ctx.font="20px sans-serif"; ctx.textAlign="center"; ctx.fillText(t("games.over"),cv.width/2,cv.height/2); if(!closed) setTimeout(start,1600); }
-    function start(){ if(closed) return; snake=[{x:8,y:9}]; dir={x:1,y:0}; next=dir; food=place(); pts=0; dead=false; setScore(score,t("games.score"),0); clearInterval(timer); const sp={slow:160,normal:110,fast:70}[global.Settings.get("snakeSpeed")]||110; timer=setInterval(step,sp); draw(); }
+    function start(){ if(closed) return; snake=[home()]; dir={x:1,y:0}; next=dir; food=place(); pts=0; dead=false; setScore(score,t("games.score"),0); clearInterval(timer); const sp={slow:160,normal:110,fast:70}[opt("snakeSpeed","normal")]||110; timer=setInterval(step,sp); draw(); }
     function setDir(x,y){ if(snake.length>1&&(x===-dir.x&&y===-dir.y))return; next={x,y}; }
     const key=(e)=>{ const k=e.key; if(k==="ArrowUp"||k==="w"){setDir(0,-1);e.preventDefault();} else if(k==="ArrowDown"||k==="s"){setDir(0,1);e.preventDefault();} else if(k==="ArrowLeft"||k==="a"){setDir(-1,0);e.preventDefault();} else if(k==="ArrowRight"||k==="d"){setDir(1,0);e.preventDefault();} };
     window.addEventListener("keydown",key);
@@ -293,8 +332,8 @@
 
   /* ---------------- Memory ---------------- */
   function mountMemory(area, score) {
-    const emojis=["\u{1F34E}","\u{1F680}","\u{1F431}","\u{1F31F}","\u{1F3B5}","\u{1F355}","\u{26BD}","\u{1F388}"];
-    const pairs=Math.min(10,Math.max(4,Number(global.Settings.get("memorySize"))||8));
+    const pairs=Math.min(10,Math.max(4,Number(opt("memorySize", 8))||8));
+    const emojis=["\u{1F34E}","\u{1F680}","\u{1F431}","\u{1F31F}","\u{1F3B5}","\u{1F355}","\u{26BD}","\u{1F388}","\u{1F353}","\u{1F3AA}"];
     const set=emojis.slice(0,pairs);
     let deck=[...set,...set].sort(()=>Math.random()-0.5);
     const grid=document.createElement("div"); grid.className="mem"; area.appendChild(grid);
@@ -304,6 +343,14 @@
       const c=document.createElement("div"); c.className="mcard"; c.dataset.emo=emo; c.dataset.i=i;
       c.onclick=()=>flip(c); grid.appendChild(c);
     });
+    const peek=Math.max(0, Number(opt("memoryPeek", 0)) || 0);
+    if (peek) {
+      lock = true;
+      const all=[...grid.children];
+      all.forEach(c=>{ c.textContent=c.dataset.emo; c.classList.add("flip"); });
+      setTimeout(()=>{ all.forEach(c=>{ c.classList.remove("flip"); c.textContent=""; }); lock=false; }, peek*1000);
+      return ()=>{};
+    }
     function flip(c){
       if(lock||c.classList.contains("flip")||c.classList.contains("done"))return;
       c.textContent=c.dataset.emo; c.classList.add("flip"); SFX()&&SFX().pop();
@@ -318,27 +365,31 @@
 
   /* ---------------- 2048 ---------------- */
   function mount2048(area, score) {
-    let g=Array.from({length:4},()=>Array(4).fill(0)), pts=0;
+    const SZ=Math.min(6,Math.max(4,Number(opt("g2048Size", 4))||4));
+    const START=opt("g2048Start","2")==="4"?4:2;
+    area.style.setProperty("--g2048-n", SZ);
+    area.style.setProperty("--g2048-cell", (SZ > 4 ? 60 : 74) + "px");
+    let g=Array.from({length:SZ},()=>Array(SZ).fill(0)), pts=0;
     const grid=document.createElement("div"); grid.className="g2048"; area.appendChild(grid);
     const cells=[];
-    for(let i=0;i<16;i++){ const c=document.createElement("div"); c.className="cell"; grid.appendChild(c); cells.push(c); }
+    for(let i=0;i<SZ*SZ;i++){ const c=document.createElement("div"); c.className="cell"; grid.appendChild(c); cells.push(c); }
     setScore(score,t("games.score"),0);
     const info=document.createElement("div"); info.className="game-score"; area.appendChild(info);
-    function add(){ const e=[]; g.forEach((r,y)=>r.forEach((v,x)=>{if(!v)e.push([x,y]);})); if(e.length){const[x,y]=e[(Math.random()*e.length)|0]; g[y][x]=Math.random()<0.9?2:4;} }
+    function add(){ const e=[]; g.forEach((r,y)=>r.forEach((v,x)=>{if(!v)e.push([x,y]);})); if(e.length){const[x,y]=e[(Math.random()*e.length)|0]; g[y][x]=Math.random()<0.9?START:START*2;} }
     const COLORS={0:"#1b2547",2:"#2a3660",4:"#33417a",8:"#3f56a0",16:"#4b67c0",32:"#5b8cff",64:"#7c5bff",128:"#22d3ee",256:"#3ddc97",512:"#f0b429",1024:"#ff8c42",2048:"#ff5b7a"};
-    function draw(){ g.forEach((r,y)=>r.forEach((v,x)=>{ const c=cells[y*4+x]; c.textContent=v||""; c.style.background=COLORS[v]||"#ff5b7a"; })); setScore(score,t("games.score"),pts); }
-    function slide(row){ let a=row.filter(v=>v); for(let i=0;i<a.length-1;i++){ if(a[i]===a[i+1]){a[i]*=2;pts+=a[i];a.splice(i+1,1);} } while(a.length<4)a.push(0); return a; }
+    function draw(){ g.forEach((r,y)=>r.forEach((v,x)=>{ const c=cells[y*SZ+x]; c.textContent=v||""; c.style.background=COLORS[v]||"#ff5b7a"; })); setScore(score,t("games.score"),pts); }
+    function slide(row){ let a=row.filter(v=>v); for(let i=0;i<a.length-1;i++){ if(a[i]===a[i+1]){a[i]*=2;pts+=a[i];a.splice(i+1,1);} } while(a.length<SZ)a.push(0); return a; }
     function move(dir){
       const before=JSON.stringify(g);
       if(dir==="left") g=g.map(slide);
       else if(dir==="right") g=g.map(r=>slide(r.slice().reverse()).reverse());
-      else if(dir==="up"){ for(let x=0;x<4;x++){ let col=slide([g[0][x],g[1][x],g[2][x],g[3][x]]); for(let y=0;y<4;y++)g[y][x]=col[y]; } }
-      else if(dir==="down"){ for(let x=0;x<4;x++){ let col=slide([g[3][x],g[2][x],g[1][x],g[0][x]]); for(let y=0;y<4;y++)g[3-y][x]=col[y]; } }
+      else if(dir==="up"){ for(let x=0;x<SZ;x++){ let col=slide(g.map((_,y)=>g[y][x])); for(let y=0;y<SZ;y++)g[y][x]=col[y]; } }
+      else if(dir==="down"){ for(let x=0;x<SZ;x++){ let col=slide(g.map((_,y)=>g[y][x]).reverse()); for(let y=0;y<SZ;y++)g[SZ-1-y][x]=col[y]; } }
       if(JSON.stringify(g)!==before){ add(); SFX()&&SFX().pop(); draw(); if(!canMove()) end(); }
     }
-    function canMove(){ for(let y=0;y<4;y++)for(let x=0;x<4;x++){ if(!g[y][x])return true; if(x<3&&g[y][x]===g[y][x+1])return true; if(y<3&&g[y][x]===g[y+1][x])return true; } return false; }
+    function canMove(){ for(let y=0;y<SZ;y++)for(let x=0;x<SZ;x++){ if(!g[y][x])return true; if(x<SZ-1&&g[y][x]===g[y][x+1])return true; if(y<SZ-1&&g[y][x]===g[y+1][x])return true; } return false; }
     function end(){ SFX()&&SFX().lose(); saveRecord("g2048",pts,"high"); info.textContent=t("games.over"); setTimeout(()=>{info.textContent="";init();},1600); }
-    function init(){ g=Array.from({length:4},()=>Array(4).fill(0)); pts=0; add(); add(); draw(); }
+    function init(){ g=Array.from({length:SZ},()=>Array(SZ).fill(0)); pts=0; add(); add(); draw(); }
     const key=(e)=>{ const m={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"up",ArrowDown:"down"}[e.key]; if(m){e.preventDefault();move(m);} };
     window.addEventListener("keydown",key);
     // swipe
@@ -351,32 +402,54 @@
 
   /* ---------------- Rock Paper Scissors ---------------- */
   function mountRPS(area, score) {
-    let wins=0; setScore(score,t("games.score"),0);
+    const target = Math.max(1, Number(opt("rpsTarget", 1)) || 1);
+    let wins = 0, losses = 0, match = false;
+    setScore(score, t("games.score"), 0);
     const row=document.createElement("div"); row.className="rps"; area.appendChild(row);
     const res=document.createElement("div"); res.className="game-score"; res.style.fontSize="18px"; area.appendChild(res);
     const map={rock:"\u{270A}",paper:"\u{270B}",scissors:"\u{270C}\u{FE0F}"};
     ["rock","paper","scissors"].forEach(k=>{ const b=document.createElement("button"); b.textContent=map[k]; b.onclick=()=>play(k); row.appendChild(b); });
     function beats(a,b){ return (a==="rock"&&b==="scissors")||(a==="paper"&&b==="rock")||(a==="scissors"&&b==="paper"); }
     function play(u){
+      if (match) return;
       const keys=Object.keys(map); const c=keys[(Math.random()*3)|0];
       let msg;
       if(u===c){ msg=t("games.draw"); SFX()&&SFX().pop(); }
       else if(beats(u,c)){ wins++; setScore(score,t("games.score"),wins); msg=t("games.youWin"); SFX()&&SFX().win(); saveRecord("rps",wins,"high"); }
-      else { msg=t("games.youLose"); SFX()&&SFX().lose(); }
-      res.textContent=`${map[u]} vs ${map[c]} — ${msg}`;
+      else { losses++; msg=t("games.youLose"); SFX()&&SFX().lose(); }
+      if (target > 1 && (wins >= target || losses >= target)) {
+        match = true;
+        msg = wins >= target ? t("games.matchWin") : t("games.matchLose");
+        setTimeout(() => { wins = 0; losses = 0; match = false; setScore(score, t("games.score"), 0); res.textContent = ""; }, 1800);
+      }
+      res.textContent = `${map[u]} vs ${map[c]} — ${msg}` + (target > 1 && !match ? ` (${wins}:${losses})` : "");
     }
     return null;
   }
 
   /* ---------------- Reaction ---------------- */
   function mountReact(area, score) {
+    const rounds = Math.max(1, Number(opt("reactRounds", 1)) || 1);
     const box=document.createElement("div"); box.className="react-box"; box.textContent=t("react.tapStart"); area.appendChild(box);
     setScore(score,t("games.best"), (global.Profile.getRecord("react")||"—")+" ms");
-    let state="idle", t0=0, to=null;
+    let state="idle", t0=0, to=null, hits=[], sum=0;
     box.onclick=()=>{
       if(state==="idle"){ state="wait"; box.className="react-box wait"; box.textContent=t("react.wait"); to=setTimeout(()=>{ state="go"; box.className="react-box go"; box.textContent=t("react.go"); t0=performance.now(); }, 800+Math.random()*2200); }
       else if(state==="wait"){ clearTimeout(to); state="idle"; box.className="react-box"; box.textContent=t("react.tooSoon"); SFX()&&SFX().error(); }
-      else if(state==="go"){ const ms=Math.round(performance.now()-t0); state="idle"; box.className="react-box"; SFX()&&SFX().success(); const r=saveRecord("react",ms,"low"); box.textContent=t("react.result",{ms})+(r.isNew?" \u{2B50}":""); setScore(score,t("games.best"),Math.min(ms, global.Profile.getRecord("react")||ms)+" ms"); }
+      else if(state==="go"){
+        const ms=Math.round(performance.now()-t0); state="idle"; box.className="react-box";
+        SFX()&&SFX().success();
+        const r=saveRecord("react",ms,"low");
+        hits.push(ms); sum+=ms;
+        if (hits.length >= rounds) {
+          const avg = Math.round(sum / hits.length);
+          box.textContent = t("react.avg", { n: hits.length, ms: avg }) + (r.isNew ? " \u{2B50}" : "");
+          hits = []; sum = 0;
+        } else {
+          box.textContent = t("react.result", { ms }) + (r.isNew ? " \u{2B50}" : "") + ` (${hits.length}/${rounds})`;
+        }
+        setScore(score,t("games.best"),Math.min(ms, global.Profile.getRecord("react")||ms)+" ms");
+      }
     };
     return ()=>clearTimeout(to);
   }
@@ -384,6 +457,8 @@
   /* ---------------- Simon Says ---------------- */
   function mountSimon(area, score) {
     const COLORS = ["#ff5b7a", "#22d3ee", "#3ddc97", "#f0b429"];
+    const TEMPO = { slow: 1.6, normal: 1, fast: 0.6 }[opt("simonSpeed", "normal")] || 1;
+    const GAP = Math.round(450 * TEMPO), FLASH = Math.round(300 * TEMPO), START = Math.max(1, Number(opt("simonStart", 1)) || 1);
     let seq = [], idx = 0, accepting = false, level = 0;
     const wrap = document.createElement("div");
     wrap.className = "simon";
@@ -399,13 +474,13 @@
     status.className = "game-score";
     area.appendChild(status);
     setScore(score, t("games.score"), 0);
-    function flash(i, ms) { pads[i].classList.add("lit"); setTimeout(() => pads[i].classList.remove("lit"), ms || 300); SFX() && SFX().pop(); }
+    function flash(i, ms) { pads[i].classList.add("lit"); setTimeout(() => pads[i].classList.remove("lit"), ms || FLASH); SFX() && SFX().pop(); }
     function playSeq() {
       accepting = false; status.textContent = t("simon.watch");
       seq.forEach((v, n) => setTimeout(() => flash(v), 500 + n * 450));
       setTimeout(() => { accepting = true; idx = 0; status.textContent = t("simon.your"); }, 500 + seq.length * 450);
     }
-    function next() { level++; setScore(score, t("games.score"), level); seq.push((Math.random() * 4) | 0); playSeq(); }
+    function next() { level++; setScore(score, t("games.score"), level); seq.push((Math.random() * 4) | 0); while (seq.length < START) seq.push((Math.random() * 4) | 0); playSeq(); }
     function press(i) {
       if (!accepting) return;
       flash(i, 180);
@@ -424,7 +499,10 @@
 
   /* ---------------- Minesweeper ---------------- */
   function mountMines(area, score) {
-    const N = 9, M = 10;
+    const N = Math.min(16, Math.max(9, Number(opt("minesField", 9)) || 9));
+    const M = Math.min(N * N - 9, Math.max(5, Number(opt("minesCount", 10)) || 10));
+    area.style.setProperty("--mines-n", N);
+    area.style.setProperty("--mines-cell", (N > 12 ? 26 : N > 9 ? 30 : 34) + "px");
     let grid, revealed, flags, over, started, t0, timerInt, left;
     const wrap = document.createElement("div"); wrap.className = "mines";
     area.appendChild(wrap);
@@ -509,21 +587,22 @@
 
   /* ---------------- Guess the number ---------------- */
   function mountGuess(area, score) {
-    let target = 1 + ((Math.random() * 100) | 0), tries = 0;
+    const MAX = Math.min(500, Math.max(10, Number(opt("guessMax", 100)) || 100));
+    let target = 1 + ((Math.random() * MAX) | 0), tries = 0;
     const row = document.createElement("div"); row.className = "guess";
-    const inp = document.createElement("input"); inp.type = "number"; inp.min = "1"; inp.max = "100"; inp.placeholder = "1-100";
+    const inp = document.createElement("input"); inp.type = "number"; inp.min = "1"; inp.max = String(MAX); inp.placeholder = "1-" + MAX;
     const btn = document.createElement("button"); btn.className = "btn contained"; btn.textContent = t("games.play");
     row.append(inp, btn); area.appendChild(row);
     const res = document.createElement("div"); res.className = "game-score"; res.style.fontSize = "18px"; area.appendChild(res);
     setScore(score, t("games.score"), 0);
     function check() {
       const v = Number(inp.value);
-      if (!v || v < 1 || v > 100) return;
+      if (!v || v < 1 || v > MAX) return;
       tries++; setScore(score, t("games.score"), tries);
       if (v === target) {
         res.textContent = t("games.youWin") + " " + target;
         SFX() && SFX().win(); saveRecord("guess", tries, "low");
-        target = 1 + ((Math.random() * 100) | 0); tries = 0; inp.value = "";
+        target = 1 + ((Math.random() * MAX) | 0); tries = 0; inp.value = "";
         setTimeout(() => { res.textContent = ""; setScore(score, t("games.score"), 0); }, 1800);
       } else {
         res.textContent = v < target ? t("guess.higher") : t("guess.lower");
@@ -605,8 +684,9 @@
 
   const Games = {
     init(){ renderHub(); document.addEventListener("langchange",()=>{ if(!$("#gamesHub").classList.contains("hidden")) renderHub(); }); },
-    open(id){ const g=GAMES.find(x=>x.id===id); if(!g)return; const {area,score}=stageShell(g); if(cleanupFn){cleanupFn();cleanupFn=null;} cleanupFn=MOUNTS[id](area,score)||null; document.dispatchEvent(new CustomEvent("gameplayed", { detail: { id } })); },
-    close(){ if(cleanupFn){cleanupFn();cleanupFn=null;} const st=$("#gameStage"); st.innerHTML=""; st.classList.add("hidden"); $("#gamesHub").classList.remove("hidden"); renderHub(); },
+    open(id){ const g=GAMES.find(x=>x.id===id); if(!g)return; currentId=id; const {area,score}=stageShell(g); if(cleanupFn){cleanupFn();cleanupFn=null;} cleanupFn=MOUNTS[id](area,score)||null; document.dispatchEvent(new CustomEvent("gameplayed", { detail: { id } })); },
+    close(){ currentId=null; if(cleanupFn){cleanupFn();cleanupFn=null;} const st=$("#gameStage"); st.innerHTML=""; st.classList.add("hidden"); $("#gamesHub").classList.remove("hidden"); renderHub(); },
+    restartIfOpen(id){ if (currentId === id) Games.open(id); },
     list: () => GAMES.slice(),
     renderHub
   };

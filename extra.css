@@ -1858,3 +1858,13 @@ body[data-style="new"] .tool-card .field input,
 body[data-style="new"] .tool-card input[type=number],
 body[data-style="new"] .tool-card input[type=text] { border-radius:14px; }
 body[data-style="new"] .tool-card .btn { border-radius:999px; }
+
+/* ---------- 34) Ігрові сітки, що змінюють розмір зі налаштувань ---------- */
+.g2048 { grid-template-columns: repeat(var(--g2048-n, 4), var(--g2048-cell, 74px)); }
+.g2048 .cell { width: var(--g2048-cell, 74px); height: var(--g2048-cell, 74px); font-size: calc(var(--g2048-cell, 74px) * .3); }
+.mines { grid-template-columns: repeat(var(--mines-n, 9), var(--mines-cell, 34px)); }
+.mines button { width: var(--mines-cell, 34px); height: var(--mines-cell, 34px); font-size: calc(var(--mines-cell, 34px) * .46); }
+.mem { grid-template-columns: repeat(auto-fit, minmax(58px, 72px)); }
+
+.gs-sub { margin: -2px 0 14px; font-size: 13px; opacity: .72; line-height: 1.45; }
+.gs-body .qm-select { width: 100%; }

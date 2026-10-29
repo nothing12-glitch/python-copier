@@ -1,10 +1,39 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.60";
+  const VERSION = "26.10.61";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.61": {
+      uk: [
+        "У кожної гри нарешті є справжні налаштування: натисни «⚙» над дошкою — і гра перебудується під тебе просто посеред партії",
+        "Хрестики-нулики: грати проти компʼютера або вдвох на одному екрані, плюс три рівні розуму суперника",
+        "Змійка: швидкість, три розміри поля та стіни на вибір — тверді або портал, що викидає тебе з протилечного боку",
+        "Memory: від 4 до 10 пар і показ усіх карток на старті на 2 чи 4 секунди; 2048: поле 4×4 або 5×5 і перша плитка 2 чи 4",
+        "Сапер: поле аж до 16×16 і до 40 мін; «Вгадай число»: верхня межа 50, 100 або 200",
+        "Саймон: темп і довжина старту; Реакція: середній час за 1, 3 або 5 спроб; Камінь-ножиці-папір: матч до 1, 3, 5 чи 10 перемог",
+        "Вікно налаштувань гри зроблене в фірмовому стилі — із власними менюшками замість системних списків"
+      ],
+      en: [
+        "Every game finally has real settings: tap the «⚙» above the board and the game rebuilds itself mid-round",
+        "Tic-Tac-Toe: play the computer or two players on one screen, plus three opponent skill levels",
+        "Snake: speed, three board sizes and walls your way — solid, or a portal that spits you out the other side",
+        "Memory: 4 to 10 pairs and an optional 2 or 4 second peek at the start; 2048: 4×4 or 5×5 board and a starting 2 or 4 tile",
+        "Minesweeper: boards up to 16×16 with up to 40 mines; Guess the Number: a ceiling of 50, 100 or 200",
+        "Simon: tempo and starting length; Reaction: average over 1, 3 or 5 taps; Rock-Paper-Scissors: first to 1, 3, 5 or 10 wins",
+        "The game settings dialog is built in the app's own style, with custom dropdowns instead of native lists"
+      ],
+      tr: [
+        "Sonunda her oyunun gerçek ayarları var: tahtanın üstündeki «⚙» simgesine dokun, oyun turun ortasında kendini yeniden kursun",
+        "Xox: yapay zekâya karşı veya tek ekranda iki oyuncu, artı üç rakip ustalık seviyesi",
+        "Yılan: hız, üç tahta boyutu ve seçebileceğin duvarlar — sağlam ya da seni diğer taraftan çıkaran portal",
+        "Memory: 4-10 çift ve başta 2 veya 4 saniyelik kart göz atma; 2048: 4×4 veya 5×5 tahta ve ilk kutu 2 ya da 4",
+        "Mayın Tarlası: 16×16ʼya kadar tahta ve 40ʼa kadar mayın; Sayıyı Tahmin Et: üst sınır 50, 100 veya 200",
+        "Simon: tempo ve başlangıç uzunluğu; Refleks: 1, 3 veya 5 deneme ortalaması; Taş-Kağıt-Makas: 1, 3, 5 veya 10 galibiyete kadar",
+        "Oyun ayarları penceresi uygulamanın kendi stilinde — sistem listeleri yerine özel açılır menülerle"
+      ]
+    },
     "26.10.60": {
       uk: [
         "Кожна іконка бічного меню ожила: дім підстрибує, код хитається, полиця гойдається, шапочка випускника гортається, галочка збільшується, геймпад стрибає, ключ обертається, бульбашка відгуку хитається, аватарка виділяється, а кубок нахиляється",

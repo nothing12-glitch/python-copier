@@ -14,7 +14,14 @@
     musicTrack: 0,
     musicShuffle: false,
     musicLoop: false,
-    snakeSpeed: "normal", memorySize: 8, trackRecords: true, showHints: true, shortcuts: true,
+    snakeSpeed: "normal", snakeField: 18, snakeWrap: "off",
+    memorySize: 8, memoryPeek: 0,
+    tttMode: "ai", tttAi: "normal",
+    g2048Size: 4, g2048Start: "2",
+    rpsTarget: 1, reactRounds: 1,
+    simonSpeed: "normal", simonStart: 1,
+    minesField: 9, minesCount: 10, guessMax: 100,
+    trackRecords: true, showHints: true, shortcuts: true,
     language: null
   };
 
