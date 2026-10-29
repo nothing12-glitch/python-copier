@@ -1,10 +1,36 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.62";
+  const VERSION = "26.10.63";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.63": {
+      uk: [
+        "У меню ігор зʼявилася сіра плитка з великим замком — це пасхалка. Стукни по ній двадцять разів",
+        "Замок відмикає відео: у трьох його кадрах сховано по дві цифри. Подивись уважно — пропустити не вийде",
+        "Після відео замок просить шестизначний код. Помилишся — є три шанси переглянути відео; використали всі — замок знову зачинено",
+        "Код підійшов? Тоді друге відео, і після нього станеться головне: скільки нових ігор насправді попереду",
+        "Обидва відео малюються прямо в браузері: неонова потаємна галерея, силует замка, що наближається, і стіна рамок, які засвічуються одна за одною",
+        "Плитка памʼятає прогрес кліків і відчинений замок; усі підказки та вікна говорять твоєю мовою"
+      ],
+      en: [
+        "A grey tile with a big padlock has appeared in the game menu — it is an easter egg. Knock on it twenty times",
+        "The lock opens onto a video: three of its frames hide two digits each. Watch closely — skipping is not an option",
+        "After the video the lock asks for a six-digit code. Wrong, and you get three chances to rewatch; use them all and it shuts again",
+        "Code correct? Then a second video rolls, and after it comes the payoff: how many new games really await you",
+        "Both clips are drawn live in the browser: a neon hidden gallery, a padlock silhouette closing in, and a wall of frames lighting up one by one",
+        "The tile remembers your click progress and the unlocked state; every hint and window follows your language"
+      ],
+      tr: [
+        "Oyun menüsünde büyük asma kilitli gri bir karo belirdi — bu bir gizli sürpriz. Yirmi kez tıkla",
+        "Kilit bir videoda açılıyor: üç karesinde ikişer rakam gizli. Dikkatli izle — atlamak mümkün değil",
+        "Videodan sonra kilit altı haneli kodu ister. Yanılırsan videoyu tekrar izlemek için üç şansın var; hepsini harcarsan yeniden kapanır",
+        "Kod tuttuysa ikinci video gelir ve ardından ödül: gerçekte kaç yeni oyun seni bekliyor",
+        "İki klip de tarayıcıda çiziliyor: neonlu gizli bir galeri, yaklaşan bir kilit silüeti ve birer birer aydınlanan çerçeve duvarı",
+        "Karo tıklama ilerlemesini ve açık kilidi hatırlar; tüm ipuçları ve pencerler dilini takip eder"
+      ]
+    },
     "26.10.62": {
       uk: [
         "Три нові ігри — «Ханойська вежа», «Пʼятнашки» і «Лабіринт». У меню їх уже дванадцять",
