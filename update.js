@@ -1,10 +1,36 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.61";
+  const VERSION = "26.10.62";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.62": {
+      uk: [
+        "Три нові ігри — «Ханойська вежа», «Пʼятнашки» і «Лабіринт». У меню їх уже дванадцять",
+        "Ханойська вежа: від 3 до 8 дисків, лічильник ходів і чесний оптимум 2ⁿ−1, з чим порівняти результат",
+        "Пʼятнашки: поля 3×3, 4×4 і 5×5 та три сили перемішування. Головна комбінація завжди розвʼязна — плитку мішають лише законними ходами",
+        "Лабіринт: щоразу новий, згенерований з нуля (від 9×9 до 21×21). Вихід світиться зеленим, а позначку пройденого шляху можна вимкнути",
+        "У нових іграх теж є власні налаштування з фірмовими менюшками, а рекорди йдуть у профіль: ходи для вежі й пʼятнашок, секунди для лабіринту",
+        "Керування — стрілки, WASD, екранний джойстик і свайп на телефоні"
+      ],
+      en: [
+        "Three new games — Tower of Hanoi, 15 Puzzle and Maze. The menu now holds twelve",
+        "Tower of Hanoi: 3 to 8 disks, a move counter and the honest 2ⁿ−1 optimum to measure yourself against",
+        "15 Puzzle: 3×3, 4×4 and 5×5 boards with three shuffle strengths. Every layout stays solvable because it is mixed with legal moves only",
+        "Maze: freshly generated every round, from 9×9 to 21×21. The exit glows green and the trail marker can be switched off",
+        "The new games carry their own settings with custom dropdowns, and their records land in your profile: moves for the tower and puzzle, seconds for the maze",
+        "Controls: arrow keys, WASD, an on-screen d-pad and swipe on phones"
+      ],
+      tr: [
+        "Üç yeni oyun — Hanoi Kulesi, 15 Bulmaca ve Labirent. Menüde artık on iki oyun var",
+        "Hanoi Kulesi: 3-8 disk, hamle sayacı ve sonuçla kıyaslayacağın dürüst 2ⁿ−1 optimumu",
+        "15 Bulmaca: 3×3, 4×4 ve 5×5 tahtalar ile üç karıştırma şiddeti. Yalnızca yasal hamlelerle karıştırıldığı için her düzen çözülebilir",
+        "Labirent: her turda 9×9 ile 21×21 arası sıfırdan üretilir. Çıkış yeşil parlar, yürünen yol işareti kapatılabilir",
+        "Yeni oyunların da kendi ayarları ve özel açılır menüleri var; rekorlar profiline işlenir: kule ve bulmacada hamle, labirentte saniye",
+        "Kontroller: ok tuşları, WASD, ekrandaki yön tuşları ve telefonda kaydırma"
+      ]
+    },
     "26.10.61": {
       uk: [
         "У кожної гри нарешті є справжні налаштування: натисни «⚙» над дошкою — і гра перебудується під тебе просто посеред партії",

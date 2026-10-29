@@ -15,7 +15,10 @@
     { id: "react", ico: "\u{26A1}", name: "game.react", desc: "game.reactDesc", best: "low", unit: "rec.ms" },
     { id: "simon", ico: "\u{1F3A8}", name: "game.simon", desc: "game.simonDesc", best: "high", unit: "rec.level" },
     { id: "mines", ico: "\u{1F4A3}", name: "game.mines", desc: "game.minesDesc", best: "low", unit: "rec.sec" },
-    { id: "guess", ico: "\u{1F3AF}", name: "game.guess", desc: "game.guessDesc", best: "low", unit: "rec.tries" }
+    { id: "guess", ico: "\u{1F3AF}", name: "game.guess", desc: "game.guessDesc", best: "low", unit: "rec.tries" },
+    { id: "hanoi", ico: "\u{1F5FC}", name: "game.hanoi", desc: "game.hanoiDesc", best: "low", unit: "rec.moves" },
+    { id: "slide", ico: "\u{1F9E9}", name: "game.slide", desc: "game.slideDesc", best: "low", unit: "rec.moves" },
+    { id: "maze", ico: "\u{1F300}", name: "game.maze", desc: "game.mazeDesc", best: "low", unit: "rec.sec" }
   ];
 
   const HOW_TO_PLAY = {
@@ -28,7 +31,10 @@
       react: "Чекай зеленого сигналу, потім клікни якнайшвидше.",
       simon: "Запам'ятай послідовність кольорів і повтори її.",
       mines: "Відкривай клітинки, уникай мін. Права кнопка — прапорець.",
-      guess: "Вгадай число від 1 до 100 за мінімум спроб."
+      guess: "Вгадай число від 1 до 100 за мінімум спроб.",
+      hanoi: "Перекладай диски один на одного, більший ніколи не клади на менший. Збери всю вежу на правому стрижні.",
+      slide: "Клікни плитку поруч із пусткою — вона переставиться. Поверни всі числа по порядку.",
+      maze: "Веди кульку до зеленого виходу стрілками, WASD або свайпом. Стіни рухати не можна."
     },
     en: {
       ttt: "Place X marks, AI plays O. Get 3 in a row to win.",
@@ -39,7 +45,10 @@
       react: "Wait for the green signal, then click as fast as you can.",
       simon: "Memorize the color sequence and repeat it.",
       mines: "Open cells, avoid mines. Right-click to flag.",
-      guess: "Guess the number from 1 to 100 in as few tries as possible."
+      guess: "Guess the number from 1 to 100 in as few tries as possible.",
+      hanoi: "Move disks one at a time and never place a bigger disk on a smaller one. Build the whole tower on the right peg.",
+      slide: "Tap a tile next to the gap and it slides. Put every number back in order.",
+      maze: "Guide the ball to the green exit with arrows, WASD or a swipe. Walls cannot be moved."
     },
     tr: {
       ttt: "X koy, AI O oynar. Kazanmak için 3 taneyi yan yana getir.",
@@ -50,7 +59,10 @@
       react: "Yeşil sinyali bekle, sonra olabildiğince hızlı tıkla.",
       simon: "Renk sırasını ezberle ve tekrarla.",
       mines: "Hücreleri aç, mayınlardan kaçın. Sağ tık bayrak için.",
-      guess: "1'den 100'e kadar sayıyı en az denemede tahmin et."
+      guess: "1'den 100'e kadar sayıyı en az denemede tahmin et.",
+      hanoi: "Diskleri tek tek taşı ve büyük diski küçüğün üstüne koyma. Tüm kuleyi sağ çubuğa kur.",
+      slide: "Boşluğun yanındaki karoya dokun, karo kayar. Tüm sayıları sıraya diz.",
+      maze: "Topu oklar, WASD veya kaydırma ile yeşil çıkışa götür. Duvarlar hareket etmez."
     }
   };
 
@@ -136,6 +148,17 @@
     ],
     guess: [
       { key: "guessMax", label: "game.optMax", vals: [["50", "50"], ["100", "100"], ["200", "200"]] }
+    ],
+    hanoi: [
+      { key: "hanoiDisks", label: "game.optDisks", vals: [["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"]] }
+    ],
+    slide: [
+      { key: "slideSize", label: "game.optField", vals: [["3", "3 × 3"], ["4", "4 × 4"], ["5", "5 × 5"]] },
+      { key: "slideShuffle", label: "game.optMix", vals: [["easy", "game.optLight"], ["normal", "game.optMedium"], ["hard", "game.optHeavy"]] }
+    ],
+    maze: [
+      { key: "mazeSize", label: "game.optField", vals: [["9", "9 × 9"], ["13", "13 × 13"], ["17", "17 × 17"], ["21", "21 × 21"]] },
+      { key: "mazeTrail", label: "game.optTrail", vals: [["on", "game.optOn"], ["off", "game.optOff"]] }
     ]
   };
 
@@ -615,7 +638,287 @@
     return null;
   }
 
-  const MOUNTS = { ttt:mountTTT, snake:mountSnake, memory:mountMemory, g2048:mount2048, rps:mountRPS, react:mountReact, simon:mountSimon, mines:mountMines, guess:mountGuess };
+  /* ---------------- Ханойська вежа ---------------- */
+  function mountHanoi(area, score) {
+    const N = Math.min(8, Math.max(3, Number(opt("hanoiDisks", 4)) || 4));
+    const OPT = Math.pow(2, N) - 1;
+    let pegs = [[], [], []], picked = -1, moves = 0, over = false;
+    const wrap = document.createElement("div"); wrap.className = "hanoi"; area.appendChild(wrap);
+    const info = document.createElement("div"); info.className = "game-score"; area.appendChild(info);
+    const stacks = [];
+    for (let i = 0; i < 3; i++) {
+      const col = document.createElement("div"); col.className = "hpeg";
+      const rod = document.createElement("span"); rod.className = "hrod";
+      const stack = document.createElement("div"); stack.className = "hstack";
+      col.appendChild(rod); col.appendChild(stack);
+      col.onclick = () => tap(i);
+      wrap.appendChild(col); stacks.push(col);
+    }
+    function draw() {
+      stacks.forEach((col, i) => {
+        const top = pegs[i].length ? pegs[i][pegs[i].length - 1] : null;
+        col.classList.toggle("hsel", picked === i);
+        const stack = col.lastChild; stack.innerHTML = "";
+        pegs[i].forEach((d) => {
+          const b = document.createElement("div");
+          b.className = "hdisk" + (picked === i && d === top ? " hpick" : "");
+          b.style.width = (28 + d * (150 / N)) + "px";
+          b.textContent = d;
+          stack.appendChild(b);
+        });
+      });
+    }
+    function reset() {
+      pegs = [Array.from({ length: N }, (_, k) => N - k), [], []];
+      picked = -1; moves = 0; over = false;
+      setScore(score, t("games.score"), 0);
+      info.textContent = t("hanoi.goal", { n: OPT });
+      draw();
+    }
+    function tap(i) {
+      if (over) return;
+      if (picked === -1) { if (!pegs[i].length) return; picked = i; }
+      else if (picked === i) { picked = -1; }
+      else {
+        const d = pegs[picked][pegs[picked].length - 1];
+        if (pegs[i].length && pegs[i][pegs[i].length - 1] < d) { SFX() && SFX().lose(); picked = -1; }
+        else {
+          pegs[i].push(pegs[picked].pop()); picked = -1; moves++;
+          setScore(score, t("games.score"), moves); SFX() && SFX().pop();
+          if (pegs[2].length === N) return finish();
+        }
+      }
+      SFX() && SFX().click(); draw();
+    }
+    function finish() {
+      over = true; SFX() && SFX().win(); draw();
+      info.textContent = t("hanoi.done", { n: moves, best: OPT });
+      saveRecord("hanoi", moves, "low");
+      setTimeout(reset, 2800);
+    }
+    reset();
+    return null;
+  }
+
+  /* ---------------- П'ятнашки ---------------- */
+  function mountSlide(area, score) {
+    const SZ = Math.min(5, Math.max(3, Number(opt("slideSize", 4)) || 4));
+    const MIX = { easy: 20, normal: 120, hard: 400 }[opt("slideShuffle", "normal")] || 120;
+    const TOTAL = SZ * SZ;
+    area.style.setProperty("--slide-n", SZ);
+    area.style.setProperty("--slide-cell", (SZ > 4 ? 58 : SZ > 3 ? 74 : 92) + "px");
+    let tiles = [], blank = 0, moves = 0, over = false;
+    const grid = document.createElement("div"); grid.className = "slide"; area.appendChild(grid);
+    const status = document.createElement("div"); status.className = "game-score"; area.appendChild(status);
+    function near(i) {
+      const y = (i / SZ) | 0, x = i % SZ, out = [];
+      if (y > 0) out.push(i - SZ);
+      if (y < SZ - 1) out.push(i + SZ);
+      if (x > 0) out.push(i - 1);
+      if (x < SZ - 1) out.push(i + 1);
+      return out;
+    }
+    function render() {
+      grid.innerHTML = "";
+      tiles.forEach((v, i) => {
+        const b = document.createElement("button");
+        if (!v) b.className = "empty"; else b.textContent = v;
+        b.onclick = () => tap(i);
+        grid.appendChild(b);
+      });
+    }
+    function reset() {
+      tiles = Array.from({ length: TOTAL }, (_, i) => (i + 1) % TOTAL);
+      blank = TOTAL - 1; moves = 0; over = false;
+      let prev = -1;
+      for (let k = 0; k < MIX; k++) {
+        const opts = near(blank).filter((p) => p !== prev);
+        const p = opts[(Math.random() * opts.length) | 0];
+        prev = blank; tiles[blank] = tiles[p]; tiles[p] = 0; blank = p;
+      }
+      setScore(score, t("games.score"), 0);
+      status.textContent = t("slide.goal");
+      render();
+    }
+    function solved() { for (let i = 0; i < TOTAL - 1; i++) if (tiles[i] !== i + 1) return false; return true; }
+    function finish() {
+      over = true; SFX() && SFX().win();
+      status.textContent = t("slide.done", { n: moves });
+      saveRecord("slide", moves, "low");
+      setTimeout(reset, 2800);
+    }
+    function tap(i) {
+      if (over || i === blank || near(blank).indexOf(i) < 0) return;
+      tiles[blank] = tiles[i]; tiles[i] = 0; blank = i; moves++;
+      setScore(score, t("games.score"), moves); SFX() && SFX().pop();
+      render();
+      if (solved()) finish();
+    }
+    function slideFrom(dx, dy) {
+      const y = (blank / SZ) | 0, x = blank % SZ;
+      const sy = y + dy, sx = x + dx;
+      if (sy < 0 || sx < 0 || sy >= SZ || sx >= SZ) return;
+      tap(sy * SZ + sx);
+    }
+    const key = (e) => {
+      const k = e.key;
+      if (k === "ArrowUp") slideFrom(0, 1);
+      else if (k === "ArrowDown") slideFrom(0, -1);
+      else if (k === "ArrowLeft") slideFrom(1, 0);
+      else if (k === "ArrowRight") slideFrom(-1, 0);
+      else return;
+      e.preventDefault();
+    };
+    window.addEventListener("keydown", key);
+    const dp = document.createElement("div"); dp.className = "dpad";
+    dp.innerHTML = '<span></span><button data-d="up">\u{25B2}</button><span></span><button data-d="left">\u{25C0}</button><span></span><button data-d="right">\u{25B6}</button><span></span><button data-d="down">\u{25BC}</button><span></span>';
+    area.appendChild(dp);
+    dp.querySelectorAll("button").forEach((b) => {
+      b.onclick = () => {
+        const d = b.dataset.d;
+        if (d === "up") slideFrom(0, 1);
+        if (d === "down") slideFrom(0, -1);
+        if (d === "left") slideFrom(1, 0);
+        if (d === "right") slideFrom(-1, 0);
+      };
+    });
+    reset();
+    return () => window.removeEventListener("keydown", key);
+  }
+
+  /* ---------------- Лабіринт ---------------- */
+  function mountMaze(area, score) {
+    const C = Math.min(21, Math.max(7, (Number(opt("mazeSize", 13)) || 13) | 1));
+    const showTrail = opt("mazeTrail", "on") !== "off";
+    const W = C * 2 + 1;
+    const cell = C > 15 ? 16 : C > 11 ? 22 : 30;
+    const cv = document.createElement("canvas");
+    cv.width = W * cell; cv.height = W * cell;
+    cv.className = "maze";
+    area.appendChild(cv);
+    const ctx = cv.getContext("2d");
+    const status = document.createElement("div"); status.className = "game-score"; area.appendChild(status);
+    let g, seen, px, py, t0, timer, over, moves;
+
+    function gen() {
+      const m = Array.from({ length: W }, () => Array(W).fill(1));
+      const DIRS = [[2, 0], [-2, 0], [0, 2], [0, -2]];
+      const stack = [[1, 1]]; m[1][1] = 0;
+      while (stack.length) {
+        const cur = stack[stack.length - 1], x = cur[0], y = cur[1];
+        const opts = [];
+        for (const d of DIRS) {
+          const nx = x + d[0], ny = y + d[1];
+          if (nx > 0 && ny > 0 && nx < W - 1 && ny < W - 1 && m[ny][nx] === 1) opts.push([nx, ny, d]);
+        }
+        if (!opts.length) { stack.pop(); continue; }
+        const p = opts[(Math.random() * opts.length) | 0];
+        m[y + p[2][1] / 2][x + p[2][0] / 2] = 0;
+        m[p[1]][p[0]] = 0;
+        stack.push([p[0], p[1]]);
+      }
+      return m;
+    }
+    function mixWith(hex, target, k) {
+      const p = (s) => parseInt(s, 16);
+      const a = /^#?[0-9a-f]{6}$/i.test(hex) ? hex.replace("#", "") : "7c5cff";
+      const out = [];
+      for (let i = 0; i < 3; i++) {
+        const v = Math.round(p(a.substr(i * 2, 2)) * k + p(target.substr(i * 2, 2)) * (1 - k));
+        out.push(("0" + v.toString(16)).slice(-2));
+      }
+      return "#" + out.join("");
+    }
+    function draw() {
+      const css = getComputedStyle(area);
+      const accent = (css.getPropertyValue("--md-primary") || "#7c5cff").trim() || "#7c5cff";
+      ctx.fillStyle = "#070b18"; ctx.fillRect(0, 0, cv.width, cv.height);
+      ctx.fillStyle = mixWith(accent, "10152a", .42);
+      for (let y = 0; y < W; y++) for (let x = 0; x < W; x++) {
+        if (g[y][x]) ctx.fillRect(x * cell, y * cell, cell, cell);
+      }
+      if (showTrail) {
+        ctx.fillStyle = "rgba(255,255,255,.13)";
+        for (let y = 0; y < W; y++) for (let x = 0; x < W; x++) {
+          if (seen[y][x]) ctx.fillRect(x * cell + cell / 2 - 2, y * cell + cell / 2 - 2, 4, 4);
+        }
+      }
+      ctx.save();
+      ctx.shadowColor = "#3ddc97"; ctx.shadowBlur = cell;
+      ctx.fillStyle = "#3ddc97";
+      ctx.beginPath(); ctx.arc((W - 1.5) * cell, (W - 1.5) * cell, cell / 3.2, 0, 7); ctx.fill();
+      ctx.restore();
+      ctx.save();
+      ctx.shadowColor = "#22d3ee"; ctx.shadowBlur = cell;
+      ctx.fillStyle = "#eafcff";
+      ctx.beginPath(); ctx.arc((px + .5) * cell, (py + .5) * cell, cell / 2.6, 0, 7); ctx.fill();
+      ctx.fillStyle = "#22d3ee";
+      ctx.beginPath(); ctx.arc((px + .5) * cell, (py + .5) * cell, cell / 3.6, 0, 7); ctx.fill();
+      ctx.restore();
+    }
+    function reset() {
+      g = gen();
+      seen = Array.from({ length: W }, () => Array(W).fill(false));
+      px = 1; py = 1; seen[1][1] = true;
+      moves = 0; over = false; t0 = Date.now();
+      clearInterval(timer);
+      timer = setInterval(() => { if (!over) setScore(score, t("games.score"), Math.floor((Date.now() - t0) / 1000)); }, 500);
+      setScore(score, t("games.score"), 0);
+      status.textContent = t("maze.goal");
+      draw();
+    }
+    function go(dx, dy) {
+      if (over) return;
+      const nx = px + dx, ny = py + dy;
+      if (nx < 0 || ny < 0 || nx >= W || ny >= W || g[ny][nx]) { SFX() && SFX().lose(); return; }
+      px = nx; py = ny; moves++; seen[ny][nx] = true;
+      SFX() && SFX().click(); draw();
+      if (px === W - 2 && py === W - 2) finish();
+    }
+    function finish() {
+      over = true; clearInterval(timer); SFX() && SFX().win();
+      const sec = Math.max(1, Math.round((Date.now() - t0) / 1000));
+      status.textContent = t("maze.done", { n: sec, m: moves });
+      saveRecord("maze", sec, "low");
+      setTimeout(reset, 2800);
+    }
+    const key = (e) => {
+      const k = e.key;
+      if (k === "ArrowUp" || k === "w") go(0, -1);
+      else if (k === "ArrowDown" || k === "s") go(0, 1);
+      else if (k === "ArrowLeft" || k === "a") go(-1, 0);
+      else if (k === "ArrowRight" || k === "d") go(1, 0);
+      else return;
+      e.preventDefault();
+    };
+    window.addEventListener("keydown", key);
+    let sx = 0, sy = 0, touch = false;
+    cv.addEventListener("touchstart", (e) => { touch = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    cv.addEventListener("touchend", (e) => {
+      if (!touch) return;
+      touch = false;
+      const d = e.changedTouches[0];
+      const dx = d.clientX - sx, dy = d.clientY - sy;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+      if (Math.abs(dx) > Math.abs(dy)) go(dx > 0 ? 1 : -1, 0); else go(0, dy > 0 ? 1 : -1);
+    });
+    const dp = document.createElement("div"); dp.className = "dpad";
+    dp.innerHTML = '<span></span><button data-d="up">\u{25B2}</button><span></span><button data-d="left">\u{25C0}</button><span></span><button data-d="right">\u{25B6}</button><span></span><button data-d="down">\u{25BC}</button><span></span>';
+    area.appendChild(dp);
+    dp.querySelectorAll("button").forEach((b) => {
+      b.onclick = () => {
+        const d = b.dataset.d;
+        if (d === "up") go(0, -1);
+        if (d === "down") go(0, 1);
+        if (d === "left") go(-1, 0);
+        if (d === "right") go(1, 0);
+      };
+    });
+    reset();
+    return () => { clearInterval(timer); window.removeEventListener("keydown", key); };
+  }
+
+  const MOUNTS = { ttt:mountTTT, snake:mountSnake, memory:mountMemory, g2048:mount2048, rps:mountRPS, react:mountReact, simon:mountSimon, mines:mountMines, guess:mountGuess, hanoi:mountHanoi, slide:mountSlide, maze:mountMaze };
 
   function renderHub() {
     const hub=$("#gamesHub"); if(!hub) return;

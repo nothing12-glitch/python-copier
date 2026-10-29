@@ -189,11 +189,72 @@
         "Tutulan sayının senin tahmininden büyük mü küçük mü olduğunu söyler.",
         "Bilince yeni bir sayı tutulur. Rekor en az deneme sayısıdır."
       ]
+    },
+    hanoi: {
+      uk: [
+        "Усі диски лежать на лівому стрижні — від найбільшого внизу до найменшого вгорі.",
+        "Клікни стрижень, щоб узяти верхній диск, і клікни інший, щоб покласти його.",
+        "Більший диск ніколи не можна класти на менший; за раз переставляється лише один диск.",
+        "Збери всю вежу на правому стрижні. Рекорд — найменша кількість ходів, а оптимум для n дисків дорівнює 2ⁿ−1."
+      ],
+      en: [
+        "All disks start on the left peg — biggest at the bottom, smallest on top.",
+        "Click a peg to take its top disk, then click another peg to drop it.",
+        "A bigger disk may never sit on a smaller one, and only one disk moves at a time.",
+        "Rebuild the whole tower on the right peg. The record is your fewest moves; the optimum for n disks is 2ⁿ−1."
+      ],
+      tr: [
+        "Tüm diskler sol çubukta başlar — en büyük altta, en küçük üstte.",
+        "Bir çubuğa dokunup üstteki diski al, sonra başka bir çubuğa dokunup bırak.",
+        "Büyük disk küçüğün üstüne konamaz ve her seferinde tek disk taşınır.",
+        "Kulenin tamamını sağ çubuğa kur. Rekor en az hamledir; n disk için en iyi sonuç 2ⁿ−1."
+      ]
+    },
+    slide: {
+      uk: [
+        "На дошці плитки з числами й одна порожня клітинка.",
+        "Клікни плитку, що стоїть порожньою клітинкою впритул, — вона пересунеться. Стрілки й джойстик роблять те саме.",
+        "Порядок розкладається випадково, але завжди законними ходами, тож розвʼязок існує завжди.",
+        "Поверни всі числа по порядку, а порожню клітинку — у правий нижній кут. Рекорд — найменше ходів."
+      ],
+      en: [
+        "The board holds numbered tiles and one empty cell.",
+        "Tap a tile that sits right next to the gap and it slides over. Arrow keys and the d-pad do the same.",
+        "The layout is scrambled with legal moves only, so a solution always exists.",
+        "Put every number back in order with the gap in the bottom-right corner. The record is your fewest moves."
+      ],
+      tr: [
+        "Tahtada numaralı karolar ve bir boş hücre var.",
+        "Boşluğun hemen yanındaki karoya dokun, karo kayar. Ok tuşları ve yön düğmeleri de aynısını yapar.",
+        "Düzen yalnızca yasal hamlelerle karıştırılır, bu yüzden çözüm her zaman vardır.",
+        "Tüm sayıları sıraya diz, boşluk sağ alt köşede kalsın. Rekor en az hamledir."
+      ]
+    },
+    maze: {
+      uk: [
+        "Лабіринт будується з нуля щоразу, тому готового виходу не знайдеш.",
+        "Керуй кулькою стрілками, WASD, джойстиком або свайпом по полю.",
+        "Стіна не рухається: у тупику доведеться розвертатися й шукати інший хід.",
+        "Дійди до зеленої точки в протилечному куті. Рекорд — найменше секунд; позначку пройденого шляху можна вимкнути в налаштуваннях гри."
+      ],
+      en: [
+        "The maze is generated from scratch every round, so there is no route to memorise.",
+        "Steer the ball with arrow keys, WASD, the d-pad or a swipe across the field.",
+        "Walls do not move: reach a dead end and you have to turn around and find another way.",
+        "Get to the green dot in the opposite corner. The record is your fastest time; the trail marker can be switched off in the game settings."
+      ],
+      tr: [
+        "Labirent her turda sıfırdan kurulur, ezberlenecek bir yol yoktur.",
+        "Topu ok tuşları, WASD, yön düğmeleri veya alan üzerinde kaydırarak yönlendir.",
+        "Duvarlar kıpırdamaz: çıkmaza girersen geri dönüp başka yol aramalısın.",
+        "Karşı köşedeki yeşil noktaya ulaş. Rekor en kısa süredir; yürünen yol işareti oyun ayarlarından kapatılabilir."
+      ]
     }
   };
   const NAMES = {
     ttt: "game.ttt", snake: "game.snake", memory: "game.memory", g2048: "game.g2048",
-    rps: "game.rps", react: "game.react", simon: "game.simon", mines: "game.mines", guess: "game.guess"
+    rps: "game.rps", react: "game.react", simon: "game.simon", mines: "game.mines", guess: "game.guess",
+    hanoi: "game.hanoi", slide: "game.slide", maze: "game.maze"
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");

@@ -1868,3 +1868,35 @@ body[data-style="new"] .tool-card .btn { border-radius:999px; }
 
 .gs-sub { margin: -2px 0 14px; font-size: 13px; opacity: .72; line-height: 1.45; }
 .gs-body .qm-select { width: 100%; }
+
+/* ---------- 35) Три нові ігри: Ханойська вежа, п'ятнашки, лабіринт ---------- */
+.hanoi { display: flex; align-items: flex-end; justify-content: center; gap: 12px; padding: 6px 0 0; }
+.hpeg {
+  position: relative; width: 168px; max-width: 30vw; min-width: 88px; height: 208px;
+  border-radius: 16px; cursor: pointer;
+  transition: background .2s, box-shadow .2s;
+}
+.hpeg:hover { background: color-mix(in srgb, var(--md-primary) 8%, transparent); }
+.hpeg.hsel { background: color-mix(in srgb, var(--md-primary) 16%, transparent); box-shadow: inset 0 0 0 1px var(--md-primary); }
+.hrod { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 8px; height: 176px; border-radius: 4px; background: var(--md-surface-dim); }
+.hstack { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column-reverse; align-items: center; gap: 3px; }
+.hdisk {
+  height: 21px; border-radius: 11px; display: grid; place-items: center;
+  font-size: 12px; font-weight: 700; color: #0b0f1e;
+  background: linear-gradient(180deg, var(--md-primary), color-mix(in srgb, var(--md-primary) 66%, #000));
+  transition: transform .16s;
+}
+.hdisk.hpick { transform: translateY(-12px); }
+
+.slide { display: grid; grid-template-columns: repeat(var(--slide-n, 4), var(--slide-cell, 74px)); gap: 6px; }
+.slide button {
+  width: var(--slide-cell, 74px); height: var(--slide-cell, 74px); border: 0; border-radius: 14px;
+  font-family: var(--md-font); font-size: calc(var(--slide-cell, 74px) * .34); font-weight: 700; cursor: pointer;
+  background: linear-gradient(160deg, var(--md-primary), color-mix(in srgb, var(--md-primary) 62%, #000));
+  color: var(--md-on-primary);
+  transition: transform .12s, box-shadow .18s;
+}
+.slide button:hover { transform: translateY(-2px); box-shadow: var(--md-elev1); }
+.slide button.empty { background: transparent; cursor: default; box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--md-primary) 26%, transparent); }
+
+canvas.maze { max-width: 100%; height: auto; border-radius: 18px; touch-action: none; }

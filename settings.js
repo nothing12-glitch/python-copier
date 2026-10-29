@@ -21,6 +21,8 @@
     rpsTarget: 1, reactRounds: 1,
     simonSpeed: "normal", simonStart: 1,
     minesField: 9, minesCount: 10, guessMax: 100,
+    hanoiDisks: 4, slideSize: 4, slideShuffle: "normal",
+    mazeSize: 13, mazeTrail: "on",
     trackRecords: true, showHints: true, shortcuts: true,
     language: null
   };
