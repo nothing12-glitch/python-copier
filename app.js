@@ -488,7 +488,7 @@
     });
     try {
       if (global.Modules) global.Modules.all().forEach((p) => out.push({
-        kind: "module", label: t("search.kindModule"), name: p.name, icon: "inventory_2",
+        kind: "module", label: t("search.kindModule"), name: p.name, icon: "storefront",
         run: () => {
           route("modules");
           const input = $("#modulesSearch");

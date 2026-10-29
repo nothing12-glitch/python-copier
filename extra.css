@@ -1682,3 +1682,179 @@ body[data-style="new"] .focus-pick .fp-ico { background: var(--nu-surface-2); co
 }
 .focus-exit .material-icons { font-size: 20px; }
 body.focus-mode .focus-exit { display: inline-flex; animation: qmIn .2s ease-out both; }
+
+/* ---------- 30) Анімації іконок: кожен пункт має свій рух ---------- */
+@keyframes icoHome   { 0%,100%{transform:none} 30%{transform:translateY(-4px)} 55%{transform:translateY(1px)} 75%{transform:translateY(-2px)} }
+@keyframes icoCode   { 0%,100%{transform:none} 25%{transform:rotate(-9deg) scale(1.08)} 60%{transform:rotate(9deg) scale(1.08)} }
+@keyframes icoBag    { 0%,100%{transform:none} 20%{transform:rotate(-11deg)} 45%{transform:rotate(9deg)} 70%{transform:rotate(-4deg)} }
+@keyframes icoBook   { 0%{transform:none} 35%{transform:perspective(200px) rotateY(-42deg)} 70%{transform:perspective(200px) rotateY(12deg)} 100%{transform:none} }
+@keyframes icoCheck  { 0%,100%{transform:none} 40%{transform:scale(1.22) rotate(-8deg)} 70%{transform:scale(.94) rotate(4deg)} }
+@keyframes icoPlay   { 0%,100%{transform:none} 30%{transform:translateY(-5px) rotate(-8deg)} 60%{transform:translateY(0) rotate(8deg)} }
+@keyframes icoTool   { 0%,100%{transform:none} 50%{transform:rotate(160deg) scale(1.1)} }
+@keyframes icoChat   { 0%,100%{transform:none} 25%{transform:translateX(-3px) scale(1.06)} 55%{transform:translateX(3px) scale(1.06)} 80%{transform:translateX(-1px)} }
+@keyframes icoPerson { 0%,100%{transform:none} 45%{transform:scale(1.16) translateY(-2px)} }
+@keyframes icoTrophy { 0%,100%{transform:none;filter:none} 30%{transform:rotate(-13deg) scale(1.1)} 55%{transform:rotate(11deg) scale(1.1)} 75%{transform:rotate(-4deg)} }
+@keyframes icoMenu   { 0%,100%{transform:none} 50%{transform:scaleX(1.14) translateY(-1px)} }
+@keyframes icoFloat  { 0%,100%{transform:none} 50%{transform:translateY(-3px)} }
+
+.rail-btn[data-route="home"]:hover         .rail-ico .material-icons { animation: icoHome   .55s ease; }
+.rail-btn[data-route="python"]:hover       .rail-ico .material-icons { animation: icoCode    .6s cubic-bezier(.4,0,.2,1); }
+.rail-btn[data-route="modules"]:hover      .rail-ico .material-icons { animation: icoBag     .6s ease; }
+.rail-btn[data-route="course"]:hover       .rail-ico .material-icons { animation: icoBook    .65s ease; }
+.rail-btn[data-route="tasks"]:hover        .rail-ico .material-icons { animation: icoCheck   .5s ease; }
+.rail-btn[data-route="games"]:hover        .rail-ico .material-icons { animation: icoPlay    .55s ease; }
+.rail-btn[data-route="tools"]:hover        .rail-ico .material-icons { animation: icoTool    .7s cubic-bezier(.4,0,.2,1); }
+.rail-btn[data-route="feedback"]:hover     .rail-ico .material-icons { animation: icoChat    .55s ease; }
+.rail-btn[data-route="profile"]:hover      .rail-ico .material-icons { animation: icoPerson  .45s ease; }
+.rail-btn[data-route="achievements"]:hover .rail-ico .material-icons { animation: icoTrophy   .7s ease; }
+.rail-btn[data-route="settings"]:hover     .rail-ico .material-icons { animation: spin360    .9s cubic-bezier(.4,0,.2,1); }
+.rail-btn.nav-more-btn:hover              .rail-ico .material-icons { animation: icoMenu     .45s ease; }
+
+/* кістяк пункту теж трохи рухається — меню не виглядає мертвим */
+.rail-btn:hover .rail-ico { transform: translateY(-1px); transition: transform .18s ease; }
+
+/* кнопки-іконки в шапці та панелях */
+.icon-btn:hover .material-icons      { animation: icoFloat .45s ease; }
+.tool-btn:hover .material-icons      { animation: icoTool  .7s cubic-bezier(.4,0,.2,1); }
+.chip-btn:hover .material-icons      { animation: icoCheck  .5s ease; }
+
+/* великі іконки в картках розділів */
+.section-head .material-icons:hover,
+.card-icon .material-icons           { animation-duration: .6s; }
+.card:hover .card-icon .material-icons { animation: icoFloat .55s ease; }
+
+body.reduce-motion .rail-ico .material-icons,
+body.reduce-motion .icon-btn .material-icons,
+body.reduce-motion .card-icon .material-icons { animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .rail-ico .material-icons,
+  .icon-btn .material-icons,
+  .card-icon .material-icons { animation: none !important; }
+}
+
+/* ---------- 31) Liquid Glass для нового інтерфейсу ---------- */
+body.glass-on{--glass-blur:blur(22px) saturate(1.7)}
+body.glass-on[data-style="new"]{
+  --nu-surface:rgba(255,255,255,.07);
+  --nu-panel:rgba(15,11,26,.62);
+  --nu-surface-solid:rgba(20,16,31,.66);
+  --nu-surface-2:rgba(255,255,255,.1);
+  --nu-line:rgba(255,255,255,.14);
+}
+body.glass-on[data-style="new"]:not(.dark){
+  --nu-panel:rgba(255,255,255,.66);
+  --nu-surface:rgba(255,255,255,.62);
+  --nu-surface-solid:rgba(255,255,255,.72);
+  --nu-surface-2:rgba(255,255,255,.86);
+  --nu-line:rgba(42,29,78,.14);
+}
+body.glass-on [data-style] .glassable,
+body.glass-on .card,
+body.glass-on .navrail,
+body.glass-on .appbar,
+body.glass-on .more-sheet-panel,
+body.glass-on .search-pop,
+body.glass-on .qm-panel,
+body.glass-on .grules-card,
+body.glass-on .focus-pick,
+body.glass-on .modal-card,
+body.glass-on .panel-card,
+body.glass-on .ob-card,
+body.glass-on .snackbar,
+body.glass-on .autocomplete,
+body.glass-on #musicPanel {
+  background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur);
+  backdrop-filter:var(--glass-blur);
+}
+body.glass-on .qm-panel,
+body.glass-on .more-sheet-panel,
+body.glass-on .search-pop { border:1px solid var(--glass-brd); }
+body.glass-on .card { border:1px solid var(--glass-brd); box-shadow:0 10px 34px -14px rgba(0,0,0,.5); }
+body.glass-on .more-sheet-backdrop,
+body.glass-on .modal-backdrop { background:rgba(0,0,0,.42); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
+
+/* ---------- 32) Новий фон: сяйво + aurora + точкова сітка ---------- */
+@keyframes nuAurora { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.15)} 100%{transform:rotate(360deg) scale(1)} }
+@keyframes nuBeam   { 0%{transform:translateX(-30%) skewX(-14deg);opacity:0} 40%{opacity:.5} 100%{transform:translateX(130%) skewX(-14deg);opacity:0} }
+@keyframes nuGridDrift { 0%{background-position:0 0} 100%{background-position:52px 52px} }
+
+body[data-style="new"] .bg-fx::before {
+  content:""; position:absolute; inset:-2px; opacity:.55;
+  background-image:radial-gradient(rgba(255,255,255,.075) 1px, transparent 1px);
+  background-size:26px 26px;
+  -webkit-mask-image:radial-gradient(78% 62% at 50% 4%, #000 15%, transparent 76%);
+  mask-image:radial-gradient(78% 62% at 50% 4%, #000 15%, transparent 76%);
+}
+body[data-style="new"]:not(.dark) .bg-fx::before{
+  background-image:radial-gradient(rgba(42,29,78,.12) 1px, transparent 1px);
+}
+body[data-style="new"].bg-animate-on .bg-fx::before{ animation:nuGridDrift 34s linear infinite; }
+
+/* мʼяка aurora-стрічка, що повільно обертається */
+body[data-style="new"] .bg-fx::after {
+  content:""; position:absolute; left:-25%; top:-45%; width:150%; height:120%;
+  background:conic-gradient(from 210deg at 50% 50%,
+    transparent 0deg,
+    color-mix(in srgb, var(--md-primary) 34%, transparent) 70deg,
+    color-mix(in srgb, #22d3ee 26%, transparent) 140deg,
+    transparent 240deg);
+  filter:blur(110px); opacity:0; pointer-events:none;
+}
+body[data-style="new"].bg-animate-on .bg-fx::after{ opacity:.34; animation:nuAurora 48s linear infinite; }
+
+/* два светлові промені */
+.nu-beam { position:absolute; top:-10%; width:24vmax; height:130%; border-radius:50%;
+  filter:blur(70px); opacity:0; pointer-events:none; }
+body[data-style="new"].bg-animate-on .nu-beam { opacity:.22; animation:nuBeam 19s ease-in-out infinite; }
+.nu-beam.nb2{ animation-delay:-9s !important; width:16vmax; }
+
+/* сяйво за курсором — тепер в кольорі акценту */
+body[data-style="new"] .cursor-glow {
+  width:520px; height:520px;
+  background:radial-gradient(circle,
+    color-mix(in srgb, var(--md-primary) 30%, transparent) 0%,
+    color-mix(in srgb, #22d3ee 14%, transparent) 38%,
+    transparent 66%);
+  filter:blur(6px);
+}
+body[data-style="new"]:not(.dark) .cursor-glow{ opacity:0; }
+body[data-style="new"]:not(.dark).cursor-glow-on .cursor-glow{ opacity:.75; }
+
+/* ---------- 33) Інструменти в стилі нового інтерфейсу ---------- */
+body[data-style="new"] .tools-grid { grid-template-columns:repeat(auto-fit,minmax(292px,1fr)); gap:16px; }
+body[data-style="new"] .tool-card {
+  position:relative; overflow:hidden;
+  padding:20px 20px 22px; border-radius:24px;
+  background:linear-gradient(165deg, var(--nu-surface-2) 0%, var(--nu-surface-solid) 46%);
+  border:1px solid var(--nu-line);
+  box-shadow:0 18px 40px -30px rgba(0,0,0,.85);
+  transition:transform .2s cubic-bezier(.2,.7,.3,1), border-color .2s, box-shadow .2s;
+}
+body[data-style="new"] .tool-card::after {
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:radial-gradient(90% 60% at 12% 0%, color-mix(in srgb, var(--md-primary) 18%, transparent), transparent 62%);
+  opacity:0; transition:opacity .25s;
+}
+body[data-style="new"] .tool-card:hover {
+  transform:translateY(-3px); border-color:color-mix(in srgb, var(--md-primary) 55%, transparent);
+  box-shadow:0 26px 54px -26px rgba(0,0,0,.9);
+}
+body[data-style="new"] .tool-card:hover::after { opacity:1; }
+body[data-style="new"] .tool-card .bar-title {
+  gap:12px; margin-bottom:16px; font-size:15px; font-weight:700;
+  letter-spacing:.2px; color:var(--nu-text, var(--md-on-surface));
+}
+body[data-style="new"] .tool-card .bar-title .material-icons {
+  display:grid; place-items:center; width:40px; height:40px; font-size:21px;
+  border-radius:14px; color:var(--md-primary);
+  background:color-mix(in srgb, var(--md-primary) 16%, transparent);
+  border:1px solid color-mix(in srgb, var(--md-primary) 28%, transparent);
+}
+body[data-style="new"] .focus-card { border-radius:24px; }
+
+/* поля всередині інструментів — ті самі заокруглення, що й у решті сайту */
+body[data-style="new"] .tool-card .field input,
+body[data-style="new"] .tool-card input[type=number],
+body[data-style="new"] .tool-card input[type=text] { border-radius:14px; }
+body[data-style="new"] .tool-card .btn { border-radius:999px; }

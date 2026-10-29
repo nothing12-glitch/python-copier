@@ -106,7 +106,7 @@
       { id: "bgGlow", type: "switch", label: "set.bgGlow" },
       { id: "cursorGlow", type: "switch", label: "set.cursorGlow" },
       { id: "bgAnimate", type: "switch", label: "set.bgAnimate" },
-      { id: "glass", type: "switch", label: "Liquid Glass" },
+      { id: "glass", type: "switch", label: "set.glass" },
       { id: "reduceMotion", type: "switch", label: "set.reduceMotion" },
       { id: "compact", type: "switch", label: "set.compact" },
       { id: "fontSize", type: "range", label: "set.fontSize", min: 12, max: 20, step: 1 },

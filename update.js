@@ -1,10 +1,36 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.59";
+  const VERSION = "26.10.60";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.60": {
+      uk: [
+        "Кожна іконка бічного меню ожила: дім підстрибує, код хитається, полиця гойдається, шапочка випускника гортається, галочка збільшується, геймпад стрибає, ключ обертається, бульбашка відгуку хитається, аватарка виділяється, а кубок нахиляється",
+        "Liquid Glass тепер працює і для нового інтерфейсу: панель навігації, шапка, картки, менюшки, вікна та панель «Ще» стають скляними з розмиттям 22px",
+        "Пункт меню й картка на головній тепер називаються «Магазинчик модулів» і мають іконку магазину замість коробки",
+        "Новий задній фон: мʼяка aurora-стрічка в кольорі акценту, точкова сітка, що повільно дрейфує, і два світлові промені",
+        "Сяйво за курсором у новому інтерфейсі тепер у кольорі обраного акценту й з бірюзовим ореолом",
+        "Інструменти перевтілені під новий дизайн: картки з радіусом 24px, іконки в фірмових чипах і мʼяке світло при наведенні"
+      ],
+      en: [
+        "Every sidebar icon now moves on hover: home bounces, code tilts, the shelf sways, the grad cap flips, the tick pops, the gamepad jumps, the wrench turns, the review bubble swings, the avatar swells and the trophy tips",
+        "Liquid Glass now covers the new interface too: nav rail, app bar, cards, menus, dialogs and the More sheet go frosted with a 22px blur",
+        "The menu entry and the home card are now Module shop and carry a storefront icon instead of a box",
+        "A fresh background: an accent-tinted aurora ribbon, a slowly drifting dot grid and two light beams",
+        "The cursor glow in the new interface now follows your accent colour with a cyan halo",
+        "Tools rebuilt for the new design: 24px-radius cards, icons in brand chips and a soft hover light"
+      ],
+      tr: [
+        "Yan menüdeki her simge artık üzerine gelince hareket ediyor: ev zıplar, kod sallanır, raf salınır, mezuniyet şapkası çevrilir, onay işareti büyür, gamepad sıçrar, anahtar döner, yorum balonu sallanır, avatar şişer, kupa eğilir",
+        "Liquid Glass artık yeni arayüzü de kapsıyor: gezinme rafı, üst çubuk, kartlar, menüler, pencereler ve Diğer sayfası 22px bulanıklıkla buğulanıyor",
+        "Menü öğesi ve ana kart artık Modül mağazası adında ve kutu yerine vitrin simgesi taşıyor",
+        "Yeni arka plan: vurgu renginde aurora şeridi, yavaşça kayan nokta ızgarası ve iki ışık huzmesi",
+        "Yeni arayüzde imleç parıltısı artık vurgu rengini ve camgöbeği bir haleyi taşıyor",
+        "Araçlar yeni tasarıma göre yenilendi: 24px yarıçaplı kartlar, simge çipleri ve üzerine gelince yumuşak ışık"
+      ]
+    },
     "26.10.59": {
       uk: [
         "Перемикача мови в шапці більше немає — мова тепер живе лише в Налаштуваннях",
