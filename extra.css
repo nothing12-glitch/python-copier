@@ -74,10 +74,6 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 /* ---------- 6) Шапка не переноситься і не спричиняє гортання ---------- */
 .appbar { flex-wrap: nowrap; }
 .appbar-title { min-width: 0; }
-.lang-switch { flex-wrap: nowrap; flex: none; }
-@media (max-width: 560px) {
-  .lang-switch button { padding: 6px 8px; font-size: 12px; }
-}
 
 /* ---------- 7) Номери рядків у редакторі — стовпчиком, а не в один ряд ---------- */
 .line-numbers { white-space: pre; }

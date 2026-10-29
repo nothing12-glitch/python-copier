@@ -6,15 +6,15 @@
   let cleanupFn = null;
 
   const GAMES = [
-    { id: "ttt", ico: "\u{2B55}", name: "game.ttt", desc: "game.tttDesc", best: "high" },
-    { id: "snake", ico: "\u{1F40D}", name: "game.snake", desc: "game.snakeDesc", best: "high" },
-    { id: "memory", ico: "\u{1F9E0}", name: "game.memory", desc: "game.memoryDesc", best: "low" },
-    { id: "g2048", ico: "\u{1F522}", name: "game.g2048", desc: "game.g2048Desc", best: "high" },
-    { id: "rps", ico: "\u{270A}", name: "game.rps", desc: "game.rpsDesc", best: "high" },
-    { id: "react", ico: "\u{26A1}", name: "game.react", desc: "game.reactDesc", best: "low" },
-    { id: "simon", ico: "\u{1F3A8}", name: "game.simon", desc: "game.simonDesc", best: "high" },
-    { id: "mines", ico: "\u{1F4A3}", name: "game.mines", desc: "game.minesDesc", best: "low" },
-    { id: "guess", ico: "\u{1F3AF}", name: "game.guess", desc: "game.guessDesc", best: "low" }
+    { id: "ttt", ico: "\u{2B55}", name: "game.ttt", desc: "game.tttDesc", best: "high", unit: "rec.wins" },
+    { id: "snake", ico: "\u{1F40D}", name: "game.snake", desc: "game.snakeDesc", best: "high", unit: "rec.points" },
+    { id: "memory", ico: "\u{1F9E0}", name: "game.memory", desc: "game.memoryDesc", best: "low", unit: "rec.moves" },
+    { id: "g2048", ico: "\u{1F522}", name: "game.g2048", desc: "game.g2048Desc", best: "high", unit: "rec.points" },
+    { id: "rps", ico: "\u{270A}", name: "game.rps", desc: "game.rpsDesc", best: "high", unit: "rec.wins" },
+    { id: "react", ico: "\u{26A1}", name: "game.react", desc: "game.reactDesc", best: "low", unit: "rec.ms" },
+    { id: "simon", ico: "\u{1F3A8}", name: "game.simon", desc: "game.simonDesc", best: "high", unit: "rec.level" },
+    { id: "mines", ico: "\u{1F4A3}", name: "game.mines", desc: "game.minesDesc", best: "low", unit: "rec.sec" },
+    { id: "guess", ico: "\u{1F3AF}", name: "game.guess", desc: "game.guessDesc", best: "low", unit: "rec.tries" }
   ];
 
   const HOW_TO_PLAY = {

@@ -1,10 +1,36 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.58";
+  const VERSION = "26.10.59";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.59": {
+      uk: [
+        "Перемикача мови в шапці більше немає — мова тепер живе лише в Налаштуваннях",
+        "Мов стало 20: додано італійську, португальську, нідерландську, шведську, чеську, угорську, румунську, грецьку, індонезійську, хінді, китайську та корейську",
+        "Поряд із назвою рядка тепер пише «Мова (Українська)» — у дужках показується рідна назва вибраної мови",
+        "Вибір мови — у власній менюшці з галочками й прокруткою; інтерфейс перекладається цілком, з м'яким згасанням",
+        "У профілі рекорди більше не хизуються «ttt» — показується повна назва гри та одиниця виміру (перемоги, очки, мс, ходів…)",
+        "Якщо рядка ще немає в перекладі — він стає англійським, а не українським, тож у інтерфейсі більше немає мовної суміші"
+      ],
+      en: [
+        "The language switcher is gone from the top bar — language now lives only in Settings",
+        "There are 20 languages now: Italian, Portuguese, Dutch, Swedish, Czech, Hungarian, Romanian, Greek, Indonesian, Hindi, Chinese and Korean were added",
+        "The row is labelled «Language (Українська)» — the native name of the chosen language sits in brackets",
+        "Picking a language uses our own popup menu with checkmarks and scrolling; the whole interface retranslates with a soft fade",
+        "Records in Profile no longer brag «ttt» — you get the full game name plus its unit (wins, points, ms, moves…)",
+        "A string with no translation yet falls back to English instead of Ukrainian, so the interface never mixes languages"
+      ],
+      tr: [
+        "Üst bardaki dil değiştirici kaldırıldı — dil artık yalnızca Ayarlar'da",
+        "Diller 20'ye çıktı: İtalyanca, Portekizce, Felemenkçe, İsveççe, Çekçe, Macarca, Rumence, Yunanca, Endonezce, Hintçe, Çince ve Korece eklendi",
+        "Satır artık «Dil (Українська)» biçiminde — seçilen dilin kendi adı parantez içinde gösteriliyor",
+        "Dil seçimi, onay işaretli ve kaydırılabilen kendi açılır menümüzle yapılıyor; tüm arayüz yumuşak bir soluşla yeniden çevriliyor",
+        "Profildeki rekorlar artık «ttt» diye övünmüyor — oyunun tam adı ve birimi (galibiyet, puan, ms, hamle…) yazıyor",
+        "Çevirisi henüz olmayan satır Ukraynaca yerine İngilizceye düşüyor, böylece arayüzde dil karışıklığı olmuyor"
+      ]
+    },
     "26.10.58": {
       uk: [
         "Нові шрифти: сайт тепер говорить Space Grotesk, а код у Python-майданчику набрано Space Mono",

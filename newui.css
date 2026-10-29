@@ -80,7 +80,6 @@ body[data-style="new"]:not(.dark) .appbar{background:rgba(255,255,255,.82)}
 body[data-style="new"]:not(.dark) .navrail{background:var(--nu-panel)}
 body[data-style="new"]:not(.dark) .rail-btn.active,
 body[data-style="new"]:not(.dark) .btn.contained,
-body[data-style="new"]:not(.dark) .lang-switch button.active,
 body[data-style="new"]:not(.dark) .avatar,
 body[data-style="new"]:not(.dark) .nav-brand-ico{color:#fff}
 body[data-style="new"]:not(.dark) .hero h2{background:linear-gradient(120deg,#2A1D4E,#7C3AED 55%,#0891B2);-webkit-background-clip:text;background-clip:text}
@@ -104,9 +103,6 @@ body[data-style="new"] .appbar{
 }
 body[data-style="new"] .appbar-logo,
 body[data-style="new"] .appbar-title{display:none}
-body[data-style="new"] .lang-switch{background:var(--nu-surface);border:1px solid var(--nu-line)}
-body[data-style="new"] .lang-switch button{color:var(--nu-dim)}
-body[data-style="new"] .lang-switch button.active{background:var(--md-primary);color:var(--nu-on-accent);font-weight:600}
 body[data-style="new"] .icon-btn{color:var(--nu-dim)}
 body[data-style="new"] .icon-btn:hover{background:var(--nu-surface);color:var(--nu-text)}
 body[data-style="new"] #focusToggle[aria-pressed="true"],
@@ -472,9 +468,6 @@ body[data-style="new"].bg-animate-on .blob{opacity:.22}
   body[data-style="new"] .chip-btn #profileName{display:none}
   body[data-style="new"] .chip-btn{padding:0;flex:0 0 auto;width:40px;height:40px;border:0;border-radius:50%;background:var(--nu-surface-2)}
   body[data-style="new"] .chip-btn .avatar{width:26px;height:26px;font-size:15px;background:transparent;color:var(--md-primary)}
-  /* перемикач мов у мобільній шапці — як у макеті */
-  body[data-style="new"] .lang-switch{background:var(--nu-surface-2);padding:3px;gap:2px;margin-left:auto}
-  body[data-style="new"] .lang-switch button{padding:4px 7px;font-size:11px}
   body[data-style="new"] #mobileSearchBtn{display:grid;flex:0 0 auto;padding:0;color:var(--nu-text);background:radial-gradient(circle 20px at center,var(--nu-surface-2) 99%,transparent 100%)}
   body[data-style="new"] #mobileSearchBtn .material-icons{font-size:21px}
 
@@ -484,7 +477,6 @@ body[data-style="new"].bg-animate-on .blob{opacity:.22}
   }
   body[data-style="new"].search-open .appbar-logo,
   body[data-style="new"].search-open .appbar-title,
-  body[data-style="new"].search-open .lang-switch,
   body[data-style="new"].search-open .chip-btn,
   body[data-style="new"].search-open #mobileSearchBtn{display:none}
 

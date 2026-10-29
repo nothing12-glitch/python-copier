@@ -90,7 +90,8 @@
   let backdrop = null;
   let sysLang = null; // мова системи (prefixed, напр. "de")
 
-  const SITE_LANGS = ["uk", "en", "tr"];
+  const SITE_LANGS = () => (global.I18n && global.I18n.langs
+    ? global.I18n.langs.map((x) => x[0]) : ["uk", "en", "tr"]);
 
   // Текст кроку вибору мови багатьма мовами, щоб питати мовою системи
   const LANG_UI = {
@@ -109,7 +110,12 @@
     ar: { langTitle: "اختر لغتك", langText: "يمكنك تغييرها في أي وقت من الإعدادات." },
     hi: { langTitle: "अपनी भाषा चुनें", langText: "इसे कभी भी सेटिंग्स में बदला जा सकता है।" },
     cs: { langTitle: "Vyber si jazyk", langText: "Kdykoli jej můžeš změnit v nastavení." },
-    ro: { langTitle: "Alege limba ta", langText: "O poți schimba oricând din setări." }
+    ro: { langTitle: "Alege limba ta", langText: "O poți schimba oricând din setări." },
+    sv: { langTitle: "Välj ditt språk", langText: "Du kan ändra det när som helst i inställningarna." },
+    nl: { langTitle: "Kies je taal", langText: "Je kunt dit altijd wijzigen in de instellingen." },
+    hu: { langTitle: "Válaszd ki a nyelved", langText: "Bármikor megváltoztathatod a beállításokban." },
+    id: { langTitle: "Pilih bahasamu", langText: "Kamu bisa mengubahnya kapan saja di pengaturan." },
+    el: { langTitle: "Διάλεξε τη γλώσσα σου", langText: "Μπορείς να την αλλάξεις όποτε θέλεις στις ρυθμίσεις." }
   };
 
   function detectSysLang() {
@@ -117,7 +123,7 @@
     return n.split("-")[0];
   }
 
-  const S = () => L[global.I18n ? global.I18n.lang : "uk"] || L.uk;
+  const S = () => L[global.I18n ? global.I18n.lang : "uk"] || L.en;
   const langUi = () => LANG_UI[sysLang] || LANG_UI.en;
 
   function close() {
@@ -165,18 +171,18 @@
     h.textContent = langUi().langTitle;
     const p = document.createElement("p");
     p.textContent = langUi().langText;
-    const row = document.createElement("div");
-    row.className = "ob-langs";
-    [["uk", "Українська"], ["en", "English"], ["tr", "Türkçe"]].forEach(([code, name]) => {
+    const list = document.createElement("div");
+    list.className = "ob-langs";
+    (global.I18n && global.I18n.langs ? global.I18n.langs : [["uk", "Українська"], ["en", "English"], ["tr", "Türkçe"]]).forEach(([code, name]) => {
       const b = document.createElement("button");
       b.textContent = name;
       b.onclick = () => {
         if (global.I18n) global.I18n.setLang(code);
         renderNickname();
       };
-      row.appendChild(b);
+      list.appendChild(b);
     });
-    card.append(emo, h, p, row);
+    card.append(emo, h, p, list);
   }
 
   function saveNickname(v) {
@@ -270,7 +276,7 @@
   function start() {
     sysLang = detectSysLang();
     // якщо мова системи підтримується сайтом — одразу ставимо її
-    if (SITE_LANGS.includes(sysLang) && global.I18n && global.I18n.lang !== sysLang) global.I18n.setLang(sysLang);
+    if (SITE_LANGS().includes(sysLang) && global.I18n && global.I18n.lang !== sysLang) global.I18n.setLang(sysLang);
     renderLang();
   }
 

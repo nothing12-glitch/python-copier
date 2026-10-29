@@ -62,10 +62,6 @@ body.no-nav-labels .rail-ico .material-icons{font-size:calc(var(--nav-ico) + 2px
 .appbar-logo{color:var(--md-on-primary);background:var(--md-primary);border-radius:12px;padding:6px;cursor:pointer}
 .appbar-title{font-size:20px;font-weight:500;letter-spacing:.15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;user-select:none}
 .appbar-spacer{flex:1}
-.lang-switch{display:flex;background:var(--md-surface-dim);border-radius:999px;padding:2px;flex-wrap:wrap;justify-content:center}
-.lang-switch button{border:0;background:transparent;color:var(--md-on-surface-var);font-family:var(--md-font);font-weight:500;font-size:13px;padding:6px 12px;border-radius:999px;cursor:pointer;transition:.2s}
-.lang-switch button.active{background:var(--md-primary);color:var(--md-on-primary)}
-@media(max-width:1200px){.lang-switch button{padding:6px 8px;font-size:12px}}
 .icon-btn{width:40px;height:40px;border:0;border-radius:50%;background:transparent;color:var(--md-on-surface-var);display:grid;place-items:center;cursor:pointer;transition:.2s;position:relative;overflow:hidden}
 .icon-btn:hover{background:rgba(29,27,32,.08)}
 .icon-btn[aria-pressed="false"]{opacity:.4}
@@ -361,7 +357,7 @@ body.dark{
   --md-success:#7FCB9A;
 }
 body.dark .rail-btn:hover,body.dark .icon-btn:hover,body.dark .chip-btn:hover{background:rgba(230,224,233,.10)}
-body.dark .btn.text:hover,body.dark .lang-switch button:hover{background:rgba(230,224,233,.10)}
+body.dark .btn.text:hover{background:rgba(230,224,233,.10)}
 body.dark .md-chip.ready{background:#1E3A29}
 body.dark .md-chip.error{background:#41272B}
 body.dark .md-chip.loading{background:var(--md-secondary-container)}
@@ -441,8 +437,8 @@ body.lang-fade .appbar,body.lang-fade .navrail,body.lang-fade main{opacity:0;tra
 .ob-emoji{font-size:64px;line-height:1;margin-bottom:12px}
 .ob-card h3{margin:0 0 8px;font-size:22px;font-weight:500}
 .ob-card p{margin:0 0 18px;color:var(--md-on-surface-var);font-size:14px;line-height:1.6}
-.ob-langs{display:flex;gap:10px;justify-content:center;margin-bottom:8px;flex-wrap:wrap}
-.ob-langs button{font-family:var(--md-font);font-size:15px;font-weight:500;padding:12px 20px;border-radius:14px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);color:var(--md-on-surface);cursor:pointer;transition:.15s}
+.ob-langs{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:8px;max-height:44vh;overflow:auto;padding:2px;margin-bottom:8px}
+.ob-langs button{font-family:var(--md-font);font-size:15px;font-weight:500;padding:10px 12px;border-radius:14px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);color:var(--md-on-surface);cursor:pointer;transition:.15s;text-align:center}
 .ob-langs button:hover{background:var(--md-primary-container);color:var(--md-on-primary-container)}
 .ob-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .ob-dots{display:flex;gap:6px;justify-content:center;margin-bottom:16px}

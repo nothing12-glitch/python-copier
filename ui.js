@@ -98,7 +98,7 @@
         (it.hint ? '<span class="qm-hint"></span>' : "");
       li.querySelector(".qm-label").textContent = it.label;
       if (it.hint) li.querySelector(".qm-hint").textContent = it.hint;
-      if (it.selected) li.querySelector(".qm-ico").textContent = "check";
+      if (it.selected && !it.icon) li.querySelector(".qm-ico").textContent = "check";
       if (!it.disabled && !firstEnabled) firstEnabled = i;
       li.onclick = () => { close(); if (onPick) onPick(it); };
       panel.appendChild(li);
@@ -160,7 +160,10 @@
 
     btn.addEventListener("click", () => {
       if (sel.disabled) return;
-      const list = listFrom(sel).map((it) => Object.assign(it, { selected: it.value === sel.value, icon: "done" }));
+      const list = listFrom(sel).map((it) => Object.assign(it, {
+        selected: it.value === sel.value,
+        icon: it.value === sel.value ? "check_circle" : "radio_button_unchecked"
+      }));
       menu(btn, list, (it) => {
         if (it.disabled) return;
         sel.value = it.value;

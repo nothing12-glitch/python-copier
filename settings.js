@@ -109,7 +109,8 @@
       { id: "glass", type: "switch", label: "Liquid Glass" },
       { id: "reduceMotion", type: "switch", label: "set.reduceMotion" },
       { id: "compact", type: "switch", label: "set.compact" },
-      { id: "fontSize", type: "range", label: "set.fontSize", min: 12, max: 20, step: 1 }
+      { id: "fontSize", type: "range", label: "set.fontSize", min: 12, max: 20, step: 1 },
+      { id: "language", type: "select", label: "settings.language", fromLangs: true }
     ]},
     { group: "settings.navPanel", items: [
       { id: "navPos", type: "select", label: "set.navPos", options: [
@@ -137,9 +138,6 @@
       { id: "sfxVolume", type: "range", label: "set.sfxVolume", min: 0, max: 1, step: 0.05 },
       { id: "musicVolume", type: "range", label: "set.musicVolume", min: 0, max: 1, step: 0.05 }
     ]},
-    { group: "settings.language", items: [
-      { id: "language", type: "select", label: "settings.language", options: [["uk", "Українська"], ["en", "English"], ["tr", "Türkçe"]] }
-    ]},
     { group: "set.account", items: [
       { id: "google", type: "button", label: "set.google", icon: "login", variant: "contained" },
       { id: "github", type: "button", label: "set.github", icon: "login", variant: "outlined" }
@@ -154,12 +152,20 @@
 
   const t = (k) => (global.I18n ? global.I18n.t(k) : k);
 
+  function langRows() {
+    return (global.I18n && global.I18n.langs) || [["uk", "Українська"], ["en", "English"]];
+  }
+  function langLabel() {
+    const cur = state.language || global.I18n.lang;
+    return t("settings.language") + " (" + global.I18n.nativeName(cur) + ")";
+  }
+
   function row(item) {
     const wrap = document.createElement("div");
     wrap.className = "setting-row";
     const name = document.createElement("span");
     name.className = "setting-name";
-    name.textContent = t(item.label);
+    name.textContent = item.fromLangs ? langLabel() : t(item.label);
     wrap.appendChild(name);
 
     if (item.type === "switch") {
@@ -173,7 +179,8 @@
     }
     else if (item.type === "select") {
       const sel = document.createElement("select"); sel.className = "md-select"; sel.dataset.set = item.id;
-      item.options.forEach(([v, lk]) => {
+      const opts = item.fromLangs ? langRows() : item.options;
+      opts.forEach(([v, lk]) => {
         const o = document.createElement("option"); o.value = v;
         o.textContent = lk.startsWith("set.") || lk.startsWith("settings.") ? t(lk) : lk;
         sel.appendChild(o);

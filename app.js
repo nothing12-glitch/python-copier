@@ -70,7 +70,7 @@
   /* ---------- Ріппл ефект ---------- */
   function bindRipple() {
     document.addEventListener("click", (e) => {
-      const btn = e.target.closest(".btn, .chip-btn, .icon-btn, .chip, .lang-switch button");
+      const btn = e.target.closest(".btn, .chip-btn, .icon-btn, .chip");
       if (!btn) return;
       const r = document.createElement("span");
       r.className = "ripple";
@@ -86,16 +86,6 @@
 
   /* ---------- Мова ---------- */
   function bindLang() {
-    document.querySelectorAll("[data-lang]").forEach((b) => {
-      b.onclick = () => {
-        if (!global.I18n) return;
-        document.body.classList.add("lang-fade");
-        setTimeout(() => {
-          global.I18n.setLang(b.dataset.lang);
-          document.body.classList.remove("lang-fade");
-        }, 180);
-      };
-    });
     document.addEventListener("langchange", () => {
       document.querySelectorAll("[data-i18n]").forEach((el) => {
         el.textContent = t(el.getAttribute("data-i18n"));
@@ -302,10 +292,18 @@
         p.textContent = t("profile.noRecords");
         grid.appendChild(p);
       } else {
+        const meta = (global.Games && global.Games.list ? global.Games.list() : []).reduce((acc, g) => {
+          acc[g.id] = g; return acc;
+        }, {});
         keys.forEach((k) => {
+          const g = meta[k];
           const d = document.createElement("div");
           d.className = "record";
-          d.innerHTML = '<div class="g">' + k + '</div><div class="v">' + recs[k] + '</div>';
+          const name = g ? t(g.name) : (k === "contest" ? t("contest.title") : k);
+          const unit = g && g.unit ? " " + t(g.unit) : "";
+          d.innerHTML = '<div class="g"></div><div class="v"></div>';
+          d.querySelector(".g").textContent = name;
+          d.querySelector(".v").textContent = recs[k] + unit;
           grid.appendChild(d);
         });
       }
