@@ -8,6 +8,8 @@
   const CODE = "314159";
   const HINTS = ["31", "41", "59"];
   const FLASH_AT = [2.1, 4.3, 6.5];
+  const CLIP1 = "vault1.mp4";
+  const CLIP2 = "vault2.mp4";
   const KEY_CLICKS = "app.vaultClicks";
   const KEY_OPEN = "app.vaultOpen";
 
@@ -383,18 +385,20 @@
   }
 
 
-  function playClip(withDigits, onEnd) {
+  function playClip(src, withDigits, onEnd) {
     const bd = overlay(
       '<div class="vlt-player">' +
         '<canvas class="vlt-scene" width="1280" height="720"></canvas>' +
+        '<video class="vlt-clip" playsinline preload="auto" muted></video>' +
         '<div class="vlt-digit"></div>' +
         '<div class="vlt-note"></div>' +
       "</div>", { blind: true });
     const cv = bd.querySelector(".vlt-scene");
+    const clip = bd.querySelector(".vlt-clip");
     const digit = bd.querySelector(".vlt-digit");
     const note = bd.querySelector(".vlt-note");
     const MODE = withDigits ? "digits" : "frames";
-    const DUR = withDigits ? 8.6 : 6.4;
+    const DUR = 8.4;
     note.textContent = withDigits ? L().skipNote : "";
     let timers = [], done = false, raf = 0;
 
@@ -403,6 +407,7 @@
       done = true;
       timers.forEach(clearTimeout);
       if (raf) cancelAnimationFrame(raf);
+      clip.pause();
       closeOverlay(bd);
       setTimeout(onEnd, 220);
     }
@@ -416,6 +421,8 @@
         }, at * 1000));
       });
     }
+    /* Полотно малюється одразу: воно і кадр-зачіпка, доки відео довантажується,
+       і повноцінний запасний варіант, якщо mp4 недоступний. */
     const t0 = performance.now();
     const draw = () => {
       const t = (performance.now() - t0) / 1000;
@@ -425,6 +432,15 @@
     raf = requestAnimationFrame(draw);
     timers.push(setTimeout(finish, DUR * 1000));
     if (withDigits) flash();
+
+    clip.addEventListener("canplay", () => {
+      cv.classList.add("off");
+      clip.classList.add("on");
+      const p = clip.play();
+      if (p && p.catch) p.catch(() => cv.classList.remove("off"));
+    });
+    clip.addEventListener("error", () => clip.remove(), { once: true });
+    clip.src = src;
     return bd;
   }
 
@@ -439,7 +455,7 @@
     bd.querySelector(".vlt-go").onclick = () => {
       const s = sfx(); if (s) s.win();
       closeOverlay(bd);
-      setTimeout(() => playClip(true, askCode), 220);
+      setTimeout(() => playClip(CLIP1, true, askCode), 220);
     };
   }
 
@@ -479,7 +495,7 @@
       }
       msg.textContent = fmt(L().wrong, { n: left - 1 });
       msg.classList.add("bad");
-      setTimeout(() => { closeOverlay(bd); setTimeout(() => playClip(true, () => askCode((attempt || 0) + 1)), 220); }, 900);
+      setTimeout(() => { closeOverlay(bd); setTimeout(() => playClip(CLIP1, true, () => askCode((attempt || 0) + 1)), 220); }, 900);
     }
     bd.querySelector(".vlt-check").onclick = submit;
     inp.onkeydown = (e) => { if (e.key === "Enter") submit(); };
@@ -497,7 +513,7 @@
       "</div>", { blind: true });
     bd.querySelector(".vlt-go").onclick = () => {
       closeOverlay(bd);
-      setTimeout(() => playClip(false, reveal), 220);
+      setTimeout(() => playClip(CLIP2, false, reveal), 220);
     };
   }
 
@@ -513,7 +529,7 @@
         '<button class="btn text vlt-again">' + L().again + "</button></div>" +
       "</div>", { blind: true });
     bd.querySelector(".vlt-x").onclick = () => { closeOverlay(bd); setTimeout(() => inject(true), 220); };
-    bd.querySelector(".vlt-again").onclick = () => { closeOverlay(bd); setTimeout(() => playClip(false, reveal), 220); };
+    bd.querySelector(".vlt-again").onclick = () => { closeOverlay(bd); setTimeout(() => playClip(CLIP2, false, reveal), 220); };
     const s = sfx(); if (s) s.win();
   }
 

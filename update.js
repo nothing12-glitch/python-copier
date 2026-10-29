@@ -1,10 +1,30 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.63";
+  const VERSION = "26.10.64";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.64": {
+      uk: [
+        "Пасхалка із замком отримала справжні згенеровані відео: неонова потаємна галерея з силуетом замка та стіна рамок, що засвічуються одна за одною",
+        "Цифри більше не намальовані поверх — вони спливають у трьох кадрах самого відео, кожна пара у своєму кутку і лише на мить",
+        "Поки відео довантажується, гравець бачить той самий сюжет, намальований на canvas, тож жодної чорної паузи",
+        "Обидва кліпи стиснуті до 1,6 МБ на двох і кешуються браузерам після першого перегляду — далі працюють офлайн"
+      ],
+      en: [
+        "The padlock easter egg now plays real generated videos: a neon hidden gallery with a looming padlock silhouette and a wall of frames lighting up one by one",
+        "The digits are no longer painted on top — they surface inside three frames of the footage itself, each pair in its own corner for a moment only",
+        "While a clip buffers, the player shows the same scene drawn on canvas, so there is no black pause",
+        "Both clips are squeezed to 1.6 MB together and cached by the browser after the first watch, so they work offline afterwards"
+      ],
+      tr: [
+        "Kilit gizli sürprizi artık gerçek üretilmiş videolarla oynuyor: neonlu gizli galeri, yaklaşan kilit silüeti ve birer birer yanan çerçeve duvarı",
+        "Rakamlar artık üstten boyanmıyor — üç karede bizzat görüntünün içinde, her çift kendi köşesinde bir anlığına beliriyor",
+        "Klip yüklenirken oynatıcı aynı sahneyi tuval üzerinde çiziyor, böylece siyah bekleme anı yok",
+        "İki klip birlikte 1,6 MBʼa sıkıştırıldı ve ilk izlemeden sonra tarayıcıda önbelleğe alınıyor, sonrasında çevrimdışı çalışıyor"
+      ]
+    },
     "26.10.63": {
       uk: [
         "У меню ігор зʼявилася сіра плитка з великим замком — це пасхалка. Стукни по ній двадцять разів",
