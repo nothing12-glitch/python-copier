@@ -1,10 +1,39 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.57";
+  const VERSION = "26.10.58";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.58": {
+      uk: [
+        "Нові шрифти: сайт тепер говорить Space Grotesk, а код у Python-майданчику набрано Space Mono",
+        "Редактор ожив: кожен символ, розділовий знак, пробіл і Enter мають власну анімацію просто біля каретки",
+        "На телефоні нарешті видно кнопку «Запуск» — панель редактора переноситься в кілька рядків, а «Запуск» займає весь рядок",
+        "Вивід заповнює свій блок цілком, а кнопка на весь екран розгортає консоль на всю сторінку (Escape — повернутися)",
+        "Системні нудні списки замінено на власні меню-випадашки з іконками, галочками та клавіатурною навігацією — усюди, де був вибір",
+        "Режим фокусу переїхав в Інструменти: обери в менюшці вкладку (Python-майданчик, ігри, курс, задачі) — і решта інтерфейсу сховається",
+        "Додано маленькі відступи між усіма блоками, щоб сторінка перестала бути склеєною"
+      ],
+      en: [
+        "New fonts: the site now speaks Space Grotesk, while the Python playground code is set in Space Mono",
+        "The editor came alive: every character, punctuation mark, space and Enter gets its own animation right at the caret",
+        "On phones the Run button is finally visible — the editor toolbar wraps onto several rows and Run takes the full width",
+        "The output now fills its whole block, and the fullscreen button expands the console over the entire page (Escape returns)",
+        "Boring system dropdowns are replaced by custom popup menus with icons, checkmarks and keyboard navigation — everywhere a picker exists",
+        "Focus mode moved into Tools: pick a tab in the new menu (playground, games, course, tasks) and the rest of the interface hides",
+        "Small gaps were added between every block so the page no longer looks glued together"
+      ],
+      tr: [
+        "Yeni yazı tipleri: site artık Space Grotesk konuşuyor, Python sahnesindeki kod ise Space Mono ile diziliyor",
+        "Editör canlandı: her harf, noktalama işareti, boşluk ve Enter imlecin hemen kendi animasyonunu çıkarıyor",
+        "Telefonda Çalıştır düğmesi sonunda görünür — editör araç çubuğu birkaç satıra sarıyor, Çalıştır tüm satırı kaplıyor",
+        "Çıktı artık bloğun tamamını dolduruyor; tam ekran düğmesi konsolu tüm sayfaya yayıyor (geri dönmek için Escape)",
+        "Sıkıcı sistem listeleri yerini simgeli, onay işaretli ve klavyeyle gezilebilir özel açılır menülere bıraktı — seçim olan her yerde",
+        "Odak modu Araçlar'a taşındı: menüden bir sekme seç (Python sahnesi, oyunlar, kurs, görevler) — arayüzün gerisi gizlenir",
+        "Sayfa yapışık görünmesin diye tüm blokların arasına küçük boşluklar eklendi"
+      ]
+    },
     "26.10.57": {
       uk: [
         "Перший запуск коду тепер відкриває вікно встановлення рекомендованих модулів. Прогрес рахується по-справжньому: вага кожного пакета в байтах, відсотки, швидкість і час, що залишився. З цього вікна не вийти, доки завантаження не скінчиться",

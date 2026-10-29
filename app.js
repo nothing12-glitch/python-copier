@@ -134,25 +134,69 @@
       };
     }
     if (focusBtn && !focusBtn.dataset.shield) {
-      focusBtn.onclick = () => {
-        const on = document.body.classList.toggle("focus-mode");
-        focusBtn.setAttribute("aria-pressed", String(on));
-        toast(t(on ? "focus.on" : "focus.off"));
-        if (on) {
-          const esc = (e) => {
-            if (e.key === "Escape") {
-              document.body.classList.remove("focus-mode");
-              focusBtn.setAttribute("aria-pressed", "false");
-              toast(t("focus.off"));
-              document.removeEventListener("keydown", esc);
-            }
-          };
-          document.addEventListener("keydown", esc);
-        }
-      };
+      focusBtn.onclick = () => setFocusMode(!document.body.classList.contains("focus-mode"), true);
     }
     document.addEventListener("settingschange", sync);
     sync();
+  }
+
+  /* ---------- Режим фокусу ---------- */
+  const FOCUS_TARGETS = [
+    { route: "python", key: "nav.python", icon: "code" },
+    { route: "games", key: "nav.games", icon: "sports_esports" },
+    { route: "course", key: "nav.course", icon: "school" },
+    { route: "tasks", key: "nav.tasks", icon: "assignment" }
+  ];
+
+  function setFocusMode(on, announce) {
+    document.body.classList.toggle("focus-mode", on);
+    const fb = $("#focusToggle");
+    if (fb && !fb.dataset.shield) fb.setAttribute("aria-pressed", String(on));
+    if (announce) toast(t(on ? "focus.on" : "focus.off"));
+    if (on) {
+      const esc = (e) => {
+        if (e.key === "Escape" && document.body.classList.contains("focus-mode")) {
+          setFocusMode(false, true);
+          document.removeEventListener("keydown", esc);
+        }
+      };
+      document.addEventListener("keydown", esc);
+    }
+    document.dispatchEvent(new CustomEvent("focusmode", { detail: { on } }));
+  }
+
+  function bindFocusPicker() {
+    const btn = $("#focusPick");
+    const exitBtn = $("#focusExit");
+    if (exitBtn) exitBtn.onclick = () => { setFocusMode(false, true); paint(); };
+    if (!btn || !global.UI) return;
+    const label = btn.querySelector(".qm-value");
+    const nameOf = (routeName) => {
+      const f = FOCUS_TARGETS.find((x) => x.route === routeName);
+      return f ? t(f.key) : t("focus.pickNone");
+    };
+    function paint() {
+      const on = document.body.classList.contains("focus-mode");
+      label.textContent = on && btn.dataset.route ? nameOf(btn.dataset.route) : t("focus.pickNone");
+      btn.classList.toggle("qm-sel", on);
+    }
+    btn.onclick = () => {
+      const on = document.body.classList.contains("focus-mode");
+      const items = FOCUS_TARGETS.map((f) => ({
+        label: t(f.key), value: f.route, icon: f.icon,
+        selected: on && btn.dataset.route === f.route
+      }));
+      if (on) items.push({ label: t("focus.exit"), value: "", icon: "center_focus_weak" });
+      global.UI.menu(btn, items, (it) => {
+        if (!it.value) { setFocusMode(false, true); paint(); return; }
+        btn.dataset.route = it.value;
+        route(it.value);
+        setFocusMode(true, true);
+        paint();
+      });
+    };
+    document.addEventListener("keyup", paint);
+    paint();
   }
 
   /* ---------- Профіль ---------- */
@@ -654,6 +698,7 @@
     try { decorateCards(); } catch (e) { console.warn("decorateCards", e); }
     try { bindGlobalSearch(); } catch (e) { console.warn("bindGlobalSearch", e); }
     try { bindMoreSheet(); } catch (e) { console.warn("bindMoreSheet", e); }
+    try { bindFocusPicker(); } catch (e) { console.warn("bindFocusPicker", e); }
     try { updateNavProgress(); } catch (e) { console.warn("updateNavProgress", e); }
 
     // початковий маршрут

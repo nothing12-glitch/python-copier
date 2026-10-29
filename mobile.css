@@ -120,9 +120,29 @@
     gap: 8px !important;
   }
 
+  /* Кнопки панелі редактора: переносимо на кілька рядків, «Запуск» — завжди видимий */
   .bar-actions {
     width: 100% !important;
-    justify-content: space-between !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+  }
+
+  .bar-actions #examples {
+    flex: 1 1 140px;
+    min-width: 0;
+  }
+
+  .bar-actions #run {
+    order: 9;
+    flex: 1 1 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+
+  /* Вивід на телефону — на всю ширину й висоту блоку */
+  .py-output .console {
+    min-height: 200px;
   }
 
   /* ========== Games ========== */

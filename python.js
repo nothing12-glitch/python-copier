@@ -295,6 +295,11 @@
   function applyBtnTitles() {
     if (copyBtn) { copyBtn.title = global.I18n.t("python.copy"); copyBtn.setAttribute("aria-label", copyBtn.title); }
     if (saveBtn) { saveBtn.title = global.I18n.t("python.savePy"); saveBtn.setAttribute("aria-label", saveBtn.title); }
+    const fb = $("#fullOut");
+    if (fb) {
+      const lbl = global.I18n.t(fb.classList.contains("is-full") ? "python.exitFull" : "python.full");
+      fb.title = lbl; fb.setAttribute("aria-label", lbl);
+    }
   }
 
   async function copyCode() {
@@ -834,6 +839,137 @@
     }
   }
 
+  /* ---------- Анімація друку в редакторі ---------- */
+  let fxLayer = null;
+  let fxMirror = null;
+  let fxQueued = false;
+
+  function fxOn() {
+    if (document.body.classList.contains("reduce-motion")) return false;
+    return !(global.Settings && global.Settings.get("animations") === false);
+  }
+
+  function codeArea() {
+    return codeEl ? codeEl.closest(".code-area") : null;
+  }
+
+  function ensureFxLayer() {
+    if (fxLayer && fxLayer.isConnected) return fxLayer;
+    const area = codeArea();
+    if (!area) return null;
+    fxLayer = document.createElement("div");
+    fxLayer.className = "type-fx";
+    fxLayer.setAttribute("aria-hidden", "true");
+    area.appendChild(fxLayer);
+    return fxLayer;
+  }
+
+  const MIRROR_PROPS = ["fontFamily", "fontSize", "fontWeight", "letterSpacing", "lineHeight",
+    "paddingTop", "paddingRight", "paddingBottom", "paddingLeft",
+    "borderTopWidth", "borderLeftWidth", "textIndent", "tabSize", "boxSizing"];
+
+  // Дзеркало повторює бокс textarea, тож знаходимо піксель каретки без зайвих обчислень
+  function caretXY() {
+    const area = codeArea();
+    if (!area) return null;
+    if (!fxMirror || !fxMirror.isConnected) {
+      if (fxMirror) fxMirror.remove();
+      fxMirror = document.createElement("div");
+      fxMirror.className = "type-mirror";
+      area.appendChild(fxMirror);
+    }
+    const cs = getComputedStyle(codeEl);
+    MIRROR_PROPS.forEach((p) => { fxMirror.style[p] = cs[p]; });
+    fxMirror.style.width = codeEl.clientWidth + "px";
+    const hard = codeEl.wrap === "off";
+    fxMirror.style.whiteSpace = hard ? "pre" : "pre-wrap";
+    fxMirror.style.overflowWrap = hard ? "normal" : "break-word";
+    fxMirror.textContent = codeEl.value.slice(0, codeEl.selectionStart);
+    const pin = document.createElement("i");
+    pin.textContent = "";
+    fxMirror.appendChild(pin);
+    const box = { x: pin.offsetLeft - codeEl.scrollLeft, y: pin.offsetTop - codeEl.scrollTop, h: parseFloat(cs.lineHeight) || 20 };
+    fxMirror.removeChild(pin);
+    return box;
+  }
+
+  function fxSpawn(cls, box, text) {
+    const layer = ensureFxLayer();
+    if (!layer || !box) return;
+    if (layer.childElementCount > 22) layer.removeChild(layer.firstElementChild);
+    const el = document.createElement("span");
+    el.className = "tfx " + cls;
+    el.style.top = box.y + "px";
+    if (cls === "tfx-enter") {
+      el.style.left = "0";
+      el.style.width = (codeEl.clientWidth || 0) + "px";
+    } else {
+      el.style.left = box.x + "px";
+      if (cls !== "tfx-ring") el.style.height = box.h + "px";
+    }
+    if (text) el.textContent = text;
+    layer.appendChild(el);
+    setTimeout(() => { if (el.isConnected) el.remove(); }, 760);
+  }
+
+  function typeFx(e) {
+    if (!fxOn() || e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key;
+    let cls = null;
+    let glyph = "";
+    if (k === "Enter") cls = "tfx-enter";
+    else if (k === "Backspace" || k === "Delete") cls = "tfx-del";
+    else if (k === " ") cls = "tfx-space";
+    else if (k === "Tab") cls = "tfx-space";
+    else if (k.length === 1) {
+      cls = /[A-Za-z0-9_]/.test(k) ? "tfx-char" : "tfx-punct";
+      glyph = k;
+    }
+    if (!cls) return;
+    if (fxQueued) return;
+    fxQueued = true;
+    requestAnimationFrame(() => {
+      fxQueued = false;
+      const box = caretXY();
+      if (!box) return;
+      fxSpawn(cls, box, glyph);
+      if (cls !== "tfx-del") fxSpawn("tfx-ring", box, "");
+    });
+  }
+
+  let outHome = null;
+
+  function toggleOutFull() {
+    const outEl = $("#out");
+    const btn = $("#fullOut");
+    if (!outEl) return;
+    const on = !outEl.classList.contains("out-full");
+    // анімований предок створює власний контейнер для fixed — на весь екран вивід живе в body
+    if (on) {
+      outHome = outEl.parentNode;
+      document.body.appendChild(outEl);
+    } else if (outHome) {
+      outHome.appendChild(outEl);
+      outHome = null;
+    }
+    outEl.classList.toggle("out-full", on);
+    document.body.classList.toggle("out-full-open", on);
+    if (btn) {
+      btn.classList.toggle("is-full", on);
+      const ico = btn.querySelector(".material-icons");
+      if (ico) ico.textContent = on ? "fullscreen_exit" : "fullscreen";
+    }
+    applyBtnTitles();
+    if (on) {
+      outEl.tabIndex = 0;
+      outEl.focus();
+      outEl.scrollTop = outEl.scrollHeight;
+    } else {
+      outEl.tabIndex = -1;
+    }
+    global.Audio2 && global.Audio2.SFX.click();
+  }
+
   function init() {
     out = $("#out"); codeEl = $("#code"); runBtn = $("#run"); statusEl = $("#pyStatus");
     lineNums = $("#lineNumbers"); hintList = $("#hintList"); exSel = $("#examples");
@@ -868,6 +1004,7 @@
       if (hlEl) { hlEl.scrollTop = codeEl.scrollTop; hlEl.scrollLeft = codeEl.scrollLeft; }
     });
     codeEl.addEventListener("blur", () => setTimeout(hideAutocomplete, 120));
+    codeEl.addEventListener("keyup", typeFx);
     codeEl.addEventListener("keydown", (e) => {
       if (acBox.style.display === "block") {
         if (e.key === "ArrowDown") { e.preventDefault(); moveAc(1); return; }
@@ -900,6 +1037,11 @@
     if (saveBtn) saveBtn.onclick = savePyFile;
     $("#clearCode").onclick = () => { codeEl.value = ""; updateLineNumbers(); global.Audio2 && global.Audio2.SFX.click(); };
     $("#clearOut").onclick = () => { out.innerHTML = ""; };
+    const fullBtn = $("#fullOut");
+    if (fullBtn) fullBtn.onclick = toggleOutFull;
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && out && out.classList.contains("out-full")) toggleOutFull();
+    });
     exSel.onchange = () => {
       const k = exSel.value;
       if (EXAMPLES[k]) { codeEl.value = EXAMPLES[k].code; updateLineNumbers(); global.Audio2 && global.Audio2.SFX.pop(); }
