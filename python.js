@@ -772,6 +772,15 @@
     if (warns.length > LINT_MAX) setOutput("⚠️ " + global.I18n.t("python.lint.more", { n: warns.length - LINT_MAX }), false, "warn");
   }
 
+  /* Перший запуск у сеансі: спочатку вантажимо базові пакети у вікні з прогресом,
+     потім людина сама обирає — запускати код чи просто вийти. */
+  async function recommendGate() {
+    if (!global.Installer || global.Installer.recommendedDone()) return "run";
+    const res = await global.Installer.ensureRecommended();
+    document.dispatchEvent(new CustomEvent("pythonrun"));
+    return res && res.chosen === "stay" ? "stay" : "run";
+  }
+
   async function run() {
     out.innerHTML = "";
     runBtn.disabled = true;
@@ -779,6 +788,11 @@
     showLintWarnings(codeEl.value);
     lastLoadMs = null; lastExecMs = null;
     renderExecInfo();
+    if (await recommendGate() === "stay") {
+      runBtn.disabled = false;
+      setStatus("idle");
+      return;
+    }
     const firstLoad = !py;
     const t0 = performance.now();
     try {

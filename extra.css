@@ -1389,3 +1389,111 @@ body.reduce-motion .contest-timer-value.urgent { animation: none; }
   .course-nav .btn { width: 100%; justify-content: center; margin-left: 0; }
   .course-actions .btn { flex: 1 1 auto; justify-content: center; }
 }
+
+/* ---------- 22) Вікно встановлення модулів (installer.js) ---------- */
+.ip-backdrop { z-index: 98; }
+body[data-style="new"] .ip-card,
+.ip-card { width: min(94vw, 520px); }
+
+.ip-emoji {
+  display: grid; place-items: center;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: color-mix(in srgb, var(--md-primary) 16%, transparent);
+}
+.ip-emoji .material-icons { font-size: 24px; color: var(--md-primary); }
+.ip-emoji.is-done { background: color-mix(in srgb, #22c55e 18%, transparent); }
+.ip-emoji.is-done .material-icons { color: #22c55e; }
+.ip-emoji.is-bad { background: color-mix(in srgb, var(--md-error) 18%, transparent); }
+.ip-emoji.is-bad .material-icons { color: var(--md-error); }
+
+@keyframes ipspin { to { transform: rotate(360deg); } }
+.ip-spin { animation: ipspin 1.6s linear infinite; }
+
+.ip-bar {
+  position: relative; overflow: hidden;
+  height: 10px; border-radius: 999px; margin: 2px 0 10px;
+  background: color-mix(in srgb, var(--md-primary) 12%, var(--md-surface-dim));
+  border: 1px solid var(--md-outline-var);
+}
+.ip-fill {
+  display: block; height: 100%; width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--md-primary), color-mix(in srgb, var(--md-primary) 55%, #22c55e));
+  transition: width .16s linear;
+}
+.ip-backdrop.ip-indeterminate .ip-fill { width: 40% !important; animation: ipslide 1.15s ease-in-out infinite; }
+@keyframes ipslide { 0% { margin-left: -40%; } 100% { margin-left: 100%; } }
+
+.ip-meta {
+  display: flex; flex-wrap: wrap; gap: 6px 14px;
+  font-family: var(--md-mono, "Roboto Mono", monospace);
+  font-size: 12px; color: var(--md-on-surface-var); margin-bottom: 12px;
+}
+.ip-meta .ip-eta { color: var(--md-primary); font-weight: 700; }
+
+.ip-list {
+  list-style: none; margin: 0; padding: 0;
+  max-height: min(34vh, 240px); overflow-y: auto;
+  border: 1px solid var(--md-outline-var); border-radius: 16px;
+  background: color-mix(in srgb, var(--md-primary) 5%, var(--md-surface));
+  padding: 6px;
+}
+.ip-list::-webkit-scrollbar { width: 8px; }
+.ip-list::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--md-primary) 35%, transparent); border-radius: 8px;
+}
+.ip-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 11px; font-size: 14px;
+  color: var(--md-on-surface-var);
+  transition: background .16s ease, color .16s ease;
+}
+.ip-item + .ip-item { border-top: 1px dashed color-mix(in srgb, var(--md-outline-var) 60%, transparent); }
+.ip-item-icon { font-size: 18px; flex: none; color: var(--md-outline-var); }
+.ip-item-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ip-item-size { flex: none; font-family: var(--md-mono, "Roboto Mono", monospace); font-size: 12px; opacity: .8; }
+.ip-item.ip-active { background: color-mix(in srgb, var(--md-primary) 12%, transparent); color: var(--md-on-surface); }
+.ip-item.ip-active .ip-item-icon { color: var(--md-primary); animation: ipspin 1.3s linear infinite; }
+.ip-item.ip-ok { color: var(--md-on-surface); }
+.ip-item.ip-ok .ip-item-icon { color: #22c55e; }
+.ip-item.ip-bad .ip-item-icon { color: var(--md-error); }
+.ip-item.ip-bad .ip-item-name { text-decoration: line-through; opacity: .7; }
+
+.ip-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+.ip-actions .btn { border-radius: 999px; padding-left: 20px; padding-right: 20px; }
+
+@media (max-width: 460px) {
+  .ip-list { max-height: 28vh; }
+  .ip-actions { flex-direction: column-reverse; }
+  .ip-actions .btn { width: 100%; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ip-spin, .ip-item.ip-active .ip-item-icon,
+  .ip-backdrop.ip-indeterminate .ip-fill { animation: none !important; }
+}
+
+/* ---------- 23) Вікно деталей модуля (modules.js) ---------- */
+.mod-card.mod-infoable { cursor: pointer; }
+.mod-card.mod-infoable:hover { border-color: color-mix(in srgb, var(--md-primary) 55%, transparent); }
+.mod-card.mod-infoable:focus-visible { outline: 2px solid var(--md-primary); outline-offset: 3px; }
+
+body[data-style="new"] .md-card,
+.md-card { width: min(94vw, 500px); }
+.md-panel { max-height: min(52vh, 360px); }
+.md-row {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 8px 0; border-bottom: 1px dashed color-mix(in srgb, var(--md-outline-var) 60%, transparent);
+}
+.md-label { font-size: 13px; color: var(--md-on-surface-var); }
+.md-value {
+  font-family: var(--md-mono, "Roboto Mono", monospace);
+  font-size: 14px; font-weight: 700; color: var(--md-primary);
+  text-align: right;
+}
+.md-desc { margin: 12px 0 0; font-size: 14px; line-height: 1.55; color: var(--md-on-surface); }
+.md-sub {
+  margin: 12px 0 6px; font-size: 12px; font-weight: 700;
+  letter-spacing: .6px; text-transform: uppercase; color: var(--md-primary);
+}
+.md-imports { margin-top: 4px; }
+.md-actions { gap: 8px; }

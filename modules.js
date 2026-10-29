@@ -531,6 +531,12 @@
     if (global.PythonPad && typeof global.PythonPad.loadedPackages === "function") {
       try { loadedNames = global.PythonPad.loadedPackages() || []; } catch (e) { loadedNames = []; }
     }
+    // Те, що поставило вікно встановлення (і рекомендовані модулі, і магазинчик), теж «встановлено»
+    if (global.Installer && typeof global.Installer.history === "function") {
+      (global.Installer.history() || []).forEach((name) => {
+        if (installedNow.indexOf(name) < 0) installedNow.push(name);
+      });
+    }
   }
 
   /* ---------- Фільтрація ---------- */
@@ -664,7 +670,7 @@
     install.appendChild(el("span", null, done ? t("modules.reinstall")
       : t(pkg.src === "pypi" ? "modules.installPypi" : "modules.install")));
     install.disabled = done;
-    install.onclick = () => installOne(pkg, box, install, state);
+    install.onclick = () => installOne(pkg);
     actions.appendChild(install);
 
     if (info && (info.example || info.ex)) {
@@ -684,54 +690,49 @@
     actions.appendChild(imp);
 
     box.appendChild(actions);
+
+    // Клік по картці — вікно з вагою, описом і датою оновлення
+    box.classList.add("mod-infoable");
+    box.tabIndex = 0;
+    box.setAttribute("role", "button");
+    box.setAttribute("aria-label", t("installer.info") + ": " + pkg.name);
+    box.onclick = (ev) => { if (ev.target.closest("button")) return; details(pkg); };
+    box.onkeydown = (ev) => {
+      if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); details(pkg); }
+    };
     return box;
   }
 
   /* ---------- Дії ---------- */
-  async function installOne(pkg, box, btn, stateEl) {
+  // Встановлення іде через спільне вікно з прогрес-баром (installer.js)
+  async function installOne(pkg) {
     const name = pkg.name || pkg;
     if (busy) { toast(t("modules.busy")); return; }
-    if (!global.PythonPad || typeof global.PythonPad.loadPackage !== "function") {
-      toast(t("modules.unavailable"));
-      sfx("error");
-      return;
-    }
-    const fromPypi = pkg.src === "pypi";
-    if (fromPypi && typeof global.PythonPad.installPypi !== "function") {
+    if (!global.Installer || !global.PythonPad) {
       toast(t("modules.unavailable"));
       sfx("error");
       return;
     }
     busy = true;
-    btn.disabled = true;
-    btn.querySelector("span:last-child").textContent = t("modules.installing");
-    if (stateEl) { stateEl.textContent = t("modules.stateLoading"); stateEl.classList.add("loading"); }
     sfx("click");
-    try {
-      if (fromPypi) await global.PythonPad.installPypi(name);
-      else await global.PythonPad.loadPackage(name);
+    const res = await global.Installer.install([name], {
+      title: t("installer.title.one", { name: name })
+    });
+    busy = false;
+    if (!res || res.skipped) return;
+    if (res.ok && res.ok.indexOf(name) >= 0) {
       if (installedNow.indexOf(name) < 0) installedNow.push(name);
       syncLoaded();
-      if (box) {
-        box.classList.add("installed");
-        if (stateEl) { stateEl.textContent = t("modules.stateLoaded"); stateEl.classList.remove("loading"); stateEl.classList.add("done"); }
-        btn.querySelector("span:last-child").textContent = t("modules.reinstall");
-      }
-      toast("📦 " + t(fromPypi ? "modules.installedPypiToast" : "modules.installedToast", { name: name }));
+      toast("📦 " + t(pkg.src === "pypi" ? "modules.installedPypiToast" : "modules.installedToast", { name: name }));
       sfx("success");
       document.dispatchEvent(new CustomEvent("packageinstalled", {
         detail: { name: name, imports: (packages.find((p) => p.name === name) || {}).imports || [], count: installedNow.length }
       }));
-      renderInfo();
-      if (filter === "missing") renderGrid();
-    } catch (e) {
-      if (stateEl) { stateEl.textContent = t("modules.stateError"); stateEl.classList.remove("loading"); stateEl.classList.add("error"); }
-      btn.querySelector("span:last-child").textContent = t(fromPypi ? "modules.installPypi" : "modules.install");
-      btn.disabled = false;
-      toast(t("modules.installFailed", { name: name }) + (fromPypi ? ": " + shortErr(e) : ""));
+    } else {
+      toast(t("modules.installFailed", { name: name }));
       sfx("error");
     }
-    busy = false;
+    renderGrid();
   }
 
   function shortErr(e) {
@@ -739,33 +740,22 @@
     return msg.slice(0, 160);
   }
 
+  // Набір ставиться через те саме вікно з прогресом, що й одиночний пакет
   async function installMany(names, chip) {
     if (busy) { toast(t("modules.busy")); return; }
-    if (!global.PythonPad || typeof global.PythonPad.loadPackage !== "function") { toast(t("modules.unavailable")); return; }
+    if (!global.Installer || !global.PythonPad) { toast(t("modules.unavailable")); return; }
     busy = true;
-    const oldText = chip.textContent;
-    let ok = 0;
-    for (const name of names) {
-      chip.textContent = t("modules.installingSet", { name: name });
-      try {
-        await installAny(name);
-        if (installedNow.indexOf(name) < 0) installedNow.push(name);
-        ok++;
-      } catch (e) { /* один пакет не заблокує решту набору */ }
-    }
+    const res = await global.Installer.install(names, {
+      title: t("installer.title.set", { name: chip.textContent.trim() })
+    });
     busy = false;
-    chip.textContent = oldText;
+    if (!res || res.skipped) return;
+    const ok = (res.ok || []).length;
+    (res.ok || []).forEach((name) => { if (installedNow.indexOf(name) < 0) installedNow.push(name); });
     syncLoaded();
     renderGrid();
     toast("📦 " + t("modules.presetDone", { ok: ok, total: names.length }));
     sfx(ok === names.length ? "success" : "error");
-  }
-
-  // Pyodide-пакети йдуть із реєстру, решта — просто з PyPI через micropip
-  function installAny(name) {
-    const pkg = packages.find((p) => p.name === name);
-    if (pkg && pkg.src === "pypi" && global.PythonPad.installPypi) return global.PythonPad.installPypi(name);
-    return global.PythonPad.loadPackage(name);
   }
 
   function useExample(name) {
@@ -796,6 +786,191 @@
       document.body.removeChild(ta);
       done();
     }
+  }
+
+  /* ---------- Вікно деталей модуля ---------- */
+  const META_KEY = "app.pypiMeta.v1";
+  const META_TTL = 24 * 60 * 60 * 1000;
+
+  function readMeta() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(META_KEY));
+      if (raw && Date.now() - (raw.at || 0) < META_TTL) return raw.data || {};
+    } catch (e) { /* пошкоджений кеш — перечитаємо з PyPI */ }
+    return {};
+  }
+
+  function writeMeta(obj) {
+    try { localStorage.setItem(META_KEY, JSON.stringify({ at: Date.now(), data: obj })); }
+    catch (e) { /* сховище повне — просто не кешуємо */ }
+  }
+
+  // Дані релізу з PyPI: вага, дата, короткий опис. Кеш на добу.
+  async function pypiMeta(name, version) {
+    const all = readMeta();
+    const key = String(name).toLowerCase() + "@" + (version || "");
+    if (all[key]) return all[key];
+    const tries = version
+      ? [PYPI_URL + encodeURIComponent(name) + "/" + encodeURIComponent(version) + "/json",
+         PYPI_URL + encodeURIComponent(name) + "/json"]
+      : [PYPI_URL + encodeURIComponent(name) + "/json"];
+    for (const url of tries) {
+      try {
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const files = data.urls || [];
+        const whl = files.find((f) => /\.whl$/i.test(f.filename)) || files[0] || {};
+        const meta = {
+          size: whl.size || 0,
+          updated: whl.upload_time || "",
+          summary: (data.info && data.info.summary) || "",
+          version: (data.info && data.info.version) || ""
+        };
+        if (meta.size || meta.updated) { all[key] = meta; writeMeta(all); }
+        return meta;
+      } catch (e) { /* пробуємо наступну адресу */ }
+    }
+    return null;
+  }
+
+  // Справжня вага: для Pyodide — колеса з усіма залежностями, для PyPI — сума релізів
+  async function weightOf(pkg) {
+    if (!global.Installer) return null;
+    if (pkg.src === "pypi") {
+      const seen = {};
+      let sum = 0;
+      const stack = [pkg].concat((pkg.depends || []).map((d) => ({ name: d, src: "pypi" })));
+      while (stack.length) {
+        const cur = stack.pop();
+        const key = String(cur.name).toLowerCase();
+        if (seen[key]) continue;
+        seen[key] = true;
+        const meta = await pypiMeta(cur.name, cur.version);
+        if (meta && meta.size) sum += meta.size;
+        const dep = EXT[cur.name];
+        if (dep && dep.deps) dep.deps.forEach((d) => { if (!seen[d]) stack.push({ name: d, src: "pypi" }); });
+      }
+      return sum || null;
+    }
+    const wheels = await global.Installer.resolveWheelNames([pkg.name]);
+    let sum = 0;
+    for (const w of wheels) {
+      const size = await global.Installer.wheelSize(global.Installer.PY_BASE + w.file);
+      if (size) sum += size;
+    }
+    return sum || null;
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return "";
+    const d = new Date(/Z|[+-]\d\d:\d\d$/.test(iso) ? iso : iso + "Z");
+    if (isNaN(d.getTime())) return "";
+    const loc = global.I18n && global.I18n.lang === "tr" ? "tr-TR"
+      : global.I18n && global.I18n.lang === "en" ? "en-GB" : "uk-UA";
+    return d.toLocaleDateString(loc, { day: "2-digit", month: "long", year: "numeric" });
+  }
+
+  function mdRow(label) {
+    const row = el("div", "md-row");
+    row.appendChild(el("span", "md-label", label));
+    const value = el("span", "md-value", "—");
+    row.appendChild(value);
+    return { row: row, value: value };
+  }
+
+  function closeDetails() {
+    const bd = document.getElementById("modDetails");
+    if (!bd) return;
+    if (bd._onKey) document.removeEventListener("keydown", bd._onKey, true);
+    bd.classList.add("wn-out");
+    setTimeout(() => { if (bd.parentNode) bd.remove(); }, 180);
+  }
+
+  function details(pkg) {
+    closeDetails();
+    const done = isLoaded(pkg.name);
+    const info = FEATURED[pkg.name] || EXT[pkg.name];
+    const bd = el("div", "wn-backdrop md-backdrop");
+    bd.id = "modDetails";
+    const card = el("div", "wn-card md-card");
+    card.setAttribute("role", "dialog");
+    card.setAttribute("aria-modal", "true");
+    card.setAttribute("aria-label", pkg.name);
+
+    const head = el("div", "wn-head");
+    const emoji = el("div", "wn-emoji");
+    emoji.setAttribute("aria-hidden", "true");
+    emoji.textContent = "📦";
+    const headText = el("div", "wn-headtext");
+    headText.appendChild(el("h3", "wn-title", pkg.name));
+    const sub = el("p", "wn-sub", (pkg.version ? "v" + pkg.version + " · " : "") +
+      t(pkg.src === "pypi" ? "modules.srcPypi" : "modules.srcPyodide"));
+    headText.appendChild(sub);
+    head.append(emoji, headText);
+    head.appendChild(el("span", "wn-chip", done ? t("modules.stateLoaded") : t("modules.stateIdle")));
+
+    const panel = el("div", "wn-panel md-panel");
+    const weight = mdRow(t("installer.weight"));
+    const updated = mdRow(t("installer.updated"));
+    panel.appendChild(weight.row);
+    panel.appendChild(updated.row);
+
+    const desc = info ? pick(info.desc) : "";
+    if (desc) panel.appendChild(el("p", "md-desc", desc));
+
+    const imports = pkg.imports && pkg.imports.length ? pkg.imports : [];
+    if (imports.length) {
+      const box = el("div", "md-imports");
+      box.appendChild(el("div", "md-sub", t("installer.imports")));
+      const row = el("div", "mod-imports");
+      imports.forEach((imp) => row.appendChild(el("code", "mod-import", "import " + imp)));
+      box.appendChild(row);
+      panel.appendChild(box);
+    }
+    if (pkg.depends && pkg.depends.length) {
+      panel.appendChild(el("div", "md-sub", t("installer.deps") + ": " + pkg.depends.join(", ")));
+    }
+
+    const actions = el("div", "wn-actions md-actions");
+    const close = el("button", "btn text");
+    close.type = "button";
+    close.appendChild(el("span", "material-icons", "close"));
+    close.appendChild(el("span", null, t("installer.close")));
+    close.onclick = closeDetails;
+
+    const install = el("button", "btn contained wn-ok");
+    install.type = "button";
+    install.appendChild(el("span", "material-icons", pkg.src === "pypi" ? "cloud_download" : "download"));
+    install.appendChild(el("span", null, done ? t("modules.reinstall")
+      : t(pkg.src === "pypi" ? "modules.installPypi" : "modules.install")));
+    install.onclick = () => { closeDetails(); installOne(pkg); };
+    actions.append(close, install);
+
+    card.append(head, panel, actions);
+    bd.appendChild(card);
+    document.body.appendChild(bd);
+    sfx("pop");
+
+    // Це вікно — на відміну від вікна встановлення — можна закрити кліком по тлу чи Escape
+    bd.onclick = (ev) => { if (ev.target === bd) closeDetails(); };
+    bd._onKey = (ev) => { if (ev.key === "Escape") closeDetails(); };
+    document.addEventListener("keydown", bd._onKey, true);
+
+    // Вагу й дату рахуємо окремо: вікно з'являється миттєво, цифри дописуються, коли прийдуть
+    weight.value.textContent = t("installer.sizeLoading");
+    weightOf(pkg).then((size) => {
+      weight.value.textContent = size ? global.Installer.bytes(size) : t("installer.updatedUnknown");
+    }).catch(() => { weight.value.textContent = "—"; });
+    updated.value.textContent = t("installer.checking");
+    pypiMeta(pkg.name, pkg.version).then((meta) => {
+      const date = meta && fmtDate(meta.updated);
+      updated.value.textContent = date || t("installer.updatedUnknown");
+      if (meta && meta.summary && !desc) {
+        const p = el("p", "md-desc", meta.summary);
+        panel.insertBefore(p, actions);
+      }
+    }).catch(() => { updated.value.textContent = "—"; });
   }
 
   function showError(msg) {
@@ -880,7 +1055,7 @@
     install.appendChild(el("span", "material-icons", "cloud_download"));
     install.appendChild(el("span", null, t("modules.installPypi")));
     install.disabled = info.verdict !== "pure" || isLoaded(info.name);
-    install.onclick = () => installOne({ name: info.name, src: "pypi" }, box, install, state);
+    install.onclick = () => installOne({ name: info.name, src: "pypi" });
     actions.appendChild(install);
     box.appendChild(actions);
     return box;

@@ -1,10 +1,33 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
    Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
 (function (global) {
-  const VERSION = "26.10.56";
+  const VERSION = "26.10.57";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.57": {
+      uk: [
+        "Перший запуск коду тепер відкриває вікно встановлення рекомендованих модулів. Прогрес рахується по-справжньому: вага кожного пакета в байтах, відсотки, швидкість і час, що залишився. З цього вікна не вийти, доки завантаження не скінчиться",
+        "По завершенні — два варіанти: «Вийти й запустити» або «Тільки вийти». Код не стартує, доки ти сам не обереш",
+        "Те саме вікно з прогрес-баром тепер ставить модулі й у магазинчику — і одиночний пакет, і готовий набір цілком",
+        "Клік по картці модуля відкриває вікно деталей: скільки важить модуль разом з залежностями, коли він востаннє оновлювався на PyPI й що саме імпортує",
+        "Фільтр «Встановлені» показує все, що поставило вікно встановлення, а не лише те, що ти тикнув у каталозі"
+      ],
+      en: [
+        "The first code run now opens an install window for the recommended modules. The progress is measured for real: each package's weight in bytes, per cent, speed and time left. You cannot leave this window until the download finishes",
+        "When it is done there are two choices: “Close and run” or “Just close”. The code does not start until you pick one",
+        "The very same progress window now installs modules in the shop too — a single package or a whole ready-made set",
+        "Clicking a module card opens a details window: how much the module weighs together with its dependencies, when it was last updated on PyPI and what exactly it imports",
+        "The “Installed” filter now shows everything the install window put in, not only what you tapped in the catalog"
+      ],
+      tr: [
+        "Kod ilk kez çalıştırıldığında önerilen modüllerin kurulum penceresi açılıyor. İlerleme gerçekten ölçülüyor: her paketin bayt cinsinden ağırlığı, yüzdede, hız ve kalan süre. İndirme bitmeden bu pencereden çıkılamaz",
+        "Bitince iki seçenek var: “Çık ve çalıştır” ya da “Sadece çık”. Seçim yapmadan kod çalışmaz",
+        "Aynı ilerleme penceresi artık mağazada da modül kuruyor — tek paket de hazır takımların tamamı da",
+        "Bir modül kartına dokunmak ayrıntı penceresini açar: modülün bağımlılıklarıyla birlikte ağırlığı, PyPI'de en son ne zaman güncellendiği ve tam olarak neleri içe aktardığı",
+        "“Kurulu” filtresi artık yalnızca katalogda dokunduklarını değil, kurulum penceresinin kurduğu her şeyi gösteriyor"
+      ]
+    },
     "26.10.56": {
       uk: [
         "Розділ «Модулі» більше не обмежений Pyodide: 33 перевірені розширення, а все, чого немає в самому Pyodide, ставиться просто з PyPI прямо в браузері — art, pyfiglet, emoji, tabulate, Faker, tinydb, httpx, Flask, black, seaborn та інші",
