@@ -600,12 +600,30 @@
         });
       }
       py = await global.loadPyodide({ indexURL: PYODIDE_URL });
+      await applyBrowserCompat();
       if (global.PyGui && global.PyGui.install) {
         try { await global.PyGui.install(py); } catch (e) { console.warn("[PyGui] не вдалось вставити turtle/tkinter:", e); }
       }
       return py;
     })();
     return pyPromise;
+  }
+
+  /* Pyodide не дає os.geteuid і os.getegid — без них падає platformdirs, а за ним
+     й пакет «black». Додаємо лише те, чого справді немає, нічого не переписуючи. */
+  const OS_COMPAT =
+    "import os\n" +
+    "if not hasattr(os, 'geteuid'):\n" +
+    "    os.geteuid = lambda: 0\n" +
+    "if not hasattr(os, 'getegid'):\n" +
+    "    os.getegid = lambda: 0\n";
+
+  async function applyBrowserCompat() {
+    try {
+      await py.runPythonAsync(OS_COMPAT);
+    } catch (e) {
+      console.warn("[compat] поліпшення os не сталось:", e);
+    }
   }
 
   /* ---------- Модулі: авто-довантаження з імпортів коду ---------- */
@@ -687,10 +705,26 @@
       setOutput("📦 " + global.I18n.t("python.autoPypi", { pkg }));
       try {
         await installPypi(pkg);
+        await loadDepsOf(pkg);
         if (global.Installer && global.Installer.remember) global.Installer.remember([pkg]);
       } catch (e) {
         delete pypiAuto[pkg];
         setOutput("💡 " + global.I18n.t("python.autoPypiFail", { pkg }), true);
+      }
+    }
+  }
+
+  /* Залежності з каталогу. «qrcode» імпортується й так, але малює він лише через
+     Pillow, якого в коді учня немає — тож тягнемо його за прописаним deps. */
+  async function loadDepsOf(pkg) {
+    if (!global.Modules || !global.Modules.depsFor) return;
+    for (const dep of global.Modules.depsFor(pkg)) {
+      try {
+        if (global.Modules.isPyodidePackage(dep)) await py.loadPackage(dep, { messageCallback: () => {}, errorCallback: () => {} });
+        else await installPypi(dep);
+        if (global.Installer && global.Installer.remember) global.Installer.remember([dep]);
+      } catch (e) {
+        /* залежність не вистачило — хай код сам скаже, чого саме */
       }
     }
   }

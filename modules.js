@@ -211,7 +211,7 @@
         en: "Reads RSS and Atom: news feeds, podcasts, blogs.",
         tr: "RSS ve Atom okur: haber akışları, podcast'ler, bloglar."
       },
-      ex: "import feedparser\nxml = b\"<?xml version='1.0'?><rss><channel><item><title>Привіт</title></item></channel></rss>\"\nf = feedparser.parse(xml)\nprint(f.feed.get(\"title\"), len(f.entries), f.entries[0].title)\n"
+      ex: "import feedparser\nxml = \"<?xml version='1.0' encoding='utf-8'?><rss><channel><item><title>Привіт</title></item></channel></rss>\"\nf = feedparser.parse(xml)\nprint(f.feed.get(\"title\"), len(f.entries), f.entries[0].title)\n"
     },
     "tinydb": {
       imp: "tinydb",
@@ -270,6 +270,8 @@
     },
     "qrcode": {
       imp: "qrcode",
+      // сам QR-код рахується без Pillow, але малює картинку саме він
+      deps: ["Pillow"],
       desc: {
         uk: "Генерує QR-коди з будь-якого тексту (потрібен Pillow).",
         en: "Generates QR codes from any text (needs Pillow).",
@@ -765,7 +767,9 @@
     }
     busy = true;
     sfx("click");
-    const res = await global.Installer.install([name], {
+    // разом із тим, що пакет потребує за собою (наприклад, «qrcode» малює лише через Pillow)
+    const list = [name].concat(depsFor(name).filter((d) => d !== name));
+    const res = await global.Installer.install(list, {
       title: t("installer.title.one", { name: name })
     });
     busy = false;
@@ -890,7 +894,8 @@
     if (pkg.src === "pypi") {
       const seen = {};
       let sum = 0;
-      const stack = [pkg].concat((pkg.depends || []).map((d) => ({ name: d, src: "pypi" })));
+      // рахуємо лише PyPI-залежності: те, що є в Pyodide, звідтягне іншим чином
+      const stack = [pkg].concat((pkg.depends || []).filter((d) => !isPyodidePackage(d)).map((d) => ({ name: d, src: "pypi" })));
       while (stack.length) {
         const cur = stack.pop();
         const key = String(cur.name).toLowerCase();
@@ -899,7 +904,7 @@
         const meta = await pypiMeta(cur.name, cur.version);
         if (meta && meta.size) sum += meta.size;
         const dep = EXT[cur.name];
-        if (dep && dep.deps) dep.deps.forEach((d) => { if (!seen[d]) stack.push({ name: d, src: "pypi" }); });
+        if (dep && dep.deps) dep.deps.forEach((d) => { if (!seen[d] && !isPyodidePackage(d)) stack.push({ name: d, src: "pypi" }); });
       }
       return sum || null;
     }
@@ -1233,8 +1238,22 @@
     return pkg && pkg.src === "pypi" ? name : null;
   }
 
+  /* Чого пакет потребує за собою. Auto-довантаження ставить і це теж: «qrcode»
+     імпортується й без Pillow, але малювати QR тоді нічим. */
+  function depsFor(name) {
+    const pkg = packages.find((p) => p.name === name);
+    return pkg ? (pkg.depends || []).slice() : [];
+  }
+
+  // Чи живе залежність у реєстрі Pyodide (тоді її ставить py.loadPackage, не micropip)
+  function isPyodidePackage(name) {
+    const pkg = packages.find((p) => p.name === name);
+    return !!pkg && pkg.src === "pyodide";
+  }
+
   global.Modules = {
     init, render, load, providerFor, pypiFor, ensureCatalog, lookup: lookupPypi,
+    depsFor, isPyodidePackage,
     installed: () => installedNow.slice(),
     all: () => packages.slice(),
     ext: () => Object.keys(EXT),

@@ -3,10 +3,36 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.67";
+  const VERSION = "26.10.68";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.68": {
+      uk: [
+        "Прогнали через автозавантаження всі 33 пакети з розширень: кожен імпортується, і приклад із магазинчика справді виконується",
+        "«black» більше не падає: у Pyodide немає os.geteuid, через що ламався його залежний «platformdirs» — сайт тепер підставляє відсутні функції",
+        "«qrcode» сам тягне Pillow: без нього код QR рахує, але малювати нічим",
+        "Кнопка «Встановити» в магазинчику тепер ставить і прописані залежності пакета",
+        "Виправлено приклад «feedparser»: байтовий рядок з кирилицею всередині був SyntaxError",
+        "Вага пакета в вікні деталей більше не рахує Pyodide-залежності через PyPI"
+      ],
+      en: [
+        "All 33 extension packages went through auto-load: every one of them imports, and the example shipped in the shop actually runs",
+        "\"black\" no longer crashes: Pyodide has no os.geteuid, which broke its \"platformdirs\" dependency — the site now supplies the missing functions",
+        "\"qrcode\" pulls Pillow in by itself: without it the QR is computed but there is nothing to draw it with",
+        "The \"Install\" button in the shop now installs the dependencies a package declares",
+        "Fixed the \"feedparser\" example: a byte literal holding Cyrillic text was a SyntaxError",
+        "The package weight in the details dialog no longer counts Pyodide deps off PyPI"
+      ],
+      tr: [
+        "Genişletme paketlerinin 33'ü birden otomatik yüklemeye girdi: her biri içe aktarılıyor ve mağazadaki örnek gerçekten çalışıyor",
+        "\"black\" artık çökmüyor: Pyodide'da os.geteuid yok, bu yüzden bağımlı olduğu \"platformdirs\" kırılıyordu — site artık eksik fonksiyonları kendisi veriyor",
+        "\"qrcode\" Pillow'u kendisi indiriyor: onsuz QR kodu hesaplıyor ama çizecek aracı olmuyor",
+        "Mağazadaki \"Kur\" düğmesi artık paketin yazdığı bağımlılıkları da kuruyor",
+        "\"feedparser\" örneği düzeltildi: içinde kiril harfleri olan bayt satırı SyntaxError veriyordu",
+        "Ayrıntı penceresindeki paket ağırlığı artık Pyodide bağımlılıklarını PyPI üzerinden saymıyor"
+      ]
+    },
     "26.10.67": {
       uk: [
         "Підказка «запусти код ще раз — довантажиться сам» нарешті не бреше: пакети просто з PyPI («art», «pyfiglet», «emoji»…) сайт ставить сам через «micropip»",
