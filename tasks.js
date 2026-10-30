@@ -132,6 +132,165 @@
       ]
     },
     {
+      id: "prod2", level: 1,
+      title: { uk: "Добуток двох чисел", en: "Product of two numbers", tr: "İki sayının çarpımı" },
+      text: {
+        uk: "На вхід надходять два цілих числа, кожне в окремому рядку. Виведи їхній добуток.",
+        en: "Two integers are given, one per line. Print their product.",
+        tr: "Her biri ayrı satırda iki tam sayı veriliyor. Çarpımlarını yazdır."
+      },
+      hint: {
+        uk: "Добуток — це результат множення, за нього відповідає оператор *.",
+        en: "The product is the result of multiplication: use the * operator.",
+        tr: "Çarpım, çarpma işleminin sonucudur: * operatörünü kullan."
+      },
+      starter: "a = int(input())\nb = int(input())\n",
+      tests: [
+        { in: "6\n7\n", out: "42" },
+        { in: "0\n15\n", out: "0" },
+        { in: "-3\n9\n", out: "-27" }
+      ]
+    },
+    {
+      id: "sqcube", level: 1,
+      title: { uk: "Квадрат і куб", en: "Square and cube", tr: "Kare ve küp" },
+      text: {
+        uk: "Дано ціле число n. Виведи його квадрат і куб: у першому рядку n * n, у другому — n * n * n.",
+        en: "An integer n is given. Print its square and its cube, one per line.",
+        tr: "Bir n tam sayısı veriliyor. Karesini ve küpünü yazdır, her biri ayrı satırda."
+      },
+      hint: {
+        uk: "Квадрат — це n * n, куб — n * n * n. Можна також скористатися оператором степеня **.",
+        en: "The square is n * n, the cube is n * n * n; you can also use the ** operator.",
+        tr: "Kare n * n, küp n * n * n'dir; ** operatörünü de kullanabilirsin."
+      },
+      starter: "n = int(input())\n",
+      tests: [
+        { in: "5\n", out: "25\n125" },
+        { in: "0\n", out: "0\n0" },
+        { in: "-4\n", out: "16\n-64" }
+      ]
+    },
+    {
+      id: "distance", level: 1,
+      title: { uk: "Відстань між двома точками", en: "Distance between two points", tr: "İki nokta arasındaki uzaklık" },
+      text: {
+        uk: "На координатній прямій задано дві точки a і b, кожна в окремому рядку. Виведи відстань між цими точками.",
+        en: "Two points a and b on a number line are given, one per line. Print the distance between them.",
+        tr: "Sayı doğrusunda iki nokta a ve b veriliyor, her biri ayrı satırda. Aralarındaki uzaklığı yazdır."
+      },
+      hint: {
+        uk: "Відстань дорівнює модулю різниці координат: скористайся функцією abs(a - b).",
+        en: "The distance is the absolute difference of the coordinates: use abs(a - b).",
+        tr: "Uzaklık, koordinatlar farkının mutlak değeridir: abs(a - b) kullan."
+      },
+      starter: "a = int(input())\nb = int(input())\n",
+      tests: [
+        { in: "3\n8\n", out: "5" },
+        { in: "10\n10\n", out: "0" },
+        { in: "-4\n5\n", out: "9" }
+      ]
+    },
+    {
+      id: "signnum", level: 1,
+      title: { uk: "Знак числа", en: "Sign of a number", tr: "Sayının işareti" },
+      text: {
+        uk: "Дано ціле число n. Виведи один символ: «+», якщо n додатне, «-», якщо n від'ємне, і «0», якщо n дорівнює нулю.",
+        en: "An integer n is given. Print a single character: + if n is positive, - if n is negative and 0 if n equals zero.",
+        tr: "Bir n tam sayısı veriliyor. Tek bir karakter yazdır: n pozitifse +, negatifse -, sıfırsa 0."
+      },
+      hint: {
+        uk: "Порівняй n з нулем у трьох гілках: if, elif та else.",
+        en: "Compare n with zero using three branches: if, elif and else.",
+        tr: "n sayısını sıfırla üç durumda karşılaştır: if, elif ve else."
+      },
+      starter: "n = int(input())\n",
+      tests: [
+        { in: "7\n", out: "+" },
+        { in: "-3\n", out: "-" },
+        { in: "0\n", out: "0" }
+      ]
+    },
+    {
+      id: "cmpwords", level: 1,
+      title: { uk: "Порівняй два числа", en: "Compare two numbers", tr: "İki sayıyı karşılaştır" },
+      text: {
+        uk: "На вхід надходять два цілих числа, кожне в окремому рядку. Порівняй перше з другим і виведи одне слово великими літерами: GREATER, якщо перше більше, LESS, якщо перше менше, і EQUAL, якщо числа рівні.",
+        en: "Two integers are given, one per line. Compare the first with the second and print one word in capital letters: GREATER if the first is larger, LESS if it is smaller and EQUAL if they are the same.",
+        tr: "Her biri ayrı satırda iki tam sayı veriliyor. İlk sayıyı ikinciyle karşılaştır ve büyük harfle tek kelime yazdır: ilki büyükse GREATER, küçükse LESS, eşitlerse EQUAL."
+      },
+      hint: {
+        uk: "Три випадки — три гілки умови: if, elif та else.",
+        en: "Three cases need three branches: if, elif and else.",
+        tr: "Üç durum için üç dal kullan: if, elif ve else."
+      },
+      starter: "a = int(input())\nb = int(input())\n",
+      tests: [
+        { in: "9\n4\n", out: "GREATER" },
+        { in: "2\n7\n", out: "LESS" },
+        { in: "5\n5\n", out: "EQUAL" }
+      ]
+    },
+    {
+      id: "clock", level: 1,
+      title: { uk: "Години й хвилини", en: "Hours and minutes", tr: "Saat ve dakika" },
+      text: {
+        uk: "На вхід надходить кількість хвилин m (від 0 до 1439). Виведи у першому рядку повну кількість годин, а у другому — решту хвилин.",
+        en: "A number of minutes m (from 0 to 1439) is given. Print the whole number of hours on the first line and the remaining minutes on the second.",
+        tr: "Dakika cinsinden bir süre m veriliyor (0 ile 1439 arası). İlk satıra tam saat sayısını, ikinci satıra kalan dakikayı yazdır."
+      },
+      hint: {
+        uk: "Години — ціла частина ділення m // 60, а решта хвилин — остача m % 60.",
+        en: "Hours are the integer quotient m // 60; the remaining minutes are the remainder m % 60.",
+        tr: "Saat sayısı tam bölüm m // 60, kalan dakika ise kalan m % 60 olur."
+      },
+      starter: "m = int(input())\n",
+      tests: [
+        { in: "125\n", out: "2\n5" },
+        { in: "0\n", out: "0\n0" },
+        { in: "200\n", out: "3\n20" }
+      ]
+    },
+    {
+      id: "strlength", level: 1,
+      title: { uk: "Довжина слова", en: "Length of a word", tr: "Kelimenin uzunluğu" },
+      text: {
+        uk: "На вхід надходить одне слово — рядок без пробілів. Виведи кількість літер у ньому.",
+        en: "A single word (a line without spaces) is given. Print the number of letters in it.",
+        tr: "Boşluksuz tek bir kelime veriliyor. İçindeki harf sayısını yazdır."
+      },
+      hint: {
+        uk: "Зчитай рядок через input() без int() і скористайся функцією len().",
+        en: "Read the line with input() without int(), then use the len() function.",
+        tr: "Satırı int() olmadan input() ile oku, sonra len() işlevini kullan."
+      },
+      starter: "s = input()\n",
+      tests: [
+        { in: "hello\n", out: "5" },
+        { in: "a\n", out: "1" },
+        { in: "programming\n", out: "11" }
+      ]
+    },
+    {
+      id: "discount", level: 1,
+      title: { uk: "Ціна зі знижкою", en: "Price with a discount", tr: "İndirimli fiyat" },
+      text: {
+        uk: "Товар коштує p грн, а знижка становить d відсотків. Розмір знижки в цілих гривнях обчислюється як p * d // 100. Виведи у першому рядку розмір знижки, а у другому — нову ціну товару.",
+        en: "An item costs p hryvnia and the discount is d percent. The discount amount in whole hryvnia is p * d // 100. Print the discount amount on the first line and the new price on the second.",
+        tr: "Bir ürünün fiyatı p, indirim oranı d yüzde olarak veriliyor. Tam birim cinsinden indirim tutarı p * d // 100 biçiminde hesaplanır. İlk satıra indirim tutarını, ikinci satıra yeni fiyatı yazdır."
+      },
+      hint: {
+        uk: "Спочатку обчисли розмір знижки й збережи його в змінну, а потім відніми цю змінну від початкової ціни.",
+        en: "First compute the discount amount and store it in a variable, then subtract it from the original price.",
+        tr: "Önce indirim tutarını hesapla ve bir değişkende sakla, sonra bunu başlangıç fiyatından çıkar."
+      },
+      starter: "p = int(input())\nd = int(input())\n",
+      tests: [
+        { in: "200\n10\n", out: "20\n180" },
+        { in: "100\n0\n", out: "0\n100" },
+        { in: "990\n15\n", out: "148\n842" }
+      ]
+    },    {
       id: "max3", level: 2,
       title: { uk: "Найбільше з трьох", en: "Largest of three", tr: "Üçünün en büyüğü" },
       text: {
@@ -252,6 +411,165 @@
       ]
     },
     {
+      id: "sumeven", level: 2,
+      title: { uk: "Сума парних від 1 до n", en: "Sum of even numbers", tr: "1'den n'ye kadar çift sayıların toplamı" },
+      text: {
+        uk: "На вхід надходить ціле число n (n ≥ 1). Виведи суму всіх парних чисел від 1 до n. Якщо парних чисел у цьому проміжку немає, виведи 0.",
+        en: "An integer n is given (n ≥ 1). Print the sum of all even numbers from 1 to n. If the range holds no even number, print 0.",
+        tr: "Bir n tam sayısı veriliyor (n ≥ 1). 1'den n'ye kadar tüm çift sayıların toplamını yazdır. Aralıkta çift sayı yoksa 0 yazdır."
+      },
+      hint: {
+        uk: "Цикл for i in range(2, n + 1, 2) перебере лише парні числа, бо крок 2 означає рух через одне число. Додавай кожне з них до змінної-накопичувача.",
+        en: "The loop for i in range(2, n + 1, 2) visits only even numbers, since step 2 moves one number at a time. Add each of them to an accumulator.",
+        tr: "for i in range(2, n + 1, 2) döngüsü yalnız çift sayıları dolaşır, çünkü 2 adımı bir sayı atlayarak ilerletir. Her sayıyı toplayan değişkene ekle."
+      },
+      starter: "n = int(input())\ntotal = 0\n",
+      tests: [
+        { in: "10\n", out: "30" },
+        { in: "1\n", out: "0" },
+        { in: "100\n", out: "2550" }
+      ]
+    },
+    {
+      id: "sumsq", level: 2,
+      title: { uk: "Сума квадратів", en: "Sum of squares", tr: "Karelerin toplamı" },
+      text: {
+        uk: "Ціле число n (n ≥ 1) надходить у першому рядку. Виведи значення суми 1² + 2² + … + n².",
+        en: "An integer n is given (n ≥ 1) on the first line. Print the value of the sum 1² + 2² + ... + n².",
+        tr: "İlk satırda bir n tam sayısı veriliyor (n ≥ 1). 1² + 2² + ... + n² toplamının değerini yazdır."
+      },
+      hint: {
+        uk: "У тілі циклу for i in range(1, n + 1) додавай до накопичувача не саме i, а квадрат числа i, тобто i * i.",
+        en: "Inside the loop for i in range(1, n + 1) add the square i * i to the accumulator instead of i itself.",
+        tr: "for i in range(1, n + 1) döngüsünün gövdesinde toplayana i yerine karesi olan i * i değerini ekle."
+      },
+      starter: "n = int(input())\ntotal = 0\n",
+      tests: [
+        { in: "3\n", out: "14" },
+        { in: "1\n", out: "1" },
+        { in: "10\n", out: "385" }
+      ]
+    },
+    {
+      id: "digitcount", level: 2,
+      title: { uk: "Скільки цифр у числі", en: "How many digits", tr: "Kaç basamak var" },
+      text: {
+        uk: "На вхід надходить ціле невід'ємне число n (0 ≤ n ≤ 1000000000). Виведи, скільки цифр містить його запис у десятковій системі. Число 0 складається з однієї цифри.",
+        en: "A non-negative integer n is given (0 ≤ n ≤ 1000000000). Print how many digits its decimal representation has. Zero counts as a single digit.",
+        tr: "Negatif olmayan bir n tam sayısı veriliyor (0 ≤ n ≤ 1000000000). Onluk gösteriminde kaç basamak olduğunu yazdır. Sıfır tek basamak sayılır."
+      },
+      hint: {
+        uk: "У циклі while відділяй по одній цифрі з кінця за допомогою n //= 10 і збільшуй лічильник. Має вийти так, щоб і для нуля відповідь дорівнювала 1.",
+        en: "In a while loop cut off one digit at a time from the right with n //= 10 and increase a counter. Make sure zero still yields the answer 1.",
+        tr: "while döngüsünde n //= 10 ile sağdan birer basamak at ve sayacı artır. Sıfır için de yanıtın 1 çıkmasını sağla."
+      },
+      starter: "n = int(input())\ncount = 0\n",
+      tests: [
+        { in: "512\n", out: "3" },
+        { in: "0\n", out: "1" },
+        { in: "1000000000\n", out: "10" }
+      ]
+    },
+    {
+      id: "multtable", level: 2,
+      title: { uk: "Рядок таблиці множення", en: "Multiplication table row", tr: "Çarpım tablosu satırı" },
+      text: {
+        uk: "Ціле число n (1 ≤ n ≤ 12) надходить у першому рядку. Виведи добутки n * 1, n * 2, …, n * 10 — по одному значенню в рядку, разом 10 рядків.",
+        en: "An integer n is given (1 ≤ n ≤ 12) on the first line. Print the products n * 1, n * 2, ..., n * 10, one value per line, 10 lines in total.",
+        tr: "İlk satırda bir n tam sayısı veriliyor (1 ≤ n ≤ 12). n * 1, n * 2, ..., n * 10 çarpımlarını satır başına bir değer olacak şekilde yazdır, toplam 10 satır."
+      },
+      hint: {
+        uk: "for i in range(1, 11) перебере множники від 1 до 10, а виклик print(n * i) виведе кожен добуток в окремому рядку.",
+        en: "for i in range(1, 11) walks the multipliers from 1 to 10, and the call print(n * i) outputs each product on its own line.",
+        tr: "for i in range(1, 11) döngüsü 1'den 10'a kadar çarpanları dolaşır, print(n * i) çağrısı her çarpımı ayrı satıra yazar."
+      },
+      starter: "n = int(input())\n",
+      tests: [
+        { in: "2\n", out: "2\n4\n6\n8\n10\n12\n14\n16\n18\n20" },
+        { in: "1\n", out: "1\n2\n3\n4\n5\n6\n7\n8\n9\n10" },
+        { in: "12\n", out: "12\n24\n36\n48\n60\n72\n84\n96\n108\n120" }
+      ]
+    },
+    {
+      id: "countpos", level: 2,
+      title: { uk: "Скільки додатних чисел", en: "Count the positive numbers", tr: "Kaç pozitif sayı" },
+      text: {
+        uk: "У першому рядку надходить кількість чисел n (0 ≤ n ≤ 100). У наступних n рядках записано по одному цілому числу. Виведи, скільки з них строго більші за нуль.",
+        en: "The first line gives the amount of numbers n (0 ≤ n ≤ 100). Each of the next n lines holds one integer. Print how many of them are strictly greater than zero.",
+        tr: "İlk satırda sayı adedi n (0 ≤ n ≤ 100) veriliyor. Sonraki n satırın her birinde bir tam sayı var. Kaçının sıfırdan kesin büyük olduğunu yazdır."
+      },
+      hint: {
+        uk: "Напиши цикл for _ in range(n), у тілі зчитуй чергове число x = int(input()) і збільшуй лічильник щоразу, коли x > 0.",
+        en: "Loop with for _ in range(n), read the next value inside the body as x = int(input()), and increase the counter whenever x > 0.",
+        tr: "for _ in range(n) döngüsü kur, gövdede sıradaki sayıyı x = int(input()) ile oku ve x > 0 oldukça sayacı bir artır."
+      },
+      starter: "n = int(input())\ncount = 0\n",
+      tests: [
+        { in: "5\n-2\n3\n0\n7\n-1\n", out: "2" },
+        { in: "1\n0\n", out: "0" },
+        { in: "8\n-5\n2\n-1\n2\n0\n9\n-3\n7\n", out: "4" }
+      ]
+    },
+    {
+      id: "mindiv", level: 2,
+      title: { uk: "Найменший дільник", en: "Smallest divisor", tr: "En küçük bölen" },
+      text: {
+        uk: "Дано ціле число n (2 ≤ n ≤ 1000000). Виведи його найменший дільник, більший за одиницю. Для простого числа таким дільником є воно саме.",
+        en: "An integer n is given (2 ≤ n ≤ 1000000). Print its smallest divisor greater than one. For a prime number that divisor is the number itself.",
+        tr: "Bir n tam sayısı veriliyor (2 ≤ n ≤ 1000000). Birden büyük en küçük bölenini yazdır. Asal sayıda bu bölen sayının kendisidir."
+      },
+      hint: {
+        uk: "Почни з d = 2 і в циклі while збільшуй d на одиницю, доки остача n % d не стане нулем: тоді d — шуканий дільник.",
+        en: "Start with d = 2 and increase it by one in a while loop until the remainder n % d becomes zero; that d is the answer.",
+        tr: "d = 2 ile başla ve n % d kalanı sıfır olana dek while döngüsünde d değerini bir artır; bulunan d yanıttır."
+      },
+      starter: "n = int(input())\nd = 2\n",
+      tests: [
+        { in: "15\n", out: "3" },
+        { in: "17\n", out: "17" },
+        { in: "91\n", out: "7" }
+      ]
+    },
+    {
+      id: "powloop", level: 2,
+      title: { uk: "Ступінь числа", en: "Power by loop", tr: "Döngüyle üs alma" },
+      text: {
+        uk: "У двох рядках надходять цілі числа: основа a (1 ≤ a ≤ 9) та показник b (0 ≤ b ≤ 12). Виведи a в степені b, не користуючись оператором **.",
+        en: "Two integers arrive, one per line: the base a (1 ≤ a ≤ 9) and the exponent b (0 ≤ b ≤ 12). Print a raised to the power b without using the ** operator.",
+        tr: "Ayrı satırlarda iki tam sayı veriliyor: taban a (1 ≤ a ≤ 9) ve üs b (0 ≤ b ≤ 12). ** operatörünü kullanmadan a sayısının b üssünü yazdır."
+      },
+      hint: {
+        uk: "Ініціалізуй result = 1 і помнож його на a рівно b разів. Коли b дорівнює 0, цикл не виконає жодного кроку, тому відповіддю буде 1.",
+        en: "Set result = 1 and multiply it by a exactly b times. When b is 0 the loop makes no iteration at all, so the answer stays 1.",
+        tr: "result = 1 değerini ver ve a ile tam b kez çarp. b sıfır ise döngü hiç çalışmaz, bu yüzden yanıt 1 kalır."
+      },
+      starter: "a = int(input())\nb = int(input())\nresult = 1\n",
+      tests: [
+        { in: "2\n10\n", out: "1024" },
+        { in: "5\n0\n", out: "1" },
+        { in: "9\n9\n", out: "387420489" }
+      ]
+    },
+    {
+      id: "div35", level: 2,
+      title: { uk: "Діляться і на 3, і на 5", en: "Divisible by 3 and 5", tr: "3 ve 5'e bölünenler" },
+      text: {
+        uk: "Ціле число n (15 ≤ n ≤ 1000) надходить у першому рядку. Виведи в окремих рядках усі цілі числа від 1 до n, які діляться без остачі одночасно на 3 і на 5, у порядку зростання.",
+        en: "An integer n is given (15 ≤ n ≤ 1000) on the first line. Print every integer from 1 to n that is divisible by both 3 and 5, one per line, in increasing order.",
+        tr: "İlk satırda bir n tam sayısı veriliyor (15 ≤ n ≤ 1000). Hem 3'e hem 5'e kalansız bölünen tüm sayıları artan sırada, satır başına bir tane yazdır."
+      },
+      hint: {
+        uk: "Перебери числа циклом for i in range(1, n + 1) і всередині перевір подвійну умову i % 3 == 0 і i % 5 == 0; їй відповідають саме числа, кратні 15.",
+        en: "Iterate with for i in range(1, n + 1) and test the double condition i % 3 == 0 and i % 5 == 0 inside the loop; exactly the multiples of 15 satisfy it.",
+        tr: "for i in range(1, n + 1) döngüsüyle sayıları dolaş ve gövdede i % 3 == 0 and i % 5 == 0 koşulunu denetle; bu koşula uyanlar 15'in katlarıdır."
+      },
+      starter: "n = int(input())\n",
+      tests: [
+        { in: "50\n", out: "15\n30\n45" },
+        { in: "15\n", out: "15" },
+        { in: "100\n", out: "15\n30\n45\n60\n75\n90" }
+      ]
+    },    {
       id: "fib", level: 3,
       title: { uk: "Число Фібоначчі", en: "Fibonacci number", tr: "Fibonacci sayısı" },
       text: {
@@ -370,7 +688,167 @@
         { in: "1\n5\n", out: "5" },
         { in: "3\n-1 -5 -2\n", out: "-1" }
       ]
-    }
+    },
+    {
+      id: "reversestr", level: 3,
+      title: { uk: "Перевернутий рядок", en: "Reversed string", tr: "Tersine çevrilmiş satır" },
+      text: {
+        uk: "Дано непорожній рядок, що складається з малих латинських літер та цифр без пробілів. Виведи той самий рядок у зворотному порядку.",
+        en: "A non-empty string made of lowercase Latin letters and digits, with no spaces, is given. Print the same string in reverse order.",
+        tr: "Boşluksuz, küçük Latin harfleri ve rakamlardan oluşan boş olmayan bir satır veriliyor. Aynı satırı ters sırada yazdır."
+      },
+      hint: {
+        uk: "Зріз s[::-1] повертає рядок, перевернутий навпаки: перший символ стає останнім.",
+        en: "The slice s[::-1] returns the string flipped: the first character becomes the last one.",
+        tr: "s[::-1] dilimi satırı tersine çevirir: ilk karakter son karakter olur."
+      },
+      starter: "s = input().strip()\n",
+      tests: [
+        { in: "python\n", out: "nohtyp" },
+        { in: "a\n", out: "a" },
+        { in: "abc123\n", out: "321cba" }
+      ]
+    },
+    {
+      id: "charcount", level: 3,
+      title: { uk: "Скільки разів трапляється символ", en: "Counting a character", tr: "Harf sayısı" },
+      text: {
+        uk: "У першому рядку дано текст із малих латинських літер та пробілів. У другому рядку — одна мала латинська літера. Виведи, скільки разів ця літера трапляється в тексті.",
+        en: "The first line holds a text made of lowercase Latin letters and spaces. The second line holds one lowercase Latin letter. Print how many times this letter occurs in the text.",
+        tr: "İlk satır küçük Latin harfleri ve boşluklarından oluşan bir metin, ikinci satır tek bir küçük Latin harfi içeriyor. Bu harfin metinde kaç kez geçtiğini yazdır."
+      },
+      hint: {
+        uk: "Метод s.count(x) повертає кількість входжень підрядка x у рядок s; якщо літери немає, він дасть 0.",
+        en: "The method s.count(x) returns how many times the substring x appears in s; if the letter is absent it gives 0.",
+        tr: "s.count(x) metodu, x alt dizisinin s içinde kaç kez geçtiğini döndürür; harf yoksa 0 verir."
+      },
+      starter: "s = input()\nc = input().strip()\n",
+      tests: [
+        { in: "hello world\nl\n", out: "3" },
+        { in: "python\nz\n", out: "0" },
+        { in: "mississippi\ns\n", out: "4" }
+      ]
+    },
+    {
+      id: "sortnums", level: 3,
+      title: { uk: "Числа за зростанням", en: "Sort the numbers", tr: "Sayıları sırala" },
+      text: {
+        uk: "У першому рядку дано кількість чисел n (1 ≤ n ≤ 100), у другому — n цілих чисел через пробіл (вони можуть бути від'ємними). Виведи ці самі числа, впорядковані за зростанням, через пробіл.",
+        en: "The first line contains the amount of numbers n (1 ≤ n ≤ 100), the second line contains n integers separated by spaces (they may be negative). Print the same numbers sorted in ascending order, separated by a single space.",
+        tr: "İlk satırda sayı adedi n (1 ≤ n ≤ 100), ikinci satırda boşlukla ayrılmış n tam sayı veriliyor (negatif olabilirler). Aynı sayıları artan sırada, tek boşlukla ayırarak yazdır."
+      },
+      hint: {
+        uk: "Метод nums.sort() впорядковує список на місці, а sorted(nums) повертає новий впорядкований список. Щоб надрукувати числа через пробіл, скористайся ' '.join(map(str, nums)).",
+        en: "The method nums.sort() orders the list in place, while sorted(nums) returns a new ordered list. To print the numbers separated by spaces use ' '.join(map(str, nums)).",
+        tr: "nums.sort() metodü listeyi yerinde sıralar, sorted(nums) ise yeni sıralı bir liste döndürür. Sayıları boşlukla yazmak için ' '.join(map(str, nums)) kullan."
+      },
+      starter: "n = int(input())\nnums = list(map(int, input().split()))\n",
+      tests: [
+        { in: "5\n3 1 4 1 5\n", out: "1 1 3 4 5" },
+        { in: "1\n7\n", out: "7" },
+        { in: "6\n-2 0 -7 5 3 -1\n", out: "-7 -2 -1 0 3 5" }
+      ]
+    },
+    {
+      id: "dedupe", level: 3,
+      title: { uk: "Слова без повторень", en: "Words without duplicates", tr: "Yinelenmeyen sözcükler" },
+      text: {
+        uk: "Дано один рядок, що складається зі слів із малих латинських літер, розділених одинарними пробілами. Виведи ці слова без повторень, зберігаючи порядок їхньої першої появи, через пробіл.",
+        en: "One line of words made of lowercase Latin letters and separated by single spaces is given. Print the words with duplicates removed, keeping the order of their first occurrence, separated by a single space.",
+        tr: "Küçük Latin harflerinden oluşan ve tek boşlukla ayrılmış sözcükleri içeren bir satır veriliyor. Yinelenenleri silip her sözcüğü ilk geçtiği sırayla, tek boşlukla ayrılmış olarak yazdır."
+      },
+      hint: {
+        uk: "Проходь по словах і додавай до нового списку лише ті, яких у ньому ще немає: if w not in seen.",
+        en: "Walk through the words and append to a new list only those that are not in it yet: if w not in seen.",
+        tr: "Sözcükleri dolaş ve yeni listeye yalnızca içinde henüz olmayanları ekle: if w not in seen."
+      },
+      starter: "s = input()\nwords = s.split()\n",
+      tests: [
+        { in: "to be or not to be\n", out: "to be or not" },
+        { in: "a a a a\n", out: "a" },
+        { in: "x y z y x w\n", out: "x y z w" }
+      ]
+    },
+    {
+      id: "longestword", level: 3,
+      title: { uk: "Найдовше слово", en: "The longest word", tr: "En uzun sözcük" },
+      text: {
+        uk: "Дано один рядок, що складається зі слів із малих латинських літер, розділених одинарними пробілами. Виведи найдовше слово. Якщо таких слів кілька, виведи те, що зустрічається найраніше.",
+        en: "One line of words made of lowercase Latin letters and separated by single spaces is given. Print the longest word. If several words share the maximum length, print the one that appears first.",
+        tr: "Küçük Latin harflerinden oluşan ve tek boşlukla ayrılmış sözcükleri içeren bir satır veriliyor. En uzun sözcüğü yazdır. Birkaç sözcük aynı en uzunlukta ise en erken geçenini yazdır."
+      },
+      hint: {
+        uk: "Тримай у змінній best слово-кандидата й заміняй його, лише коли довжина нового слова більша за довжину best — тоді перше з рівних слів і залишиться.",
+        en: "Keep a candidate word in best and replace it only when the new word is strictly longer, so the first word of equal length stays.",
+        tr: "Bir aday sözcüğü best değişkeninde tut ve yalnızca yeni sözcük katı biçimde daha uzunsa değiştir; böylece eşit uzunlukta ilki kalır."
+      },
+      starter: "s = input()\nwords = s.split()\n",
+      tests: [
+        { in: "write a long program\n", out: "program" },
+        { in: "hello\n", out: "hello" },
+        { in: "cat dog cow\n", out: "cat" }
+      ]
+    },
+    {
+      id: "secondmax", level: 3,
+      title: { uk: "Друге за величиною число", en: "Second largest number", tr: "En büyük ikinci sayı" },
+      text: {
+        uk: "У першому рядку дано кількість чисел n (2 ≤ n ≤ 50), у другому — n цілих чисел через пробіл; серед них є принаймні два різні. Виведи друге за величиною різне число, тобто найбільше значення, яке строго менше за максимум. Однакові числа вважай одним значенням.",
+        en: "The first line contains n (2 ≤ n ≤ 50), the second line contains n integers separated by spaces; at least two of them are distinct. Print the second largest distinct value, that is, the greatest number strictly smaller than the maximum. Equal numbers count as a single value.",
+        tr: "İlk satırda n (2 ≤ n ≤ 50), ikinci satırda boşlukla ayrılmış n tam sayı veriliyor; en az ikisi birbirinden farklıdır. Maksimumdan katı biçimde küçük olan en büyük değeri, yani farklı değerler arasındaki ikinci en büyüğünü yazdır. Eşit sayıları tek değer say."
+      },
+      hint: {
+        uk: "Спочатку знайди максимум першого елемента й оновлюй його в циклі, а потім одним проходом знайди найбільше значення, яке строго менше за цей максимум.",
+        en: "Find the maximum first, then make one more pass and keep the largest value that is strictly smaller than that maximum.",
+        tr: "Önce maksimumu bul, sonra bir kez daha dolaşarak bu maksimumdan katı biçimde küçük olan en büyük değeri tut."
+      },
+      starter: "n = int(input())\nnums = list(map(int, input().split()))\n",
+      tests: [
+        { in: "5\n1 5 2 5 3\n", out: "3" },
+        { in: "4\n7 7 3 3\n", out: "3" },
+        { in: "3\n-1 -1 -5\n", out: "-5" }
+      ]
+    },
+    {
+      id: "mostfreq", level: 3,
+      title: { uk: "Найчастіше число", en: "Most frequent number", tr: "En sık geçen sayı" },
+      text: {
+        uk: "У першому рядку дано кількість чисел n (1 ≤ n ≤ 100), у другому — n цілих чисел через пробіл. Виведи число, яке трапляється найчастіше. Якщо таких чисел кілька, виведи найменше з них.",
+        en: "The first line contains n (1 ≤ n ≤ 100), the second line contains n integers separated by spaces. Print the number that occurs most often. If several numbers share the highest frequency, print the smallest of them.",
+        tr: "İlk satırda n (1 ≤ n ≤ 100), ikinci satırda boşlukla ayrılmış n tam sayı veriliyor. En sık geçen sayıyı yazdır. Birkaç sayı en yüksek sıklığı paylaşırsa en küçüğünü yazdır."
+      },
+      hint: {
+        uk: "Збери частоти в словнику: counts[x] = counts.get(x, 0) + 1. Порівнюючи частоти, при рівних значеннях обери менше число.",
+        en: "Collect the frequencies in a dictionary: counts[x] = counts.get(x, 0) + 1. When two frequencies are equal, prefer the smaller value.",
+        tr: "Sıklıkları sözlükte topla: counts[x] = counts.get(x, 0) + 1. Sıklıklar eşitse daha küçük değeri seç."
+      },
+      starter: "n = int(input())\nnums = list(map(int, input().split()))\ncounts = {}\n",
+      tests: [
+        { in: "6\n1 2 2 3 3 3\n", out: "3" },
+        { in: "1\n42\n", out: "42" },
+        { in: "7\n-2 -2 -3 -3 4 4 -1\n", out: "-3" }
+      ]
+    },
+    {
+      id: "altsum", level: 3,
+      title: { uk: "Сума з чергуванням знаків", en: "Alternating sum", tr: "İşareti değişen toplam" },
+      text: {
+        uk: "У першому рядку дано кількість чисел n (1 ≤ n ≤ 100), у другому — n цілих чисел через пробіл. Додавай числа на непарних позиціях (перше, третє, ...) і віднімай числа на парних позиціях: a1 - a2 + a3 - a4 і так далі. Виведи отриманий результат.",
+        en: "The first line contains n (1 ≤ n ≤ 100), the second line contains n integers separated by spaces. Add the numbers at odd positions (first, third, ...) and subtract the numbers at even positions: a1 - a2 + a3 - a4 and so on. Print the result.",
+        tr: "İlk satırda n (1 ≤ n ≤ 100), ikinci satırda boşlukla ayrılmış n tam sayı veriliyor. Tek konumlardaki sayıları (birinci, üçüncü, ...) topla, çift konumlardakileri çıkar: a1 - a2 + a3 - a4 biçiminde devam et ve sonucu yazdır."
+      },
+      hint: {
+        uk: "Індекси починаються з 0, тому i % 2 == 0 відповідає додаванню. Можна й зрізами: nums[0::2] додати, nums[1::2] відняти.",
+        en: "Indices start at 0, so i % 2 == 0 means the number is added. Slices work too: add nums[0::2] and subtract nums[1::2].",
+        tr: "Dizinler 0'dan başladığı için i % 2 == 0 toplama demektir. Dilimle de olur: nums[0::2] topla, nums[1::2] çıkar."
+      },
+      starter: "n = int(input())\nnums = list(map(int, input().split()))\n",
+      tests: [
+        { in: "3\n1 2 3\n", out: "2" },
+        { in: "1\n9\n", out: "9" },
+        { in: "5\n-2 3 -4 1 5\n", out: "-5" }
+      ]
+    },
   ];
 
   let listEl, detailEl, codeEl, titleEl, textEl, exampleEl, resultsEl, statusEl;

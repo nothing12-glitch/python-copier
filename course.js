@@ -408,6 +408,23 @@
   function saveProgress(p) { localStorage.setItem(KEY_PREFIX + user(), JSON.stringify(p)); }
   function isDone(id) { const p = getProgress(); return !!(p[id] && p[id].solved); }
   function doneCount() { const p = getProgress(); return LESSONS.filter((e) => p[e.lesson.id] && p[e.lesson.id].solved).length; }
+
+  /* Воротар: урок відкритий лише після того, як розв'язано практику попереднього.
+     Вже пройдені уроки лишаються відкритими, щоб до них можна було повернутися. */
+  function indexOf(id) { return LESSONS.findIndex((e) => e.lesson.id === id); }
+  function prevLesson(id) {
+    const i = indexOf(id);
+    return i > 0 ? LESSONS[i - 1].lesson : null;
+  }
+  function isUnlocked(id) {
+    const i = indexOf(id);
+    if (i <= 0 || isDone(id)) return true;
+    return isDone(LESSONS[i - 1].lesson.id);
+  }
+  function gateText(id) {
+    const prev = prevLesson(id);
+    return t("course.lockedToast", { title: prev ? pick(prev.title) : "" });
+  }
   function draftKey(id) { return CODE_PREFIX + user() + "." + id; }
   function loadDraft(id, fallback) {
     const saved = localStorage.getItem(draftKey(id));
@@ -447,14 +464,20 @@
       const grid = el("div", "course-lessons");
       ch.lessons.forEach((lesson) => {
         const doneLesson = isDone(lesson.id);
-        const card = el("button", "course-lesson" + (doneLesson ? " done" : ""));
+        const unlocked = isUnlocked(lesson.id);
+        const card = el("button", "course-lesson" + (doneLesson ? " done" : "") + (unlocked ? "" : " locked"));
         card.type = "button";
-        card.appendChild(el("span", "material-icons course-lesson-ico", doneLesson ? "check_circle" : "play_circle_outline"));
+        card.appendChild(el("span", "material-icons course-lesson-ico",
+          doneLesson ? "check_circle" : (unlocked ? "play_circle_outline" : "lock")));
         const body = el("span", "course-lesson-body");
         body.appendChild(el("span", "course-lesson-title", pick(lesson.title)));
-        body.appendChild(el("span", "course-lesson-sub", doneLesson ? t("course.doneBadge") : t("course.startBadge")));
+        body.appendChild(el("span", "course-lesson-sub",
+          doneLesson ? t("course.doneBadge") : (unlocked ? t("course.startBadge") : t("course.lockedBadge"))));
         card.appendChild(body);
-        card.onclick = () => openLesson(lesson.id);
+        card.onclick = () => {
+          if (!unlocked) { toast(gateText(lesson.id)); sfx("error"); return; }
+          openLesson(lesson.id);
+        };
         grid.appendChild(card);
       });
       section.appendChild(grid);
@@ -469,6 +492,7 @@
   function openLesson(id) {
     const entry = LESSONS.find((e) => e.lesson.id === id);
     if (!entry) return;
+    if (!isUnlocked(id)) { toast(gateText(id)); sfx("error"); return; }
     current = entry.lesson;
     if (hintBoxEl) { hintBoxEl.innerHTML = ""; hintBoxEl.classList.add("hidden"); }
     if (resultsEl) resultsEl.innerHTML = "";
@@ -493,6 +517,7 @@
     const i = index();
     prevBtn.classList.toggle("hidden", i <= 0);
     nextBtn.classList.toggle("hidden", i >= TOTAL - 1);
+    nextBtn.classList.toggle("locked", i < TOTAL - 1 && !isDone(current.id));
     nextBtn.dataset.next = i < TOTAL - 1 ? LESSONS[i + 1].lesson.id : "";
 
     detailEl.classList.remove("hidden");
@@ -562,6 +587,7 @@
       }));
       toast("🎓 " + t("course.lessonToast", { title: pick(lesson.title) }));
       if (done >= TOTAL) toast("🏆 " + t("course.completeToast"));
+      renderDetail();
     }
   }
 
@@ -628,6 +654,7 @@
     const i = index();
     const next = LESSONS[i + dir];
     if (!next) return;
+    if (!isUnlocked(next.lesson.id)) { toast(gateText(next.lesson.id)); sfx("error"); return; }
     if (codeEl && current) saveDraft(current.id, codeEl.value);
     openLesson(next.lesson.id);
   }

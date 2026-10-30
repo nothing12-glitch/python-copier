@@ -1340,6 +1340,11 @@ body.reduce-motion .contest-timer-value.urgent { animation: none; }
 .course-lesson.done { border-color: rgba(166, 227, 161, .5); }
 .course-lesson-ico { font-size: 26px; color: var(--md-on-surface-var); }
 .course-lesson.done .course-lesson-ico { color: var(--md-success); }
+/* Воротар курсу: закриті уроки прив'ялені, але клік лишається робочим —
+   він показує, який саме урок треба розв'язати. */
+.course-lesson.locked, body[data-style="new"] .course-lesson.locked { opacity: .55; }
+.course-lesson.locked .course-lesson-ico { color: var(--md-outline); }
+#courseNext.locked { opacity: .45; }
 .course-lesson-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .course-lesson-title { font-size: 14px; font-weight: 500; }
 .course-lesson-sub { font-size: 12px; color: var(--md-on-surface-var); }

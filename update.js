@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.70";
+  const VERSION = "26.10.71";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.71": {
+      uk: [
+        "У курсі з'явився воротар: наступний урок відкривається лише після розв'язаної практики",
+        "Закриті уроки показують замок, а клік по них каже, який саме урок треба пройти спершу",
+        "Банк задач потрійнився: по 14 задач у кожному з трьох рівнів замість шести, разом 42",
+        "Усі нові задачі прогнано через автоперевірку — кожна проходить власні тести"
+      ],
+      en: [
+        "The course got a gatekeeper: the next lesson opens only after you solve its practice task",
+        "Locked lessons show a padlock, and tapping one tells you which lesson to finish first",
+        "The task bank has tripled: 14 tasks per level instead of six, 42 in total",
+        "Every new task was run through the automatic checker — all of them pass their own tests"
+      ],
+      tr: [
+        "Derse bir kapı bekçisi geldi: sonraki ders yalnızca alıştırması çözülünce açılıyor",
+        "Kilitli derslerde asma kilit görünüyor; dokununca önce hangi dersi bitirmen gerektiğini söylüyor",
+        "Soru bankası üç katına çıktı: her seviyede altı yerine 14 soru, toplam 42",
+        "Yeni soruların hepsi otomatik denetimden geçti — her biri kendi testlerini geçiyor"
+      ]
+    },
     "26.10.70": {
       uk: [
         "Прибрали зелену бульбку під іконкою активного розділу на телефоні — вона залишалася від старого дизайну «пігулки»",
