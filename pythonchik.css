@@ -1,0 +1,394 @@
+/* pythonchik.css — стилі маскота «Пайтончик».
+   Усі селектори префіксовані .pychik, щоб не перетинатися з наявними.
+   Кольори беруться зі змінних теми (--md-*, --nu-*), тому працюють
+   і в класичній темі, і в body[data-style="new"]. */
+
+.pychik {
+  --pychik-head: #4b8bbe;
+  --pychik-head-dark: #34648f;
+  --pychik-accent: #ffd43b;
+  --pychik-z: 1500;
+  position: static;
+}
+
+/* ---------- Кнопка-запускач ---------- */
+.pychik-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: var(--pychik-z);
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background: var(--md-primary, #6750a4);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, .55), var(--md-elev2, none);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  transition: transform .18s ease;
+}
+.pychik-fab:hover { transform: scale(1.06); }
+.pychik-fab:active { transform: scale(.96); }
+/* у режимі фокусу в тому ж куті висить плашка .focus-exit — ховаємо кнопку */
+body.focus-mode .pychik-fab { opacity: 0; pointer-events: none; }
+.pychik.pychik-open .pychik-fab { transform: scale(.92); opacity: .85; }
+.pychik-svg-fab { width: 44px; height: 44px; display: block; }
+
+@media (max-width: 768px) {
+  .pychik-fab {
+    bottom: calc(96px + var(--sat, 0px));
+    right: 14px;
+    width: 52px;
+    height: 52px;
+  }
+  .pychik-svg-fab { width: 40px; height: 40px; }
+}
+
+/* ---------- Панель ---------- */
+.pychik-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 92px;
+  z-index: var(--pychik-z);
+  width: min(340px, calc(100vw - 28px));
+  max-height: min(70vh, 560px);
+  display: flex;
+  flex-direction: column;
+  background: var(--nu-surface-solid, var(--md-surface, #14101f));
+  border: 1px solid var(--nu-line, var(--md-outline-var, rgba(255, 255, 255, .12)));
+  border-radius: 18px;
+  box-shadow: 0 18px 48px -12px rgba(0, 0, 0, .6), var(--md-elev3, none);
+  color: var(--md-on-surface, #e6e1ec);
+  opacity: 0;
+  transform: translateY(10px) scale(.92);
+  transform-origin: bottom right;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+  overflow: hidden;
+}
+.pychik-panel.pychik-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+@media (max-width: 768px) {
+  .pychik-panel {
+    right: 10px;
+    left: 10px;
+    width: auto;
+    bottom: calc(160px + var(--sat, 0px));
+    max-height: min(62vh, 480px);
+  }
+}
+
+.pychik-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--nu-line, var(--md-outline-var, rgba(255, 255, 255, .1)));
+  background: var(--nu-surface, rgba(255, 255, 255, .04));
+  flex: 0 0 auto;
+}
+.pychik-svg-head { width: 40px; height: 40px; flex: 0 0 auto; }
+.pychik-title {
+  flex: 1;
+  font-family: var(--md-font, inherit);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--md-on-surface, #e6e1ec);
+}
+.pychik-close {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--md-on-surface-var, #b8b2c4);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.pychik-close:hover { background: var(--nu-line, rgba(255, 255, 255, .1)); }
+
+/* ---------- Повідомлення ---------- */
+.pychik-msgs {
+  flex: 1 1 auto;
+  min-height: 120px;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scrollbar-width: thin;
+}
+.pychik-msg { display: flex; }
+.pychik-msg-bot { justify-content: flex-start; }
+.pychik-msg-user { justify-content: flex-end; }
+.pychik-bubble {
+  max-width: 88%;
+  padding: 8px 11px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  font-family: var(--md-font, inherit);
+  word-wrap: break-word;
+}
+.pychik-bubble-bot {
+  background: var(--nu-surface-2, var(--md-surface-dim, rgba(255, 255, 255, .07)));
+  border: 1px solid var(--nu-line-soft, var(--md-outline-var, rgba(255, 255, 255, .08)));
+  color: var(--md-on-surface, #e6e1ec);
+  border-bottom-left-radius: 4px;
+}
+.pychik-bubble-user {
+  background: var(--md-primary, #6750a4);
+  color: var(--md-on-primary, #fff);
+  border-bottom-right-radius: 4px;
+}
+
+/* ---------- Код і копіювання ---------- */
+.pychik-code { margin-top: 8px; position: relative; }
+.pychik-pre {
+  margin: 0;
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, .32);
+  border: 1px solid var(--nu-line, var(--md-outline-var, rgba(255, 255, 255, .12)));
+  color: #d7f5d7;
+  font-family: var(--md-mono, "Space Mono", ui-monospace, Consolas, monospace);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre;
+}
+body:not(.dark) .pychik-pre { background: rgba(0, 0, 0, .05); color: #1d3a1d; }
+.pychik-copy {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--nu-line, rgba(255, 255, 255, .18));
+  background: var(--nu-surface-solid, rgba(20, 16, 31, .8));
+  color: var(--md-on-surface-var, #cfc9db);
+  font-family: var(--md-font, inherit);
+  font-size: 10.5px;
+  cursor: pointer;
+  opacity: .85;
+}
+.pychik-copy:hover { opacity: 1; }
+
+/* ---------- Чіпи й підказки ---------- */
+.pychik-chips {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pychik-chips::-webkit-scrollbar { display: none; }
+.pychik-chip {
+  flex: 0 0 auto;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--nu-line-strong, var(--md-outline-var, rgba(255, 255, 255, .18)));
+  background: transparent;
+  color: var(--md-on-surface-var, #c9c3d5);
+  font-family: var(--md-font, inherit);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease;
+}
+.pychik-chip:hover {
+  border-color: var(--md-primary, #6750a4);
+  color: var(--md-on-surface, #e6e1ec);
+}
+.pychik-suggest { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.pychik-suggest-label {
+  font-size: 11.5px;
+  color: var(--md-on-surface-var, #a8a2b4);
+  margin-right: 2px;
+}
+
+/* ---------- Введення ---------- */
+.pychik-row {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px 12px;
+  border-top: 1px solid var(--nu-line, var(--md-outline-var, rgba(255, 255, 255, .08)));
+}
+.pychik-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--nu-line-strong, var(--md-outline-var, rgba(255, 255, 255, .18)));
+  background: var(--nu-surface, rgba(255, 255, 255, .05));
+  color: var(--md-on-surface, #e6e1ec);
+  font-family: var(--md-font, inherit);
+  font-size: 13.5px;
+  outline: none;
+}
+.pychik-input:focus { border-color: var(--md-primary, #6750a4); }
+.pychik-input::placeholder { color: var(--md-on-surface-var, #8f89a0); }
+.pychik-send {
+  flex: 0 0 auto;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--md-primary, #6750a4);
+  color: var(--md-on-primary, #fff);
+  font-family: var(--md-font, inherit);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter .15s ease;
+}
+.pychik-send:hover { filter: brightness(1.12); }
+
+/* ---------- Маскот: кольори SVG ---------- */
+.pychik-head,
+.pychik-tuft { fill: var(--pychik-head); }
+.pychik-tuft { fill: var(--pychik-accent); }
+.pychik-tail { stroke: var(--pychik-head-dark); }
+.pychik-sclera { fill: #ffffff; }
+.pychik-pupil { fill: #1c2430; }
+.pychik-lid {
+  fill: var(--pychik-head);
+  transform-box: fill-box;
+  transform-origin: top center;
+  transform: scaleY(0);
+}
+.pychik-cheek { stroke: var(--pychik-head-dark); }
+.pychik-mouth-smile { stroke: #1c2430; }
+.pychik-mouth-open { fill: #1c2430; stroke: #1c2430; }
+.pychik-mouth-sad { stroke: #1c2430; }
+.pychik-mouth-open,
+.pychik-mouth-sad { display: none; }
+.pychik-dots circle { fill: var(--pychik-accent); }
+
+/* ---------- Маскот: анімації ---------- */
+@keyframes pychik-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2.5px); }
+}
+@keyframes pychik-blink {
+  0%, 90%, 100% { transform: scaleY(0); }
+  94%, 96% { transform: scaleY(1); }
+}
+@keyframes pychik-tail-wag {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-5deg); }
+}
+@keyframes pychik-dot {
+  0%, 100% { opacity: .25; }
+  50% { opacity: 1; }
+}
+.pychik-body { animation: pychik-bob 3.2s ease-in-out infinite; }
+.pychik-tail {
+  transform-box: fill-box;
+  transform-origin: right center;
+  animation: pychik-tail-wag 3.2s ease-in-out infinite;
+}
+.pychik-lid { animation: pychik-blink 5.5s ease-in-out infinite; }
+.pychik-eye-r .pychik-lid { animation-delay: .04s; }
+.pychik-pupil { transform-box: fill-box; transition: transform .25s ease; }
+
+/* настрій: думає — погляд угору + крапки */
+.pychik.mood-think .pychik-pupil { transform: translate(1.5px, -2.5px); }
+.pychik.mood-think .pychik-dots { opacity: 1; }
+.pychik.mood-think .pychik-dots circle:nth-child(1) { animation: pychik-dot 1.1s ease-in-out infinite; }
+.pychik.mood-think .pychik-dots circle:nth-child(2) { animation: pychik-dot 1.1s ease-in-out .18s infinite; }
+.pychik.mood-think .pychik-dots circle:nth-child(3) { animation: pychik-dot 1.1s ease-in-out .36s infinite; }
+.pychik.mood-think .pychik-body { animation-duration: 2.2s; }
+
+/* настрій: радіє — відкритий рот */
+.pychik.mood-happy .pychik-mouth-smile { display: none; }
+.pychik.mood-happy .pychik-mouth-open { display: block; }
+.pychik.mood-happy .pychik-body { animation-duration: 1.6s; }
+
+/* настрій: засмутився — сумний рот, приспущені повіки */
+.pychik.mood-sad .pychik-mouth-smile { display: none; }
+.pychik.mood-sad .pychik-mouth-sad { display: block; }
+.pychik.mood-sad .pychik-lid { animation: none; transform: scaleY(.32); }
+.pychik.mood-sad .pychik-body { animation-duration: 4.6s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pychik-body,
+  .pychik-tail,
+  .pychik-lid,
+  .pychik-dots circle,
+  .pychik-fab,
+  .pychik-panel {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- Тур по сайту ---------- */
+.pychik-tour {
+  position: fixed;
+  right: 16px;
+  bottom: 120px;
+  z-index: calc(var(--pychik-z) + 20);
+  width: min(320px, calc(100vw - 24px));
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--nu-surface-solid, var(--md-surface, #14101f));
+  border: 1px solid var(--nu-line-strong, var(--md-outline-var, rgba(255, 255, 255, .16)));
+  border-top: 3px solid var(--md-primary, #6750a4);
+  box-shadow: 0 18px 48px -12px rgba(0, 0, 0, .65);
+  color: var(--md-on-surface, #e6e1ec);
+  font-family: var(--md-font, inherit);
+  opacity: 0;
+  transform: translateY(8px) scale(.95);
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.pychik-tour.pychik-tour-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.pychik-tour-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.pychik-tour-text { font-size: 13px; line-height: 1.5; color: var(--md-on-surface-var, #c9c3d5); margin-bottom: 12px; }
+.pychik-tour-foot { display: flex; align-items: center; gap: 8px; }
+.pychik-tour-count { flex: 1; font-size: 11.5px; color: var(--md-on-surface-var, #9a94a8); }
+.pychik-tour-skip,
+.pychik-tour-next {
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-family: var(--md-font, inherit);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: filter .15s ease, background .15s ease;
+}
+.pychik-tour-skip {
+  background: transparent;
+  border-color: var(--nu-line-strong, var(--md-outline-var, rgba(255, 255, 255, .2)));
+  color: var(--md-on-surface-var, #c9c3d5);
+}
+.pychik-tour-skip:hover { background: var(--nu-line, rgba(255, 255, 255, .08)); }
+.pychik-tour-next {
+  background: var(--md-primary, #6750a4);
+  color: var(--md-on-primary, #fff);
+}
+.pychik-tour-next:hover { filter: brightness(1.12); }
+@media (max-width: 768px) {
+  .pychik-tour {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    bottom: calc(160px + var(--sat, 0px));
+    top: auto !important;
+  }
+}

@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.71";
+  const VERSION = "26.10.72";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.72": {
+      uk: [
+        "На сайті оселився Пайтончик — власний помічник із анімованим обличчям у правому нижньому куті",
+        "Він відповідає на питання про print, змінні, умови, цикли, списки, словники й функції — без інтернету, усе працює офлайн",
+        "Скопіюй текст помилки з консолі в чат: Пайтончик пояснить, що сталося, і підкаже, як виправити",
+        "Є тур по сайту: він проводить усіма розділами й показує, де що шукати"
+      ],
+      en: [
+        "Pythonchik has moved in — the site's own helper with an animated face in the bottom-right corner",
+        "It answers questions about print, variables, conditions, loops, lists, dicts and functions — with no internet, everything works offline",
+        "Paste an error message from the console into the chat: Pythonchik explains what happened and how to fix it",
+        "There is a site tour: it walks you through every section and shows where to find what"
+      ],
+      tr: [
+        "Siteye Pythonchik taşındı — sağ alt köşede animasyonlu yüze sahip kendi yardımcısı",
+        "print, değişkenler, koşullar, döngüler, listeler, sözlükler ve fonksiyonlar hakkındaki soruları yanıtlıyor — internetsiz, her şey çevrimdışı çalışıyor",
+        "Konsoldaki hata metnini sohbete yapıştır: Pythonchik ne olduğunu açıklar ve nasıl düzeltileceğini söyler",
+        "Bir de site turu var: tüm bölümleri gezdirir ve neyin nerede olduğunu gösterir"
+      ]
+    },
     "26.10.71": {
       uk: [
         "У курсі з'явився воротар: наступний урок відкривається лише після розв'язаної практики",

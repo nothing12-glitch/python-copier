@@ -699,6 +699,7 @@
     try { decorateCards(); } catch (e) { console.warn("decorateCards", e); }
     try { bindGlobalSearch(); } catch (e) { console.warn("bindGlobalSearch", e); }
     try { bindMoreSheet(); } catch (e) { console.warn("bindMoreSheet", e); }
+    try { if (global.Pythonchik) global.Pythonchik.init(); } catch (e) { console.warn("Pythonchik", e); }
     try { bindFocusPicker(); } catch (e) { console.warn("bindFocusPicker", e); }
     try { updateNavProgress(); } catch (e) { console.warn("updateNavProgress", e); }
 
