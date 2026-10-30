@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.69";
+  const VERSION = "26.10.70";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.70": {
+      uk: [
+        "Прибрали зелену бульбку під іконкою активного розділу на телефоні — вона залишалася від старого дизайну «пігулки»",
+        "Тепер на вузькому екрані світиться лише сам пункт меню, як і задумано в новому інтерфейсі",
+        "У старому дизайні бульбка лишилася: там панель справді плаває, і їй є куди ховатися"
+      ],
+      en: [
+        "Removed the green bubble under the active section icon on the phone — it was left over from the old \"pill\" design",
+        "On a narrow screen only the menu item itself now lights up, just as the new interface intends",
+        "The old design keeps its bubble: there the panel really does float, so it has room to hide"
+      ],
+      tr: [
+        "Telefonda aktif bölüm simgesinin altındaki yeşil kabarcık kaldırıldı — eski \"hap\" tasarımından kalmıştı",
+        "Artık dar ekranda yalnızca menü öğesinin kendisi yanıyor, yeni arayüzün istediği gibi",
+        "Eski tasarımda kabarcık kalıyor: orada panel gerçekten yüzen bir yapıda, gizlenecek yeri var"
+      ]
+    },
     "26.10.69": {
       uk: [
         "Перевірили сайт на справжньому телефоні: автозавантаження модулів працює так само, як на комп'ютері",
