@@ -3,10 +3,36 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.66";
+  const VERSION = "26.10.67";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.67": {
+      uk: [
+        "Підказка «запусти код ще раз — довантажиться сам» нарешті не бреше: пакети просто з PyPI («art», «pyfiglet», «emoji»…) сайт ставить сам через «micropip»",
+        "Достатньо одного запуску: код з «import art» одразу друкує банер, нікуди натискати не треба",
+        "Перед встановленням сайт перевіряє, чи модуль уже є на диску, тому не тягне його повторно й не витрачає трафік даремно",
+        "Авто-встановлене записується в історію, тож картка модуля в магазинчику одразу стає «Встановлено»",
+        "Не вийшло довантажити — окремий рядок із пропозицією поставити вручну, а не сам трейсбек",
+        "Слова «Pyodide довантажить його сам» замінено на «сайт довантажить його сам» — бо тепер це робить не лише Pyodide"
+      ],
+      en: [
+        "The hint \"run the code again and it will load itself\" no longer lies: packages straight off PyPI (\"art\", \"pyfiglet\", \"emoji\"…) are now installed by the site itself through micropip",
+        "One run is enough: code with \"import art\" prints the banner right away, no button to press anywhere",
+        "Before installing, the site checks whether the module already sits on disk, so it never re-fetches it or wastes bandwidth",
+        "Auto-installs are written to history, so the module card in the shop turns to \"Installed\" at once",
+        "If a package cannot be loaded, you get a separate line offering a manual install instead of a bare traceback",
+        "\"Pyodide will load it for you\" became \"the site will load it for you\" — since it is no longer Pyodide alone"
+      ],
+      tr: [
+        "\"Kodu yeniden çalıştır, kendisi yüklenir\" ipucu artık yalan söylemiyor: PyPIʼden gelen paketler (\"art\", \"pyfiglet\", \"emoji\"…) site tarafından micropip ile kuruluyor",
+        "Tek çalıştırma yeterlidir: \"import art\" içeren kod afişi hemen basıyor, hiçbir düğmeye dokunman gerekmiyor",
+        "Kurmadan önce site modülün diskte olup olmadığına bakıyor, böylece onu tekrar indirmiyor ve bant genişliğini boşa harcamıyor",
+        "Otomatik kurulumlar geçmişe yazılıyor, bu yüzden mağazadaki modül kartı hemen \"Kurulu\" oluyor",
+        "Yüklenemezse ham izleme hatası yerine elle kurmayı öneren ayrı bir satır görünüyor",
+        "\"Pyodide senin için yükler\" sözü \"site senin için yükler\" oldu — çünkü artık bunu yalnızca Pyodide yapmıyor"
+      ]
+    },
     "26.10.66": {
       uk: [
         "Написали власні рушії tkinter і turtle — Pyodide у браузері їх не постачає, тож тепер обидва працюють справді",

@@ -647,6 +647,52 @@
     } catch (e) {
       setOutput("Попередження: не вдалось довантажити деякі модулі: " + e.message, true);
     }
+    await loadPypiFromCode(code);
+  }
+
+  /* ---------- Те, чого немає у реєстрі Pyodide, але є у нашому каталозі ---------- */
+  // `loadPackagesFromImports` знає лише власні пакети Pyodide. Чисті Python-пакети
+  // з PyPI тягне micropip — інакше підказка «запусти ще раз» була б брехнею.
+  const pypiAuto = {};
+
+  function importRoots(code) {
+    const roots = {};
+    const re = /^[ \t]*(?:import|from)[ \t]+([A-Za-z_][\w.]*)/gm;
+    let m;
+    while ((m = re.exec(code))) roots[m[1].split(".")[0]] = true;
+    return Object.keys(roots);
+  }
+
+  // find_spec нічого не виконує — лише питає, чи модуль уже на диску
+  async function modulePresent(root) {
+    try {
+      return await py.runPythonAsync(
+        "import importlib.util\n" +
+        "try:\n    _pg_spec = importlib.util.find_spec(" + JSON.stringify(root) + ")\n" +
+        "except Exception:\n    _pg_spec = None\n" +
+        "_pg_spec is not None\n");
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function loadPypiFromCode(code) {
+    if (!global.Modules || !global.Modules.pypiFor) return;
+    if (global.Modules.ensureCatalog) await global.Modules.ensureCatalog();
+    for (const root of importRoots(code)) {
+      if (UNSUPPORTED_MODULES[root]) continue;
+      const pkg = global.Modules.pypiFor(root);
+      if (!pkg || pypiAuto[pkg] || await modulePresent(root)) continue;
+      pypiAuto[pkg] = true;
+      setOutput("📦 " + global.I18n.t("python.autoPypi", { pkg }));
+      try {
+        await installPypi(pkg);
+        if (global.Installer && global.Installer.remember) global.Installer.remember([pkg]);
+      } catch (e) {
+        delete pypiAuto[pkg];
+        setOutput("💡 " + global.I18n.t("python.autoPypiFail", { pkg }), true);
+      }
+    }
   }
 
   /* ---------- Встановлення пакетів із каталогу модулів ---------- */

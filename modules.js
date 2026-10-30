@@ -499,6 +499,19 @@
     return true;
   }
 
+  // Реєстр тягнуть лише коли користувач відкриває «Модулі», а авто-довантаження
+  // з коду може статися раніше — тож за потреби підганяємо його самі.
+  let lockPromise = null;
+  function ensureCatalog() {
+    if (packages.length) return Promise.resolve(true);
+    if (!lockPromise) {
+      lockPromise = fetchLock(false)
+        .catch(() => false)
+        .then((ok) => { lockPromise = null; return ok; });
+    }
+    return lockPromise;
+  }
+
   /* Власні модулі сайту: їх робить pygui.js, тож встановлення не потрібне */
   const OWN = {
     "turtle": {
@@ -1211,8 +1224,17 @@
     return direct ? direct.name : null;
   }
 
+  /* Той самий модуль, але лише якщо пакет живе на PyPI: саме такі не знає
+     `loadPackagesFromImports`, і їх тягне micropip. */
+  function pypiFor(importName) {
+    const name = providerFor(importName);
+    if (!name) return null;
+    const pkg = packages.find((p) => p.name === name);
+    return pkg && pkg.src === "pypi" ? name : null;
+  }
+
   global.Modules = {
-    init, render, load, providerFor, lookup: lookupPypi,
+    init, render, load, providerFor, pypiFor, ensureCatalog, lookup: lookupPypi,
     installed: () => installedNow.slice(),
     all: () => packages.slice(),
     ext: () => Object.keys(EXT),
