@@ -48,6 +48,7 @@
       "python.code": "Код", "python.clear": "Очистити", "python.run": "Запуск",
       "python.output": "Вивід", "python.clearOut": "Очистити", "python.hints": "Підказки",
       "python.full": "На весь екран", "python.exitFull": "Вийти з повного екрана",
+      "gui.clear": "Очистити", "gui.closeWin": "Закрити вікно",
       "python.running": "Виконання…",
       "python.copy": "Копіювати код", "python.savePy": "Зберегти як .py",
       "python.copied": "Код скопійовано", "python.copyFail": "Не вдалося скопіювати код",
@@ -180,7 +181,7 @@
       "modules.retry": "Повторити",
       "modules.loadError": "Не вдалось завантажити каталог: {msg}",
       "modules.filterPypi": "Розширення PyPI",
-      "modules.srcPypi": "PyPI", "modules.srcPyodide": "Pyodide",
+      "modules.srcPypi": "PyPI", "modules.srcPyodide": "Pyodide", "modules.srcOwn": "Вбудовано", "modules.ownNote": "Модулі малювання та інтерфейсів, які сайт робить сам", "modules.noInstall": "Не треба встановлювати",
       "modules.installPypi": "Встановити з PyPI",
       "modules.installedPypiToast": "Пакет {name} встановлено з PyPI",
       "modules.pypiPrompt": "У реєстрі Pyodide такого немає — зате він може бути на PyPI.",
@@ -477,6 +478,7 @@
       "python.code": "Code", "python.clear": "Clear", "python.run": "Run",
       "python.output": "Output", "python.clearOut": "Clear", "python.hints": "Hints",
       "python.full": "Fullscreen", "python.exitFull": "Leave fullscreen",
+      "gui.clear": "Clear", "gui.closeWin": "Close window",
       "python.running": "Running…",
       "python.copy": "Copy code", "python.savePy": "Save as .py",
       "python.copied": "Code copied", "python.copyFail": "Could not copy the code",
@@ -609,7 +611,7 @@
       "modules.retry": "Retry",
       "modules.loadError": "Could not load the catalog: {msg}",
       "modules.filterPypi": "PyPI extras",
-      "modules.srcPypi": "PyPI", "modules.srcPyodide": "Pyodide",
+      "modules.srcPypi": "PyPI", "modules.srcPyodide": "Pyodide", "modules.srcOwn": "Built-in", "modules.ownNote": "Drawing and GUI modules the site runs itself", "modules.noInstall": "No install needed",
       "modules.installPypi": "Install from PyPI",
       "modules.installedPypiToast": "{name} installed from PyPI",
       "modules.pypiPrompt": "The Pyodide registry has none of these — but PyPI might.",
@@ -912,6 +914,7 @@
       "python.code": "Kod", "python.clear": "Temizle", "python.run": "Çalıştır",
       "python.output": "Çıktı", "python.clearOut": "Temizle", "python.hints": "İpuçları",
       "python.full": "Tam ekran", "python.exitFull": "Tam ekrandan çık",
+      "gui.clear": "Temizle", "gui.closeWin": "Pencereyi kapat",
       "python.running": "Çalışıyor…",
       "python.copy": "Kodu kopyala", "python.savePy": ".py olarak kaydet",
       "python.copied": "Kod kopyalandı", "python.copyFail": "Kod kopyalanamadı",
@@ -1044,7 +1047,7 @@
       "modules.retry": "Yeniden dene",
       "modules.loadError": "Katalog yüklenemedi: {msg}",
       "modules.filterPypi": "PyPI ekleri",
-      "modules.srcPypi": "PyPI", "modules.srcPyodide": "Pyodide",
+      "modules.srcPypi": "PyPI", "modules.srcPyodide": "Pyodide", "modules.srcOwn": "Yerleşik", "modules.ownNote": "Sitenin kendi çalıştırdığı çizim ve arayüz modülleri", "modules.noInstall": "Kurulum gerekmez",
       "modules.installPypi": "PyPI'den kur",
       "modules.installedPypiToast": "{name} PyPI'den kuruldu",
       "modules.pypiPrompt": "Pyodide kaydında yok — ama PyPI'de olabilir.",
@@ -1369,6 +1372,7 @@
       "focus.pickNone": "Kein Fokus",
       "focus.exit": "Fokus beenden",
       "python.full": "Vollbild",
+      "gui.clear": "Leeren", "gui.closeWin": "Fenster schließen",
       "python.exitFull": "Vollbild beenden"
     },
     pl: {
@@ -1440,6 +1444,7 @@
       "focus.pickNone": "Bez skupienia",
       "focus.exit": "Wyjdź ze skupienia",
       "python.full": "Pełny ekran",
+      "gui.clear": "Wyczyść", "gui.closeWin": "Zamknij okno",
       "python.exitFull": "Opuść pełny ekran"
     },
     es: {
@@ -1511,6 +1516,7 @@
       "focus.pickNone": "Sin enfoque",
       "focus.exit": "Salir del enfoque",
       "python.full": "Pantalla completa",
+      "gui.clear": "Limpiar", "gui.closeWin": "Cerrar ventana",
       "python.exitFull": "Salir de pantalla completa"
     },
     fr: {
@@ -1582,6 +1588,7 @@
       "focus.pickNone": "Sans focus",
       "focus.exit": "Quitter le focus",
       "python.full": "Plein écran",
+      "gui.clear": "Effacer", "gui.closeWin": "Fermer la fenêtre",
       "python.exitFull": "Quitter le plein écran"
     },
     ja: {
@@ -1653,6 +1660,7 @@
       "focus.pickNone": "フォーカス解除",
       "focus.exit": "フォーカスを終了",
       "python.full": "全画面",
+      "gui.clear": "クリア", "gui.closeWin": "ウィンドウを閉じる",
       "python.exitFull": "全画面を終了"
     },
     it: {
@@ -1763,6 +1771,7 @@
       "focus.pickNone": "Fuoco disattivo",
       "focus.exit": "Esci dal fuoco",
       "python.full": "Schermo intero",
+      "gui.clear": "Pulisci", "gui.closeWin": "Chiudi finestra",
       "python.exitFull": "Esci dallo schermo intero"
     },
     pt: {
@@ -1873,6 +1882,7 @@
       "focus.pickNone": "Sem foco",
       "focus.exit": "Sair do foco",
       "python.full": "Tela cheia",
+      "gui.clear": "Limpar", "gui.closeWin": "Fechar janela",
       "python.exitFull": "Sair da tela cheia"
     },
     zh: {
@@ -1983,6 +1993,7 @@
       "focus.pickNone": "未专注",
       "focus.exit": "退出专注",
       "python.full": "全屏",
+      "gui.clear": "清除", "gui.closeWin": "关闭窗口",
       "python.exitFull": "退出全屏"
     },
     ko: {
@@ -2093,6 +2104,7 @@
       "focus.pickNone": "집중 안 함",
       "focus.exit": "집중 종료",
       "python.full": "전체 화면",
+      "gui.clear": "지우기", "gui.closeWin": "창 닫기",
       "python.exitFull": "전체 화면 종료"
     },
     hi: {
@@ -2203,6 +2215,7 @@
       "focus.pickNone": "फ़ोकस बंद",
       "focus.exit": "फ़ोकस से बाहर",
       "python.full": "फ़ुलस्क्रीन",
+      "gui.clear": "साफ़ करें", "gui.closeWin": "विंडो बंद करें",
       "python.exitFull": "फ़ुलस्क्रीन से बाहर"
     },
     cs: {
@@ -2313,6 +2326,7 @@
       "focus.pickNone": "Bez soustředění",
       "focus.exit": "Ukončit soustředění",
       "python.full": "Celá obrazovka",
+      "gui.clear": "Vymazat", "gui.closeWin": "Zavřít okno",
       "python.exitFull": "Ukončit celou obrazovku"
     },
     sv: {
@@ -2423,6 +2437,7 @@
       "focus.pickNone": "Inget fokus",
       "focus.exit": "Avsluta fokus",
       "python.full": "Helskärm",
+      "gui.clear": "Rensa", "gui.closeWin": "Stäng fönster",
       "python.exitFull": "Avsluta helskärm"
     },
     nl: {
@@ -2533,6 +2548,7 @@
       "focus.pickNone": "Geen focus",
       "focus.exit": "Focus beëindigen",
       "python.full": "Beeldvullend",
+      "gui.clear": "Wissen", "gui.closeWin": "Venster sluiten",
       "python.exitFull": "Volledig scherm verlaten"
     },
     hu: {
@@ -2643,6 +2659,7 @@
       "focus.pickNone": "Nincs fókusz",
       "focus.exit": "Fókusz kilépése",
       "python.full": "Teljes képernyő",
+      "gui.clear": "Törlés", "gui.closeWin": "Ablak bezárása",
       "python.exitFull": "Kilépés a teljes képernyőből"
     },
     ro: {
@@ -2753,6 +2770,7 @@
       "focus.pickNone": "Fără focus",
       "focus.exit": "Ieși din focus",
       "python.full": "Ecran complet",
+      "gui.clear": "Șterge", "gui.closeWin": "Închide fereastra",
       "python.exitFull": "Ieșire din ecran complet"
     },
     id: {
@@ -2863,6 +2881,7 @@
       "focus.pickNone": "Tanpa fokus",
       "focus.exit": "Keluar dari fokus",
       "python.full": "Layar penuh",
+      "gui.clear": "Bersihkan", "gui.closeWin": "Tutup jendela",
       "python.exitFull": "Keluar dari layar penuh"
     },
     el: {
@@ -2973,6 +2992,7 @@
       "focus.pickNone": "Χωρίς εστίαση",
       "focus.exit": "Έξοδος από εστίαση",
       "python.full": "Πλήρης οθόνη",
+      "gui.clear": "Καθαρισμός", "gui.closeWin": "Κλείσιμο παραθύρου",
       "python.exitFull": "Έξοδος από πλήρη οθόνη"
     }
   };

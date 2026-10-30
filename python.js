@@ -600,6 +600,9 @@
         });
       }
       py = await global.loadPyodide({ indexURL: PYODIDE_URL });
+      if (global.PyGui && global.PyGui.install) {
+        try { await global.PyGui.install(py); } catch (e) { console.warn("[PyGui] не вдалось вставити turtle/tkinter:", e); }
+      }
       return py;
     })();
     return pyPromise;
@@ -607,14 +610,13 @@
 
   /* ---------- Модулі: авто-довантаження з імпортів коду ---------- */
   // Модулі, яких у Pyodide немає взагалі (браузерні обмеження) — даємо зрозумілу підказку
+  // tkinter і turtle тут були: тепер їх робить власний рушій pygui.js
   const UNSUPPORTED_MODULES = {
-    tkinter: "tkinter (графічний інтерфейс) не працює у браузері. Спробуй намалювати інтерфейс через matplotlib або вивести результат текстом.",
     PyQt5: "PyQt5 не працює у браузері. Графічний інтерфейс у Pyodide обмежений — виводи результат текстом або через matplotlib.",
     PyQt6: "PyQt6 не працює у браузері. Графічний інтерфейс у Pyodide обмежений — виводи результат текстом або через matplotlib.",
     wx: "wxPython не працює у браузері. Виводи результат текстом або через matplotlib.",
     kivy: "Kivy не працює у браузері. Виводи результат текстом або через matplotlib.",
-    selenium: "selenium не працює у браузері (немає доступу до драйвера браузера).",
-    turtle: "turtle потребує tkinter, якого у браузері немає. Для графіки візьми matplotlib — він малює прямо на сторінці."
+    selenium: "selenium не працює у браузері (немає доступу до драйвера браузера)."
   };
   function unsupportedHint(code) {
     const hits = [];
@@ -788,6 +790,9 @@
 
   async function run() {
     out.innerHTML = "";
+    if (global.PyGui) {
+      try { global.PyGui.reset(); } catch (e) { console.warn("[PyGui] reset", e); }
+    }
     runBtn.disabled = true;
     global.Audio2 && global.Audio2.SFX.click();
     showLintWarnings(codeEl.value);
@@ -811,6 +816,10 @@
       return;
     }
     if (firstLoad) { lastLoadMs = performance.now() - t0; renderExecInfo(); }
+    // після скидання GUI-стану Python-боки мають отримати свіжі модулі turtle/tkinter
+    if (global.PyGui && global.PyGui.install && /\b(?:import|from)\s+(?:turtle|tkinter)\b/.test(codeEl.value)) {
+      try { await global.PyGui.install(py, true); } catch (e) { console.warn("[PyGui] install", e); }
+    }
     setStatus("loading");
     await loadModulesFromCode(codeEl.value);
     setStatus("running");

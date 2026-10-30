@@ -3,10 +3,39 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.65";
+  const VERSION = "26.10.66";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.66": {
+      uk: [
+        "Написали власні рушії tkinter і turtle — Pyodide у браузері їх не постачає, тож тепер обидва працюють справді",
+        "turtle: рух з анімацією, заповнені многокутники й кола, stamp, dot, write, клавіші onkey і онлайновий ontimer — усе на звичайній canvas",
+        "tkinter: Frame, Label, Entry, Button, Scale, Checkbutton, Radiobutton і Text з pack, grid, place — вікно збирається прямо на сторінці",
+        "StringVar і родинні змінні живі в обидва боки: зміна в коді одразу видно в полі, а набране в полі повертається у Python",
+        "messagebox показує справжнє вікно, а askyesno, askstring та решта чесно пояснюють, що відповідь зʼявиться виводом нижче",
+        "Обидва модулі виросли в магазинчикі з чіпом «Вбудовано»: ставити нічого не треба, вага — нуль, зате є кнопка «Приклад»",
+        "Клік по «Приклад» переносить готовий код одразу в редактор Python-майданчика — можна запускати, не друкуючи нічого самостійно"
+      ],
+      en: [
+        "Built our own tkinter and turtle engines — Pyodide ships neither in the browser, so now both genuinely work",
+        "turtle: animated motion, filled polygons and circles, stamp, dot, write, onkey bindings and a live ontimer — all on a plain canvas",
+        "tkinter: Frame, Label, Entry, Button, Scale, Checkbutton, Radiobutton and Text with pack, grid and place — the window is assembled right on the page",
+        "StringVar and friends are live in both directions: a change in code shows up in the field at once, and what you type comes back to Python",
+        "messagebox opens a real dialog, while askyesno, askstring and the rest honestly explain that the answer lands in the output below",
+        "Both modules grew cards in the shop with a “Built in” chip: nothing to install, zero weight, but there is a “Example” button",
+        "Clicking “Example” drops the ready code straight into the Python playground editor — run it without typing a line yourself"
+      ],
+      tr: [
+        "Kendi tkinter ve turtle motorlarımızı yazdık — Pyodide bunları tarayıcıda sunmuyor, artık ikisi de gerçekten çalışıyor",
+        "turtle: hareketli çizim, dolgulu çokgenler ve daireler, stamp, dot, write, onkey tuşları ve canlı ontimer — hepsi düz tuval üzerinde",
+        "tkinter: Frame, Label, Entry, Button, Scale, Checkbutton, Radiobutton ve Text; pack, grid, place ile pencere sayfanın üstünde kuruluyor",
+        "StringVar ve akrabaları iki yönlü canlı: kodda yapılan değişiklik hemen alana yansır, alana yazılan da Pythonʼa döner",
+        "messagebox gerçek bir pencere açar; askyesno, askstring ve diğerleri dürüstçe cevabın aşağıdaki çıktıda görüneceğini anlatır",
+        "İki modül de mağazada “Yerleşik” etiketiyle büyüyor: kurulacak bir şey yok, ağırlık sıfır, ama bir “Örnek” düğmesi var",
+        "“Örnek”e tıklamak hazır kodu doğrudan Python sahnesi editörüne taşır — kendi başına tek satır yazmadan çalıştırabilirsin"
+      ]
+    },
     "26.10.65": {
       uk: [
         "Новий розділ «Допомога» в меню: короткі відповіді на часті питання й повна історія оновлень",

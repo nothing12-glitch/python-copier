@@ -2076,3 +2076,247 @@ body.vlt-noscroll { overflow: hidden; }
   width: 7px; height: 7px; border-radius: 50%;
   background: color-mix(in srgb, var(--md-primary) 65%, transparent);
 }
+
+/* ========== turtle і tkinter (pygui.js) ========== */
+.pg-block {
+  --pg-bg: #dddddd;
+  --pg-fg: #111111;
+  --pg-edge: #b0b0b0;
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 12px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--pg-bg);
+  color: var(--pg-fg);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+}
+.pg-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: color-mix(in srgb, var(--pg-bg) 82%, #000 18%);
+  border-bottom: 1px solid var(--pg-edge);
+}
+.pg-ico { font-size: 18px; line-height: 1; }
+.pg-title {
+  flex: 1 1 auto;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pg-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--pg-edge);
+  border-radius: 6px;
+  background: var(--pg-bg);
+  color: var(--pg-fg);
+  font: inherit;
+  font-size: 13px;
+  padding: 3px 9px;
+  cursor: pointer;
+}
+.pg-mini:hover { background: color-mix(in srgb, var(--pg-bg) 88%, #000 12%); }
+.pg-mini .material-icons { font-size: 17px; }
+.pg-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #f0f0f0;
+}
+.pg-block.pg-big {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  margin: 0;
+  border-radius: 0;
+}
+.pg-block.pg-big .pg-canvas { height: calc(100vh - 44px); }
+
+/* ---- tkinter: вікно ---- */
+.pgtk-win {
+  --pk-bg: #dddddd;
+  --pk-fg: #111111;
+  display: inline-block;
+  min-width: 200px;
+  max-width: 100%;
+  margin: 12px 0;
+  border: 1px solid #9a9a9a;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--pk-bg);
+  color: var(--pk-fg);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .3);
+  animation: pgtkIn .16s ease-out;
+}
+@keyframes pgtkIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+.pgtk-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  background: linear-gradient(#4b74b8, #2f5597);
+  color: #fff;
+}
+.pgtk-dots {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffd27a, #e0912f);
+}
+.pgtk-title { flex: 1 1 auto; font-size: 13px; font-weight: 600; }
+.pgtk-x {
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px 7px;
+  cursor: pointer;
+}
+.pgtk-x:hover { background: rgba(255, 255, 255, .22); }
+.pgtk-body {
+  position: relative;
+  display: block;
+  padding: 10px;
+  min-height: 40px;
+  background: var(--pk-bg);
+  color: var(--pk-fg);
+}
+
+/* ---- компонування ---- */
+.pgtk-packcol { display: flex; flex-direction: column; align-items: flex-start; }
+.pgtk-packrow { display: flex; flex-direction: row; align-items: center; }
+.pgtk-grid { display: grid; gap: 0; align-items: center; }
+
+/* ---- віджети ---- */
+.pgtk-frame, .pgtk-lfbody { display: block; }
+.pgtk-labelframe {
+  border: 1px solid #9a9a9a;
+  border-radius: 6px;
+  padding: 10px 8px 8px;
+  position: relative;
+  margin-top: 8px;
+}
+.pgtk-cap {
+  position: absolute;
+  top: -9px;
+  left: 8px;
+  padding: 0 5px;
+  background: var(--pk-bg, #dddddd);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.pgtk-label {
+  padding: 2px 4px;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.pgtk-button {
+  font: inherit;
+  color: inherit;
+  padding: 5px 14px;
+  border: 2px outset #f2f2f2;
+  border-radius: 4px;
+  background: #e6e6e6;
+  cursor: pointer;
+}
+.pgtk-button:hover { background: #dcdcdc; }
+.pgtk-button:active { border-style: inset; }
+.pgtk-btxt { display: inline-block; }
+.pgtk-entry, .pgtk-text, .pgtk-dlginput {
+  font: inherit;
+  color: #111;
+  background: #fff;
+  border: 2px inset #c9c9c9;
+  border-radius: 3px;
+  padding: 4px 6px;
+  box-sizing: border-box;
+}
+.pgtk-text { width: 100%; min-height: 60px; resize: vertical; font-family: "Space Mono", monospace; }
+.pgtk-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 4px;
+  cursor: pointer;
+}
+.pgtk-check input { width: 15px; height: 15px; accent-color: #2f5597; cursor: pointer; }
+.pgtk-ctxt { line-height: 1.3; }
+.pgtk-scale { display: inline-block; min-width: 140px; }
+.pgtk-scalehead { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; }
+.pgtk-svalue { font-variant-numeric: tabular-nums; }
+.pgtk-scale input[type="range"] { width: 100%; accent-color: #2f5597; }
+.pgtk-scale.pgtk-vert { writing-mode: vertical-lr; }
+.pgtk-sep { border-top: 1px solid #a8a8a8; margin: 6px 0; }
+.pgtk-off { opacity: .5; pointer-events: none; }
+
+/* ---- вікна повідомлень ---- */
+.pgtk-dlgback {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, .48);
+  animation: pgtkIn .14s ease-out;
+}
+.pgtk-dlgback.pgtk-out { opacity: 0; transition: opacity .14s ease-in; }
+.pgtk-dlg {
+  width: min(420px, 100%);
+  border: 1px solid #9a9a9a;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #dddddd;
+  color: #111;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .4);
+}
+.pgtk-dlghead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  background: linear-gradient(#4b74b8, #2f5597);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.pgtk-dlgico { font-size: 15px; }
+.pgtk-dlgtitle { flex: 1 1 auto; }
+.pgtk-dlgbody { padding: 16px 14px; font-size: 14px; line-height: 1.45; white-space: pre-wrap; }
+.pgtk-dlginput { width: 100%; margin-top: 10px; }
+.pgtk-dlgacts { display: flex; justify-content: flex-end; gap: 8px; padding: 0 12px 14px; flex-wrap: wrap; }
+.pgtk-dlgbtn {
+  font: inherit;
+  font-size: 13.5px;
+  color: #111;
+  padding: 6px 16px;
+  border: 2px outset #f2f2f2;
+  border-radius: 5px;
+  background: #e6e6e6;
+  cursor: pointer;
+}
+.pgtk-dlgbtn:hover { background: #dcdcdc; }
+.pgtk-dlgbtn:active { border-style: inset; }
+.pgtk-dlgbtn.pgtk-dlggo { background: #2f5597; color: #fff; border-color: #6f92cc; }
+.pgtk-dlgbtn.pgtk-dlggo:hover { background: #284a84; }
+
+/* ---- магазинчик: власні модулі ---- */
+.mod-card.own { border-color: color-mix(in srgb, var(--md-primary) 42%, transparent); }
+.mod-src-own {
+  background: color-mix(in srgb, var(--md-primary) 18%, transparent);
+  color: var(--md-primary);
+}

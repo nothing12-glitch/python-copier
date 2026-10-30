@@ -499,6 +499,37 @@
     return true;
   }
 
+  /* Власні модулі сайту: їх робить pygui.js, тож встановлення не потрібне */
+  const OWN = {
+    "turtle": {
+      imports: ["turtle"],
+      desc: {
+        uk: "Черепашка, що малює прямо на сторінці: лінії, кола, зірки та візерунки. Це власний рушій сайту — ставити нічого не треба.",
+        en: "A turtle that draws right on the page: lines, circles, stars and patterns. Built into the site — no install needed.",
+        tr: "Sayfada doğrudan çizilen kaplumbağa: çizgiler, daireler, yıldızlar ve desenler. Siteye gömülü — kurulum gerekmez."
+      },
+      example: "import turtle as t\n\nt.speed(6)\nt.pencolor(\"darkorange\")\nfor i in range(36):\n    t.forward(120)\n    t.left(170)\n\nt.pencolor(\"steelblue\")\nt.circle(60)\nt.hideturtle()\n"
+    },
+    "tkinter": {
+      imports: ["tkinter", "messagebox"],
+      desc: {
+        uk: "Вікна з кнопками, полями вводу та повзунками — справжній інтерфейс прямо у браузері. Теж власний рушій, без встановлення.",
+        en: "Windows with buttons, entry fields and sliders — a real GUI right in the browser. Also our own engine, no install.",
+        tr: "Düğmeler, giriş alanları ve kaydırıcılarla pencereler — tarayıcıda gerçek arayüz. Bizim motor — kurulum gerekmez."
+      },
+      example: "import tkinter as tk\nfrom tkinter.messagebox import showinfo\n\nroot = tk.Tk()\nroot.title(\"Привіт\")\nroot.geometry(\"320x200\")\n\nname = tk.Entry(root, width=24)\nname.pack(pady=12)\n\ndef greet():\n    showinfo(\"Вітаю\", \"Привіт, \" + name.get() + \"!\")\n\ntk.Button(root, text=\"Натисни\", command=greet).pack(pady=6)\ntk.mainloop()\n"
+    }
+  };
+
+  function seedOwn() {
+    Object.keys(OWN).forEach((name) => {
+      if (packages.some((p) => p.name === name)) return;
+      const o = OWN[name];
+      packages.push({ name: name, version: "", src: "own", imports: o.imports.slice(), depends: [] });
+      o.imports.forEach((imp) => { if (!byImport[imp]) byImport[imp] = name; });
+    });
+  }
+
   function applyLock(data) {
     lockInfo = data.info || {};
     packages = [];
@@ -524,6 +555,7 @@
       packages.push({ name: name, version: e.v || "", src: "pypi", imports: [e.imp], depends: e.deps || [] });
       if (!byImport[e.imp]) byImport[e.imp] = name;
     });
+    seedOwn();
     packages.sort((a, b) => a.name.localeCompare(b.name));
   }
 
@@ -545,7 +577,7 @@
     return packages.filter((pkg) => {
       if (q && pkg.name.toLowerCase().indexOf(q) < 0 &&
           !pkg.imports.some((i) => i.toLowerCase().indexOf(q) >= 0)) return false;
-      if (filter === "featured") return !!(FEATURED[pkg.name] || EXT[pkg.name]);
+      if (filter === "featured") return !!(FEATURED[pkg.name] || EXT[pkg.name] || OWN[pkg.name]);
       if (filter === "pypi") return pkg.src === "pypi";
       if (filter === "installed") return isLoaded(pkg.name);
       if (filter === "missing") return !isLoaded(pkg.name);
@@ -640,18 +672,22 @@
 
   function card(pkg) {
     const done = isLoaded(pkg.name);
-    const box = el("div", "mod-card" + (done ? " installed" : "") + (pkg.src === "pypi" ? " ext" : ""));
+    const own = pkg.src === "own";
+    const box = el("div", "mod-card" + (done ? " installed" : "") + (pkg.src === "pypi" ? " ext" : "") + (own ? " own" : ""));
     box.dataset.name = pkg.name;
 
     const head = el("div", "mod-card-head");
     head.appendChild(el("span", "mod-name", pkg.name));
     if (pkg.src === "pypi") head.appendChild(el("span", "mod-src", t("modules.srcPypi")));
+    if (own) head.appendChild(el("span", "mod-src mod-src-own", t("modules.srcOwn")));
     if (pkg.version) head.appendChild(el("span", "mod-version", pkg.version));
-    const state = el("span", "mod-state" + (done ? " done" : ""), done ? t("modules.stateLoaded") : t("modules.stateIdle"));
-    head.appendChild(state);
+    // для вбудованих чіп «Вбудовано» уже все сказав — стан не дублюємо
+    if (!own) {
+      head.appendChild(el("span", "mod-state" + (done ? " done" : ""), done ? t("modules.stateLoaded") : t("modules.stateIdle")));
+    }
     box.appendChild(head);
 
-    const info = FEATURED[pkg.name] || EXT[pkg.name];
+    const info = FEATURED[pkg.name] || EXT[pkg.name] || OWN[pkg.name];
     if (info) box.appendChild(el("p", "mod-desc", pick(info.desc)));
 
     if (pkg.imports.length) {
@@ -666,10 +702,10 @@
     const actions = el("div", "mod-actions");
     const install = el("button", "btn contained mod-install");
     install.type = "button";
-    install.appendChild(el("span", "material-icons", pkg.src === "pypi" ? "cloud_download" : "download"));
-    install.appendChild(el("span", null, done ? t("modules.reinstall")
-      : t(pkg.src === "pypi" ? "modules.installPypi" : "modules.install")));
-    install.disabled = done;
+    install.appendChild(el("span", "material-icons", own ? "bolt" : (pkg.src === "pypi" ? "cloud_download" : "download")));
+    install.appendChild(el("span", null, own ? t("modules.noInstall")
+      : (done ? t("modules.reinstall") : t(pkg.src === "pypi" ? "modules.installPypi" : "modules.install"))));
+    install.disabled = done || own;
     install.onclick = () => installOne(pkg);
     actions.appendChild(install);
 
@@ -707,6 +743,7 @@
   // Встановлення іде через спільне вікно з прогрес-баром (installer.js)
   async function installOne(pkg) {
     const name = pkg.name || pkg;
+    if (pkg && pkg.src === "own") { toast(t("modules.noInstall")); return; }
     if (busy) { toast(t("modules.busy")); return; }
     if (!global.Installer || !global.PythonPad) {
       toast(t("modules.unavailable"));
@@ -759,7 +796,7 @@
   }
 
   function useExample(name) {
-    const info = FEATURED[name] || EXT[name];
+    const info = FEATURED[name] || EXT[name] || OWN[name];
     const code = info && (info.example || info.ex);
     if (!code) return;
     const editor = $("#code");
@@ -890,7 +927,8 @@
   function details(pkg) {
     closeDetails();
     const done = isLoaded(pkg.name);
-    const info = FEATURED[pkg.name] || EXT[pkg.name];
+    const own = pkg.src === "own";
+    const info = FEATURED[pkg.name] || EXT[pkg.name] || OWN[pkg.name];
     const bd = el("div", "wn-backdrop md-backdrop");
     bd.id = "modDetails";
     const card = el("div", "wn-card md-card");
@@ -905,10 +943,10 @@
     const headText = el("div", "wn-headtext");
     headText.appendChild(el("h3", "wn-title", pkg.name));
     const sub = el("p", "wn-sub", (pkg.version ? "v" + pkg.version + " · " : "") +
-      t(pkg.src === "pypi" ? "modules.srcPypi" : "modules.srcPyodide"));
+      t(pkg.src === "pypi" ? "modules.srcPypi" : pkg.src === "own" ? "modules.srcOwn" : "modules.srcPyodide"));
     headText.appendChild(sub);
     head.append(emoji, headText);
-    head.appendChild(el("span", "wn-chip", done ? t("modules.stateLoaded") : t("modules.stateIdle")));
+    if (!own) head.appendChild(el("span", "wn-chip", done ? t("modules.stateLoaded") : t("modules.stateIdle")));
 
     const panel = el("div", "wn-panel md-panel");
     const weight = mdRow(t("installer.weight"));
@@ -941,9 +979,10 @@
 
     const install = el("button", "btn contained wn-ok");
     install.type = "button";
-    install.appendChild(el("span", "material-icons", pkg.src === "pypi" ? "cloud_download" : "download"));
-    install.appendChild(el("span", null, done ? t("modules.reinstall")
-      : t(pkg.src === "pypi" ? "modules.installPypi" : "modules.install")));
+    install.appendChild(el("span", "material-icons", own ? "bolt" : (pkg.src === "pypi" ? "cloud_download" : "download")));
+    install.appendChild(el("span", null, own ? t("modules.noInstall")
+      : (done ? t("modules.reinstall") : t(pkg.src === "pypi" ? "modules.installPypi" : "modules.install"))));
+    install.disabled = own;
     install.onclick = () => { closeDetails(); installOne(pkg); };
     actions.append(close, install);
 
@@ -958,19 +997,24 @@
     document.addEventListener("keydown", bd._onKey, true);
 
     // Вагу й дату рахуємо окремо: вікно з'являється миттєво, цифри дописуються, коли прийдуть
-    weight.value.textContent = t("installer.sizeLoading");
-    weightOf(pkg).then((size) => {
-      weight.value.textContent = size ? global.Installer.bytes(size) : t("installer.updatedUnknown");
-    }).catch(() => { weight.value.textContent = "—"; });
-    updated.value.textContent = t("installer.checking");
-    pypiMeta(pkg.name, pkg.version).then((meta) => {
-      const date = meta && fmtDate(meta.updated);
-      updated.value.textContent = date || t("installer.updatedUnknown");
-      if (meta && meta.summary && !desc) {
-        const p = el("p", "md-desc", meta.summary);
-        panel.insertBefore(p, actions);
-      }
-    }).catch(() => { updated.value.textContent = "—"; });
+    if (own) {
+      weight.value.textContent = t("modules.noInstall");
+      updated.value.textContent = "pygui.js";
+    } else {
+      weight.value.textContent = t("installer.sizeLoading");
+      weightOf(pkg).then((size) => {
+        weight.value.textContent = size ? global.Installer.bytes(size) : t("installer.updatedUnknown");
+      }).catch(() => { weight.value.textContent = "—"; });
+      updated.value.textContent = t("installer.checking");
+      pypiMeta(pkg.name, pkg.version).then((meta) => {
+        const date = meta && fmtDate(meta.updated);
+        updated.value.textContent = date || t("installer.updatedUnknown");
+        if (meta && meta.summary && !desc) {
+          const p = el("p", "md-desc", meta.summary);
+          panel.insertBefore(p, actions);
+        }
+      }).catch(() => { updated.value.textContent = "—"; });
+    }
   }
 
   function showError(msg) {
