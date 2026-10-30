@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>python-copier</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=26.10.64">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=26.10.65">
   <link rel="apple-touch-icon" href="favicon.svg">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6750A4">
@@ -35,10 +35,10 @@
 @keyframes pc-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @media(prefers-reduced-motion:reduce){#splash .pc-logo{animation:none}}
   </style>
-  <link rel="stylesheet" href="style.css?v=26.10.64">
-  <link rel="stylesheet" href="newui.css?v=26.10.64">
-  <link rel="stylesheet" href="extra.css?v=26.10.64">
-  <link rel="stylesheet" href="mobile.css?v=26.10.64">
+  <link rel="stylesheet" href="style.css?v=26.10.65">
+  <link rel="stylesheet" href="newui.css?v=26.10.65">
+  <link rel="stylesheet" href="extra.css?v=26.10.65">
+  <link rel="stylesheet" href="mobile.css?v=26.10.65">
   <!-- Pyodide більше НЕ тут: його підключає python.js лише за потребою -->
 </head>
 <body>
@@ -137,6 +137,10 @@
     <button class="rail-btn" data-route="settings">
       <span class="rail-ico"><span class="material-icons">settings</span></span>
       <span class="rail-label" data-i18n="nav.settings">Налаштування</span>
+    </button>
+    <button class="rail-btn" data-route="help">
+      <span class="rail-ico"><span class="material-icons">help</span></span>
+      <span class="rail-label" data-i18n="nav.help">Допомога</span>
     </button>
     <button class="rail-btn nav-more-btn" id="navMore" type="button">
       <span class="rail-ico"><span class="material-icons">menu</span></span>
@@ -570,6 +574,46 @@
         </p>
       </div>
     </section>
+
+    <!-- HELP -->
+    <section class="view" id="view-help">
+      <div class="section-head"><h2 data-i18n="help.title">Допомога</h2></div>
+
+      <div class="card elev1 settings-card help-card">
+        <h4 class="settings-group"><span class="material-icons">help</span><span data-i18n="help.quick">Швидкі відповіді</span></h4>
+        <div class="help-faq">
+          <details class="help-q">
+            <summary data-i18n="help.q1">Не запускається код — що робити?</summary>
+            <p data-i18n="help.a1">Перший запуск завантажує Python у браузер (Pyodide) — це 5-15 секунд і лише раз. Далі код іде миттєво. Якщо вивід порожній — перевір, чи є в програмі print.</p>
+          </details>
+          <details class="help-q">
+            <summary data-i18n="help.q2">Де взяти додаткові модулі?</summary>
+            <p data-i18n="help.a2">У «Магазинчику модулів»: обери пакет і натисни «Встановити». Після встановлення модуль доступний і офлайн. Того, чого немає в Pyodide, можна пошукати на PyPI.</p>
+          </details>
+          <details class="help-q">
+            <summary data-i18n="help.q3">Як перемкнути мову інтерфейсу?</summary>
+            <p data-i18n="help.a3">Налаштування → Мова. Вибір зберігається в браузері, тому мова лишається навіть після закриття сторінки.</p>
+          </details>
+          <details class="help-q">
+            <summary data-i18n="help.q4">Як повернутися до початку навчання?</summary>
+            <p data-i18n="help.a4">Профіль → скинути прогрес, або очистити дані сайту в браузері. Досягнення й рекорди тоді теж обнуляться.</p>
+          </details>
+        </div>
+      </div>
+
+      <div class="card elev1 settings-card help-card">
+        <div class="card-bar">
+          <span class="bar-title"><span class="material-icons">history</span><span data-i18n="help.logTitle">Історія оновлень</span></span>
+          <div class="bar-actions">
+            <button id="helpToggleAll" class="btn text" type="button">
+              <span class="material-icons">unfold_more</span><span data-i18n="help.expandAll">Розгорнути все</span>
+            </button>
+          </div>
+        </div>
+        <p class="help-intro" data-i18n="help.intro">Кожен реліз автоматично потрапляє сюди. Вікно «Що нового» показується при вході, а повний список завжди доступний тут — без перезавантаження сторінки.</p>
+        <div id="helpChangelog" class="help-log"></div>
+      </div>
+    </section>
   </main>
 
   <button id="focusExit" class="focus-exit" type="button">
@@ -581,34 +625,34 @@
   <footer class="footer"><span data-i18n="footer.made">Зроблено з ❤ для навчання</span></footer>
 
 
-  <script src="i18n.js?v=26.10.64"></script>
-  <script src="splash.js?v=26.10.64"></script>
-  <script src="audio.js?v=26.10.64"></script>
-  <script src="profile.js?v=26.10.64"></script>
-  <script src="avatar.js?v=26.10.64"></script>
-  <script src="achievements.js?v=26.10.64"></script>
-  <script src="settings.js?v=26.10.64"></script>
-  <script src="installer.js?v=26.10.64"></script>
-  <script src="python.js?v=26.10.64"></script>
-  <script src="tasks.js?v=26.10.64"></script>
-  <script src="contest.js?v=26.10.64"></script>
-  <script src="modules.js?v=26.10.64"></script>
-  <script src="course.js?v=26.10.64"></script>
-  <script src="games.js?v=26.10.64"></script>
-  <script src="gamerules.js?v=26.10.64"></script>
-  <script src="vault.js?v=26.10.64"></script>
-  <script src="tools.js?v=26.10.64"></script>
-  <script src="feedback.js?v=26.10.64"></script>
-  <script src="ui.js?v=26.10.64"></script>
-  <script src="shield.js?v=26.10.64"></script>
-  <script src="app.js?v=26.10.64"></script>
-  <script src="onboarding.js?v=26.10.64"></script>
-  <script src="secret.js?v=26.10.64"></script>
-  <script src="teacher.js?v=26.10.64"></script>
-  <script src="fix.js?v=26.10.64"></script>
-  <script src="device.js?v=26.10.64"></script>
-  <script src="update.js?v=26.10.64"></script>
-  <script src="pwa.js?v=26.10.64"></script>
+  <script src="i18n.js?v=26.10.65"></script>
+  <script src="splash.js?v=26.10.65"></script>
+  <script src="audio.js?v=26.10.65"></script>
+  <script src="profile.js?v=26.10.65"></script>
+  <script src="avatar.js?v=26.10.65"></script>
+  <script src="achievements.js?v=26.10.65"></script>
+  <script src="settings.js?v=26.10.65"></script>
+  <script src="installer.js?v=26.10.65"></script>
+  <script src="python.js?v=26.10.65"></script>
+  <script src="tasks.js?v=26.10.65"></script>
+  <script src="contest.js?v=26.10.65"></script>
+  <script src="modules.js?v=26.10.65"></script>
+  <script src="course.js?v=26.10.65"></script>
+  <script src="games.js?v=26.10.65"></script>
+  <script src="gamerules.js?v=26.10.65"></script>
+  <script src="vault.js?v=26.10.65"></script>
+  <script src="tools.js?v=26.10.65"></script>
+  <script src="feedback.js?v=26.10.65"></script>
+  <script src="ui.js?v=26.10.65"></script>
+  <script src="shield.js?v=26.10.65"></script>
+  <script src="app.js?v=26.10.65"></script>
+  <script src="onboarding.js?v=26.10.65"></script>
+  <script src="secret.js?v=26.10.65"></script>
+  <script src="teacher.js?v=26.10.65"></script>
+  <script src="fix.js?v=26.10.65"></script>
+  <script src="device.js?v=26.10.65"></script>
+  <script src="update.js?v=26.10.65"></script>
+  <script src="pwa.js?v=26.10.65"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {

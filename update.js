@@ -1,10 +1,35 @@
 /* updates.js — версія застосунку + вікно "Що нового" при кожному вході.
-   Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html. */
+   Правило деплою: підніми VERSION, додай запис у LOG і поміняй ?v= у index.html.
+   Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
+   й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.64";
+  const VERSION = "26.10.65";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.65": {
+      uk: [
+        "Новий розділ «Допомога» в меню: короткі відповіді на часті питання й повна історія оновлень",
+        "Історія відсортована від свіжого релізу до найстарішого; кожен запис розгортається у повний список змін",
+        "Достатньо дописати запис у LOG під час деплою — розділ поповнюється сам, вручну список вести не треба",
+        "У вікні «Що нового» з'явилася кнопка «Уся історія оновлень» — перечитати старі релізи тепер можна без перезавантаження сторінки",
+        "Кнопка «Розгорнути все» показує одразу всі версії, а переклад розділу міняється разом з мовою інтерфейсу"
+      ],
+      en: [
+        "New “Help” section in the menu: quick answers to common questions plus the full update history",
+        "The history is sorted newest release first; every entry expands into its complete list of changes",
+        "Adding one LOG entry at deploy time is enough — the section refills itself, no manual list to maintain",
+        "The \"What's new\" window gained a \"Full update history\" button, so old releases can be re-read without reloading the page",
+        "“Expand all” reveals every version at once, and the section follows the interface language"
+      ],
+      tr: [
+        "Menüde yeni “Yardım” bölümü: sık sorulanlara hızlı cevaplar ve eksiksiz güncelleme geçmişi",
+        "Geçmiş en yeni sürümden başlayarak sıralandı; her kayıt tam değişim listesine açılıyor",
+        "Dağıtım sırasında LOG'a tek kayıt eklemek yeterli — bölüm kendisi doluyor, listeyi elle tutmak gerekmiyor",
+        "“Yenilikler” penceresine “Tüm güncelleme geçmişi” düğmesi eklendi; eski sürümler sayfayı yenilemeden yeniden okunabiliyor",
+        "“Tümünü aç” bütün sürümleri birden gösteriyor ve bölüm arayüz dilini takip ediyor"
+      ]
+    },
     "26.10.64": {
       uk: [
         "Пасхалка із замком отримала справжні згенеровані відео: неонова потаємна галерея з силуетом замка та стіна рамок, що засвічуються одна за одною",
@@ -860,10 +885,14 @@
     sub:   { uk: "Сайт щойно оновився до версії", en: "The site just updated to", tr: "Site yeni sürüme güncellendi:" },
     ok:    { uk: "Класно!", en: "Nice!", tr: "Harika!" },
     ver:   { uk: "Версія", en: "Version", tr: "Sürüm" },
-    show:  { uk: "Показати що нового", en: "Show what's new", tr: "Yenilikleri göster" }
+    show:  { uk: "Показати що нового", en: "Show what's new", tr: "Yenilikleri göster" },
+    allLog: { uk: "Уся історія оновлень", en: "Full update history", tr: "Tüm güncelleme geçmişi" },
+    latest: { uk: "поточна", en: "latest", tr: "güncel" },
+    expandAll: { uk: "Розгорнути все", en: "Expand all", tr: "Tümünü aç" },
+    collapseAll: { uk: "Згорнути все", en: "Collapse all", tr: "Tümünü kapat" }
   };
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
-  const pick = (o) => o[lang()] || o.uk || o.en;
+  const pick = (o) => o[lang()] || o.en || o.uk;
 
   function showWhatsNew(v) {
     const entry = LOG[v];
@@ -918,7 +947,7 @@
 
     const ul = document.createElement("ul");
     ul.className = "wn-list";
-    (entry[lang()] || entry.uk || entry.en).forEach((line) => {
+    linesOf(v).forEach((line) => {
       const li = document.createElement("li");
       li.textContent = line;
       ul.appendChild(li);
@@ -928,6 +957,14 @@
     /* Кнопка внизу */
     const row = document.createElement("div");
     row.className = "wn-actions";
+    const hist = document.createElement("button");
+    hist.className = "btn text wn-history";
+    hist.innerHTML = '<span class="material-icons" aria-hidden="true">history</span><span>' + pick(T.allLog) + "</span>";
+    hist.onclick = () => {
+      close();
+      setTimeout(() => { if (global.App && global.App.route) global.App.route("help"); }, 200);
+    };
+    row.appendChild(hist);
     const ok = document.createElement("button");
     ok.className = "btn contained wn-ok";
     ok.innerHTML = '<span class="material-icons" aria-hidden="true">celebration</span><span>' + pick(T.ok) + "</span>";
@@ -971,10 +1008,119 @@
     }
   }
 
+  /* ---------- Повна історія оновлень у розділі «Допомога» ----------
+     Джерело те саме, що й для вікна «Що нового», тому кожен новий запис у LOG
+     потрапляє сюди сам — вести список двічі не треба. */
+  function cmpVerDesc(a, b) {
+    const A = String(a).split("."), B = String(b).split(".");
+    const n = Math.max(A.length, B.length);
+    for (let i = 0; i < n; i++) {
+      const d = (Number(B[i]) || 0) - (Number(A[i]) || 0);
+      if (d) return d;
+    }
+    return 0;
+  }
+
+  function releases() {
+    return Object.keys(LOG).sort(cmpVerDesc);
+  }
+
+  function linesOf(v) {
+    const e = LOG[v];
+    if (!e) return [];
+    return e[lang()] || e.en || e.uk || [];
+  }
+
+  let helpOpenAll = false;
+
+  function setHelpLabel() {
+    const btn = document.getElementById("helpToggleAll");
+    if (!btn) return;
+    const label = btn.querySelector("span:not(.material-icons)");
+    const icon = btn.querySelector(".material-icons");
+    if (label) label.textContent = pick(helpOpenAll ? T.collapseAll : T.expandAll);
+    if (icon) icon.textContent = helpOpenAll ? "unfold_less" : "unfold_more";
+  }
+
+  function applyHelpOpen(item, open) {
+    item.classList.toggle("open", open);
+    const head = item.querySelector(".help-ver-head");
+    if (head) head.setAttribute("aria-expanded", open ? "true" : "false");
+    const icon = item.querySelector(".help-ver-arrow");
+    if (icon) icon.textContent = open ? "expand_less" : "expand_more";
+  }
+
+  function renderHelp() {
+    const host = document.getElementById("helpChangelog");
+    if (!host) return;
+    host.innerHTML = "";
+
+    releases().forEach((v, i) => {
+      const lines = linesOf(v);
+      const item = document.createElement("div");
+      item.className = "help-ver";
+
+      const head = document.createElement("button");
+      head.type = "button";
+      head.className = "help-ver-head";
+
+      const chip = document.createElement("span");
+      chip.className = "help-chip";
+      chip.textContent = "v" + v;
+
+      const title = document.createElement("span");
+      title.className = "help-ver-title";
+      title.textContent = lines.length ? lines[0] : pick(T.title);
+
+      head.append(chip, title);
+
+      if (v === VERSION) {
+        const tag = document.createElement("span");
+        tag.className = "help-tag";
+        tag.textContent = pick(T.latest);
+        head.appendChild(tag);
+      }
+
+      const arrow = document.createElement("span");
+      arrow.className = "material-icons help-ver-arrow";
+      arrow.setAttribute("aria-hidden", "true");
+      head.appendChild(arrow);
+
+      const ul = document.createElement("ul");
+      ul.className = "help-ver-list";
+      lines.slice(1).forEach((line) => {
+        const li = document.createElement("li");
+        li.textContent = line;
+        ul.appendChild(li);
+      });
+
+      head.onclick = () => applyHelpOpen(item, !item.classList.contains("open"));
+
+      item.append(head, ul);
+      applyHelpOpen(item, helpOpenAll || i === 0);
+      host.appendChild(item);
+    });
+
+    setHelpLabel();
+
+    const btn = document.getElementById("helpToggleAll");
+    if (btn && !btn._wired) {
+      btn._wired = true;
+      btn.onclick = () => {
+        helpOpenAll = !helpOpenAll;
+        document.querySelectorAll("#helpChangelog .help-ver")
+          .forEach((item) => applyHelpOpen(item, helpOpenAll));
+        setHelpLabel();
+        if (global.Audio2 && global.Audio2.SFX) global.Audio2.SFX.click();
+      };
+    }
+  }
+
   function init() {
-    localStorage.setItem(KEY_SEEN, VERSION);
-    addVersionToSettings();
+    localStorage.setItem(KEY_SEEN, VERSION);    addVersionToSettings();
     document.addEventListener("langchange", addVersionToSettings);
+    renderHelp();
+    document.addEventListener("langchange", renderHelp);
     // «Що нового» показуємо при КОЖНОМУ вході, але вже після того,
     // як людина відповіла на питання про пристрій (а обидва — після сплешу)
     const tourOpen = () => {
@@ -995,5 +1141,5 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 
-  global.AppUpdates = { VERSION, showWhatsNew };
+  global.AppUpdates = { VERSION, showWhatsNew, renderHelp, releases };
 })(window);

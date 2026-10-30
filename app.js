@@ -48,6 +48,9 @@
     if (name === "achievements" && global.Achievements) {
       try { global.Achievements.render($("#achGrid")); } catch (e) { console.warn(e); }
     }
+    if (name === "help" && global.AppUpdates) {
+      try { global.AppUpdates.renderHelp(); } catch (e) { console.warn(e); }
+    }
     location.hash = name;
     try { updateNavProgress(); } catch (e) { console.warn("updateNavProgress", e); }
     try { decorateCards(); } catch (e) { console.warn("decorateCards", e); }
@@ -702,7 +705,7 @@
     // початковий маршрут
     try {
       const hash = (location.hash || "#home").slice(1);
-      route(["home", "python", "modules", "course", "tasks", "games", "tools", "feedback", "profile", "achievements", "settings"].includes(hash) ? hash : "home");
+      route(["home", "python", "modules", "course", "tasks", "games", "tools", "feedback", "profile", "achievements", "settings", "help"].includes(hash) ? hash : "home");
     } catch (e) { console.warn("initial route", e); }
 
     if (global.I18n && global.I18n.apply) { try { global.I18n.apply(); } catch (e) {} }
