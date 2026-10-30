@@ -550,6 +550,13 @@ body[data-style="new"].bg-animate-on .blob{opacity:.22}
   /* mobile.css дає рейлу z-index:1000 — під ним ховалися всі модалки й шторка «Ще» */
   body[data-style="new"] .navrail{z-index:40!important}
   body[data-style="new"] .navrail{height:80px!important}
+  /* Дизайн «пігулка» з style.css тягне за собою transform:translateX(-50%),
+     а в новому стилі рейл і так на всю ширину — без цього він з'їжджав
+     на пів екрана вліво і перші кнопки зникали за межами екрана. */
+  body[data-style="new"][data-nav="pill"] .navrail{
+    transform:none!important;left:0!important;right:0!important;
+    width:100%!important;border-radius:0!important;bottom:0!important;
+  }
   body[data-style="new"].no-nav-labels .navrail{height:80px!important}
   body[data-style="new"] .navrail .rail-btn{
     flex:1 1 0!important;min-width:0!important;padding:6px 2px!important;gap:4px!important;

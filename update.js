@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.68";
+  const VERSION = "26.10.69";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.69": {
+      uk: [
+        "Перевірили сайт на справжньому телефоні: автозавантаження модулів працює так само, як на комп'ютері",
+        "Нижня навігація більше не повзає за екран: «Додому» й «Python» повернулися на свої місця",
+        "Раніше на вузькому екрані перші кнопки зникали ліворуч — дизайн «пігулка» зсував усю панель на півширини",
+        "Панель «Ще» з усіма розділами відкривається й на телефоні, і на планшеті однаково"
+      ],
+      en: [
+        "Checked the site on a real phone: modules auto-load there exactly as they do on a computer",
+        "The bottom navigation no longer crawls off screen: \"Home\" and \"Python\" are back in their places",
+        "On a narrow screen the first buttons used to vanish to the left — the \"pill\" design slid the whole bar by half its width",
+        "The \"More\" panel with every section opens the same way on a phone and on a tablet"
+      ],
+      tr: [
+        "Site gerçek telefonda denendi: modüller orada bilgisayardaki gibi kendiliğinden yükleniyor",
+        "Alt gezinme çubuğu artık ekran dışına kaçmıyor: \"Ana\" ve \"Python\" yerlerine döndü",
+        "Dar ekranda ilk düğmeler solda kayboluyordu — \"hap\" tasarımı tüm çubuğu yarım genişlik kaydırıyordu",
+        "Tüm bölümleri içeren \"Daha\" paneli telefonda da tablette de aynı açılıyor"
+      ]
+    },
     "26.10.68": {
       uk: [
         "Прогнали через автозавантаження всі 33 пакети з розширень: кожен імпортується, і приклад із магазинчика справді виконується",
