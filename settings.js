@@ -119,7 +119,8 @@
       { id: "reduceMotion", type: "switch", label: "set.reduceMotion" },
       { id: "compact", type: "switch", label: "set.compact" },
       { id: "fontSize", type: "range", label: "set.fontSize", min: 12, max: 20, step: 1 },
-      { id: "language", type: "select", label: "settings.language", fromLangs: true }
+      { id: "language", type: "select", label: "settings.language", fromLangs: true },
+      { id: "replayTour", type: "button", label: "settings.replayTour", icon: "smart_toy", variant: "outlined" }
     ]},
     { group: "settings.navPanel", items: [
       { id: "navPos", type: "select", label: "set.navPos", options: [

@@ -402,6 +402,8 @@
         toast(t("set.settingsReset"));
       } else if (id === "google" || id === "github") {
         toast(t("set.socialDemo"));
+      } else if (id === "replayTour") {
+        if (global.Pythonchik) global.Pythonchik.tour();
       }
     });
   }

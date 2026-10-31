@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.72";
+  const VERSION = "26.10.73";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.73": {
+      uk: [
+        "Тур сайту став автопілотом: Пайтончик сам повзе екраном від елемента до елемента й справді натискає пункти меню — перехід відбувається по-справжньому",
+        "Активний елемент обводиться підсвіткою, а решта екрана легенько затемнюється, тому очі не блукають",
+        "Пайтончик цілиться власною лапкою просто в ціль, а імітацію кліку позначає кільцем, що розростається",
+        "Репліки тепер у форматі коміксової бульбашки з гумором про Python; поряд кнопки «назад», «Далі» й пауза автопілота, а критися можна будь-коли клавішею Escape",
+        "У Налаштуваннях з'явилася кнопка «Повторити туторіал» — якщо хочеш ще раз"
+      ],
+      en: [
+        "The site tour is now an autopilot: Pythonchik crawls the screen from element to element and really clicks the menu items — the page switch is genuine",
+        "The active element gets a spotlight outline while the rest of the screen dims slightly, so your eyes don't wander",
+        "Pythonchik aims its own paw straight at the target and marks the simulated click with an expanding ring",
+        "Lines are delivered in a comic speech bubble with Python humour, next to Back, Next and an autopilot pause button; Escape quits at any moment",
+        "Settings gained a \"Replay the tutorial\" button, in case you want another ride"
+      ],
+      tr: [
+        "Site turu artık bir otomatik pilotta: Pythonchik ekranda öğeden öğeye süzülüyor ve menü ögelerine gerçekten tıklıyor — geçiş gerçekten oluyor",
+        "Etkin öğenin çevresi ışıkla çevreleniyor, ekranın kalanı hafifçe kararıyor ki gözün başka yere kaymasın",
+        "Pythonchik kendi patisini hedefe doğrultuyor ve taklit edilen tıklamayı büyüyen bir halkayla işaretliyor",
+        "Sözler Python şakalarıyla bir çizgi roman balonunda geliyor; yanında Geri, İleri ve otomatik pilotu duraklat düğmesi var, istediğin an Escape ile çıkabilirsin",
+        "Ayarlar'a \"Tur'u tekrar izle\" düğmesi eklendi — bir daha istersen"
+      ]
+    },
     "26.10.72": {
       uk: [
         "На сайті оселився Пайтончик — власний помічник із анімованим обличчям у правому нижньому куті",

@@ -332,15 +332,95 @@ body:not(.dark) .pychik-pre { background: rgba(0, 0, 0, .05); color: #1d3a1d; }
   }
 }
 
-/* ---------- Тур по сайту ---------- */
-.pychik-tour {
+/* ---------- Туторіал-автопілот ---------- */
+/* Спотлайт: рамка навколо елемента, а велетенська зовнішня тінь затемнює решту екрана. */
+.pychik-spot {
   position: fixed;
-  right: 16px;
-  bottom: 120px;
-  z-index: calc(var(--pychik-z) + 20);
-  width: min(320px, calc(100vw - 24px));
-  padding: 14px 16px;
+  left: 0;
+  top: 0;
+  z-index: calc(var(--pychik-z) + 30);
+  box-sizing: border-box;
+  border: 2px solid var(--md-primary, #6750a4);
   border-radius: 16px;
+  box-shadow: 0 0 0 9999px rgba(6, 4, 12, .62), 0 0 0 6px rgba(103, 80, 164, .22);
+  pointer-events: none;
+  opacity: 0;
+  transition: left .5s cubic-bezier(.45, .05, .25, 1), top .5s cubic-bezier(.45, .05, .25, 1),
+              width .5s cubic-bezier(.45, .05, .25, 1), height .5s cubic-bezier(.45, .05, .25, 1),
+              opacity .25s ease;
+}
+.pychik-spot.pychik-spot-on { opacity: 1; }
+
+/* Маскот повзе від елемента до елемента; лівий верхній кут задається через transform. */
+.pychik-pet {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: calc(var(--pychik-z) + 40);
+  width: 104px;
+  height: 104px;
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, .5));
+  transition: transform .9s cubic-bezier(.45, .05, .25, 1), opacity .3s ease;
+}
+.pychik-pet.pychik-pet-on { opacity: 1; }
+.pychik-svg-pet { width: 104px; height: 104px; display: block; animation: pychik-crawl 2.6s ease-in-out infinite; }
+/* Інша назва, ніж у «дихання» морди: власний ключ .pychik-body залишається незайманим. */
+@keyframes pychik-crawl {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+/* Лапка витягується з боку маскота й повертається в бік цілі. */
+.pychik-paw {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: calc(var(--pychik-z) + 40);
+  width: 44px;
+  height: 44px;
+  pointer-events: none;
+  opacity: 0;
+  transition: transform .9s cubic-bezier(.45, .05, .25, 1), opacity .3s ease;
+}
+.pychik-paw.pychik-paw-on { opacity: 1; }
+.pychik-svg-paw { width: 44px; height: 44px; display: block; animation: pychik-poke 1.5s ease-in-out infinite; }
+.pychik-paw-arm { stroke: var(--md-primary, #6750a4); }
+.pychik-paw-hand { fill: var(--md-primary, #6750a4); }
+@keyframes pychik-poke {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(7px); }
+}
+
+/* Імітація кліку: кільце, що розростається в центрі елемента. */
+.pychik-tap {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: calc(var(--pychik-z) + 45);
+  width: 48px;
+  height: 48px;
+  box-sizing: border-box;
+  border: 3px solid var(--md-primary, #6750a4);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: pychik-tap .65s ease-out forwards;
+}
+@keyframes pychik-tap {
+  from { transform: scale(.3); opacity: .95; }
+  to { transform: scale(1.7); opacity: 0; }
+}
+
+/* Коміксова репліка. */
+.pychik-say {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: calc(var(--pychik-z) + 50);
+  width: min(340px, calc(100vw - 20px));
+  padding: 14px 16px;
+  border-radius: 18px;
   background: var(--nu-surface-solid, var(--md-surface, #14101f));
   border: 1px solid var(--nu-line-strong, var(--md-outline-var, rgba(255, 255, 255, .16)));
   border-top: 3px solid var(--md-primary, #6750a4);
@@ -348,21 +428,43 @@ body:not(.dark) .pychik-pre { background: rgba(0, 0, 0, .05); color: #1d3a1d; }
   color: var(--md-on-surface, #e6e1ec);
   font-family: var(--md-font, inherit);
   opacity: 0;
-  transform: translateY(8px) scale(.95);
+  transform: scale(.94);
   pointer-events: none;
-  transition: opacity .2s ease, transform .2s ease;
+  transition: opacity .2s ease, transform .2s ease, left .5s cubic-bezier(.45, .05, .25, 1), top .5s cubic-bezier(.45, .05, .25, 1);
 }
-.pychik-tour.pychik-tour-open {
+.pychik-say.pychik-say-open {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: scale(1);
   pointer-events: auto;
 }
-.pychik-tour-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-.pychik-tour-text { font-size: 13px; line-height: 1.5; color: var(--md-on-surface-var, #c9c3d5); margin-bottom: 12px; }
-.pychik-tour-foot { display: flex; align-items: center; gap: 8px; }
-.pychik-tour-count { flex: 1; font-size: 11.5px; color: var(--md-on-surface-var, #9a94a8); }
-.pychik-tour-skip,
-.pychik-tour-next {
+.pychik-say-text { font-size: 13.5px; line-height: 1.55; margin-bottom: 12px; }
+.pychik-say-foot { display: flex; align-items: center; gap: 6px; }
+.pychik-say-count {
+  flex: 1;
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--md-on-surface-var, #9a94a8);
+}
+.pychik-say-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  background: transparent;
+  border: 1px solid var(--nu-line-strong, var(--md-outline-var, rgba(255, 255, 255, .2)));
+  color: var(--md-on-surface-var, #c9c3d5);
+  transition: background .15s ease, opacity .15s ease;
+}
+.pychik-say-ico:hover { background: var(--nu-line, rgba(255, 255, 255, .08)); }
+.pychik-say-ico:disabled { opacity: .35; cursor: default; }
+.pychik-say-ico .material-icons { font-size: 18px; line-height: 1; }
+.pychik-say-close { font-size: 20px; font-weight: 600; line-height: 1; }
+.pychik-say-next {
   padding: 7px 14px;
   border-radius: 999px;
   font-family: var(--md-font, inherit);
@@ -370,25 +472,24 @@ body:not(.dark) .pychik-pre { background: rgba(0, 0, 0, .05); color: #1d3a1d; }
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: filter .15s ease, background .15s ease;
-}
-.pychik-tour-skip {
-  background: transparent;
-  border-color: var(--nu-line-strong, var(--md-outline-var, rgba(255, 255, 255, .2)));
-  color: var(--md-on-surface-var, #c9c3d5);
-}
-.pychik-tour-skip:hover { background: var(--nu-line, rgba(255, 255, 255, .08)); }
-.pychik-tour-next {
   background: var(--md-primary, #6750a4);
   color: var(--md-on-primary, #fff);
+  transition: filter .15s ease;
 }
-.pychik-tour-next:hover { filter: brightness(1.12); }
+.pychik-say-next:hover { filter: brightness(1.12); }
+
 @media (max-width: 768px) {
-  .pychik-tour {
-    left: 12px;
-    right: 12px;
-    width: auto;
-    bottom: calc(160px + var(--sat, 0px));
-    top: auto !important;
-  }
+  .pychik-pet, .pychik-svg-pet { width: 78px; height: 78px; }
+}
+
+/* Зменшений рух: массток не повзе, а стрибками зʼявляється там, де треба. */
+body.reduce-motion .pychik-spot,
+body.reduce-motion .pychik-pet,
+body.reduce-motion .pychik-paw,
+body.reduce-motion .pychik-say,
+body.reduce-motion .pychik-svg-pet,
+body.reduce-motion .pychik-svg-paw,
+body.reduce-motion .pychik-tap {
+  transition: none !important;
+  animation: none !important;
 }

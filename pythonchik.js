@@ -31,6 +31,9 @@
       tourFinish: "Гаразд",
       tourCounter: "{n} з {m}",
       tourDone: "Ось і весь сайт. Щасти у вивченні Python!",
+      tutPrevL: "Крок назад",
+      tutPauseL: "Призупинити автопілот",
+      tutPlayL: "Увімкнути автопілот",
       fallback: "Про це я поки не знаю. Обери підказку нижче або встав текст помилки — я поясню, що сталося, і підкажу розв'язок.",
       errIntro: "Дивлюся твій текст помилки.",
       errLine: "Проблема в рядку {n}.",
@@ -61,6 +64,9 @@
       tourFinish: "Got it",
       tourCounter: "{n} of {m}",
       tourDone: "That is the whole site. Good luck learning Python!",
+      tutPrevL: "Previous step",
+      tutPauseL: "Pause autopilot",
+      tutPlayL: "Resume autopilot",
       fallback: "I do not know about this yet. Pick a suggestion below or paste the error text — I will explain what happened and suggest a fix.",
       errIntro: "Looking at your error text.",
       errLine: "The problem is on line {n}.",
@@ -91,6 +97,9 @@
       tourFinish: "Tamam",
       tourCounter: "{n} / {m}",
       tourDone: "Tüm site bu kadar. Python öğrenirken bol şans!",
+      tutPrevL: "Önceki adım",
+      tutPauseL: "Otomatik turu duraklat",
+      tutPlayL: "Otomatik tura devam",
       fallback: "Bunu henüz bilmiyorum. Aşağıdaki önerilerden birini seç ya da hata metnini yapıştır; ne olduğunu anlatıp bir çözüm önereyim.",
       errIntro: "Hata metnine bakıyorum.",
       errLine: "Sorun {n}. satırda.",
@@ -683,12 +692,27 @@
     return svg;
   }
 
+  /* «Лапка» туторіалу: витягнута вбік +X, тому повертається під кутом до цілі. */
+  function pawSVG(cls) {
+    const svg = document.createElementNS(SVG_NS, "svg");
+    svg.setAttribute("viewBox", "0 0 44 44");
+    svg.setAttribute("class", cls || "pychik-paw-svg");
+    svg.setAttribute("aria-hidden", "true");
+    svg.innerHTML =
+      '<path d="M2 30 q10 -2 18 -8" fill="none" stroke-width="7" stroke-linecap="round" class="pychik-paw-arm"/>' +
+      '<circle cx="25" cy="19" r="8" class="pychik-paw-hand"/>' +
+      '<path d="M31 17 l9 -1" fill="none" stroke-width="5.5" stroke-linecap="round" class="pychik-paw-arm"/>';
+    return svg;
+  }
+
   /* ---------- Стан ---------- */
   let inited = false;
   let root = null, fab = null, panel = null, msgsEl = null, chipsEl = null,
-      inputEl = null, tourEl = null, mascotEl = null;
+      inputEl = null, mascotEl = null,
+      spotEl = null, petEl = null, pawEl = null, sayEl = null,
+      sayTextEl = null, sayCountEl = null,
+      sayPrevBtn = null, sayAutoBtn = null, sayNextBtn = null;
   let ctx = { section: "home" };
-  let tourState = null;
   let thinkTimer = null;
 
   function el(tag, cls, text) {
@@ -832,80 +856,85 @@
   }
 
   /* ---------- Тур ---------- */
-  const TOUR_ROUTES = [
-    { route: "home", title: { uk: "Головна", en: "Home", tr: "Ana sayfa" },
-      text: {
-        uk: "Тут огляд проєкту: з чого почати і що цікавого є на сайті.",
-        en: "This is the project overview: where to start and what is interesting here.",
-        tr: "Burada projeye genel bakış var: nereden başlamalı ve sitede neler var."
+  /* ---------- Туторіал: кроки автопілота ----------
+     Кожен крок або «натискає» пункт навігації справжнім кліком (nav+click),
+     або підсвічує живий елемент розділу (sel+show). Репліка маскота — у say. */
+  const TUTOR_STEPS = [
+    { route: "home", sel: "#view-home .hero", act: "show",
+      say: {
+        uk: "Привіт! Я Пайтончик — твій провідник цим сайтом. Тримайся міцніше за клавіатуру: зараз я покажу тут усе. І ні, я не вкушу, я ж на Python.",
+        en: "Hi! I am Pythonchik, your guide around this site. Hold on to your keyboard: I am about to show you everything. And no, I won't bite — I'm written in Python.",
+        tr: "Merhaba! Ben Pythonchik, bu sitenin rehberiyim. Klavyeye sıkı tutun: şimdi her yeri göstereceğim. Ve hayır, ısırmam — ben Python'ım."
       } },
-    { route: "python", title: { uk: "Python-майданчик", en: "Python playground", tr: "Python alanı" },
-      text: {
-        uk: "Пиши й запускай Python-код просто у браузері. Трапиться помилка — встав її текст мені.",
-        en: "Write and run Python code right in the browser. If an error happens — paste its text to me.",
-        tr: "Python kodunu tarayıcıda yaz ve çalıştır. Bir hata olursa metnini bana yapıştır."
+    { route: "python", nav: "python", act: "click",
+      say: {
+        uk: "Оце — Python-майданчик. Натискаю сам, бо мишки в мене немає, є лише лапки. Дивись: справжній клік, справжній перехід!",
+        en: "This is the Python playground. I click it myself — I have no mouse, only paws. Look: a real click and a real page switch!",
+        tr: "Burası Python alanı. Kendim tıklıyorum — farem yok, sadece patilerim var. Bak: gerçek tıklama, gerçek geçiş!"
       } },
-    { route: "modules", title: { uk: "Модулі Python", en: "Python modules", tr: "Python modülleri" },
-      text: {
-        uk: "Тут зібрано модулі проєкту: відкривай їх і вивчай, що кожен уміє.",
-        en: "Project modules live here: open them and explore what each one can do.",
-        tr: "Proje modülleri burada: aç ve her birinin ne yaptığını keşfet."
+    { route: "python", sel: "#run", act: "show",
+      say: {
+        uk: "Ця кнопка запускає твій код у браузері. Я сидітиму поруч — як талісман і як служба підтримки водночас.",
+        en: "This button runs your code right in the browser. I'll sit nearby — as a mascot and as a support desk at the same time.",
+        tr: "Bu düğme kodunu tarayıcıda çalıştırır. Ben yanında oturacağım — hem maskot hem destek masası olarak."
       } },
-    { route: "course", title: { uk: "Курс Python", en: "Python course", tr: "Python kursu" },
-      text: {
-        uk: "Покроковий курс: у кожному уроці теорія, приклад і практика з автоматичною перевіркою.",
-        en: "A step-by-step course: every lesson has theory, an example and practice with automatic checking.",
-        tr: "Adım adım kurs: her derste teori, örnek ve otomatik denetimli alıştırma var."
+    { route: "modules", nav: "modules", act: "click",
+      say: {
+        uk: "Магазинчик модулів: тут живуть бібліотеки. numpy, pandas, навіть qrcode — ставлю їх собі сам і тобі допоможу.",
+        en: "The module shop: libraries live here. numpy, pandas, even qrcode — I install them myself and I'll help you too.",
+        tr: "Modül dükkânı: kütüphaneler burada yaşar. numpy, pandas, hatta qrcode — kendim kurarım, sana da yardım ederim."
       } },
-    { route: "tasks", title: { uk: "Задачі", en: "Tasks", tr: "Görevler" },
-      text: {
-        uk: "Задачі для тренування та олімпіад. Розв'язуй, надсилай код і отримуй бали.",
-        en: "Practice and olympiad tasks. Solve them, submit code and earn points.",
-        tr: "Alıştırma ve olimpiyat görevleri. Çöz, kodu gönder ve puan kazan."
+    { route: "course", nav: "course", act: "click",
+      say: {
+        uk: "Курс — це сходинки: теорія, приклад і практика. Наступний урок відкривається після розв'язаної практики. Як у житті, тільки добріше.",
+        en: "The course is a ladder: theory, example, practice. The next lesson opens once you solve the practice. Like life, but kinder.",
+        tr: "Kurs bir merdiven: teori, örnek, alıştırma. Sonraki ders, alıştırmayı çözünce açılır. Hayat gibi ama daha nazik."
       } },
-    { route: "games", title: { uk: "Ігри", en: "Games", tr: "Oyunlar" },
-      text: {
-        uk: "Навчальні мініігри — корисно відпочити між задачами.",
-        en: "Educational mini-games — a nice break between tasks.",
-        tr: "Eğitici mini oyunlar — görevler arasında güzel bir mola."
+    { route: "course", sel: "#courseList .course-lesson", act: "show",
+      say: {
+        uk: "Ось урок. Усередині — приклад, який запускається одним дотиком, і задача з автоперевіркою. Перший урок уже чекає на тебе.",
+        en: "Here is a lesson. Inside there is an example that runs with one tap and a task with automatic checking. The first lesson is already waiting for you.",
+        tr: "İşte bir ders. İçinde tek dokunuşla çalışan bir örnek ve otomatik denetimli bir görev var. İlk ders seni bekliyor."
       } },
-    { route: "tools", title: { uk: "Інструменти", en: "Tools", tr: "Araçlar" },
-      text: {
-        uk: "Дрібні помічники на щодень: конвертери та інші корисні штучки.",
-        en: "Small everyday helpers: converters and other handy bits.",
-        tr: "Günlük küçük yardımcılar: dönüştürücüler ve başka pratik araçlar."
+    { route: "tasks", nav: "tasks", act: "click",
+      say: {
+        uk: "Задачі! Тут тренуються перед олімпіадами. Я вірю в тебе більше, ніж у рекурсію без базового випадку.",
+        en: "Tasks! This is where people train for olympiads. I believe in you more than in recursion without a base case.",
+        tr: "Görevler! Burada olimpiyatlara hazırlanılır. Sana, taban durumu olmayan özyinelemeden daha çok inanıyorum."
       } },
-    { route: "feedback", title: { uk: "Відгуки", en: "Feedback", tr: "Geri bildirim" },
-      text: {
-        uk: "Тут можна поділитися думкою про сайт: що подобається, а що покращити.",
-        en: "Share your thoughts about the site here: what you like and what to improve.",
-        tr: "Site hakkındaki düşüncelerini burada paylaş: neleri beğendin, ne gelişmeli."
+    { route: "tasks", sel: "#tasksList .task-card", act: "show",
+      say: {
+        uk: "Кожна задача має тести, підказку і чернетку коду. Бали за розв'язок капають у профіль — приємно, як і має бути.",
+        en: "Every task has tests, a hint and a code draft. Points for solving it drip into your profile — nice, as it should be.",
+        tr: "Her görevde testler, ipucu ve kod taslağı var. Çözünce puanlar profiline işler — olması gerektiği gibi hoş."
       } },
-    { route: "profile", title: { uk: "Профіль", en: "Profile", tr: "Profil" },
-      text: {
-        uk: "Твій профіль: аватар, статистика і власний прогрес.",
-        en: "Your profile: avatar, stats and personal progress.",
-        tr: "Profilin: avatar, istatistikler ve kişisel ilerlemen."
+    { route: "games", nav: "games", act: "click",
+      say: {
+        uk: "Ігри — це законна перерва між задачами. Змійка, сапер, 2048… Обережно: затягує гірше за while True.",
+        en: "Games are a legal break between tasks. Snake, minesweeper, 2048… Careful: more addictive than while True.",
+        tr: "Oyunlar görevler arasında yasal moladır. Yılan, mayın tarlası, 2048… Dikkat: while True'dan daha bağımlılık yapar."
       } },
-    { route: "achievements", title: { uk: "Досягнення", en: "Achievements", tr: "Başarılar" },
-      text: {
-        uk: "Нагороди за успіхи: виконуй завдання й відкривай нові досягнення.",
-        en: "Awards for your successes: complete tasks and unlock new achievements.",
-        tr: "Başarıların ödülleri: görevleri tamamla ve yeni başarılar aç."
+    { route: "settings", nav: "settings", act: "click",
+      say: {
+        uk: "Налаштування: мова, тема, звуки і вся магія зовнішнього вигляду. Там є навіть кнопка «Повторити туторіал» — це ж я!",
+        en: "Settings: language, theme, sounds and all the look-and-feel magic. There is even a \"Replay the tutorial\" button — that's me!",
+        tr: "Ayarlar: dil, tema, sesler ve tüm görünüm sihri. Orada bir de \"Tur'u tekrar izle\" düğmesi var — yani ben!"
       } },
-    { route: "settings", title: { uk: "Налаштування", en: "Settings", tr: "Ayarlar" },
-      text: {
-        uk: "Тут можна змінити мову, тему, звуки та інші параметри сайту.",
-        en: "Change the language, theme, sounds and other site options here.",
-        tr: "Dili, temayı, sesleri ve diğer site seçeneklerini buradan değiştir."
+    { route: "help", nav: "help", act: "click",
+      say: {
+        uk: "Допомога: відповіді на часті питання та історія оновлень. Я там теж є в списку змін — приємно, знаєте чи.",
+        en: "Help: answers to frequent questions and the update history. I am in that changelog too — feels good, you know.",
+        tr: "Yardım: sık sorulan sorular ve güncelleme geçmişi. O değişiklik listesinde ben de varım — hoş bir duygu."
       } },
-    { route: "help", title: { uk: "Допомога", en: "Help", tr: "Yardım" },
-      text: {
-        uk: "Довідка й оновлення сайту: як усе влаштовано і що нового з'явилося.",
-        en: "Site help and updates: how everything works and what is new.",
-        tr: "Site yardımı ve güncellemeleri: her şey nasıl çalışır ve neler yeni."
+    { fab: true, act: "show",
+      say: {
+        uk: "А це — я. Натисни на мою мордочку будь-коли: поясню тему, розберу твою помилку чи просто побалакаємо про Python. Бувай, друже!",
+        en: "And this is me. Tap my face any time: I'll explain a topic, unpack your error, or we'll just chat about Python. Bye, friend!",
+        tr: "Ve bu benim. Yüzüme istediğin an dokun: bir konuyu açıklarım, hatanı çözerim ya da Python hakkında sohbet ederiz. Görüşürüz, dostum!"
       } }
   ];
+
+  let tutor = null; /* { i, auto, steps, timer, tapTimer } */
 
   function goto(routeName) {
     try {
@@ -915,56 +944,171 @@
     location.hash = routeName;
   }
 
-  function tourStepRect(step) {
-    const view = document.querySelector("#view-" + step.route);
-    const nav = document.querySelector("#mainnav");
-    const anchor = view || nav;
-    if (anchor && anchor.getBoundingClientRect) {
-      const r = anchor.getBoundingClientRect();
-      if (r.width > 0 || r.height > 0) return r;
+  function tutorVisible(node) {
+    if (!node) return false;
+    const r = node.getBoundingClientRect();
+    return r.width > 4 && r.height > 4;
+  }
+  function tutorNavBtn(route) {
+    return document.querySelector('.rail-btn[data-route="' + route + '"]');
+  }
+  function tutorTarget(step) {
+    if (step.fab) return fab;
+    if (step.nav) {
+      const b = tutorNavBtn(step.nav);
+      return tutorVisible(b) ? b : null;
+    }
+    if (step.sel) {
+      const list = document.querySelectorAll(step.sel);
+      for (let i = 0; i < list.length; i++) if (tutorVisible(list[i])) return list[i];
     }
     return null;
   }
-
-  function positionTour() {
-    if (!tourEl || !tourState) return;
-    const step = tourState.steps[tourState.i];
-    const r = tourStepRect(step);
-    tourEl.style.left = "";
-    tourEl.style.right = "";
-    tourEl.style.top = "";
-    tourEl.style.bottom = "";
-    // На вузьких екранах позицію повністю задає CSS, інлайнові стилі лише завадять.
-    if (window.innerWidth <= 768) return;
-    if (r) {
-      const w = tourEl.offsetWidth || 300;
-      let left = Math.min(Math.max(12, r.left + 24), Math.max(12, window.innerWidth - w - 12));
-      let top = Math.min(Math.max(12, r.top + 80), Math.max(12, window.innerHeight - (tourEl.offsetHeight || 200) - 12));
-      tourEl.style.left = left + "px";
-      tourEl.style.top = top + "px";
-    } else {
-      tourEl.style.right = "16px";
-      tourEl.style.bottom = "120px";
-    }
+  function tutorSpotTarget(step) {
+    const direct = tutorTarget(step);
+    if (direct) return direct;
+    return document.querySelector("#view-" + step.route + " .section-head") ||
+      document.querySelector("#view-" + step.route);
+  }
+  function clearTutorTimers() {
+    if (!tutor) return;
+    if (tutor.timer) { clearTimeout(tutor.timer); tutor.timer = null; }
+    if (tutor.tapTimer) { clearTimeout(tutor.tapTimer); tutor.tapTimer = null; }
+  }
+  function slowMotion() {
+    return !document.body.classList.contains("reduce-motion");
   }
 
-  function renderTourStep() {
-    if (!tourEl || !tourState) return;
-    const step = tourState.steps[tourState.i];
-    goto(step.route);
-    tourEl.querySelector(".pychik-tour-title").textContent = pick(step.title);
-    tourEl.querySelector(".pychik-tour-text").textContent = pick(step.text);
-    tourEl.querySelector(".pychik-tour-count").textContent =
-      tx("tourCounter", { n: tourState.i + 1, m: tourState.steps.length });
-    const nextBtn = tourEl.querySelector(".pychik-tour-next");
-    nextBtn.textContent = tourState.i === tourState.steps.length - 1 ? tx("tourFinish") : tx("tourNext");
-    setTimeout(positionTour, 80);
-    setTimeout(positionTour, 400);
+  function moveSpot(r) {
+    const pad = 8;
+    spotEl.style.left = (r.left - pad) + "px";
+    spotEl.style.top = (r.top - pad) + "px";
+    spotEl.style.width = (r.width + pad * 2) + "px";
+    spotEl.style.height = (r.height + pad * 2) + "px";
+    spotEl.classList.add("pychik-spot-on");
+  }
+  /* Маскот стає поруч із підсвіченим елементом там, де є вільне місце. */
+  function movePet(r) {
+    const pw = petEl.offsetWidth || 104, ph = petEl.offsetHeight || 104, gap = 16;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    let x, y;
+    if (r.right + gap + pw < vw - 6) { x = r.right + gap; y = r.top + r.height / 2 - ph / 2; }
+    else if (r.left - gap - pw > 6) { x = r.left - gap - pw; y = r.top + r.height / 2 - ph / 2; }
+    else if (r.bottom + gap + ph < vh - 6) { x = r.left + r.width / 2 - pw / 2; y = r.bottom + gap; }
+    else { x = r.left + r.width / 2 - pw / 2; y = Math.max(6, r.top - gap - ph); }
+    x = Math.min(Math.max(6, x), vw - pw - 6);
+    y = Math.min(Math.max(6, y), vh - ph - 6);
+    petEl.style.transform = "translate(" + Math.round(x) + "px," + Math.round(y) + "px)";
+    petEl.classList.add("pychik-pet-on");
+    placeSay(x, y, pw, ph);
+    return { x: x + pw / 2, y: y + ph / 2 };
+  }
+  /* Лапка тягнеться від маскота до центра елемента й повертається в його бік. */
+  function aimPaw(from, r) {
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const dx = cx - from.x, dy = cy - from.y;
+    const len = Math.max(1, Math.sqrt(dx * dx + dy * dy));
+    const reach = Math.max(46, len - Math.max(r.width, r.height) / 2 - 8);
+    const d = Math.min(reach, len - 8);
+    const px = from.x + (dx / len) * d;
+    const py = from.y + (dy / len) * d;
+    pawEl.style.transform = "translate(" + Math.round(px - 22) + "px," + Math.round(py - 22) +
+      "px) rotate(" + Math.atan2(dy, dx).toFixed(3) + "rad)";
+    pawEl.classList.add("pychik-paw-on");
+  }
+  function placeSay(px, py, pw, ph) {
+    const w = Math.min(340, window.innerWidth - 20);
+    const h = sayEl.offsetHeight || 150;
+    let top = py - h - 14;
+    if (top < 8) top = py + ph + 14;
+    top = Math.min(Math.max(8, top), window.innerHeight - h - 8);
+    const left = Math.min(Math.max(10, px + pw / 2 - w / 2), window.innerWidth - w - 10);
+    sayEl.style.width = w + "px";
+    sayEl.style.left = left + "px";
+    sayEl.style.top = top + "px";
+  }
+  function tapAt(r) {
+    const tap = el("div", "pychik-tap");
+    tap.style.left = (r.left + r.width / 2 - 24) + "px";
+    tap.style.top = (r.top + r.height / 2 - 24) + "px";
+    /* саме всередині .pychik: звідти успадковується --pychik-z */
+    (root || document.body).appendChild(tap);
+    setTimeout(() => { if (tap.parentNode) tap.parentNode.removeChild(tap); }, 750);
   }
 
+  function tutorSayTexts() {
+    if (!tutor) return;
+    const step = tutor.steps[tutor.i];
+    sayTextEl.textContent = pick(step.say);
+    sayCountEl.textContent = tx("tourCounter", { n: tutor.i + 1, m: tutor.steps.length });
+    sayNextBtn.textContent = tutor.i === tutor.steps.length - 1 ? tx("tourFinish") : tx("tourNext");
+    sayPrevBtn.disabled = tutor.i === 0;
+    const ico = sayAutoBtn.querySelector(".material-icons");
+    if (ico) ico.textContent = tutor.auto ? "pause" : "play_arrow";
+    sayAutoBtn.setAttribute("aria-label", tx(tutor.auto ? "tutPauseL" : "tutPlayL"));
+  }
+  function tutorReposition() {
+    if (!tutor) return;
+    const target = tutorSpotTarget(tutor.steps[tutor.i]);
+    if (!target) return;
+    const r = target.getBoundingClientRect();
+    moveSpot(r);
+    aimPaw(movePet(r), r);
+  }
+  function tutorPlace(step) {
+    const target = tutorSpotTarget(step);
+    if (!target) { spotEl.classList.remove("pychik-spot-on"); return; }
+    try { target.scrollIntoView({ block: "center", behavior: slowMotion() ? "smooth" : "auto" }); } catch (e) { /* старі браузери */ }
+    setTimeout(() => {
+      if (!tutor) return;
+      const r = target.getBoundingClientRect();
+      moveSpot(r);
+      const center = movePet(r);
+      aimPaw(center, r);
+      if (step.act === "click" && step.nav) {
+        const btn = tutorNavBtn(step.nav);
+        tutor.tapTimer = setTimeout(() => {
+          if (!tutor) return;
+          const aim = tutorVisible(btn) ? btn : target;
+          tapAt(aim.getBoundingClientRect());
+          sfx("pop");
+          if (tutorVisible(btn)) btn.click(); else goto(step.route);
+        }, slowMotion() ? 980 : 80);
+      }
+    }, slowMotion() ? 430 : 40);
+  }
+  function tutorGo(i) {
+    if (!tutor) return;
+    clearTutorTimers();
+    tutor.i = Math.min(Math.max(0, i), tutor.steps.length - 1);
+    const step = tutor.steps[tutor.i];
+    if (step.route && !(step.nav && tutorVisible(tutorNavBtn(step.nav)))) goto(step.route);
+    tutorSayTexts();
+    tutorPlace(step);
+    tutor.timer = setTimeout(() => { if (tutor && tutor.auto) tutorNext(); },
+      step.act === "click" ? 5600 : 4600);
+  }
+  function tutorNext() {
+    if (!tutor) return;
+    if (tutor.i >= tutor.steps.length - 1) { endTour(true); return; }
+    tutorGo(tutor.i + 1);
+  }
+  function tutorPrev() { if (tutor) tutorGo(tutor.i - 1); }
+  function tutorToggleAuto() {
+    if (!tutor) return;
+    tutor.auto = !tutor.auto;
+    clearTutorTimers();
+    tutorSayTexts();
+    sfx("click");
+    if (tutor.auto) tutor.timer = setTimeout(tutorNext, 2400);
+  }
   function endTour(finished) {
-    if (tourState) tourState = null;
-    if (tourEl) tourEl.classList.remove("pychik-tour-open");
+    clearTutorTimers();
+    tutor = null;
+    spotEl.classList.remove("pychik-spot-on");
+    petEl.classList.remove("pychik-pet-on");
+    pawEl.classList.remove("pychik-paw-on");
+    sayEl.classList.remove("pychik-say-open");
     try { localStorage.setItem(TOUR_KEY, "1"); } catch (e) {}
     if (finished) {
       toast(tx("tourDone"));
@@ -972,21 +1116,20 @@
       sfx("success");
     }
   }
-
   function tour(routeName) {
     if (!inited) init();
     if (!root) return;
-    let steps = TOUR_ROUTES;
+    let steps = TUTOR_STEPS;
     if (routeName) {
-      const one = TOUR_ROUTES.filter((s) => s.route === routeName);
-      steps = one.length ? one : TOUR_ROUTES;
+      const one = TUTOR_STEPS.filter((s) => s.route === routeName || s.nav === routeName);
+      if (one.length) steps = one;
     }
     if (panel && panel.classList.contains("pychik-open")) close();
-    tourState = { steps: steps, i: 0 };
-    tourEl.classList.add("pychik-tour-open");
+    tutor = { i: -1, auto: true, steps: steps, timer: null, tapTimer: null };
+    sayEl.classList.add("pychik-say-open");
     mood("happy");
     sfx("pop");
-    renderTourStep();
+    tutorGo(0);
   }
 
   /* ---------- Відкриття / закриття ---------- */
@@ -1018,26 +1161,42 @@
   function buildDOM() {
     root = el("div", "pychik mood-idle");
 
-    tourEl = el("div", "pychik-tour");
-    tourEl.setAttribute("role", "dialog");
-    tourEl.appendChild(el("div", "pychik-tour-title"));
-    tourEl.appendChild(el("div", "pychik-tour-text"));
-    const tfoot = el("div", "pychik-tour-foot");
-    const countEl = el("span", "pychik-tour-count");
-    const skipBtn = el("button", "pychik-tour-skip", tx("tourSkip"));
-    skipBtn.type = "button";
-    skipBtn.addEventListener("click", () => { sfx("click"); endTour(false); });
-    const nextBtn = el("button", "pychik-tour-next", tx("tourNext"));
-    nextBtn.type = "button";
-    nextBtn.addEventListener("click", () => {
-      sfx("click");
-      if (tourState.i < tourState.steps.length - 1) { tourState.i++; renderTourStep(); }
-      else endTour(true);
-    });
-    tfoot.appendChild(countEl);
-    tfoot.appendChild(skipBtn);
-    tfoot.appendChild(nextBtn);
-    tourEl.appendChild(tfoot);
+    spotEl = el("div", "pychik-spot");
+    petEl = el("div", "pychik-pet");
+    petEl.appendChild(mascotSVG("pychik-svg pychik-svg-pet"));
+    pawEl = el("div", "pychik-paw");
+    pawEl.appendChild(pawSVG("pychik-svg-paw"));
+
+    sayEl = el("div", "pychik-say");
+    sayEl.setAttribute("role", "dialog");
+    sayEl.setAttribute("aria-label", tx("name"));
+    sayTextEl = el("div", "pychik-say-text");
+    sayEl.appendChild(sayTextEl);
+    const sfoot = el("div", "pychik-say-foot");
+    sayPrevBtn = el("button", "pychik-say-ico");
+    sayPrevBtn.type = "button";
+    sayPrevBtn.innerHTML = '<span class="material-icons">chevron_left</span>';
+    sayPrevBtn.setAttribute("aria-label", tx("tutPrevL"));
+    sayPrevBtn.addEventListener("click", () => { sfx("click"); tutorPrev(); });
+    sayAutoBtn = el("button", "pychik-say-ico");
+    sayAutoBtn.type = "button";
+    sayAutoBtn.innerHTML = '<span class="material-icons">pause</span>';
+    sayAutoBtn.setAttribute("aria-label", tx("tutPauseL"));
+    sayAutoBtn.addEventListener("click", tutorToggleAuto);
+    sayCountEl = el("span", "pychik-say-count");
+    sayNextBtn = el("button", "pychik-say-next", tx("tourNext"));
+    sayNextBtn.type = "button";
+    sayNextBtn.addEventListener("click", () => { sfx("click"); tutorNext(); });
+    const sayClose = el("button", "pychik-say-ico pychik-say-close", "\u00D7");
+    sayClose.type = "button";
+    sayClose.setAttribute("aria-label", tx("tourSkip"));
+    sayClose.addEventListener("click", () => { sfx("click"); endTour(false); });
+    sfoot.appendChild(sayPrevBtn);
+    sfoot.appendChild(sayAutoBtn);
+    sfoot.appendChild(sayCountEl);
+    sfoot.appendChild(sayNextBtn);
+    sfoot.appendChild(sayClose);
+    sayEl.appendChild(sfoot);
 
     fab = el("button", "pychik-fab");
     fab.type = "button";
@@ -1084,16 +1243,28 @@
 
     root.appendChild(panel);
     root.appendChild(fab);
-    root.appendChild(tourEl);
+    root.appendChild(spotEl);
+    root.appendChild(petEl);
+    root.appendChild(pawEl);
+    root.appendChild(sayEl);
     document.body.appendChild(root);
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
-        if (tourState) endTour(false);
+        if (tutor) endTour(false);
         else close();
       }
     });
-    window.addEventListener("resize", () => { if (tourState) positionTour(); });
+    window.addEventListener("resize", () => { if (tutor) tutorReposition(); });
+    let repositionQueued = false;
+    window.addEventListener("scroll", () => {
+      if (!tutor || repositionQueued) return;
+      repositionQueued = true;
+      requestAnimationFrame(() => {
+        repositionQueued = false;
+        if (tutor) tutorReposition();
+      });
+    }, true);
     document.addEventListener("langchange", () => {
       if (!root) return;
       inputEl.placeholder = tx("placeholder");
@@ -1101,9 +1272,10 @@
       panel.querySelector(".pychik-title").textContent = tx("name");
       panel.querySelector(".pychik-close").setAttribute("aria-label", tx("close"));
       panel.querySelector(".pychik-send").textContent = tx("send");
-      tourEl.querySelector(".pychik-tour-skip").textContent = tx("tourSkip");
+      sayPrevBtn.setAttribute("aria-label", tx("tutPrevL"));
+      sayClose.setAttribute("aria-label", tx("tourSkip"));
       renderChips();
-      if (tourState) renderTourStep();
+      if (tutor) tutorSayTexts();
     });
     document.addEventListener("routechange", (e) => {
       setContext({ section: e.detail });
@@ -1142,7 +1314,7 @@
         return;
       }
       try { localStorage.setItem(TOUR_KEY, "1"); } catch (e) {}
-      if (!tourState) tour();
+      if (!tutor) tour();
     };
     setTimeout(tick, 2500);
   }
