@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.73";
+  const VERSION = "26.10.74";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.74": {
+      uk: [
+        "Кнопка «Почати тур» в онбордингу тепер передає естафету Пайтончику: він сам веде тебе всіма розділами з підсвіткою й справжніми кліками",
+        "На телефоні Пайтончик сам розкриває шторку «Ще» й показує лапкою на кожен пунктик меню, який сховався за нижньою панеллю",
+        "Після кожного переходу підсвітка їде за новим елементом, тому лапка не цілиться в порожнечу",
+        "«Пропустити» в онбордингу тепер чесно пропускає і тур Пайтончика — без двох навчань одразу"
+      ],
+      en: [
+        "The \"Start the tour\" button in onboarding now hands the wheel to Pythonchik: he leads you through every section himself, with the spotlight and genuine clicks",
+        "On a phone Pythonchik opens the \"More\" sheet on his own and points his paw at each menu item hidden behind the bottom bar",
+        "After every page switch the spotlight follows the new element, so the paw never aims at empty space",
+        "\"Skip\" in onboarding now honestly skips Pythonchik's tour too — no two lessons in a row"
+      ],
+      tr: [
+        "Karşılamadaki \"Turu başlat\" düğmesi artık direksiyonu Pythonchik'e devrediyor: her bölümü kendisi, ışıklı çerçeveyle ve gerçek tıklayışlarla gezdiriyor",
+        "Telefonda Pythonchik \"Daha\" perdesini kendisi açıyor ve alt çubuğun ardına saklanan her menü ögesine patisiyle işaret ediyor",
+        "Her sayfa değişiminde ışık yeni öğenin peşine düşüyor, böylece pati boşluğa hedef almıyor",
+        "Karşılamadaki \"Geç\" artık Pythonchik'in turunu da atlıyor — üst üste iki eğitim yok"
+      ]
+    },
     "26.10.73": {
       uk: [
         "Тур сайту став автопілотом: Пайтончик сам повзе екраном від елемента до елемента й справді натискає пункти меню — перехід відбувається по-справжньому",

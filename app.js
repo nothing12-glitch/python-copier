@@ -641,6 +641,7 @@
       document.querySelectorAll("#mainnav .rail-btn[data-route]").forEach((src) => {
         const b = document.createElement("button");
         b.type = "button";
+        b.dataset.route = src.dataset.route;
         b.classList.toggle("active", src.classList.contains("active"));
         const ico = document.createElement("span");
         ico.className = "material-icons";

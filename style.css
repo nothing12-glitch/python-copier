@@ -441,9 +441,6 @@ body.lang-fade .appbar,body.lang-fade .navrail,body.lang-fade main{opacity:0;tra
 .ob-langs button{font-family:var(--md-font);font-size:15px;font-weight:500;padding:10px 12px;border-radius:14px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);color:var(--md-on-surface);cursor:pointer;transition:.15s;text-align:center}
 .ob-langs button:hover{background:var(--md-primary-container);color:var(--md-on-primary-container)}
 .ob-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.ob-dots{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
-.ob-dots span{width:8px;height:8px;border-radius:50%;background:var(--md-outline-var)}
-.ob-dots span.on{background:var(--md-primary);width:20px;border-radius:4px}
 .ob-input{width:100%;font-family:var(--md-font);font-size:15px;color:var(--md-on-surface);background:var(--md-surface-dim);border:1px solid var(--md-outline-var);border-radius:10px;padding:12px 14px;outline:none;margin-bottom:16px;transition:border-color .2s;text-align:center}
 .ob-input:focus{border-color:var(--md-primary)}
 .emoji-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:14px 0 18px}

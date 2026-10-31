@@ -1,4 +1,4 @@
-/* Онбординг: вибір мови -> вітання -> тур по розділах -> подяка */
+/* Онбординг: вибір мови -> нікнейм -> вітання, далі естафету бере автопілот-тур Пайтончика */
 (function (global) {
   const KEY = "app.onboarded";
 
@@ -11,24 +11,10 @@
       nickPlaceholder: "Github user",
       nickOk: "Продовжити",
       welcomeTitle: "Вітаємо на сайті!",
-      welcomeText: "Тут ти можеш запускати Python прямо в браузері, грати в міні-ігри, зберігати рекорди у профілі та налаштовувати все під себе. Зараз покажемо кожен розділ!",
-      steps: [
-        ["home", "Головна", "Стартова сторінка з коротким описом усього, що вміє сайт."],
-        ["python", "Python", "Пиши код у редакторі та натискай «Запуск» — результат з'явиться у виводі поруч. Є приклади та підказки."],
-        ["games", "Ігри", "Дев'ять міні-ігор: змійка, 2048, сапер та інші. Рекорди зберігаються у профілі."],
-        ["tools", "Інструменти", "Калькулятор, конвертер величин та випадкові числа — усе в одному місці."],
-        ["feedback", "Відгуки", "Форма зворотного зв'язку: поділися ідеєю чи подякою — вона потрапить прямо до автора."],
-        ["profile", "Профіль", "Створи локальний акаунт (демо, без сервера) і бач свої рекорди."],
-        ["settings", "Налаштування", "Тема (світла / темна / авто), кольори, звук, мова, фон і багато іншого."]
-      ],
-      next: "Далі",
+      welcomeText: "Тут ти можеш запускати Python прямо в браузері, грати в міні-ігри, зберігати рекорди у профілі та налаштовувати все під себе. А проводити тебе всіма розділами зараз буде Пайтончик!",
       skip: "Пропустити",
       nickSkip: "Пропустити (зроблю пізніше)",
-      start: "Почати тур",
-      finish: "Завершити",
-      done: "Готово",
-      thanksTitle: "Дякуємо, що відвідали наш сайт!",
-      thanksText: "Приємного користування!"
+      start: "Почати тур"
     },
     en: {
       langTitle: "Choose your language",
@@ -38,24 +24,10 @@
       nickPlaceholder: "Github user",
       nickOk: "Continue",
       welcomeTitle: "Welcome to the site!",
-      welcomeText: "Here you can run Python right in the browser, play mini-games, keep records in your profile and customize everything. Let us show you around!",
-      steps: [
-        ["home", "Home", "A short overview of everything the site can do."],
-        ["python", "Python", "Write code in the editor and press Run — the result appears in the output panel. Examples and hints included."],
-        ["games", "Games", "Nine mini-games: Snake, 2048, Minesweeper and more. Records are saved in your profile."],
-        ["tools", "Tools", "A calculator, unit converter and random tools — all in one place."],
-        ["feedback", "Feedback", "A feedback form: share an idea or a kind word — it goes straight to the author."],
-        ["profile", "Profile", "Create a local account (demo, no server) and see your records."],
-        ["settings", "Settings", "Theme (light / dark / auto), colors, sound, language, background and much more."]
-      ],
-      next: "Next",
+      welcomeText: "Here you can run Python right in the browser, play mini-games, keep records in your profile and customize everything. And now Pythonchik will show you around!",
       skip: "Skip",
       nickSkip: "Skip (I'll do it later)",
-      start: "Start tour",
-      finish: "Finish",
-      done: "Done",
-      thanksTitle: "Thanks for visiting our site!",
-      thanksText: "Enjoy using it!"
+      start: "Start tour"
     },
     tr: {
       langTitle: "Dilini seç",
@@ -65,24 +37,10 @@
       nickPlaceholder: "Github user",
       nickOk: "Devam",
       welcomeTitle: "Sitemize hoş geldin!",
-      welcomeText: "Burada Python'u doğrudan tarayıcıda çalıştırabilir, mini oyunlar oynayabilir, rekorlarını profilinde saklayabilir ve her şeyi kendine göre ayarlayabilirsin. Şimdi sana her bölümü göstereceğiz!",
-      steps: [
-        ["home", "Ana Sayfa", "Sitenin neler yapabildiğine dair kısa bir özet."],
-        ["python", "Python", "Düzenleyiciye kod yaz ve Çalıştır'a bas — sonuç yandaki çıktıda görünür. Örnekler ve ipuçları var."],
-        ["games", "Oyunlar", "Dokuz mini oyun: Yılan, 2048, Mayın Tarlası ve daha fazlası. Rekorlar profilde saklanır."],
-        ["tools", "Araçlar", "Hesap makinesi, birim dönüştürücü ve rastgele sayı araçları — hepsi bir arada."],
-        ["feedback", "Geri Bildirim", "Bir geri bildirim formu: bir fikir veya tatlı bir söz paylaş — doğrudan site sahibine gider."],
-        ["profile", "Profil", "Yerel bir hesap oluştur (demo, sunucu yok) ve rekorlarını gör."],
-        ["settings", "Ayarlar", "Tema (açık / koyu / otomatik), renkler, ses, dil, arka plan ve daha fazlası."]
-      ],
-      next: "İleri",
+      welcomeText: "Burada Python'u doğrudan tarayıcıda çalıştırabilir, mini oyunlar oynayabilir, rekorlarını profilinde saklayabilir ve her şeyi kendine göre ayarlayabilirsin. Şimdi sana her bölümü Pythonchik gösterecek!",
       skip: "Atla",
       nickSkip: "Atla (sonra yaparım)",
-      start: "Tura başla",
-      finish: "Bitir",
-      done: "Tamam",
-      thanksTitle: "Sitemizi ziyaret ettiğiniz için teşekkürler!",
-      thanksText: "İyi kullanımlar!"
+      start: "Tura başla"
     }
   };
 
@@ -133,8 +91,18 @@
 
   function finishTour(routeHome) {
     localStorage.setItem(KEY, "1");
+    /* «Пропустити» в онбордингу = не показувати й автопілот-тур Пайтончика */
+    localStorage.setItem("app.pychik.tourSeen", "1");
     close();
     if (routeHome && global.App) global.App.route("home");
+  }
+
+  /* Далі естафету бере Пайтончик: він веде тур сам, із спотлайтом і справжніми кліками. */
+  function handToPythonchik() {
+    localStorage.setItem(KEY, "1");
+    close();
+    if (global.Pythonchik) global.Pythonchik.tour();
+    else if (global.App) global.App.route("home");
   }
 
   function shell() {
@@ -231,46 +199,8 @@
     card.append(emo, h, p);
     actions(card, [
       [S().skip, "text", () => finishTour(true)],
-      [S().start, "contained", () => renderStep(0)]
+      [S().start, "contained", handToPythonchik]
     ]);
-  }
-
-  function renderStep(i) {
-    phase = i;
-    const st = S().steps[i];
-    if (global.App) global.App.route(st[0]);
-    const card = shell();
-    const dots = document.createElement("div");
-    dots.className = "ob-dots";
-    S().steps.forEach((_, n) => {
-      const d = document.createElement("span");
-      if (n === i) d.className = "on";
-      dots.appendChild(d);
-    });
-    const h = document.createElement("h3");
-    h.textContent = st[1];
-    const p = document.createElement("p");
-    p.textContent = st[2];
-    card.append(dots, h, p);
-    const last = i === S().steps.length - 1;
-    actions(card, [
-      [S().skip, "text", () => finishTour(true)],
-      [last ? S().finish : S().next, "contained", () => (last ? renderThanks() : renderStep(i + 1))]
-    ]);
-  }
-
-  function renderThanks() {
-    phase = "thanks";
-    const card = shell();
-    const emo = document.createElement("div");
-    emo.className = "ob-emoji";
-    emo.textContent = "\u{1F60A}";
-    const h = document.createElement("h3");
-    h.textContent = S().thanksTitle;
-    const p = document.createElement("p");
-    p.textContent = S().thanksText;
-    card.append(emo, h, p);
-    actions(card, [[S().done, "contained", () => finishTour(true)]]);
   }
 
   function start() {
@@ -288,9 +218,7 @@
       if (phase === null) return;
       if (phase === "lang") renderLang();
       else if (phase === "nick") renderNickname();
-      else if (phase === "welcome") renderWelcome();
-      else if (phase === "thanks") renderThanks();
-      else renderStep(phase);
+      else renderWelcome();
     });
   }
 

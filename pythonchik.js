@@ -952,11 +952,32 @@
   function tutorNavBtn(route) {
     return document.querySelector('.rail-btn[data-route="' + route + '"]');
   }
+  /* На телефоні більшість пунктів схова за нижньою панеллю, тому Пайтончик
+     сам розкриває шторку «Ще» й показує вже на пункт у ній. */
+  function tutorMoreBtn() {
+    return document.querySelector("#navMore");
+  }
+  function tutorSheetBtn(route) {
+    const sheet = document.querySelector("#moreSheet");
+    if (!sheet || sheet.hidden) return null;
+    return sheet.querySelector('#moreSheetGrid [data-route="' + route + '"]');
+  }
+  function tutorCanClick(step) {
+    if (!step.nav) return false;
+    if (tutorVisible(tutorNavBtn(step.nav))) return true;
+    /* сітку шторки будується лише при відкритті, тому перевіряємо саму оболонку */
+    return tutorVisible(tutorMoreBtn()) && !!document.querySelector("#moreSheet #moreSheetGrid");
+  }
   function tutorTarget(step) {
     if (step.fab) return fab;
     if (step.nav) {
-      const b = tutorNavBtn(step.nav);
-      return tutorVisible(b) ? b : null;
+      if (tutor.done) return null;
+      const rail = tutorNavBtn(step.nav);
+      if (tutorVisible(rail)) return rail;
+      const inSheet = tutorSheetBtn(step.nav);
+      if (tutorVisible(inSheet)) return inSheet;
+      const more = tutorMoreBtn();
+      return tutorVisible(more) ? more : null;
     }
     if (step.sel) {
       const list = document.querySelectorAll(step.sel);
@@ -1055,6 +1076,12 @@
     moveSpot(r);
     aimPaw(movePet(r), r);
   }
+  /* «Натискання» елемента: кільце, звук і справжній клік. */
+  function tutorPoke(node) {
+    tapAt(node.getBoundingClientRect());
+    sfx("pop");
+    node.click();
+  }
   function tutorPlace(step) {
     const target = tutorSpotTarget(step);
     if (!target) { spotEl.classList.remove("pychik-spot-on"); return; }
@@ -1063,30 +1090,41 @@
       if (!tutor) return;
       const r = target.getBoundingClientRect();
       moveSpot(r);
-      const center = movePet(r);
-      aimPaw(center, r);
-      if (step.act === "click" && step.nav) {
-        const btn = tutorNavBtn(step.nav);
+      aimPaw(movePet(r), r);
+      if (step.act !== "click" || !step.nav) return;
+      const rail = tutorNavBtn(step.nav);
+      const more = tutorMoreBtn();
+      tutor.tapTimer = setTimeout(() => {
+        if (!tutor) return;
+        if (tutorVisible(rail)) { tutor.done = true; tutorPoke(rail); return; }
+        if (!tutorVisible(more)) { goto(step.route); return; }
+        /* телефон: спершу «натискаємо» «Ще», дочекуємось шторки — і тоді сам пункт */
+        tutorPoke(more);
         tutor.tapTimer = setTimeout(() => {
           if (!tutor) return;
-          const aim = tutorVisible(btn) ? btn : target;
-          tapAt(aim.getBoundingClientRect());
-          sfx("pop");
-          if (tutorVisible(btn)) btn.click(); else goto(step.route);
-        }, slowMotion() ? 980 : 80);
-      }
+          tutorReposition();
+          const inSheet = tutorSheetBtn(step.nav);
+          if (!tutorVisible(inSheet)) { goto(step.route); return; }
+          tutor.tapTimer = setTimeout(() => {
+            if (!tutor) return;
+            tutor.done = true;
+            tutorPoke(inSheet);
+          }, slowMotion() ? 760 : 60);
+        }, slowMotion() ? 320 : 30);
+      }, slowMotion() ? 980 : 80);
     }, slowMotion() ? 430 : 40);
   }
   function tutorGo(i) {
     if (!tutor) return;
     clearTutorTimers();
     tutor.i = Math.min(Math.max(0, i), tutor.steps.length - 1);
+    tutor.done = false;
     const step = tutor.steps[tutor.i];
-    if (step.route && !(step.nav && tutorVisible(tutorNavBtn(step.nav)))) goto(step.route);
+    if (step.route && !tutorCanClick(step)) goto(step.route);
     tutorSayTexts();
     tutorPlace(step);
     tutor.timer = setTimeout(() => { if (tutor && tutor.auto) tutorNext(); },
-      step.act === "click" ? 5600 : 4600);
+      step.act === "click" ? 6400 : 4600);
   }
   function tutorNext() {
     if (!tutor) return;
@@ -1125,7 +1163,7 @@
       if (one.length) steps = one;
     }
     if (panel && panel.classList.contains("pychik-open")) close();
-    tutor = { i: -1, auto: true, steps: steps, timer: null, tapTimer: null };
+    tutor = { i: -1, auto: true, done: false, steps: steps, timer: null, tapTimer: null };
     sayEl.classList.add("pychik-say-open");
     mood("happy");
     sfx("pop");
@@ -1279,6 +1317,8 @@
     });
     document.addEventListener("routechange", (e) => {
       setContext({ section: e.detail });
+      /* після справжнього переходу секція змінюється — підсвітка має поїсти за нею */
+      if (tutor) setTimeout(tutorReposition, slowMotion() ? 360 : 20);
     });
   }
 
