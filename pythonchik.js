@@ -1068,10 +1068,16 @@
     if (ico) ico.textContent = tutor.auto ? "pause" : "play_arrow";
     sayAutoBtn.setAttribute("aria-label", tx(tutor.auto ? "tutPauseL" : "tutPlayL"));
   }
-  function tutorReposition() {
+  /* scroll=true — одразу після справжнього переходу: нова сторінка може зберегти
+     старий зсув, і інакше підсвітка лізе за край екрана.
+     При прокрутці самим користувачем чіпати зсув не можна — це брало б сторінку замість нього. */
+  function tutorReposition(scroll) {
     if (!tutor) return;
     const target = tutorSpotTarget(tutor.steps[tutor.i]);
     if (!target) return;
+    if (scroll) {
+      try { target.scrollIntoView({ block: "center", behavior: "auto" }); } catch (e) { /* старі браузери */ }
+    }
     const r = target.getBoundingClientRect();
     moveSpot(r);
     aimPaw(movePet(r), r);
@@ -1317,8 +1323,8 @@
     });
     document.addEventListener("routechange", (e) => {
       setContext({ section: e.detail });
-      /* після справжнього переходу секція змінюється — підсвітка має поїсти за нею */
-      if (tutor) setTimeout(tutorReposition, slowMotion() ? 360 : 20);
+      /* після справжнього переходу секція змінюється — підсвітка має поїхати за нею */
+      if (tutor) setTimeout(() => tutorReposition(true), slowMotion() ? 360 : 20);
     });
   }
 

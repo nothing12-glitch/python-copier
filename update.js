@@ -3,10 +3,24 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.74";
+  const VERSION = "26.10.75";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.75": {
+      uk: [
+        "Після справжнього переходу сторінка тепер підкручується до підсвіченого елемента — на телефоні спотлайт більше не залишається за краєм екрана",
+        "Підсвітка супроводжує елемент усі 12 кроків: лапка завжди цілиться туди, що справді видно, а не в порожнечу"
+      ],
+      en: [
+        "After a genuine page switch the page now scrolls to the highlighted element, so on a phone the spotlight no longer ends up off-screen",
+        "The spotlight ran the full 12 steps: the paw always aims at something you can actually see, never at empty space"
+      ],
+      tr: [
+        "Gerçek sayfa geçişinden sonra sahne ışıklı öğeye kaydırılıyor — artık telefonda spot ekranın kenarında dışarıda kalmıyor",
+        "Işık 12 adımın tamamında izlendi: pati her zaman gerçekten gördüğün bir şeye nişan alıyor, boşluğa değil"
+      ]
+    },
     "26.10.74": {
       uk: [
         "Кнопка «Почати тур» в онбордингу тепер передає естафету Пайтончику: він сам веде тебе всіма розділами з підсвіткою й справжніми кліками",
