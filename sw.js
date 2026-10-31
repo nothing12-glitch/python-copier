@@ -1,6 +1,6 @@
 /* sw.js — Service Worker для офлайн-доступу.
    При зміні версії сайту піднімай CACHE_VERSION, щоб очистити старий кеш. */
-const CACHE_VERSION = "pc-v53";
+const CACHE_VERSION = "pc-v54";
 
 const STATIC_ASSETS = [
   "/",
@@ -10,6 +10,7 @@ const STATIC_ASSETS = [
   "/extra.css",
   "/mobile.css",
   "/pythonchik.css",
+  "/pychik-ai.js",
   "/i18n.js",
   "/splash.js",
   "/audio.js",

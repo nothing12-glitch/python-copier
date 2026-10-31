@@ -115,6 +115,24 @@ body.focus-mode .pychik-fab { opacity: 0; pointer-events: none; }
   transition: background .15s ease;
 }
 .pychik-close:hover { background: var(--nu-line, rgba(255, 255, 255, .1)); }
+.pychik-head-btn {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--md-on-surface-var, #b8b2c4);
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.pychik-head-btn:hover {
+  background: var(--nu-line, rgba(255, 255, 255, .1));
+  color: var(--md-primary, #6750a4);
+}
+.pychik-head-btn .material-icons { font-size: 19px; }
 
 /* ---------- Повідомлення ---------- */
 .pychik-msgs {
@@ -209,6 +227,20 @@ body:not(.dark) .pychik-pre { background: rgba(0, 0, 0, .05); color: #1d3a1d; }
   border-color: var(--md-primary, #6750a4);
   color: var(--md-on-surface, #e6e1ec);
 }
+.pychik-chip-tour {
+  border-color: var(--md-primary, #6750a4);
+  color: var(--md-primary, #6750a4);
+  font-weight: 600;
+}
+.pychik-note {
+  margin-top: 7px;
+  padding-top: 7px;
+  border-top: 1px dashed var(--nu-line, rgba(255, 255, 255, .12));
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--md-on-surface-var, #a8a2b4);
+}
+.pychik-note-label { font-weight: 700; color: var(--md-primary, #6750a4); }
 .pychik-suggest { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .pychik-suggest-label {
   font-size: 11.5px;

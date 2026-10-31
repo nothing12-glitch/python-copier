@@ -3,10 +3,39 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.75";
+  const VERSION = "26.10.76";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.76": {
+      uk: [
+        "У Пайтончика з'явився власний мозок: він розмовляє («привіт», «бувай», «дякую», «як справи», «розкажи жарт»), рахує («скільки буде 17*3», «10 відсотків від 250», «корінь з 144», «НСД 12 і 18») і пише цілі програмки на попит — усе офлайн, без жодного API та хмари",
+        "Він слухає команди й сам їх виконує: «відкрий курс», «перейди в ігри», «зміни мову на англійську», «вимкни звук», «що нового», «який мій прогрес»",
+        "Команда «покажи тур» запускає автопілот просто з чату; у шапці панелі — кнопка-компас, а першим чіпом лізе «Показати тур»",
+        "Одруківки та криві формулювання більше не глухий кут: «паліндроом», «цикл фоз» чи «вiтаю» навіть з латинською «і» — Пайтончик сам здогадується, що ти мав на увазі",
+        "Довідні відповіді тепер із поясненням «Чому так», а згенерований код одразу потрапляє у редактор — залишається натиснути «Запуск»",
+        "Розмова має пам'ять: «не зрозумів», «чому», «складніше», «покажи код», «далі» стосуються саме останньої теми, а «мене звати Оксана» — запам'ятається",
+        "Турецькі репліки мозку поки що англійською — власні тексти у наступному оновленні"
+      ],
+      en: [
+        "Pythonchik grew his own brain: he chats (\"hi\", \"bye\", \"thanks\", \"how are you\", \"tell a joke\"), calculates (\"what's 17*3\", \"10% of 250\", \"sqrt of 144\", \"GCD of 12 and 18\") and writes whole little programs on request — all offline, no API, no cloud",
+        "He follows commands and acts on them: \"open the course\", \"go to games\", \"switch to English\", \"mute sound\", \"what's new\", \"how is my progress\"",
+        "\"Show the tour\" starts the autopilot straight from the chat; the panel header gained a compass button and the first chip is \"Show the tour\"",
+        "Typos and clumsy phrasing are no longer a dead end: \"palindrom\", \"cicl foz\" or \"вiтаю\" typed with a Latin \"i\" — he guesses what you meant",
+        "Explanations now come with a \"Why this way\" note, and the generated code lands in the editor — all that's left is to hit Run",
+        "The conversation has memory: \"not clear\", \"why\", \"harder\", \"show code\", \"next\" refer to the last topic, and \"my name is Oksana\" is remembered",
+        "Turkish replies from the brain are in English for now — their own texts come next"
+      ],
+      tr: [
+        "Pythonchik kendi beynine kavuştu: sohbet ediyor (\"merhaba\", \"hoşça kal\", \"teşekkürler\", \"nasılsın\", \"fıkra anlat\"), hesaplıyor (\"17*3 kaç\", \"250'nin %10'u\", \"144'ün karekökü\", \"12 ve 18'in EBOB'u\") ve istenince tam programcıklar yazıyor — hepsi çevrim dışı, bulut yok",
+        "Komutları dinleyip kendisi yapıyor: \"kursu aç\", \"oyunlara git\", \"dili İngilizce yap\", \"sesi kapat\", \"yenilikler ne\", \"benim ilerlemem nasıl\"",
+        "\"Tur göster\" otomatik turu doğrudan sohbetten başlatıyor; panel başlığına pusula düğmesi eklendi, ilk öneri de \"Tur göster\"",
+        "Yazım hataları artık çıkmaz değil: \"palindrom\", \"cicl foz\" ve Latince \"i\" ile yazılan \"вiтаю\" — ne demek istediğini kendisi buluyor",
+        "Açıklamalar artık \"Neden böyle\" notuyla geliyor, üretilen kod doğrudan düzenleyiciye düşüyor — yalnızca Çalış'a basmak kalıyor",
+        "Sohbetin belleği var: \"anlamadım\", \"neden\", \"daha zor\", \"kodu göster\", \"devam\" son konuya döner; \"benim adım Oksana\" da hatırlanıyor",
+        "Beynin Türkçe yanıtları şimdilik İngilizce — kendi metinleri sırada"
+      ]
+    },
     "26.10.75": {
       uk: [
         "Після справжнього переходу сторінка тепер підкручується до підсвіченого елемента — на телефоні спотлайт більше не залишається за краєм екрана",

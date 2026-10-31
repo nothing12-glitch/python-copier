@@ -31,6 +31,10 @@
       tourFinish: "Гаразд",
       tourCounter: "{n} з {m}",
       tourDone: "Ось і весь сайт. Щасти у вивченні Python!",
+      tourChip: "Показати тур",
+      tourBtnL: "Показати тур сайтом",
+      padToast: "Код уже в редакторі — тисни «Запуск»",
+      whyLabel: "Чому так",
       tutPrevL: "Крок назад",
       tutPauseL: "Призупинити автопілот",
       tutPlayL: "Увімкнути автопілот",
@@ -64,6 +68,10 @@
       tourFinish: "Got it",
       tourCounter: "{n} of {m}",
       tourDone: "That is the whole site. Good luck learning Python!",
+      tourChip: "Show the tour",
+      tourBtnL: "Take the site tour",
+      padToast: "The code is in the editor — hit Run",
+      whyLabel: "Why this way",
       tutPrevL: "Previous step",
       tutPauseL: "Pause autopilot",
       tutPlayL: "Resume autopilot",
@@ -97,6 +105,10 @@
       tourFinish: "Tamam",
       tourCounter: "{n} / {m}",
       tourDone: "Tüm site bu kadar. Python öğrenirken bol şans!",
+      tourChip: "Tur göster",
+      tourBtnL: "Site turunu başlat",
+      padToast: "Kod düzenleyicide — Çalış'a bas",
+      whyLabel: "Neden böyle",
       tutPrevL: "Önceki adım",
       tutPauseL: "Otomatik turu duraklat",
       tutPlayL: "Otomatik tura devam",
@@ -366,7 +378,7 @@
       code: "n = int(input())\nprint(\"Вік: \" + str(n))"
     },
     {
-      kw: "zerodivision ділення ділити на нуль на ноль деление ноль division zero sıfıra bölme",
+      kw: "zerodivision ділення ділити нуль на ноль деление division zero sıfıra bölme",
       a: {
         uk: "ZeroDivisionError — ділення на нуль. На нуль ділити не можна, тому перевіряй дільник перед діленням.",
         en: "ZeroDivisionError — division by zero. Dividing by zero is not allowed, so check the divisor first.",
@@ -399,11 +411,16 @@
   function matchKB(question) {
     const q = norm(question);
     if (!q.trim()) return null;
+    const words = q.split(" ").filter(Boolean);
     let best = null, bestScore = 0;
     KB.forEach((e) => {
       let score = 0;
       e.kw.toLowerCase().split(" ").forEach((k) => {
-        if (k.length > 1 && q.indexOf(k) !== -1) score++;
+        if (k.length <= 1) return;
+        /* короткі ключі («на», «if», «int») ловимо лише цілим словом:
+           інакше «напиши програму» потрапляє в ZeroDivisionError через «на» */
+        if (k.length < 5) { if (words.indexOf(k) !== -1) score++; }
+        else if (q.indexOf(k) !== -1) score++;
       });
       if (score > bestScore) { bestScore = score; best = e; }
     });
@@ -753,6 +770,10 @@
   function renderChips() {
     if (!chipsEl) return;
     while (chipsEl.firstChild) chipsEl.removeChild(chipsEl.firstChild);
+    const tourChip = el("button", "pychik-chip pychik-chip-tour", tx("tourChip"));
+    tourChip.type = "button";
+    tourChip.addEventListener("click", () => { sfx("click"); tour(); });
+    chipsEl.appendChild(tourChip);
     chipSet().forEach((q) => {
       const b = el("button", "pychik-chip", q);
       b.type = "button";
@@ -794,13 +815,19 @@
     container.appendChild(wrap);
   }
 
-  function addMsg(who, text, code, suggestions) {
+  function addMsg(who, text, code, suggestions, note) {
     if (!msgsEl) return null;
     const m = el("div", "pychik-msg pychik-msg-" + who);
     const bubble = el("div", who === "bot" ? "pychik-bubble pychik-bubble-bot" : "pychik-bubble pychik-bubble-user");
     bubble.textContent = text;
     m.appendChild(bubble);
     if (code) addCodeBlock(bubble, code);
+    if (note) {
+      const n = el("div", "pychik-note");
+      n.appendChild(el("span", "pychik-note-label", tx("whyLabel") + ":"));
+      n.appendChild(document.createTextNode(" " + note));
+      bubble.appendChild(n);
+    }
     if (suggestions && suggestions.length) {
       const srow = el("div", "pychik-suggest");
       srow.appendChild(el("span", "pychik-suggest-label", tx("suggest")));
@@ -825,6 +852,130 @@
     addMsg("bot", tx(g[ctx.section] || g.default));
   }
 
+  /* ---------- Локальний «мозок» розмови (pychik-ai.js) ---------- */
+  const STATS_TXT = {
+    uk: { course: "Курс", tasks: "Задачі", modules: "Модулі", ach: "Досягнення", of: "із" },
+    en: { course: "Course", tasks: "Tasks", modules: "Modules", ach: "Achievements", of: "of" },
+    tr: { course: "Kurs", tasks: "Görevler", modules: "Modüller", ach: "Başarımlar", of: "/" }
+  };
+
+  function kbWords() {
+    const seen = {};
+    KB.forEach((e) => {
+      e.kw.toLowerCase().split(" ").forEach((k) => { if (k.length >= 4) seen[k] = 1; });
+    });
+    return Object.keys(seen);
+  }
+
+  /* назву розділу бере з живої навігації — тож вона завжди поточною мовою */
+  function routeLabel(route) {
+    const node = document.querySelector('.rail-btn[data-route="' + route + '"] .rail-label');
+    return node ? node.textContent.trim() : String(route);
+  }
+
+  function statsLine() {
+    const S = STATS_TXT[lang()] || STATS_TXT.en;
+    const parts = [];
+    try {
+      const C = global.Course;
+      if (C && C.count) {
+        const done = typeof C.done === "function" ? C.done() : C.done;
+        parts.push(S.course + ": " + done + " " + S.of + " " + C.count);
+      }
+    } catch (e) { /* модуль ще не ініціалізований */ }
+    try {
+      const T = global.Tasks;
+      if (T && T.count && T.list) {
+        const solved = T.list().filter((x) => T.isSolved(x.id)).length;
+        parts.push(S.tasks + ": " + solved + " " + S.of + " " + T.count);
+      }
+    } catch (e) { /* */ }
+    try {
+      if (global.Modules && global.Modules.installed) parts.push(S.modules + ": " + global.Modules.installed().length);
+    } catch (e) { /* */ }
+    try {
+      if (global.Achievements && global.Achievements.getUnlocked) parts.push(S.ach + ": " + global.Achievements.getUnlocked().length);
+    } catch (e) { /* */ }
+    return parts.join(" · ");
+  }
+
+  /* Кладемо код у редактор — той самий шлях, що кнопка «приклад» у «Модулях». */
+  function toPad(code) {
+    const editor = $("#code");
+    if (editor && editor.tagName === "TEXTAREA") {
+      editor.value = code;
+      editor.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    if (global.App && global.App.route) global.App.route("python");
+    toast(tx("padToast"));
+  }
+
+  function applyAct(act, code) {
+    if (!act) return;
+    const run = () => {
+      if (act === "tour") { tour(); return; }
+      if (act === "pad") { if (code) toPad(code); return; }
+      if (act === "whatsnew") {
+        if (global.AppUpdates && global.AppUpdates.showWhatsNew) global.AppUpdates.showWhatsNew();
+        return;
+      }
+      if (act.indexOf("route:") === 0) {
+        if (global.App && global.App.route) global.App.route(act.slice(6));
+        return;
+      }
+      if (act.indexOf("lang:") === 0) {
+        if (global.I18n && global.I18n.setLang) global.I18n.setLang(act.slice(5));
+        return;
+      }
+      if (act.indexOf("sound:") === 0) {
+        const on = act.slice(6) !== "0";
+        try { if (global.Settings) global.Settings.set("sfx", on); } catch (e) { /* */ }
+        try { if (global.Audio2 && global.Audio2.setSfx) global.Audio2.setSfx(on); } catch (e) { /* */ }
+        try { if (global.Settings && global.Settings.syncUI) global.Settings.syncUI(); } catch (e) { /* */ }
+      }
+    };
+    /* дає користувачеві прочитати репліку, перш ніж екран почне рухатися */
+    setTimeout(run, 700);
+  }
+
+  /* Місточок: мозок не знає про App, I18n чи Editor — усе це приходить звідси. */
+  function aiBridge() {
+    return {
+      lang: lang,
+      section: () => ctx.section,
+      kb: (q) => {
+        const e = matchKB(q);
+        return e ? { a: e.a, code: e.code || null } : null;
+      },
+      kbWords: kbWords,
+      routeLabel: routeLabel,
+      goto: (r) => { if (global.App && global.App.route) global.App.route(r); },
+      setLang: (c) => { if (global.I18n && global.I18n.setLang) global.I18n.setLang(c); },
+      sound: (on) => { try { if (global.Settings) global.Settings.set("sfx", on); } catch (e) { /* */ } },
+      whatsNew: () => { if (global.AppUpdates && global.AppUpdates.showWhatsNew) global.AppUpdates.showWhatsNew(); },
+      tour: () => tour(),
+      name: () => {
+        try {
+          if (global.Profile && global.Profile.getNickname) return global.Profile.getNickname() || "";
+          return localStorage.getItem("app.nickname") || "";
+        } catch (e) { return ""; }
+      },
+      stats: statsLine
+    };
+  }
+
+  function aiAsk(question) {
+    const AI = global.PychikAI;
+    if (!AI || !AI.think) return false;
+    let r = null;
+    try { r = AI.think(question, aiBridge()); } catch (e) { r = null; }
+    if (!r || !r.text) return false;
+    mood(r.mood || "happy");
+    addMsg("bot", r.text, r.code || null, r.sugs || null, r.why || null);
+    applyAct(r.act, r.code);
+    return true;
+  }
+
   /* ---------- Мозок ---------- */
   function answer(question) {
     if (looksLikeError(question)) {
@@ -833,6 +984,8 @@
       addMsg("bot", r.text, r.code);
       return;
     }
+    /* спершу розмовний мозок: він сам звертається до бази знань, коли треба */
+    if (aiAsk(question)) return;
     const entry = matchKB(question);
     if (entry) {
       mood("happy");
@@ -1257,6 +1410,12 @@
     mascotEl = mascotSVG("pychik-svg pychik-svg-head");
     head.appendChild(mascotEl);
     head.appendChild(el("span", "pychik-title", tx("name")));
+    const tourBtn = el("button", "pychik-head-btn");
+    tourBtn.type = "button";
+    tourBtn.innerHTML = '<span class="material-icons">explore</span>';
+    tourBtn.setAttribute("aria-label", tx("tourBtnL"));
+    tourBtn.addEventListener("click", () => { sfx("click"); tour(); });
+    head.appendChild(tourBtn);
     const closeBtn = el("button", "pychik-close", "\u00D7");
     closeBtn.type = "button";
     closeBtn.setAttribute("aria-label", tx("close"));
