@@ -188,7 +188,7 @@
   let py = null;
   let pyState = "idle";
   let out, codeEl, runBtn, statusEl, lineNums, hintList, exSel, acBox, hlEl;
-  let statsText, statsTime, copyBtn, saveBtn;
+  let statsText, statsTime, copyBtn, saveBtn, stdinBar, stdinEl;
   let lastLoadMs = null, lastExecMs = null;
   let snList, snName;
   // Провенанс редактора: хто останній наповнив textarea. «own» — набрала людина.
@@ -305,8 +305,26 @@
   function updateLineNumbers() {
     const lines = codeEl.value.split("\n").length;
     lineNums.textContent = Array.from({ length: lines }, (_, i) => i + 1).join("\n");
+    syncStdinBar();
     updateStats();
     updateHighlight();
+  }
+
+  /* ---------- Поле «Ввід для input()» ---------- */
+  // Показуємо його лише коли код справді кликає input() — інакше воно заважає.
+  function syncStdinBar() {
+    if (!stdinBar || !codeEl) return;
+    const need = /(^|[^\w.])input\s*\(/.test(codeEl.value);
+    stdinBar.classList.toggle("hidden", !need);
+  }
+
+  /* Один рядок поля = один виклик input(). Коли рядки закінчились, повертаємо undefined:
+     Pyodide (0.26.2, перевірено) піднімає тоді EOFError, як справжній термінал.
+     Порожній рядок натомість означає «ще один порожній ввід» — цикл input() висяв би вічно. */
+  function stdinProvider() {
+    const lines = String(stdinEl && stdinEl.value ? stdinEl.value : "").split("\n");
+    let i = 0;
+    return { stdin: () => (i < lines.length ? lines[i++] + "\n" : undefined) };
   }
 
   /* ---------- Статистика коду, час виконання, копіювання та експорт ---------- */
@@ -951,7 +969,8 @@
     let idx = 0;
     let output = "";
     let error = null;
-    py.setStdin({ stdin: () => (idx < lines.length ? lines[idx++] + "\n" : "") });
+    // undefined після останнього рядка = EOF: Pyodide дає EOFError замість нескінченного порожнього вводу
+    py.setStdin({ stdin: () => (idx < lines.length ? lines[idx++] + "\n" : undefined) });
     py.setStdout({ batched: (s) => { output += s + "\n"; } });
     py.setStderr({ batched: (s) => { output += s + "\n"; } });
     try {
@@ -959,7 +978,7 @@
     } catch (e) {
       error = e && e.message ? e.message : String(e);
     } finally {
-      py.setStdin({ stdin: () => "" });
+      py.setStdin({ stdin: () => undefined });
       py.setStdout({ batched: (s) => setOutput(s) });
       py.setStderr({ batched: (s) => setOutput(s, true, null, tracebackLine(s)) });
     }
@@ -1161,6 +1180,7 @@
     setStatus("running");
     py.setStdout({ batched: (s) => setOutput(s) });
     py.setStderr({ batched: (s) => setOutput(s, true, null, tracebackLine(s)) });
+    py.setStdin(stdinProvider());
     const t1 = performance.now();
     try {
       await py.runPythonAsync(codeEl.value);
@@ -1177,6 +1197,7 @@
       if (hint) setOutput("💡 " + hint, true);
       global.Audio2 && global.Audio2.SFX.error();
     } finally {
+      py.setStdin({ stdin: () => undefined });
       lastExecMs = performance.now() - t1;
       renderExecInfo();
       runBtn.disabled = false;
@@ -1320,6 +1341,7 @@
     lineNums = $("#lineNumbers"); hintList = $("#hintList"); exSel = $("#examples");
     statsText = $("#pyStatsText"); statsTime = $("#pyStatsTime");
     copyBtn = $("#copyCode"); saveBtn = $("#savePy");
+    stdinBar = $("#pyStdinBar"); stdinEl = $("#pyStdin");
     hlEl = $("#highlight");
     if (!codeEl) return;
 

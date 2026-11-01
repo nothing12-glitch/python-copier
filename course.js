@@ -16,11 +16,11 @@
           id: "hello",
           title: { uk: "Привіт, Python!", en: "Hello, Python!", tr: "Merhaba, Python!" },
           theory: {
-            uk: "Python — проста й потужна мова. Команда print() виводить текст на екран. Текст у лапках називають рядком.",
-            en: "Python is a simple yet powerful language. The print() command shows text on screen. Text in quotes is called a string.",
-            tr: "Python basit ama güçlü bir dildir. print() komutu ekrana metin yazar. Tırnak içindeki metne dize (string) denir."
+            uk: "Python — проста й потужна мова. Команда print() виводить значення на екран: текст у лапках — це рядок, а числа пишуть без лапок. Кожен виклик print() дає окремий рядок, а кілька значень у дужках виводяться через пробіл: print(\"мені\", 9). Порожній print() друкує просто порожній рядок.",
+            en: "Python is a simple yet powerful language. The print() command shows values on screen: text in quotes is a string, numbers are written without quotes. Each print() call outputs its own line, and several values in the parentheses are shown separated by a space: print(\"мені\", 9). An empty print() just outputs a blank line.",
+            tr: "Python basit ama güçlü bir dildir. print() komutu değerleri ekrana yazar: tırnak içindeki metin bir dizedir, sayılar tırnaksız yazılır. Her print() çağrısı kendi satırını verir; parantez içindeki birkaç değer boşlukla ayrılır: print(\"beni\", 9). Boş bir print() yalnızca boş satır yazdırır."
           },
-          example: "print(\"Привіт, Python!\")\nprint(2026)\n",
+          example: "print(\"Привіт, Python!\")\nprint(2026)\nprint(\"мені\", 9)\nprint()\n",
           task: {
             text: {
               uk: "Виведи точно один рядок: Hello, Python!",
@@ -39,14 +39,118 @@
           }
         },
         {
-          id: "vars",
-          title: { uk: "Змінні та числа", en: "Variables and numbers", tr: "Değişkenler ve sayılar" },
+          id: "literals",
+          title: { uk: "Літерали: значення прямо в коді", en: "Literals: values right in the code", tr: "Literal: doğrudan kod içindeki değer" },
           theory: {
-            uk: "Змінна — це ім'я для значення: name = value. Числа можна додавати (+), віднімати (-), множити (*) і ділити (/).",
-            en: "A variable is a name for a value: name = value. Numbers can be added (+), subtracted (-), multiplied (*) and divided (/).",
-            tr: "Değişken bir değerin adıdır: name = value. Sayılar toplanır (+), çıkarılır (-), çarpılır (*) ve bölünür (/)."
+            uk: "Літерал — це значення, записане прямо в коді: 42 (ціле int), 3.14 (дійсне float), \"текст\" (рядок str), True та False (логічний bool), None (порожнє значення). Рядок можна писати в одинарних або подвійних лапках, але лапки мають бути однакові з обох боків, а числа й True пишуться без лапок.",
+            en: "A literal is a value written directly in the code: 42 (integer int), 3.14 (float), \"text\" (string str), True and False (bool), None (empty value). A string may use single or double quotes, but they must match on both ends, while numbers and True are written without quotes.",
+            tr: "Literal, doğrudan kod içine yazılan değerdir: 42 (tam sayı int), 3.14 (float), \"metin\" (dize str), True ve False (bool), None (boş değer). Dize tek ya da çift tırnakla yazılabilir ama iki taraftaki tırnaklar aynı olmalıdır; sayılar ve True tırnaksız yazılır."
           },
-          example: "x = 7\ny = 3\nprint(x + y)\nprint(x * y)\n",
+          example: "print(42)\nprint(3.14)\nprint(\"текст\")\nprint(True)\nprint(None)\n",
+          task: {
+            text: {
+              uk: "Виведи по одному на рядок три літерали: ціле число 42, дійсне 3.14 і логічне True.",
+              en: "Print three literals, one per line: the integer 42, the float 3.14 and the boolean True.",
+              tr: "Üç literalı satır satır yazdır: tam sayı 42, ondalık 3.14 ve mantıksal True."
+            },
+            hint: {
+              uk: "Кожне значення друкуй окремим print(): print(42), print(3.14), print(True) — усе без лапок.",
+              en: "Print each value with its own print(): print(42), print(3.14), print(True) — all without quotes.",
+              tr: "Her değeri ayrı bir print() ile yazdır: print(42), print(3.14), print(True) — hepsi tırnaksız."
+            },
+            starter: "",
+            tests: [
+              { in: "", out: "42\n3.14\nTrue" }
+            ]
+          }
+        },
+        {
+          id: "vars",
+          title: { uk: "Змінна та її тип", en: "Variable and its type", tr: "Değişken ve türü" },
+          theory: {
+            uk: "Змінна — це ім'я для значення: вік = 12. Праворуч від = стоїть число, рядок або результат обчислення. type(x) показує тип значення: int, float, str чи bool. Змінну можна переприсвоїти — тоді в неї буде нове значення, а зовсім нова змінна з'являється в момент першого присвоєння.",
+            en: "A variable is a name for a value: age = 12. To the right of = there is a number, a string or a computed result. type(x) shows the type of the value: int, float, str or bool. You can reassign a variable to a new value, and a brand-new variable appears the moment you first assign it.",
+            tr: "Değişken bir değerin adıdır: yas = 12. = işaretinin sağında bir sayı, dize ya da hesaplanmış sonuç bulunur. type(x) değerin türünü gösterir: int, float, str veya bool. Bir değişkene yeniden atama yapabilirsin; yeni bir değişken ise ilk atandığı anda oluşur."
+          },
+          example: "x = 7\nprint(x)\nprint(type(x))\nx = \"привіт\"\nprint(type(x))\n",
+          task: {
+            text: {
+              uk: "Створи змінну num зі значенням 10 і виведи лише її тип — рівно один рядок.",
+              en: "Create a variable num with the value 10 and print only its type — exactly one line.",
+              tr: "Değeri 10 olan bir num değişkeni oluştur ve yalnızca türünü yazdır — tam olarak bir satır."
+            },
+            hint: {
+              uk: "num = 10, а потім print(type(num)). Саме значення друкувати не треба.",
+              en: "Write num = 10, then print(type(num)). Do not print the value itself.",
+              tr: "num = 10 yaz, sonra print(type(num)) yaz. Değerin kendisini yazdırma."
+            },
+            starter: "",
+            tests: [
+              { in: "", out: "<class 'int'>" }
+            ]
+          }
+        },
+        {
+          id: "math",
+          title: { uk: "Дії з числами", en: "Working with numbers", tr: "Sayılarla işlemler" },
+          theory: {
+            uk: "Основні дії: + додавання, - віднімання, * множення, / ділення (воно завжди дає float), // ціле ділення, % остача від ділення, ** піднесення до степеня. Порядок такий: спочатку дужки, потім **, далі * / // %, наприкінці + -. Приклад: 17 // 2 = 8, бо 17 / 2 = 8.5, а 17 % 2 = 1.",
+            en: "The main operators: + add, - subtract, * multiply, / divide (it always gives a float), // floor division, % remainder, ** power. The order is: brackets first, then **, then * / // %, and finally + -. For example 17 // 2 = 8 because 17 / 2 = 8.5, and 17 % 2 = 1.",
+            tr: "Temel işlemler: + toplama, - çıkarma, * çarpma, / bölme (her zaman float verir), // tam bölme, % kalan, ** üs alma. Sıra şöyledir: önce parantez, sonra **, ardından * / // %, en son + -. Örnek: 17 / 2 = 8.5 olduğu için 17 // 2 = 8 ve 17 % 2 = 1."
+          },
+          example: "print(7 / 2)\nprint(7 // 2)\nprint(7 % 2)\nprint(2 ** 5)\n",
+          task: {
+            text: {
+              uk: "У стартері дано a = 17 і b = 5. Виведи три рядки: ціле ділення a // b, остачу a % b та квадрат a ** 2.",
+              en: "The starter gives a = 17 and b = 5. Print three lines: floor division a // b, remainder a % b and square a ** 2.",
+              tr: "Başlangıçta a = 17 ve b = 5 verilidir. Üç satır yazdır: tam bölme a // b, kalan a % b ve kare a ** 2."
+            },
+            hint: {
+              uk: "print(a // b), print(a % b), print(a ** 2) — три окремі рядки, значення брати зі стартера.",
+              en: "print(a // b), print(a % b), print(a ** 2) — three separate lines using the values from the starter.",
+              tr: "print(a // b), print(a % b), print(a ** 2) — başlangıçtaki değerlerle üç ayrı satır."
+            },
+            starter: "a = 17\nb = 5\n",
+            tests: [
+              { in: "", out: "3\n2\n289" }
+            ]
+          }
+        },
+        {
+          id: "casting",
+          title: { uk: "Перетворення типів", en: "Type conversion", tr: "Tür dönüştürme" },
+          theory: {
+            uk: "Тип можна змінити свідомо: int(\"10\") перетворює рядок на ціле число, str(10) — число на рядок, float(\"2.5\") — рядок на дійсне, а int(3.9) обрізає дробову частину (не округлює!). Рядок і число напряму не складаються: \"a\" + 1 — це TypeError, зате рядки склеюються: \"a\" + \"b\".",
+            en: "You can change a type on purpose: int(\"10\") turns a string into an integer, str(10) turns a number into a string, float(\"2.5\") makes a float, and int(3.9) cuts off the fractional part (it does not round!). A string and a number do not add directly — \"a\" + 1 is a TypeError — but strings concatenate: \"a\" + \"b\".",
+            tr: "Türü bilinçli olarak değiştirebilirsin: int(\"10\") dizeyi tam sayıya, str(10) sayıyı dizeye, float(\"2.5\") ondalık sayıya çevirir; int(3.9) ise kesirli kısmı atar (yuvarlamaz!). Dize ile sayı doğrudan toplanmaz: \"a\" + 1 bir TypeError'dır; ama dizeler birleşir: \"a\" + \"b\"."
+          },
+          example: "s = \"10\"\nprint(int(s) + 5)\nn = 7\nprint(str(n) + \"!\")\nprint(int(3.9))\n",
+          task: {
+            text: {
+              uk: "Дано рядок s = \"12\". Виведи два рядки: суму як числа (12 + 12) і з'єднання як рядки (1212).",
+              en: "Given the string s = \"12\". Print two lines: the sum as numbers (12 + 12) and the concatenation as strings (1212).",
+              tr: "Verilen dize s = \"12\". İki satır yazdır: sayı olarak toplam (12 + 12) ve dize olarak birleştirme (1212)."
+            },
+            hint: {
+              uk: "int(s) дає число, тому print(int(s) + int(s)) друкує 24; print(s + s) друкує 1212.",
+              en: "int(s) gives a number, so print(int(s) + int(s)) shows 24, while print(s + s) shows 1212.",
+              tr: "int(s) sayı verir; bu yüzden print(int(s) + int(s)) 24, print(s + s) ise 1212 yazdırır."
+            },
+            starter: "s = \"12\"\n",
+            tests: [
+              { in: "", out: "24\n1212" }
+            ]
+          }
+        },
+        {
+          id: "input",
+          title: { uk: "Ввід: функція input()", en: "Input: the input() function", tr: "Girdi: input() işlevi" },
+          theory: {
+            uk: "input() читає один рядок, який набрав користувач, і завжди повертає рядок — навіть коли введено числа. Тому для числа пишуть int(input()) або float(input()). У майданчику для цього є поле «Ввід для input()»: впиши туди значення, по одному на рядок.",
+            en: "input() reads one line typed by the user and always returns a string — even if you type numbers. That is why a number is read as int(input()) or float(input()). The playground has an “Input for input()” field for this: put the values there, one per line.",
+            tr: "input(), kullanıcının yazdığı bir satırı okur ve her zaman bir dize döndürür — sayı girsen bile. Bu yüzden sayı int(input()) ya da float(input()) olarak okunur. Oyun alanında bunun için “input() için girdi” alanı var: değerleri satır satır oraya gir."
+          },
+          example: "name = input()\nprint(\"Привіт,\", name)\n",
           task: {
             text: {
               uk: "Дано ціле число n. Виведи його подвоєне значення (n * 2).",
@@ -91,6 +195,214 @@
               { in: "red\nblue\n", out: "red-blue" },
               { in: "a\nb\n", out: "a-b" },
               { in: "hello\nworld\n", out: "hello-world" }
+            ]
+          }
+        },
+        {
+          id: "names",
+          title: { uk: "Правила назв змінних", en: "Rules for variable names", tr: "Değişken adı kuralları" },
+          theory: {
+            uk: "Назва змінної складається з літер, цифр та _; перший символ — не цифра; пробіли й символи - , . заборонені; регістр важливий: age і Age — дві різні назви. Службові слова (for, if, class, None) як назви брати не можна, і вбудовані імена (print, len) краще не перекривати. Прийнятний стиль — нижній регістр із підкресленням і зрозуміла назва: total_price краще, ніж x2.",
+            en: "A variable name uses letters, digits and _; the first character is not a digit; spaces and the characters - , . are not allowed; case matters — age and Age are two different names. Reserved words (for, if, class, None) cannot be used, and it is better not to shadow built-ins (print, len). The accepted style is lower_case with underscores and a meaningful name: total_price beats x2.",
+            tr: "Değişken adı harf, rakam ve _ içerir; ilk karakter rakam olamaz; boşluk ile - , . karakterleri yasaktır; büyük-küçük harf önemlidir: age ile Age iki ayrı addır. Ayrılmış sözler (for, if, class, None) kullanılamaz; yerleşik adları (print, len) da gölgelememek iyi olur. Kabul gören biçim, alt çizgili küçük harf ve anlamlı isimdir: x2 yerine total_price."
+          },
+          example: "total_price = 12\ndiscount = 2\nprint(total_price - discount)\n",
+          task: {
+            text: {
+              uk: "Три назви в коді порушують правила, тому програма не запускається. Перейменуй змінні так, щоб код запрацював і вивів 12.",
+              en: "Three names in the code break the rules, so the program does not run. Rename the variables so the code works and prints 12.",
+              tr: "Koddaki üç ad kuralları bozduğu için program çalışmıyor. Değişkenleri, kod çalışıp 12 yazdıracak şekilde yeniden adlandır."
+            },
+            hint: {
+              uk: "Почни кожну назву з літери, дефіс заміни на _ , а назву for перейменуй (наприклад, cnt) — і оновіть усі імена всередині print.",
+              en: "Start each name with a letter, replace the hyphen with _ , rename for (for example cnt) and update every name inside print.",
+              tr: "Her adı bir harfle başlat, tireyi _ ile değiştir, for adını yeniden adlandır (örn. cnt) ve print içindeki tüm adları güncelle."
+            },
+            starter: "1score = 5\nmy-score = 2\nfor = 5\nprint(1score + my-score + for)\n",
+            tests: [
+              { in: "", out: "12" }
+            ]
+          }
+        },
+        {
+          id: "comments",
+          title: { uk: "Коментарі", en: "Comments", tr: "Yorumlar" },
+          theory: {
+            uk: "Усе, що стоїть після # до кінця рядка, Python не читає — це коментар. Він пояснює задум коду, а не повторює його: «# початкова температура» корисніше, ніж «# start = 20». Якщо треба вимкнути кілька рядків, # ставлять на початку кожного з них; такий закоментований print уже нічого не виводить.",
+            en: "Everything after # up to the end of the line is a comment — Python never reads it. A comment explains the intent instead of repeating the code: “# starting temperature” is more useful than “# start = 20”. To disable several lines, put # at the start of each one; a commented-out print then outputs nothing.",
+            tr: "# işaretinden satır sonuna kadar yazılan her şey yorumdur, Python onu okumaz. Yorum kodun tekrarını değil amacını açıklar: “# başlangıç sıcaklığı”, “# start = 20” satırından daha faydalıdır. Birkaç satırı devre dışı bırakmak için her satırın başına # koy; yorum yapılmış bir print hiçbir şey yazdırmaz."
+          },
+          example: "# Рахуємо, на скільки градусів похолодало\nstart = 20\nend = 15\nprint(end - start)\n",
+          task: {
+            text: {
+              uk: "У програмі є зайвий рядок print(\"зайве\"). Зроби його коментарем — постав # на початку. Має вивестися 1, 2 і 3, по одному на рядок.",
+              en: "The program has an extra line print(\"зайве\"). Turn it into a comment by putting # at the start. It must print 1, 2 and 3, one per line.",
+              tr: "Programda gereksiz bir print(\"зайве\") satırı var. Satırın başına # koyarak onu yoruma çevir. 1, 2 ve 3 satır satır yazdırılmalı."
+            },
+            hint: {
+              uk: "Напиши # перед print(\"зайве\") — весь рядок стане коментарем. Інші три рядки не чіпай.",
+              en: "Write # before print(\"зайве\") — the whole line becomes a comment. Leave the other three lines alone.",
+              tr: "print(\"зайве\") satırından önce # yaz — tüm satır yorum olur. Diğer üç satıra dokunma."
+            },
+            starter: "print(\"1\")\nprint(\"зайве\")\nprint(\"2\")\nprint(\"3\")\n",
+            tests: [
+              { in: "", out: "1\n2\n3" }
+            ]
+          }
+        },
+        {
+          id: "indent",
+          title: { uk: "Відступи — частина синтаксису", en: "Indentation is part of the syntax", tr: "Girinti sözdiziminin parçasıdır" },
+          theory: {
+            uk: "У Python відступ — не красота, а синтаксис. Блок починається з рядка з двокрапкою, а кожен рядок цього блоку зсувають вправо — типово на 4 пробіли. Таби з пробілами не змішують. Відступ також вирішує, які рядки належать циклу чи умові, а які виконуються вже після нього.",
+            en: "In Python indentation is not decoration but syntax. A block starts with a line ending in a colon and every line of that block is shifted right — usually by 4 spaces. Never mix tabs with spaces. Indentation also decides which lines belong to the loop or condition and which run only after it.",
+            tr: "Python'da girinti süs değil, sözdizimidir. Blok iki nokta ile biten bir satırla başlar ve o bloğun her satırı sağa — genellikle 4 boşluk — kaydırılır. Sekmeleri boşluklarla karıştırmayın. Girinti ayrıca hangi satırların döngüye/kosule, hangi satırların sonrasına ait olduğunu belirler."
+          },
+          example: "for i in range(3):\n    print(\"у циклі\", i)\nprint(\"після циклу\")\n",
+          task: {
+            text: {
+              uk: "Програма має вивести 1, 2, 3 усередині циклу, а слово готово — лише один раз після циклу. Зсунь рядок циклу на 4 пробіли, а останній print лиши на початку.",
+              en: "The program must print 1, 2, 3 inside the loop and the word готово only once after the loop. Shift the loop body by 4 spaces and keep the last print at the start of the line.",
+              tr: "Program döngü içinde 1, 2, 3, hazır sözcüğünü ise döngüden sonra yalnızca bir kez yazdırmalı. Döngü gövdesini 4 boşluk kaydır, son print satırı başta kalsın."
+            },
+            hint: {
+              uk: "Тіло циклу — це print(i): зсунь його на 4 пробіли. print(\"готово\") без відступу виконається один раз після циклу.",
+              en: "The loop body is print(i) — shift it 4 spaces. print(\"готово\") with no indent runs once after the loop.",
+              tr: "Döngü gövdesi print(i)'dir — onu 4 boşluk kaydır. Başında boşluğu olmayan print(\"готово\") döngüden sonra bir kez çalışır."
+            },
+            starter: "for i in range(1, 4):\nprint(i)\nprint(\"готово\")\n",
+            tests: [
+              { in: "", out: "1\n2\n3\nготово" }
+            ]
+          }
+        },
+        {
+          id: "errors",
+          title: { uk: "Читаємо повідомлення про помилку", en: "Reading an error message", tr: "Hata mesajını okumak" },
+          theory: {
+            uk: "Помилка — це підказка, а не вирок. Читати її починають знизу: останній рядок називає тип і причину, а слово з числом вказує рядок твого коду. Найчастіші: NameError — такої назви ще немає, SyntaxError — зламані дужки чи лапки, ZeroDivisionError — ділення на нуль, TypeError — несумісні типи. Помилки з ім'ям часто означають звичайну одруківку.",
+            en: "An error is a hint, not a verdict. Start reading it at the bottom: the last line names the type and the reason, and the number points to the line of your code. The most common ones: NameError — a name does not exist yet, SyntaxError — broken brackets or quotes, ZeroDivisionError — division by zero, TypeError — incompatible types. Errors that mention a name are usually a plain typo.",
+            tr: "Hata bir ipucudur, yargı değil. Okumaya alttan başla: son satır türü ve nedeni söyler, sayı ise kodunun ilgili satırını gösterir. En sık görülenler: NameError — böyle bir ad yok, SyntaxError — bozuk parantez ya da tırnak, ZeroDivisionError — sıfıra bölme, TypeError — uyumsuz türler. Ad içeren hatalar genellikle sıradan bir yazım yanlışıdır."
+          },
+          example: "x = 5\nprint(y)\n",
+          task: {
+            text: {
+              uk: "Одне ім'я в коді написане з одруківкою, тому програма падає з NameError. Виправ його, не прибираючи змінну, — має вивестися 8.",
+              en: "One name in the code has a typo, so the program crashes with NameError. Fix it without removing the variable — it must print 8.",
+              tr: "Koddaki bir ad yazım yanlışı içeriyor, bu yüzden program NameError ile çöküyor. Değişkeni silmeden düzelt — 8 yazdırılmalı."
+            },
+            hint: {
+              uk: "Подивись, яке ім'я називає NameError, і порівняй його з рядком, де змінна створюється: chislo та chyslo — дві різні назви.",
+              en: "Look at which name NameError mentions and compare it with the line that creates the variable: chislo and chyslo are two different names.",
+              tr: "NameError'ın belirttiği ada bak ve o değişkeni oluşturan satırla karşılaştır: chislo ile chyslo iki ayrı addır."
+            },
+            starter: "chislo = 4\nprint(chyslo * 2)\n",
+            tests: [
+              { in: "", out: "8" }
+            ]
+          }
+        },
+        {
+          id: "chrord",
+          title: { uk: "Коди символів: ord() та chr()", en: "Character codes: ord() and chr()", tr: "Karakter kodları: ord() ve chr()" },
+          theory: {
+            uk: "Кожен символ має номер у таблиці кодування: \"A\" — 65, \"a\" — 97, \"0\" — 48. ord(\"A\") повертає номер символа, а chr(65) — символ за номером. Це обернені дії: chr(ord(\"a\")) знову дає \"a\", а ord(chr(97)) знову дає 97. Коди українських літер більші за 127, тому текст завжди тримають у рядках, а не в числах.",
+            en: "Every character has a number in the encoding table: \"A\" is 65, \"a\" is 97, \"0\" is 48. ord(\"A\") returns the number of a character and chr(65) returns the character for a number. They are inverse operations: chr(ord(\"a\")) gives \"a\" again, and ord(chr(97)) gives 97 again. Ukrainian letters have codes above 127, so text always stays in strings rather than numbers.",
+            tr: "Her karakterin kodlama tablosunda bir numarası vardır: \"A\" 65, \"a\" 97, \"0\" 48. ord(\"A\") karakterin numarasını, chr(65) ise numaradan karakteri döndürür. Bunlar ters işlemlerdir: chr(ord(\"a\")) yine \"a\" verir, ord(chr(97)) yine 97 verir. Ukraynaca harflerin kodu 127'den büyüktür, bu yüzden metin sayılarda değil dizelerde tutulur."
+          },
+          example: "print(ord(\"A\"))\nprint(chr(97))\nprint(chr(ord(\"a\") + 1))\n",
+          task: {
+            text: {
+              uk: "Виведи два рядки: символ, чий код дорівнює 97, і код символу B.",
+              en: "Print two lines: the character whose code is 97, and the code of the character B.",
+              tr: "İki satır yazdır: kodu 97 olan karakter ve B karakterinin kodu."
+            },
+            hint: {
+              uk: "chr(97) дає символ a, а ord(\"B\") — число 66. Кожне виведи окремим print().",
+              en: "chr(97) gives the character a, and ord(\"B\") gives the number 66. Print each with its own print().",
+              tr: "chr(97) karakteri a'yı, ord(\"B\") ise 66 sayısını verir. Her birini ayrı bir print() ile yazdır."
+            },
+            starter: "",
+            tests: [
+              { in: "", out: "a\n66" }
+            ]
+          }
+        },
+        {
+          id: "escapes",
+          title: { uk: "Екранування символів", en: "Escaping characters", tr: "Karakter kaçışı" },
+          theory: {
+            uk: "Усередині рядка деякі символи записують через зворотний слеш: \\n — новий рядок, \\t — табуляція, \\\\ — один зворотний слеш, \\\" — лапка всередині рядка в подвійних лапках. Без екранування Python не розуміє, де рядок закінчується, або просто не бачить потрібного символу. Зворотний слеш перед звичайною літерою не «захистить» її, а зламає рядок.",
+            en: "Inside a string some characters are written with a backslash: \\n is a new line, \\t is a tab, \\\\ is a single backslash and \\\" is a quote inside a double-quoted string. Without escaping, Python cannot tell where the string ends or simply misses the character you need. A backslash before a plain letter does not “protect” it — it breaks the string.",
+            tr: "Dizenin içinde bazı karakterler ters bölü ile yazılır: \\n yeni satır, \\t sekme, \\\\ tek ters bölü, \\\" ise çift tırnaklı dizenin içindeki tırnaktır. Kaçış olmazsa Python dizenin nerede bittiğini anlayamaz ya da istediğin karakteri göremez. Sıradan bir harften önceki ters bölü onu “korumaz”, dizeyi bozar."
+          },
+          example: "print(\"перший\\nдругий\")\nprint(\"таб\\tуляція\")\nprint(\"Шлях: C:\\\\py\\\\file.py\")\nprint(\"Він сказав: \\\"Привіт\\\"\")\n",
+          task: {
+            text: {
+              uk: "Виведи два рядки, екрануючи потрібні символи: перший — He said \"Hi!\", другий — C:\\py\\file.py",
+              en: "Print two lines, escaping the characters you need: first He said \"Hi!\", second C:\\py\\file.py",
+              tr: "Gerekli karakterleri kaçırarak iki satır yazdır: birincisi He said \"Hi!\", ikincisi C:\\py\\file.py"
+            },
+            hint: {
+              uk: "Рядок у подвійних лапках: внутрішню лапку напиши як \\\", а кожен зворотний слеш — як \\\\.",
+              en: "Put the text in double quotes: write each inner quote as \\\" and each backslash as \\\\.",
+              tr: "Metni çift tırnak içine al: her iç tırnağı \\\", her ters bölüyü \\\\ olarak yaz."
+            },
+            starter: "",
+            tests: [
+              { in: "", out: "He said \"Hi!\"\nC:\\py\\file.py" }
+            ]
+          }
+        },
+        {
+          id: "fstring",
+          title: { uk: "Інтерполяція: f-рядки", en: "Interpolation: f-strings", tr: "Satıra gömme: f-dizeleri" },
+          theory: {
+            uk: "f-рядок починається з префікса f, а значення вставляють у фігурні дужки: f\"Привіт, {name}!\". У дужках можна писати цілий вираз: f\"{2 + 3}\" дає 5, а f\"{price * qty}\" — добуток. Це найзручніший спосіб зібрати речення зі слів і змінних — довгих ланцюжків із + зазвичай уже не потрібно.",
+            en: "An f-string starts with the f prefix and puts values inside curly braces: f\"Привіт, {name}!\". A full expression works inside the braces: f\"{2 + 3}\" gives 5 and f\"{price * qty}\" gives the product. It is the easiest way to build a sentence out of words and variables, so long chains of + are usually no longer needed.",
+            tr: "f-dizesi f ön ekiyle başlar ve değerler küme parantezine yazılır: f\"Merhaba, {name}!\". Parantezin içinde tam bir ifade de çalışabilir: f\"{2 + 3}\" 5 verir, f\"{price * qty}\" çarpımı verir. Sözcüklerle değişkenleri bir cümlede birleştirmenin en kolay yolu budur; uzun + zincirlerine artık gerek kalmaz."
+          },
+          example: "name = \"Оля\"\nage = 12\nprint(f\"{name}, мені {age} років\")\nprint(f\"через 5 років: {age + 5}\")\n",
+          task: {
+            text: {
+              uk: "У стартері item = \"кава\", price = 4, qty = 3. Виведи одним рядком через f-рядок: кава: 12 — слово, двокрапка, пробіл і добуток ціни на кількість.",
+              en: "The starter has item = \"кава\", price = 4, qty = 3. Print one line with an f-string: кава: 12 — the word, a colon, a space and the price times the quantity.",
+              tr: "Başlangıçta item = \"кава\", price = 4, qty = 3 var. f-dizesiyle tek satır yazdır: кава: 12 — sözcük, iki nokta, boşluk ve fiyat ile miktarın çarpımı."
+            },
+            hint: {
+              uk: "print(f\"{item}: {price * qty}\") — префікс f стоїть перед самою першою лапкою, а обидва значення — у фігурних дужках.",
+              en: "print(f\"{item}: {price * qty}\") — the f prefix goes before the very first quote, and both values sit in curly braces.",
+              tr: "print(f\"{item}: {price * qty}\") — f ön eki en ilk tırnaktan önce durur, iki değer de küme parantezine yazılır."
+            },
+            starter: "item = \"кава\"\nprice = 4\nqty = 3\n",
+            tests: [
+              { in: "", out: "кава: 12" }
+            ]
+          }
+        },
+        {
+          id: "print_sep",
+          title: { uk: "Параметри sep і end у print()", en: "The sep and end parameters of print()", tr: "print() içindeki sep ve end parametreleri" },
+          theory: {
+            uk: "print() приймає додаткові параметри. sep= задає, що ставити між кількома значеннями — типово це один пробіл: print(1, 2, sep=\"-\") дає 1-2, а sep=\"\" зліпить їх без роздільника. end= задає, що друкувати наприкінці — типово \\n, тож рядка кінця немає: print(\"a\", end=\"\") і print(\"b\") дадуть ab в одному рядку.",
+            en: "print() accepts extra parameters. sep= sets what goes between several values — by default a single space: print(1, 2, sep=\"-\") gives 1-2 and sep=\"\" glues them with no separator. end= sets what is printed at the end — by default \\n, so end=\"\" leaves the line open: print(\"a\", end=\"\") followed by print(\"b\") gives ab on one line.",
+            tr: "print() ek parametreler alır. sep=, birkaç değerin arasına ne konacağını belirler — varsayılan tek boşluktur: print(1, 2, sep=\"-\") 1-2 verir, sep=\"\" ise ayraçsız yapıştırır. end= satır sonunda ne yazılacağını belirler — varsayılan \\n'dir; bu yüzden print(\"a\", end=\"\") ve ardından print(\"b\") tek satırda ab verir."
+          },
+          example: "print(1, 2, 3, sep=\", \")\nprint(\"a\", end=\"\")\nprint(\"b\")\n",
+          task: {
+            text: {
+              uk: "Виведи одним рядком 10+20=30: першим виклич print(10, 20, sep=\"+\", end=\"=\"), другим — print(30).",
+              en: "Print 10+20=30 on a single line: first call print(10, 20, sep=\"+\", end=\"=\"), then call print(30).",
+              tr: "10+20=30 değerini tek satırda yazdır: önce print(10, 20, sep=\"+\", end=\"=\") çağrısını, sonra print(30) çağrısını kullan."
+            },
+            hint: {
+              uk: "sep=\"+\" ставить + між 10 і 20, а end=\"=\" прибирає перехід на новий рядок і друкує замість нього =.",
+              en: "sep=\"+\" puts a + between 10 and 20, and end=\"=\" removes the line break and prints = instead of it.",
+              tr: "sep=\"+\", 10 ile 20'nin arasına + koyar; end=\"=\" ise satır sonunu kaldırır ve yerine = yazdırır."
+            },
+            starter: "",
+            tests: [
+              { in: "", out: "10+20=30" }
             ]
           }
         }

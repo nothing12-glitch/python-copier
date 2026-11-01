@@ -3,10 +3,36 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.78";
+  const VERSION = "26.10.79";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.79": {
+      uk: [
+        "Розділ «Основи» в курсі переписаний з 3 уроків на 15: `print()`, літерали, змінна та її тип, усі дії з числами (+ - * / // % **), перетворення типів, `input()`, рядки, правила назв змінних, коментарі, відступи, читання повідомлень про помилку, `chr()` і `ord()`, екранування символів, f-рядки та параметри `sep`/`end`",
+        "Для пунктів, які важко перевірити виводом, задачі побудовані так, що перевірка все одно працює: зламні назви змінних виправляються й код видає 12, зайвий `print` ховається за `#`, тіло циклу отримує відступ і вивід стає 1 2 3 готово, а одруківка в імені лікується NameError-ом у 8",
+        "`input()` нарешті працює не лише в перевірці задач: під редактором майданчика з'явилося поле «Ввід для input()». Воно показується, щойно в коді є `input(`, а кожен рядок поля — це один такий виклик. Коли рядки закінчуються, Python дає `EOFError`, як у справжньому терміналі",
+        "Той самий крайній випадок більше не вішає вкладку: і в майданчику, і в судді задач `input()` після останнього рядка вичерпується `EOFError`, а не нескінченним порожнім вводом",
+        "Уся теорія й усі підказки нових уроків перекладені українською, англійською і турецькою, а приклики «Приклад» носять цілий урок у майданчик одним дотиком",
+        "Прогрес не зник: уроки, які ти вже проходив, лишаються пройденими, а нові просто вставили у свій розділ"
+      ],
+      en: [
+        "The \"Basics\" chapter of the course was rewritten from 3 lessons into 15: `print()`, literals, a variable and its type, every numeric operator (+ - * / // % **), type conversion, `input()`, strings, naming rules, comments, indentation, reading error messages, `chr()` and `ord()`, character escaping, f-strings and the `sep`/`end` parameters",
+        "Topics that are hard to grade by output were designed so the automatic check still works: broken variable names get fixed and the code prints 12, the extra `print` hides behind `#`, the loop body takes its indent so the output becomes 1 2 3 готово, and a typo in a name is cured into 8",
+        "`input()` finally works outside task checking as well: the playground gained an \"Input for input()\" field under the editor. It appears as soon as your code contains `input(`, and each line of it answers one such call. When the lines run out Python raises `EOFError`, exactly like a real terminal",
+        "The same edge case no longer freezes the tab: both in the playground and in the task judge, an `input()` after the last provided line ends in `EOFError` instead of an endless stream of empty input",
+        "All theory text and hints of the new lessons are translated into Ukrainian, English and Turkish, and the \"Example\" button carries a whole lesson into the playground with one click",
+        "Your progress is safe: lessons you already solved stay solved, the new ones just moved into their chapter"
+      ],
+      tr: [
+        "Kursun \"Temeller\" bölümü 3 dersten 15 ders yeniden yazıldı: `print()`, literaller, değişken ve türü, tüm sayı işlemleri (+ - * / // % **), tür dönüştürme, `input()`, dizeler, değişken adı kuralları, yorumlar, girintiler, hata mesajı okuma, `chr()` ve `ord()`, karakter kaçışı, f-dizeleri ve `sep`/`end` parametreleri",
+        "Çıktıyla zor değerlendirilen konular denetim yine de çalışacak biçimde tasarlandı: bozuk değişken adları düzeltilip kod 12 basıyor, fazladan `print` bir `#` arkasına saklanıyor, döngü gövdesi girintisini alınca çıktı 1 2 3 готово oluyor ve bir isimdeki yazım yanlışı NameError'dan 8'e dönüştürülüyor",
+        "`input()` artık yalnızca görev denetiminde çalışmıyor: oyun alanındaki editörün altına \"input() için girdi\" alanı geldi. Kodda `input(` görür görmez belirir ve onun her satırı bir böyle çağrıyı yanıtlar. Satırlar bitince Python gerçek terminaller gibi `EOFError` verir",
+        "Aynı sınır durumu artık sekmeyi dondurmuyor: hem oyun alanında hem görev denetçisinde son satırdan sonraki `input()` bitmez bir boş girdi yerine `EOFError` ile bitiyor",
+        "Yeni derslerin tüm kuramı ve ipuçları Ukraynaca, İngilizce ve Türkçe çevrildi; \"Örnek\" düğmesi bir dersi tek dokunuşla oyun alanına taşır",
+        "İlerlemen güvende: çözdüğün dersler çözülmüş kalır, yeni dersler yalnızca kendi bölümüne yerleşti"
+      ]
+    },
     "26.10.78": {
       uk: [
         "Нумерація рядків тепер є і в курсі, і в задачах, і в олімпіадному тренажері — як у майданчику. Довгі рядки, які перенеслися, не збивають номери: висоту кожного рядка міряє невидиме дзеркало",
