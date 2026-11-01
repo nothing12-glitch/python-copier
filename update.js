@@ -3,10 +3,36 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.79";
+  const VERSION = "26.10.80";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.80": {
+      uk: [
+        "Музична панель отримала новий інтерфейс: обкладинка, назва треку й автор тепер в одному рядку зверху, а не великим банером, і весь плеєр став помітно компактнішим",
+        "Керування злилось в один ряд — перемішування, попередній, пуск/пауза, наступний і повтор; дві рознесені смуги кнопок більше немає",
+        "Плейлист дістав номери треків, заголовок і лічильник. На рядку, що грає, номер перетворюється на живі смужки еквалайзера; наведення мишею показує те саме",
+        "Гучність нарешті всередині плеєра: повзунок із відсотками, тож більше не треба лізти в Налаштування",
+        "Прогрес і гучність малюють заповнення градієнтом, час став моноширинним, а смужки завмирають на паузі й поважають уподобання «менше руху»",
+        "Плеєр можна згорнути стрілкою вгорі: лишаються обкладинка, прогрес і кнопки, щоб панель не закривала тобі код"
+      ],
+      en: [
+        "The music panel has a new interface: the cover, track title and artist now sit in one row at the top instead of a big banner, and the whole player got noticeably more compact",
+        "Controls merged into a single row — shuffle, previous, play/pause, next and repeat — the two separate strips of buttons are gone",
+        "The playlist gained track numbers, a heading and a counter. On the row that is playing, the number turns into live equalizer bars, and hovering shows the same",
+        "Volume finally lives inside the player: a slider with a percentage, so no more digging through Settings",
+        "Progress and volume draw their fill as a gradient, the times use a monospace font, and the bars freeze on pause and respect the \"reduce motion\" preference",
+        "The player collapses with the arrow on top: cover, progress and buttons stay, so the panel no longer covers your code"
+      ],
+      tr: [
+        "Müzik paneli yeni bir arayüz kazandı: kapak, şarkı adı ve sanatçı artık tepede tek bir satırda duruyor, dev afiş yerine; oynatıcının tamamı belirgin biçimde derleşti",
+        "Denetimeler tek satırda birleşti — karıştır, önceki, oynat/duraklat, sonraki ve yinele; iki ayrı düğme şeridi artık yok",
+        "Çalma listesi şarkı numaraları, bir başlık ve sayaç kazandı. Çalan satırda numara canlı ekolayzer çubuklarına dönüşüyor; üzerine gelince de aynı şey görünüyor",
+        "Ses sonunda oynatıcının içinde: yüzdeli bir kaydırıcı, böylece Ayarlar'a girmeye gerek kalmıyor",
+        "İlerleme ve ses dolgusu gradyanla çiziliyor, süreler eşit aralıklı yazı tipiyle; çubuklar duraklatınca donuyor ve \"hareketi azalt\" tercihine saygı duyuyor",
+        "Oynatıcı üstteki okla kısalıyor: kapak, ilerleme ve düğmeler kalıyor, böylece panel kodunu kapatmıyor"
+      ]
+    },
     "26.10.79": {
       uk: [
         "Розділ «Основи» в курсі переписаний з 3 уроків на 15: `print()`, літерали, змінна та її тип, усі дії з числами (+ - * / // % **), перетворення типів, `input()`, рядки, правила назв змінних, коментарі, відступи, читання повідомлень про помилку, `chr()` і `ord()`, екранування символів, f-рядки та параметри `sep`/`end`",

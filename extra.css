@@ -2602,3 +2602,335 @@ body[data-style="new"] .stdin-bar { margin-top: 0; }
   .stdin-bar { padding: 8px 10px; }
   .stdin-label { font-size: 11px; }
 }
+
+/* ---------- 45) Музичний плеєр у новому інтерфейсі ---------- */
+
+/* Нові дрібні елементи не повинні просочуватися в застарий стиль. */
+body:not([data-style="new"]) .mp-eq,
+body:not([data-style="new"]) .mp-idx,
+body:not([data-style="new"]) .mp-vol,
+body:not([data-style="new"]) .mp-list-label,
+body:not([data-style="new"]) .mp-collapse { display: none; }
+
+/* смужки «зараз грає» */
+.mp-eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 11px;
+  flex: none;
+}
+.mp-eq i {
+  width: 3px;
+  height: 35%;
+  border-radius: 1px;
+  background: currentColor;
+  animation: mpEq 900ms ease-in-out infinite;
+}
+.mp-eq i:nth-child(2) { animation-duration: 640ms; }
+.mp-eq i:nth-child(3) { animation-duration: 1050ms; }
+.mp-eq i:nth-child(4) { animation-duration: 780ms; }
+.mp-eq.paused i { animation-play-state: paused; height: 30%; }
+@keyframes mpEq { 0%, 100% { height: 28%; } 50% { height: 100%; } }
+@media (prefers-reduced-motion: reduce) {
+  .mp-eq i { animation: none; height: 55%; }
+}
+
+/* вікно */
+body[data-style="new"] #musicPanel {
+  width: min(392px, calc(100vw - 24px));
+  max-height: min(80vh, 660px);
+  padding: 0;
+  border: 1px solid var(--nu-line-strong);
+  border-radius: 26px;
+  background: linear-gradient(180deg, var(--nu-surface-2), var(--nu-surface-solid) 42%);
+  box-shadow: 0 34px 70px -34px rgba(0, 0, 0, .92);
+  color: var(--nu-text);
+}
+
+/* шапка: обкладинка збоку, а не великий банер */
+body[data-style="new"] .mp-hero-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: auto;
+  padding: 14px 12px 12px 14px;
+}
+body[data-style="new"] .mp-hero {
+  inset: -60%;
+  transform: none;
+  filter: blur(38px) saturate(1.6);
+  opacity: .55;
+}
+body[data-style="new"] .mp-hero-overlay {
+  z-index: 0;
+  background: linear-gradient(180deg, rgba(8, 6, 15, .1), rgba(8, 6, 15, .62));
+}
+body[data-style="new"] .mp-hero-front {
+  position: relative;
+  z-index: 1;
+  left: auto;
+  top: auto;
+  transform: none;
+  flex: none;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  box-shadow: 0 12px 26px -12px rgba(0, 0, 0, .95), 0 0 0 1px var(--nu-line-strong);
+}
+body[data-style="new"] .mp-hero-text {
+  position: relative;
+  z-index: 1;
+  left: auto;
+  right: auto;
+  top: auto;
+  transform: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--nu-text);
+}
+body[data-style="new"] .mp-hero-t {
+  font-size: 16.5px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  text-shadow: none;
+}
+body[data-style="new"] .mp-hero-a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--nu-dim);
+  text-shadow: none;
+}
+body[data-style="new"] .mp-hero-a .mp-eq { color: var(--nu-a2); }
+body[data-style="new"] .mp-collapse {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--nu-dim);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+body[data-style="new"] .mp-collapse:hover { background: var(--nu-surface); color: var(--nu-text); }
+body[data-style="new"] .mp-collapse .material-icons { font-size: 20px; }
+
+/* прогрес і гучність: той самий малюнок повзунка */
+body[data-style="new"] .mp-progress {
+  padding: 2px 16px 6px;
+  gap: 10px;
+  font-family: var(--md-mono);
+  font-size: 11px;
+  color: var(--nu-dim);
+}
+body[data-style="new"] .mp-progress input[type="range"],
+body[data-style="new"] .mp-vol input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 5px;
+  border: 0;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, var(--md-primary), var(--nu-a2)) 0 / var(--fill, 0%) 100% no-repeat,
+    var(--nu-line-strong);
+  cursor: pointer;
+}
+body[data-style="new"] .mp-progress input[type="range"]::-webkit-slider-thumb,
+body[data-style="new"] .mp-vol input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, .18), 0 2px 6px rgba(0, 0, 0, .6);
+}
+body[data-style="new"] .mp-progress input[type="range"]::-moz-range-thumb,
+body[data-style="new"] .mp-vol input[type="range"]::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* список */
+body[data-style="new"] .mp-body { padding: 0 8px 4px; }
+body[data-style="new"] .mp-list-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 10px 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--nu-faint);
+}
+body[data-style="new"] .mp-count {
+  padding: 1px 8px;
+  border: 1px solid var(--nu-line);
+  border-radius: 999px;
+  background: var(--nu-surface);
+  font-family: var(--md-mono);
+  font-size: 10.5px;
+  letter-spacing: .04em;
+  color: var(--nu-dim);
+}
+body[data-style="new"] .mp-list { gap: 1px; }
+body[data-style="new"] .mp-track {
+  position: relative;
+  gap: 10px;
+  padding: 6px 10px 6px 8px;
+  border-radius: 14px;
+  transition: background .16s ease;
+}
+body[data-style="new"] .mp-track:hover { background: var(--nu-surface); }
+body[data-style="new"] .mp-track.playing { background: var(--nu-surface-2); }
+body[data-style="new"] .mp-track.playing::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  width: 3px;
+  height: 22px;
+  margin-top: -11px;
+  border-radius: 3px;
+  background: var(--nu-grad);
+}
+body[data-style="new"] .mp-idx {
+  width: 18px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  font-family: var(--md-mono);
+  font-size: 12px;
+  color: var(--nu-faint);
+}
+body[data-style="new"] .mp-idx .mp-eq { display: none; }
+body[data-style="new"] .mp-track:hover .mp-idx .n,
+body[data-style="new"] .mp-track.playing .mp-idx .n { display: none; }
+body[data-style="new"] .mp-track:hover .mp-idx .mp-eq,
+body[data-style="new"] .mp-track.playing .mp-idx .mp-eq { display: inline-flex; }
+body[data-style="new"] .mp-track:hover .mp-idx { color: var(--nu-text); }
+body[data-style="new"] .mp-track.playing .mp-idx { color: var(--nu-a2); }
+body[data-style="new"] .mp-track.playing .t { color: var(--nu-text); }
+body[data-style="new"] .mp-track.playing .a { color: var(--nu-dim); }
+body[data-style="new"] .mp-cover {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, .9), 0 0 0 1px var(--nu-line);
+}
+body[data-style="new"] .mp-track .t { font-size: 13.5px; font-weight: 500; color: var(--nu-text); }
+body[data-style="new"] .mp-track .a { font-size: 11.5px; color: var(--nu-dim); }
+body[data-style="new"] .mp-like { color: var(--nu-faint); }
+body[data-style="new"] .mp-like:hover { background: var(--nu-surface); color: var(--nu-text); }
+body[data-style="new"] .mp-track.liked .mp-like { color: #F38BA8; }
+
+/* керування: п'ять кнопок в один ряд */
+body[data-style="new"] .mp-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 12px 2px;
+}
+body[data-style="new"] .mp-extra,
+body[data-style="new"] .mp-ctrls { display: contents; }
+body[data-style="new"] .mp-bar button {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--nu-dim);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background .16s ease, color .16s ease, transform .16s ease;
+}
+body[data-style="new"] .mp-bar button:hover { background: var(--nu-surface); color: var(--nu-text); }
+body[data-style="new"] .mp-bar button:active { transform: scale(.94); }
+body[data-style="new"] .mp-extra .icon-btn.on {
+  color: var(--nu-a2);
+  background: rgba(34, 211, 238, .12);
+  opacity: 1;
+}
+body[data-style="new"] .mp-k-shuffle { order: 1; }
+body[data-style="new"] .mp-k-prev { order: 2; }
+body[data-style="new"] .mp-k-play { order: 3; }
+body[data-style="new"] .mp-k-next { order: 4; }
+body[data-style="new"] .mp-k-repeat { order: 5; }
+body[data-style="new"] .mp-k-prev .material-icons,
+body[data-style="new"] .mp-k-next .material-icons { font-size: 22px; }
+body[data-style="new"] .mp-ctrls .big {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--nu-grad);
+  color: #fff;
+  box-shadow: 0 16px 32px -16px rgba(124, 58, 237, .95);
+}
+body[data-style="new"] .mp-ctrls .big:hover { filter: brightness(1.1); background: var(--nu-grad); color: #fff; }
+body[data-style="new"] .mp-ctrls .big .material-icons { font-size: 28px; }
+
+/* гучність */
+body[data-style="new"] .mp-vol {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 18px 4px;
+  font-family: var(--md-mono);
+  font-size: 10.5px;
+  color: var(--nu-faint);
+}
+body[data-style="new"] .mp-vol .material-icons { font-size: 16px; }
+body[data-style="new"] .mp-vol input[type="range"] { flex: 1; max-width: 170px; height: 4px; }
+body[data-style="new"] .mp-vol-pct { min-width: 30px; text-align: right; color: var(--nu-dim); }
+
+/* низ */
+body[data-style="new"] .mp-foot {
+  gap: 8px;
+  padding: 8px 12px 12px;
+  border-top: 1px solid var(--nu-line-soft);
+}
+body[data-style="new"] .mp-btn {
+  height: 36px;
+  border: 1px solid var(--nu-line);
+  border-radius: 12px;
+  background: var(--nu-surface);
+  color: var(--nu-dim);
+  font-size: 12.5px;
+}
+body[data-style="new"] .mp-btn:hover { background: var(--nu-surface-2); color: var(--nu-text); }
+body[data-style="new"] .mp-btn.off {
+  color: #F38BA8;
+  border-color: rgba(243, 139, 168, .34);
+  background: rgba(243, 139, 168, .09);
+}
+body[data-style="new"] .mp-btn.off:hover { background: rgba(243, 139, 168, .16); color: #FAB7C4; }
+
+/* згорнутий режим: лишаються обкладинка, прогрес і кнопки */
+body[data-style="new"] #musicPanel.collapsed .mp-body { display: none; }
+
+/* світлий варіант нового стилю */
+body[data-style="new"]:not(.dark) .mp-hero-overlay {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .42), rgba(255, 255, 255, .06));
+}
+body[data-style="new"]:not(.dark) .mp-progress input[type="range"]::-webkit-slider-thumb,
+body[data-style="new"]:not(.dark) .mp-vol input[type="range"]::-webkit-slider-thumb { background: var(--md-primary); }
+body[data-style="new"]:not(.dark) .mp-ctrls .big { color: #fff; }
+
+@media (max-width: 768px) {
+  body[data-style="new"] #musicPanel { max-height: min(74vh, 560px); border-radius: 22px; }
+  body[data-style="new"] .mp-hero-front { width: 50px; height: 50px; }
+}
