@@ -961,6 +961,18 @@
   }
 
   /* ---------- Виконання коду зі stdin (для розділу «Задачі») ---------- */
+  // Pyodide тримає один простір імен на всю сесію, тому код із `print = 5`
+  // (урок «Перекриті назви») зіпсував би всі наступні запуски. Прибираємо
+  // лише ті назви, які перекривають вбудовані; службові _… і __дуnder__ не чіпаємо.
+  const RESTORE_BUILTINS =
+    "import builtins as _pc_b\n" +
+    "for _pc_n in [k for k in list(globals()) if not k.startswith('_') and hasattr(_pc_b, k) and globals()[k] is not getattr(_pc_b, k)]:\n" +
+    "    del globals()[_pc_n]\n" +
+    "del _pc_b\n";
+  async function restoreBuiltins() {
+    try { await py.runPythonAsync(RESTORE_BUILTINS); } catch (e) { /* не критично */ }
+  }
+
   // Навмисно не пише в консоль майданчика: повертає результат виклику
   async function execute(code, stdinText) {
     await ensurePyodide();
@@ -978,6 +990,7 @@
     } catch (e) {
       error = e && e.message ? e.message : String(e);
     } finally {
+      await restoreBuiltins();
       py.setStdin({ stdin: () => undefined });
       py.setStdout({ batched: (s) => setOutput(s) });
       py.setStderr({ batched: (s) => setOutput(s, true, null, tracebackLine(s)) });

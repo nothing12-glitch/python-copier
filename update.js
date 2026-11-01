@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.85";
+  const VERSION = "26.10.86";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.86": {
+      uk: [
+        "З уроку «Правила назв змінних» прибрано незрозуміле для початківця «перекривання» — тепер це окремий урок «Перекриті назви: print, len, int»",
+        "У новому уроці видно, до чого це призводить: приклад показує, що після len = 5 це вже просто число, а задача ламається на TypeError: 'int' object is not callable, поки учень не перейменує свою змінну",
+        "Додано ще один урок — «Регістр літер у назвах»: age, Age і AGE — три різні змінні, а латинська a і кирилична а — теж різні назви; задача вчить лагодити NameError саме через регістр",
+        "У «Правилах назв» тепер прямо сказано, що список службових слів невичерпний і з рештою ти познайомишся ближче з новими уроками",
+        "Суддя після кожної перевірки повертає перекриті вбудовані імена назад, тож зламані вправи більше не псують наступні запуски в тій самій сесії"
+      ],
+      en: [
+        "The confusing beginner term \"shadowing\" is gone from \"Rules for variable names\" — it now has its own lesson, \"Shadowed names: print, len, int\"",
+        "The new lesson shows what it leads to: the example reveals that after len = 5 it is just a number, and the task fails with TypeError: 'int' object is not callable until the student renames the variable",
+        "Another lesson added — \"Letter case in names\": age, Age and AGE are three different variables, and the Latin a and Cyrillic a are different names too; the task teaches fixing NameError caused by case",
+        "\"Rules for variable names\" now says outright that the list of reserved words is not exhaustive and the rest will come in later lessons",
+        "The judge gives shadowed built-in names back after every check, so a broken exercise no longer spoils the next runs in the same session"
+      ],
+      tr: [
+        "Yeni başlayanlar için kafa karıştıran \"gölgeleme\" terimi \"Değişken adı kuralları\" dersinden çıkarıldı — artık \"Gölgede kalan adlar: print, len, int\" adıyla ayrı bir ders",
+        "Yeni ders neye yol açtığını gösteriyor: örnekte len = 5 yazıldıktan sonra bunun yalnızca bir sayı olduğu görülüyor, soru ise öğrenci değişkeni yeniden adlandırana kadar TypeError: 'int' object is not callable ile düşüyor",
+        "Bir ders daha eklendi — \"Adlarda büyük-küçük harf\": age, Age ve AGE üç ayrı değişkendir, üstelik Latin a ile Kiril a da farklı adlardır; soru harf büyüklüğünden doğan NameError düzeltmeyi öğretiyor",
+        "\"Değişken adı kuralları\" artık ayrılmış söz listesinin tükenmez olduğunu ve kalanıyla sonraki derslerde tanışacağını açıkça söylüyor",
+        "Denetleyici her denemeden sonra gölgelenen yerleşik adları geri veriyor; bozuk bir alıştırma artık aynı oturumdaki sonraki çalıştırmaları bozmuyor"
+      ]
+    },
     "26.10.85": {
       uk: [
         "Урок «Рядки» розбито на три окремі: «Рядки: тип str і склеювання», «Довжина рядка: len()» та «Множення рядка на число» — кожен зі своєю теорією, прикладом і задачею",

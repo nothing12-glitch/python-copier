@@ -260,9 +260,9 @@
           id: "names",
           title: { uk: "Правила назв змінних", en: "Rules for variable names", tr: "Değişken adı kuralları" },
           theory: {
-            uk: "Назва змінної складається з літер, цифр та _; перший символ — не цифра; пробіли й символи - , . заборонені; регістр важливий: age і Age — дві різні назви. Службові слова (for, if, class, None) як назви брати не можна, і вбудовані імена (print, len) краще не перекривати. Прийнятний стиль — нижній регістр із підкресленням і зрозуміла назва: total_price краще, ніж x2.",
-            en: "A variable name uses letters, digits and _; the first character is not a digit; spaces and the characters - , . are not allowed; case matters — age and Age are two different names. Reserved words (for, if, class, None) cannot be used, and it is better not to shadow built-ins (print, len). The accepted style is lower_case with underscores and a meaningful name: total_price beats x2.",
-            tr: "Değişken adı harf, rakam ve _ içerir; ilk karakter rakam olamaz; boşluk ile - , . karakterleri yasaktır; büyük-küçük harf önemlidir: age ile Age iki ayrı addır. Ayrılmış sözler (for, if, class, None) kullanılamaz; yerleşik adları (print, len) da gölgelememek iyi olur. Kabul gören biçim, alt çizgili küçük harf ve anlamlı isimdir: x2 yerine total_price."
+            uk: "Назва змінної складається з літер, цифр та знака _; перший символ — не цифра; пробіли й символи - , . заборонені. Службові слова — for, if, class, None — Python бере собі для синтаксису, тому як назви вони не підходять; цей список невичерпний, і з рештою службових слів ти познайомишся ближче з новими уроками. Прийнятний стиль — нижній регістр із підкресленням і зрозуміла назва: total_price краще, ніж x2. Як великі й малі літери міняють назву — в наступному уроці.",
+            en: "A variable name uses letters, digits and the _ sign; the first character is not a digit; spaces and the characters - , . are not allowed. Reserved words — for, if, class, None — belong to Python's syntax, so they cannot be used as names; the list is not exhaustive, and you will meet the rest of these words in later lessons. The accepted style is lower_case with underscores and a meaningful name: total_price beats x2. How capital and small letters change a name comes in the next lesson.",
+            tr: "Değişken adı harfler, rakamlar ve _ işaretinden oluşur; ilk karakter rakam olamaz; boşluk ile - , . karakterleri yasaktır. Ayrılmış sözler — for, if, class, None — Python'ın sözdizimine aittir, bu yüzden ad olarak kullanılamazlar; bu liste tükenmez, diğerleriyle sonraki derslerde tanışacaksın. Kabul gören biçim, alt çizgili küçük harf ve anlamlı isimdir: x2 yerine total_price. Büyük-küçük harfin adı nasıl değiştirdiği bir sonraki derste."
           },
           example: "total_price = 12\ndiscount = 2\nprint(total_price - discount)\n",
           task: {
@@ -279,6 +279,62 @@
             starter: "1score = 5\nmy-score = 2\nfor = 5\nprint(1score + my-score + for)\n",
             tests: [
               { in: "", out: "12" }
+            ]
+          }
+        },
+        {
+          id: "case_sens",
+          title: { uk: "Регістр літер у назвах", en: "Letter case in names", tr: "Adlarda büyük-küçük harf" },
+          theory: {
+            uk: "Python вважає велику й малу літери різними символами, тому age, Age і AGE — це три різні змінні, а не одна й та сама. Написав назву в одному рядку з великої літери, а в іншому з малої — програма зупиниться з NameError, бо саме такої назви вона не знає. Тому назву пишуть в одному регісті всюди й не переписують її на око, а копіюють. Окремий підступ: латинська a і кирилична а — теж різні назви, хоча на вигляд однакові, тож клавіатура в межах одного рядка має бути в одній розкладці.",
+            en: "Python treats a capital and a small letter as different characters, so age, Age and AGE are three different variables, not one and the same. Write a name with a capital in one line and with a small letter in another, and the program stops with NameError because it does not know that name. So a name keeps the same case everywhere, and it is better to copy it than to retype it by eye. One more trap: the Latin a and the Cyrillic a are different names too, although they look identical, so the keyboard layout must stay the same inside one line.",
+            tr: "Python büyük ve küçük harfi farklı karakterler sayar; bu yüzden age, Age ve AGE tek değişken değil, üç ayrı değişkendir. Adı bir satırda büyük harfle, başka satırda küçük harfle yazarsan program NameError ile durur, çünkü o adı tanımaz. Bu yüzden ad her satırda aynı büyülükle kalır ve onu ezberden yazmak yerine kopyalamak iyidir. Bir tuzak daha: Latin a ile Kiril a da ayrı adlardır, görünüşleri aynı olsa bile; yani tek satırda aynı klavye düzeni kalmalıdır."
+          },
+          example: "score = 5\nScore = 50\nprint(score)\nprint(Score)\n",
+          task: {
+            text: {
+              uk: "Змінні в коді оголошені з малої літери, а в останньому рядку ті самі назви написані з великої — програма їх не знаходить. Виправ регістр так, щоб вивелася сума a і B.",
+              en: "The variables are declared with a small letter, but in the last line the same names appear with a capital — the program cannot find them. Fix the case so that the sum of a and B is printed.",
+              tr: "Değişkenler küçük harfle tanımlandı, ama son satırda aynı adlar büyük harfle yazılı — program onları bulamıyor. Harf büyüklüğünü öyle düzelt ki a ile B toplamı yazdırılsın."
+            },
+            hint: {
+              uk: "Порівняй назви рядок за рядком: оголошені a і B, тож і в print мають бути саме a та B — з малої літери, як на початку.",
+              en: "Compare the names line by line: a and B are declared, so print must use exactly a and B — starting with a small letter, as at the top.",
+              tr: "Adları satır satır karşılaştır: a ve B tanımlı, o hâlde print'te de tam olarak a ve B olmalı — baştan aşağı küçük harfle."
+            },
+            starter: "a = int(input())\nB = a * 3\nprint(A + b)\n",
+            tests: [
+              { in: "2\n", out: "8" },
+              { in: "0\n", out: "0" },
+              { in: "5\n", out: "20" }
+            ]
+          }
+        },
+        {
+          id: "shadowing",
+          title: { uk: "Перекриті назви: print, len, int", en: "Shadowed names: print, len, int", tr: "Gölgede kalan adlar: print, len, int" },
+          theory: {
+            uk: "Кілька назв у Python уже зайняті: print, len, int, str — це вбудовані функції, які доступні без жодного імпорту. Щойно ти пишеш len = 5, своя назва перекриває вбудовану: від того рядка й до кінця програми len — це просто число 5, а не функція, тому len(word) уже не вийде викликати, і Python каже TypeError: 'int' object is not callable. Те саме стається з print = ... та int = ...: рядки, які мали друкувати, ламаються. Повернути вбудоване можна через del len, але ліпше не позичати зайняті імена — бери вільні: size, count, total.",
+            en: "A few names in Python are already taken: print, len, int, str are built-in functions you can call without importing anything. As soon as you write len = 5, your name shadows the built-in one: from that line to the end of the program len is just the number 5, not a function, so len(word) can no longer be called and Python says TypeError: 'int' object is not callable. The same happens with print = ... and int = ...: the lines that were supposed to print break. You can give the built-in back with del len, but it is better not to borrow taken names — use free ones like size, count, total.",
+            tr: "Bazı adlar Python'da zaten dolu: print, len, int, str — import etmeden çağırabildiğin yerleşik işlevlerdir. len = 5 yazdığın anda kendi adın yerleşik adı gölgeler: o satırdan programın sonuna kadar len bir fonksiyon değil, yalnızca 5 sayısıdır; bu yüzden len(word) çağrılamaz ve Python TypeError: 'int' object is not callable der. Aynı şey print = ... ve int = ... için de geçerlidir: yazdırması gereken satırlar bozulur. del len ile yerleşik adı geri verebilirsin, ama dolu adları ödünç almamak daha iyi — boş adlar kullan: size, count, total."
+          },
+          example: "word = \"abr\"\nprint(len(word))\nlen = 5\nprint(len)\ndel len\nprint(len(word))\n",
+          task: {
+            text: {
+              uk: "У стартері змінна названа print, тому друкувати стало нічим і перевірка падає з TypeError. Перейменуй змінну (наприклад, size), щоб програма виводила довжину слова, збільшену на одиницю.",
+              en: "In the starter the variable is named print, so there is nothing left to print with and the check fails with TypeError. Rename the variable (for example, size) so the program prints the length of the word plus one.",
+              tr: "Başlangıçta değişkenin adı print, bu yüzden yazdırılacak bir şey kalmıyor ve deneme TypeError ile düşüyor. Değişkeni yeniden adlandır (örn. size) ki program sözcüğün uzunluğunun bir fazlasını yazdırsın."
+            },
+            hint: {
+              uk: "print має лишатися функцією. Заміни назву змінної: size = len(text), а далі print(size + 1).",
+              en: "print has to stay a function. Rename the variable: size = len(text), then print(size + 1).",
+              tr: "print fonksiyon olarak kalmalı. Değişkeni yeniden adlandır: size = len(text), sonra print(size + 1)."
+            },
+            starter: "text = input()\nprint = len(text)\nprint(print + 1)\n",
+            tests: [
+              { in: "abr\n", out: "4" },
+              { in: "hi\n", out: "3" },
+              { in: "hello world\n", out: "12" }
             ]
           }
         },
