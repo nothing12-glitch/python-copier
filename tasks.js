@@ -856,6 +856,7 @@
   let current = null;
   let busy = false;
   let hintShown = false;
+  let gutter = null;
 
   function t(k, v) { return global.I18n ? global.I18n.t(k, v) : k; }
 
@@ -920,6 +921,37 @@
   function clip(text) {
     const s = normalize(text);
     return s.length > MAX_SHOWN ? s.slice(0, MAX_SHOWN) + "…" : s;
+  }
+
+  /* Тип і причина помилки з трейсбека. Без них лишився лише обрізаний хвіст, де
+     «IndentationError: unexpected indent» як раз і відрізався по 120-м символом. */
+  function errBrief(raw) {
+    if (global.PythonPad && global.PythonPad.errorBrief) return global.PythonPad.errorBrief(raw);
+    return { type: null, detail: "" };
+  }
+
+  function errTypeText(err) {
+    return (err && err.type) || "";
+  }
+
+  /* браузерний Pyodide пробіли на початку рядка проковтує, а справжній Python — ні */
+  function indentProblem(code) {
+    if (!global.PythonPad || typeof global.PythonPad.indentCheck !== "function") return null;
+    try {
+      return global.PythonPad.indentCheck(code) || null;
+    } catch (e) {
+      console.warn("indentCheck", e);
+      return null;
+    }
+  }
+
+  /* Те, що встигло надрукуватися до помилки: кадри трейсбека там уже зайві. */
+  function plainOut(text) {
+    return String(text == null ? "" : text)
+      .split("\n")
+      .filter((l) => !/^\s*(Traceback |File ["']|[\s^]+$|.*\b\w*(Error|Exception)\s*:)/.test(l))
+      .join("\n")
+      .trim();
   }
 
   /* ---------- Список задач ---------- */
@@ -998,6 +1030,7 @@
     levelEl.textContent = t(LEVEL_KEYS[current.level]) + " · " + t("tasks.points", { p: points(current) });
     solvedEl.classList.toggle("hidden", !isSolved(current.id));
     codeEl.value = loadDraft(current.id, current.starter);
+    if (gutter) gutter.refresh();
 
     exampleEl.innerHTML = "";
     const first = current.tests[0];
@@ -1033,23 +1066,34 @@
   /* ---------- Перевірка розв'язку ---------- */
   // Спільна для розділу «Задачі» й олімпіадного тренажера: проганяє всі тести й повертає вердикт
   async function judge(code, task) {
+    const bad = indentProblem(code);
+    if (bad) {
+      const raw = bad.type + ": " + bad.detail;
+      return {
+        passed: false,
+        results: [{ ok: false, test: task.tests[0], got: "", error: raw, line: bad.line, err: bad }],
+        error: raw, line: bad.line, err: bad, okCount: 0, ms: 0
+      };
+    }
     const results = [];
     let error = null;
     let errorLine = null;
+    let errKind = null;
     const started = performance.now();
     for (const test of task.tests) {
       const r = await global.PythonPad.execute(code, test.in);
       if (r.error) {
         error = r.error;
         errorLine = r.line || null;
-        results.push({ ok: false, test: test, got: r.output, error: r.error, line: errorLine });
+        errKind = r.err || null;
+        results.push({ ok: false, test: test, got: r.output, error: r.error, line: errorLine, err: errKind });
         break;
       }
       results.push({ ok: normalize(r.output) === normalize(test.out), test: test, got: r.output });
     }
     const passed = !error && results.length === task.tests.length && results.every((r) => r.ok);
     return {
-      passed: passed, results: results, error: error, line: errorLine,
+      passed: passed, results: results, error: error, line: errorLine, err: errKind,
       okCount: results.filter((r) => r.ok).length,
       ms: Math.round(performance.now() - started)
     };
@@ -1076,7 +1120,11 @@
     try {
       verdict = await judge(code, task);
     } catch (e) {
-      verdict = { passed: false, results: [], error: (e && e.message) || String(e), line: null, okCount: 0, ms: 0 };
+      const raw = (e && e.message) || String(e);
+      verdict = {
+        passed: false, results: [{ ok: false, test: task.tests[0], got: "", error: raw, line: null, err: errBrief(raw) }],
+        error: raw, line: null, err: errBrief(raw), okCount: 0, ms: 0
+      };
     }
 
     registerAttempt(task, verdict.passed);
@@ -1088,7 +1136,7 @@
       setStatus(t("tasks.accepted"), "ok");
       sfx("success");
     } else if (verdict.error) {
-      setStatus(t("tasks.runtimeError"), "error");
+      setStatus(global.UI.errStatus(t("tasks.runtimeError"), errTypeText(verdict.err)), "error");
       sfx("error");
     } else {
       setStatus(t("tasks.failed", { n: verdict.okCount, total: task.tests.length }), "bad");
@@ -1131,14 +1179,15 @@
       body.appendChild(el("div", "test-line", t("tasks.inputData") + ": " + clip(r.test.in)));
       body.appendChild(el("div", "test-line", t("tasks.expected") + ": " + clip(r.test.out)));
       if (!r.ok) {
-        body.appendChild(el("div", "test-line got", t("tasks.got") + ": " + (r.error ? clip(runtimeError || "") : clip(r.got))));
-        if (r.line && r.error) {
-          const jump = el("button", "goto-line");
-          jump.type = "button";
-          jump.textContent = "→ " + r.line;
-          jump.title = t("python.gotoLine", { n: r.line });
-          jump.onclick = () => gotoCodeLine(r.line);
-          body.appendChild(jump);
+        if (r.error) {
+          const kind = r.err || errBrief(runtimeError || "");
+          body.appendChild(global.UI && global.UI.errorBox
+            ? global.UI.errorBox({ type: kind.type, detail: kind.detail, line: r.line }, (n) => gotoCodeLine(n))
+            : el("div", "test-line got", t("tasks.runtimeError") + ": " + clip(kind.type || "")));
+          const plain = plainOut(r.got);
+          if (plain) body.appendChild(el("div", "test-line got", t("tasks.got") + ": " + clip(plain)));
+        } else {
+          body.appendChild(el("div", "test-line got", t("tasks.got") + ": " + clip(r.got)));
         }
       }
       row.appendChild(body);
@@ -1147,6 +1196,7 @@
   }
 
   function gotoCodeLine(n) {
+    if (global.UI && global.UI.focusLine) { global.UI.focusLine(codeEl, n); return; }
     const lines = codeEl.value.split("\n");
     const idx = Math.min(Math.max(n, 1), lines.length);
     let start = 0;
@@ -1173,6 +1223,7 @@
   function resetCode() {
     if (!current) return;
     codeEl.value = current.starter;
+    if (gutter) gutter.refresh();
     saveDraft(current.id, current.starter);
     resultsEl.innerHTML = "";
     setStatus("");
@@ -1191,6 +1242,7 @@
     detailEl = $("#taskDetail");
     if (!listEl || !detailEl) return;
     codeEl = $("#taskCode");
+    gutter = global.UI && global.UI.lineGutter ? global.UI.lineGutter(codeEl) : null;
     titleEl = $("#taskTitle");
     textEl = $("#taskText");
     exampleEl = $("#taskExample");
@@ -1220,6 +1272,7 @@
         const spaces = " ".repeat(Number(global.Settings && global.Settings.get("tabSize")) || 4);
         codeEl.value = codeEl.value.slice(0, start) + spaces + codeEl.value.slice(end);
         codeEl.selectionStart = codeEl.selectionEnd = start + spaces.length;
+        if (gutter) gutter.refresh();
       }
     });
     codeEl.addEventListener("input", () => { if (current) saveDraft(current.id, codeEl.value); });

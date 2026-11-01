@@ -19,6 +19,7 @@
   let mode = "list";
   let timer = null;
   let busy = false;
+  let gutter = null;
   let duration = 20;
   let count = 6;
 
@@ -225,6 +226,7 @@
     titleEl.textContent = pick(entry.task.title);
     textEl.textContent = pick(entry.task.text);
     codeEl.value = entry.code;
+    if (gutter) gutter.refresh();
     setStatus("");
     positionEl.textContent = t("contest.position", { n: state.index + 1, total: state.entries.length });
     prevBtn.disabled = state.index === 0;
@@ -296,7 +298,11 @@
     try {
       verdict = await global.Tasks.judge(code, entry.task);
     } catch (e) {
-      verdict = { passed: false, results: [], error: (e && e.message) || String(e), line: null, okCount: 0, ms: 0 };
+      const raw = (e && e.message) || String(e);
+      verdict = {
+        passed: false, results: [], error: raw, line: null, okCount: 0, ms: 0,
+        err: global.PythonPad && global.PythonPad.errorBrief ? global.PythonPad.errorBrief(raw) : null
+      };
     }
     busy = false;
     if (!state) return;
@@ -317,7 +323,12 @@
       if (next >= 0) setTimeout(() => { if (state) goto(next); }, 650);
       else setTimeout(() => { if (state) finish("solved"); }, 900);
     } else if (verdict.error) {
-      setStatus(t("contest.runtimeError"), "error");
+      const kind = verdict.err || { type: null, detail: "" };
+      setStatus(global.UI.errStatus(t("contest.runtimeError"), kind.type), "error");
+      if (verdict.line && statusEl && global.UI) {
+        statusEl.appendChild(global.UI.errorBox({ type: kind.type, detail: kind.detail, line: verdict.line },
+          (n) => global.UI.focusLine(codeEl, n)));
+      }
       sfx("error");
     } else {
       setStatus(t("contest.wrong", { n: verdict.okCount, total: entry.task.tests.length }), "bad");
@@ -450,6 +461,7 @@
     metaEl = $("#contestTaskMeta");
     exampleEl = $("#contestExample");
     codeEl = $("#contestCode");
+    gutter = global.UI && global.UI.lineGutter ? global.UI.lineGutter(codeEl) : null;
     statusEl = $("#contestStatus");
     checkBtn = $("#contestCheck");
     prevBtn = $("#contestPrev");
@@ -484,6 +496,7 @@
         const spaces = " ".repeat(Number(global.Settings && global.Settings.get("tabSize")) || 4);
         codeEl.value = codeEl.value.slice(0, from) + spaces + codeEl.value.slice(to);
         codeEl.selectionStart = codeEl.selectionEnd = from + spaces.length;
+        if (gutter) gutter.refresh();
       }
     });
     codeEl.addEventListener("input", saveCurrentCode);

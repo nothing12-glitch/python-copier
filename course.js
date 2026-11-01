@@ -384,6 +384,7 @@
   let checkBtn, resetBtn, statusEl, resultsEl, doneEl, prevBtn, nextBtn, backBtn;
   let current = null;
   let busy = false;
+  let gutter = null;
 
   function t(k, v) { return global.I18n ? global.I18n.t(k, v) : k; }
   function pick(obj) {
@@ -511,6 +512,7 @@
     exampleEl.textContent = current.example;
     taskTextEl.textContent = pick(current.task.text);
     codeEl.value = loadDraft(current.id, current.task.starter);
+    if (gutter) gutter.refresh();
 
     doneEl.classList.toggle("hidden", !isDone(current.id));
 
@@ -551,7 +553,8 @@
     try {
       verdict = await global.Tasks.judge(code, lesson.task);
     } catch (e) {
-      verdict = { passed: false, results: [], error: (e && e.message) || String(e), line: null, okCount: 0, ms: 0 };
+      const raw = (e && e.message) || String(e);
+      verdict = { passed: false, results: [], error: raw, line: null, err: errBrief(raw), okCount: 0, ms: 0 };
     }
 
     renderResults(lesson.task, verdict);
@@ -563,7 +566,7 @@
       setStatus(t("course.accepted"), "ok");
       sfx("success");
     } else if (verdict.error) {
-      setStatus(t("course.runtimeError"), "error");
+      setStatus(global.UI.errStatus(t("course.runtimeError"), verdict.err && verdict.err.type), "error");
       sfx("error");
     } else {
       setStatus(t("course.failed", { n: verdict.okCount, total: lesson.task.tests.length }), "bad");
@@ -606,7 +609,16 @@
       body.appendChild(el("div", "test-line", t("course.inputData") + ": " + clip(r.test.in)));
       body.appendChild(el("div", "test-line", t("course.expected") + ": " + clip(r.test.out)));
       if (!r.ok) {
-        body.appendChild(el("div", "test-line got", t("course.got") + ": " + (r.error ? clip(verdict.error || "") : clip(r.got))));
+        if (r.error) {
+          /* Курс мовчки обрізав трейсбек до 120 знаків — і «IndentationError:
+             unexpected indent» відрізався разом з іменем. Тепер тип і причина окремо. */
+          const kind = r.err || errBrief(r.error);
+          body.appendChild(global.UI.errorBox({ type: kind.type, detail: kind.detail, line: r.line }, (n) => gotoCodeLine(n)));
+          const plain = plainOut(r.got);
+          if (plain) body.appendChild(el("div", "test-line got", t("course.got") + ": " + clip(plain)));
+        } else {
+          body.appendChild(el("div", "test-line got", t("course.got") + ": " + clip(r.got)));
+        }
       }
       row.appendChild(body);
       resultsEl.appendChild(row);
@@ -616,6 +628,23 @@
   function clip(text) {
     const s = global.Tasks && global.Tasks.normalize ? global.Tasks.normalize(text) : String(text == null ? "" : text);
     return s.length > 120 ? s.slice(0, 120) + "…" : s;
+  }
+
+  function errBrief(raw) {
+    if (global.PythonPad && global.PythonPad.errorBrief) return global.PythonPad.errorBrief(raw);
+    return { type: null, detail: "" };
+  }
+
+  function plainOut(text) {
+    return String(text == null ? "" : text)
+      .split("\n")
+      .filter((l) => !/^\s*(Traceback |File ["']|[\s^]+$|.*\b\w*(Error|Exception)\s*:)/.test(l))
+      .join("\n")
+      .trim();
+  }
+
+  function gotoCodeLine(n) {
+    if (global.UI && global.UI.focusLine) global.UI.focusLine(codeEl, n);
   }
 
   function showHint() {
@@ -674,6 +703,7 @@
     exampleCopyBtn = $("#courseExampleCopy");
     taskTextEl = $("#courseTaskText");
     codeEl = $("#courseCode");
+    gutter = global.UI && global.UI.lineGutter ? global.UI.lineGutter(codeEl) : null;
     hintBtn = $("#courseHint");
     hintBoxEl = $("#courseHintBox");
     checkBtn = $("#courseCheck");
@@ -692,6 +722,7 @@
     if (resetBtn) resetBtn.onclick = () => {
       if (!current) return;
       codeEl.value = current.task.starter;
+      if (gutter) gutter.refresh();
       saveDraft(current.id, codeEl.value);
       resultsEl.innerHTML = ""; setStatus(""); sfx("click");
     };

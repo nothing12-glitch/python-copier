@@ -214,7 +214,191 @@
     });
   }
 
-  global.UI = { menu, enhance, upgrade, close, current: () => open.panel };
+  /* ---------- Нумерація рядків для редакторів поза майданчиком ---------- */
+  /* Номерів у курсі, задачах і тренажері не було, бо там голий <textarea>. Простої
+     колонки теж мало: textarea переносить довгі рядки, і номери поїхали б вгору.
+     Тому висота кожного рядка вимірюється дзеркалом — колонка стає точно врівень. */
+  function lineGutter(ta) {
+    if (!ta) return null;
+    if (ta.__gutter) return ta.__gutter;
+    const parent = ta.parentElement;
+    if (!parent) return null;
+    /* Обгортаємо саме поле: без цього колонка липне до верху блоку, де над текстовим
+       полем ще лежать підпис і умова задачі. */
+    const host = document.createElement("div");
+    host.className = "gutter-host";
+    parent.insertBefore(host, ta);
+    host.appendChild(ta);
+
+    const gut = document.createElement("div");
+    gut.className = "line-numbers gutter";
+    gut.setAttribute("aria-hidden", "true");
+    const rows = document.createElement("div");
+    rows.className = "gutter-rows";
+    gut.appendChild(rows);
+    host.insertBefore(gut, ta);
+
+    const mirror = document.createElement("div");
+    mirror.className = "gutter-mirror";
+    mirror.setAttribute("aria-hidden", "true");
+    host.appendChild(mirror);
+
+    let lineCount = -1;
+    let dirty = false;
+    let timer = 0;
+    let tries = 0;
+
+    function same(src) {
+      const cs = getComputedStyle(ta);
+      ["fontFamily", "fontSize", "lineHeight", "letterSpacing", "tabSize"].forEach((k) => {
+        mirror.style[k] = cs[k];
+        gut.style[k] = cs[k];
+      });
+      gut.style.paddingTop = cs.paddingTop;
+      gut.style.paddingRight = "10px";
+      // ширина колонки відома з її вмісту — під неї й розсуваємо текстове поле
+      host.style.setProperty("--gut-w", (hidden() ? 0 : gut.offsetWidth) + "px");
+      const inner = ta.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      mirror.style.width = Math.max(20, inner) + "px";
+    }
+
+    function hidden() { return getComputedStyle(gut).display === "none"; }
+
+    function build(list) {
+      rows.textContent = "";
+      mirror.textContent = "";
+      const rf = document.createDocumentFragment();
+      const mf = document.createDocumentFragment();
+      for (let i = 0; i < list.length; i++) {
+        const num = document.createElement("div");
+        num.className = "gutter-num";
+        num.textContent = String(i + 1);
+        rf.appendChild(num);
+        const m = document.createElement("div");
+        m.className = "gutter-mirror-line";
+        m.textContent = list[i] === "" ? "\u00A0" : list[i];
+        mf.appendChild(m);
+      }
+      rows.appendChild(rf);
+      mirror.appendChild(mf);
+      lineCount = list.length;
+    }
+
+    function refresh() {
+      const list = String(ta.value).split("\n");
+      if (list.length !== lineCount) build(list);
+      if (hidden()) { dirty = true; pump(); return; }
+      dirty = false;
+      measure();
+    }
+
+    /* Розділ відкривають у момент, коли панель ще display:none — тоді колонка
+       вимірюється в нуль і текст лізе на номери. Ждемо, поки сек стане видимим. */
+    function pump() {
+      if (timer || !dirty) return;
+      timer = setTimeout(() => {
+        timer = 0;
+        if (!dirty) return;
+        if (hidden()) { tries++; if (tries < 40) pump(); return; }
+        dirty = false;
+        tries = 0;
+        measure();
+      }, 60);
+    }
+
+    function measure() {
+      const list = String(ta.value).split("\n");
+      if (list.length !== lineCount) build(list);
+      same(list);
+      const mRows = mirror.children;
+      const gRows = rows.children;
+      const fallback = parseFloat(getComputedStyle(ta).lineHeight) || 20;
+      for (let i = 0; i < mRows.length && i < gRows.length; i++) {
+        gRows[i].style.height = (mRows[i].offsetHeight || fallback) + "px";
+      }
+      sync();
+    }
+
+    function sync() {
+      rows.style.transform = "translateY(" + (-ta.scrollTop) + "px)";
+    }
+
+    function top(idx) {
+      const row = rows.children[idx - 1];
+      return row ? row.offsetTop : null;
+    }
+
+    const api = { refresh, sync, top, element: gut, host };
+    ta.__gutter = api;
+    ta.addEventListener("input", refresh);
+    ta.addEventListener("focus", refresh);
+    ta.addEventListener("scroll", sync);
+    document.addEventListener("settingschange", refresh);
+    if (typeof ResizeObserver === "function") new ResizeObserver(refresh).observe(ta);
+    refresh();
+    return api;
+  }
+
+  /* Курсор на рядок: виділити, прокрутити й блионути рамкою — те саме, що в майданчику. */
+  function focusLine(ta, n) {
+    if (!ta) return;
+    const lines = String(ta.value).split("\n");
+    const idx = Math.min(Math.max(Number(n) || 1, 1), lines.length);
+    let start = 0;
+    for (let i = 0; i < idx - 1; i++) start += lines[i].length + 1;
+    ta.focus();
+    ta.setSelectionRange(start, start + lines[idx - 1].length);
+    const g = ta.__gutter;
+    const t = g && g.top(idx);
+    const lh = parseFloat(getComputedStyle(ta).lineHeight) || 22;
+    ta.scrollTop = Math.max(0, (t == null ? (idx - 1) * lh : t) - ta.clientHeight / 2);
+    if (g) g.sync();
+    const host = ta.parentElement;
+    if (host) {
+      host.classList.remove("jump-flash");
+      void host.offsetWidth;
+      host.classList.add("jump-flash");
+      setTimeout(() => host.classList.remove("jump-flash"), 800);
+    }
+    global.Audio2 && global.Audio2.SFX.pop();
+  }
+
+  /* Смужка з типом помилки: саме його не вистачало в курсі й задачах, де видно було
+     лише обрізаний трейсбек без «IndentationError» чи «NameError». */
+  function errorBox(err, onJump) {
+    const box = document.createElement("div");
+    box.className = "err-kind";
+    const badge = document.createElement("span");
+    badge.className = "err-type";
+    badge.textContent = (err && err.type) || "Error";
+    badge.title = t("python.errType", "Тип помилки");
+    box.appendChild(badge);
+    if (err && err.detail) {
+      const d = document.createElement("span");
+      d.className = "err-detail";
+      d.textContent = err.detail;
+      box.appendChild(d);
+    }
+    if (onJump && err && err.line) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "goto-line";
+      btn.textContent = "→ " + err.line;
+      btn.title = global.I18n && global.I18n.t ? global.I18n.t("python.gotoLine", { n: err.line }) : "";
+      btn.onclick = () => onJump(err.line);
+      box.appendChild(btn);
+    }
+    return box;
+  }
+
+  /* Статус над результатами: фрази «Помилка виконання — …» вже мають своє тире й
+     крапку, тому тип додаємо через роздільник, а не через двокрапку. */
+  function errStatus(base, type) {
+    const head = String(base || "").replace(/[.\s—–-]+$/u, "");
+    return type ? head + " · " + type : head;
+  }
+
+  global.UI = { menu, enhance, upgrade, close, current: () => open.panel, lineGutter, focusLine, errorBox, errStatus };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 })(window);

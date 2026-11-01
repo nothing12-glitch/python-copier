@@ -244,6 +244,27 @@
     out.scrollTop = out.scrollHeight;
   }
 
+  /* Тип помилки з трейсбека. CPython друкує її ім'я окремим рядком — іноді в кінці
+     («IndentationError: unexpected indent»), іноді на початку, а між ними кадри коду. */
+  const ERR_LINE = /^\s*([A-Za-z_][\w.]*(?:Error|Exception|Warning|Interrupt|Exit))\s*(?::\s*(.*))?$/;
+  function errorBrief(raw) {
+    const lines = String(raw || "").replace(/\r\n?/g, "\n").split("\n");
+    let type = null;
+    let detail = "";
+    for (let i = lines.length - 1; i >= 0 && !type; i--) {
+      const m = lines[i].match(ERR_LINE);
+      if (!m) continue;
+      type = m[1].split(".").pop();
+      detail = (m[2] || "").trim();
+    }
+    if (type && !detail) {
+      const at = lines.findIndex((l) => ERR_LINE.test(l) && l.indexOf(type) !== -1);
+      const next = lines[at + 1];
+      if (next && !/^\s*(File|\^)/.test(next)) detail = next.trim();
+    }
+    return { type: type, detail: detail.length > 140 ? detail.slice(0, 140) + "…" : detail };
+  }
+
   // Номер рядка з трейсбека Python: спершу кадри коду користувача (<exec>),
   // інакше помилка всередині бібліотеки вела б на чужий номер рядка
   function tracebackLine(msg) {
@@ -942,7 +963,7 @@
       py.setStdout({ batched: (s) => setOutput(s) });
       py.setStderr({ batched: (s) => setOutput(s, true, null, tracebackLine(s)) });
     }
-    return { output: output, error: error, line: tracebackLine(error) };
+    return { output: output, error: error, line: tracebackLine(error), err: errorBrief(error) };
   }
 
   /* ---------- Міні-перевірка коду перед запуском ---------- */
@@ -1003,6 +1024,88 @@
 
     stack.forEach((item) => warns.push({ text: t("python.lint.bracket", { ch: item.ch, line: item.line }), line: item.line }));
     return warns;
+  }
+
+  /* ---------- Пошук зайвого відступу (курс, задачі, тренажер) ---------- */
+  // Pyodide в браузері м'яко ставиться до рядка, що починається з пробілів, а справжній
+  // CPython (e-olymp) дає на ньому IndentationError. Учень має дізнатися про це ще тут.
+  function indentWidth(line) {
+    let w = 0;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === " ") w += 1;
+      else if (c === "\t") w += 8 - (w % 8);
+      else break;
+    }
+    return w;
+  }
+
+  function indentBad(line, key) {
+    const detail = (global.I18n && global.I18n.t(key)) || "";
+    return { line: line, type: "IndentationError", detail: detail };
+  }
+
+  // Правила консервативні: перевіряємо лише те, що CPython точно не прийме.
+  function indentCheck(code) {
+    const openers = { "(": ")", "[": "]", "{": "}" };
+    const closers = { ")": "(", "]": "[", "}": "{" };
+    const lines = String(code == null ? "" : code).replace(/\r\n?/g, "\n").split("\n");
+    let quote = null;
+    let triple = false;
+    let brackets = 0;
+    let joined = false;
+    const stack = [];
+    let prevIndent = null;
+    let prevColon = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const raw = lines[i];
+      const cont = quote !== null || triple || joined || brackets > 0;
+      let text = "";
+      let sawCode = false;
+
+      for (let j = 0; j < raw.length; j++) {
+        const ch = raw[j];
+        if (quote) {
+          if (triple && raw.startsWith(quote.repeat(3), j)) { quote = null; triple = false; j += 2; }
+          else if (!triple && ch === quote && raw[j - 1] !== "\\") quote = null;
+          continue;
+        }
+        if (ch === "#") break;
+        if (ch === '"' || ch === "'") {
+          triple = raw.startsWith(ch.repeat(3), j);
+          quote = ch;
+          if (triple) j += 2;
+          sawCode = true;
+          continue;
+        }
+        if (/\s/.test(ch)) continue;
+        sawCode = true;
+        if (openers[ch]) brackets++;
+        else if (closers[ch] && brackets > 0) brackets--;
+        text += ch;
+      }
+
+      joined = !quote && !triple && brackets === 0 && /\\$/.test(text);
+      if (cont || !sawCode) continue;
+
+      const indent = indentWidth(raw);
+      const colon = text.endsWith(":");
+      if (prevIndent === null) {
+        if (indent > 0) return indentBad(i + 1, "python.lint.indentUnexpected");
+      } else if (indent > prevIndent) {
+        if (!prevColon) return indentBad(i + 1, "python.lint.indentUnexpected");
+        stack.push(indent);
+      } else if (indent < prevIndent) {
+        while (stack.length && stack[stack.length - 1] > indent) stack.pop();
+        if ((stack.length ? stack[stack.length - 1] : 0) !== indent) {
+          return indentBad(i + 1, "python.lint.indentUnmatch");
+        }
+      }
+      prevIndent = indent;
+      prevColon = colon;
+    }
+    return null;
   }
 
   function showLintWarnings(code) {
@@ -1326,5 +1429,5 @@
     });
   }
 
-  global.PythonPad = { init, run, execute, loadPackage, loadedPackages, installPypi };
+  global.PythonPad = { init, run, execute, loadPackage, loadedPackages, installPypi, errorBrief, indentCheck };
 })(window);

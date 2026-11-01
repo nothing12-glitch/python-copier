@@ -3,10 +3,36 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.77";
+  const VERSION = "26.10.78";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.78": {
+      uk: [
+        "Нумерація рядків тепер є і в курсі, і в задачах, і в олімпіадному тренажері — як у майданчику. Довгі рядки, які перенеслися, не збивають номери: висоту кожного рядка міряє невидиме дзеркало",
+        "Помилка показує свій ТИП: «IndentationError», «NameError», «SyntaxError» — це мітка в результатах і в рядку статусу, а не обрізаний хвіст трейсбека, де імені помилки як раз і не було",
+        "Зайвий відступ на початку рядка нарешті не проковтується мовчки: браузерний Python його виконує, а справжній — ні. Тепер одразу бачиш «IndentationError: несподіваний відступ на початку рядка» і чіп із номером рядка",
+        "Чіп «→ 7» біля помилки працює і в курсі, і в задачах: клацаєш — поле прокручується й сам рядок підсвічується",
+        "Перевірка відступів іде перед прогоном тестів, тому на помилку у відступі відповіда миттєво, а не через чотири секунди на кожен тест",
+        "Дрібниці: відступ у полі редактора рахується після того, як розділ справді став видимим (раніше номери іноді липли до тексту), а статус «Помилка виконання» тепер не ліпить двокрапку після крапки"
+      ],
+      en: [
+        "Line numbers now live in the course, the task bank and the olympiad trainer too, just like in the playground. Long wrapped lines no longer throw the numbers off — an invisible mirror measures every row",
+        "Errors finally show their TYPE: \"IndentationError\", \"NameError\", \"SyntaxError\" appear as a badge in the results and in the status line, instead of a truncated traceback tail where the name was exactly the part that got cut",
+        "An unexpected indent at the start of a line is no longer swallowed silently: the in-browser Python runs such code, real Python does not. You now get \"IndentationError: unexpected indent at the start of the line\" plus a chip with the line number",
+        "The \"→ 7\" chip works in the course and in the tasks as well: one click scrolls the editor and highlights the offending line",
+        "Checking indentation before running the tests means an indent mistake answers instantly instead of burning four seconds on every test case",
+        "Small stuff: the editor padding is measured once the section is really visible (the numbers used to stick onto the text), and the \"Runtime error\" status no longer jams a colon after a full stop"
+      ],
+      tr: [
+        "Kursta, görevlerde ve olimpiyat eğitimcisinde artık satır numaraları var — oyun alanındaki gibi. Satır alt alta bölünse bile numaralar kaymıyor: her satırın yüksekliği görünmez bir ayna ile ölçülüyor",
+        "Hata artık TÜRÜNÜ gösteriyor: \"IndentationError\", \"NameError\", \"SyntaxError\" sonuçlarda ve durum satırında etiket olarak çıkıyor; eskiden tam da adın kesildiği iz yığını kuyruğu kalıyordu",
+        "Satır başındaki fazladan girinti artık sessizce yutulmuyor: tarayıcıdaki Python onu çalıştırır, gerçek Python çalıştırmaz. Artık \"IndentationError: satır başında beklenmeyen girinti\" ve satır numaralı düğme görüyorsun",
+        "\"→ 7\" düğmesi kursta ve görevlerde de çalışıyor: tek dokunuş editörü kaydırıp ilgili satırı vurguluyor",
+        "Girinti testlerden önce denetlendiği için girinti hatası dört saniye beklemeden anında yanıt veriyor",
+        "Küçük şeyler: editör boşluğu bölüm gerçekten görünür olduğunda ölçülüyor (numaralar metne yapışıyordu) ve \"Çalışma zamanı hatası\" durumu artık noktadan sonra iki nokta sıkıştırmıyor"
+      ]
+    },
     "26.10.77": {
       uk: [
         "Під час туру Пайтончика сторінка заблокована: нічого випадково не натиснеш, а сам тур тисне «Запуск», дочекується, доки завантажаться модулі, і лише тоді іде далі",

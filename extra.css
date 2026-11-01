@@ -2519,3 +2519,46 @@ body[data-style="new"] .mod-sel-guard[disabled] {
   .contest-stat { flex: 1 1 calc(50% - 13px); min-width: 0; padding: 14px 16px; }
   .contest-stats { gap: 11px; margin-bottom: 18px; }
 }
+
+
+/* ---------- 43) Нумерація рядків у курсі, задачах і тренажері + тип помилки ---------- */
+/* У майданчику колонка номерів є давно, а в курсі/задачах — голий textarea. Номери
+   рахує ui.js, а висоту рядків міряє дзеркалом, бо textarea переносить довгі рядки. */
+.gutter-host { position: relative; display: block; width: 100%; min-width: 0; box-sizing: border-box; }
+.gutter-host > textarea { padding-left: calc(16px + var(--gut-w, 0px)); }
+.line-numbers.gutter {
+  position: absolute; left: 1px; top: 1px; bottom: 1px; width: auto; min-width: 34px;
+  box-sizing: border-box; padding: 16px 10px 16px 12px; margin: 0; overflow: hidden;
+  border-right: 1px solid var(--md-outline-var, #313244); border-radius: 12px 0 0 12px;
+  color: #6C7086; background: rgba(17, 17, 27, .35); text-align: right; white-space: pre;
+  font-family: var(--md-mono); font-size: var(--editor-font, 14px); pointer-events: none;
+}
+.gutter-mirror {
+  position: absolute; left: -9999px; top: 0; visibility: hidden; pointer-events: none;
+  box-sizing: border-box; padding: 0; margin: 0;
+  white-space: pre-wrap; overflow-wrap: break-word;
+  font-family: var(--md-mono); font-size: var(--editor-font, 14px);
+}
+.gutter-num { line-height: inherit; }
+.gutter-host.jump-flash { animation: jumpFlash .8s ease-out; }
+body.reduce-motion .gutter-host.jump-flash { animation: none; }
+
+/* чіп «→ рядок» поза консоллю був голим <button> — тепер скрізь той самий вигляд */
+.goto-line {
+  display: inline-block; align-self: flex-start; padding: 0 6px;
+  font-family: var(--md-mono); font-size: 12px; line-height: 1.7;
+  color: #89B4FA; background: rgba(137, 180, 250, .12);
+  border: 1px solid rgba(137, 180, 250, .35); border-radius: 6px; cursor: pointer;
+}
+.goto-line:hover { background: rgba(137, 180, 250, .24); }
+.goto-line:focus-visible { outline: 2px solid #89B4FA; outline-offset: 1px; }
+
+/* тип помилки: «IndentationError: unexpected indent», а не обрізаний трейсбек */
+.err-kind { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 3px; }
+.err-type {
+  padding: 2px 9px; border-radius: 999px;
+  font-family: var(--md-mono); font-size: 12px; font-weight: 600; letter-spacing: .02em;
+  color: #F38BA8; background: rgba(243, 139, 168, .14); border: 1px solid rgba(243, 139, 168, .4);
+}
+.err-detail { font-family: var(--md-mono); font-size: 12.5px; color: #F38BA8; word-break: break-word; }
+.task-status-line .err-type { vertical-align: middle; }
