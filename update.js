@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.82";
+  const VERSION = "26.10.83";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.83": {
+      uk: [
+        "Музична панель більше не приклеєна до нижнього краю: за замовчуванням вона стоїть помітно вище, щоб не закривати кнопку Пайтончика й нижню частину сторінки",
+        "Плеєр тепер можна перетягнути будь-куди — схопивши за шапку з назвою треку. Курсор підказує «ховай», а підказка в шапці пояснює жест",
+        "Обрана позиція запам'ятовується: після перезавантаження сайту та після закриття й нового відкриття панель стає туди, куди ти її поставив",
+        "Подвійний клік по шапці повертає панель на типове місце, а зміна розміру вікна не випускає її за межі екрана",
+        "На телефоні панелі залишено звичну нижню позицію на всю ширину — там переміщення вимкнено, щоб не заважати гортанню"
+      ],
+      en: [
+        "The music panel is no longer glued to the bottom edge: by default it sits noticeably higher, so it stops covering the Pychik button and the lower part of the page",
+        "The player can now be dragged anywhere — grab it by the header with the track title. The cursor hints \"hold\", and the header tooltip explains the gesture",
+        "The chosen position is remembered: after reloading the site and after closing and reopening, the panel returns to where you put it",
+        "A double-click on the header returns the panel to its default place, and resizing the window never lets it escape off screen",
+        "On phones the panel keeps its familiar full-width bottom spot — dragging is disabled there so it never fights your scrolling"
+      ],
+      tr: [
+        "Müzik paneli artık alt kenara yapışık değil: varsayılan olarak belirgin biçimde yukarıda duruyor, böylece Pychik düğmesini ve sayfanın alt kısmını kapatmıyor",
+        "Oynatıcı artık istediğin yere sürüklenebiliyor — şarkı adının bulunduğu başlıktan tut. İmleç \"tut\" ipucu veriyor, başlıktaki açıklama hareketi anlatıyor",
+        "Seçtiğin konum hatırlanıyor: siteyi yeniden yükleyince ya da paneli kapatıp açınca onu bıraktığın yere geri geliyor",
+        "Başlığa çift tıklayınca panel yerine dönüyor; pencereyi yeniden boyutlandırınca panel ekranın dışına kaçmıyor",
+        "Telefonda panel alıştığı alt ve tam geniş konumunda kalıyor — orada sürükleme kapalı, kaydırmaya engel olmasın"
+      ]
+    },
     "26.10.82": {
       uk: [
         "Картка уроку в курсі нарешті дихає: текст більше не лежить упритул до рамки — картка дістала внутрішній відступ, зліва найбільший",

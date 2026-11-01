@@ -2639,7 +2639,7 @@ body:not([data-style="new"]) .mp-collapse { display: none; }
 /* вікно */
 body[data-style="new"] #musicPanel {
   width: min(392px, calc(100vw - 24px));
-  max-height: min(80vh, 660px);
+  max-height: min(80vh, 660px, calc(100vh - var(--mp-bottom) - 24px));
   padding: 0;
   border: 1px solid var(--nu-line-strong);
   border-radius: 26px;

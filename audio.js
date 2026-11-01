@@ -64,19 +64,20 @@
   ];
 
   const AL = {
-    uk: { playlist: "Плейлист", author: "Автор", off: "Вимкнути музику", close: "Закрити", like: "Улюблене", shuffle: "Перемішати", repeat: "Повторювати", volume: "Гучність", expand: "Розгорнути список", collapse: "Згорнути список" },
-    en: { playlist: "Playlist", author: "Artist", off: "Turn off music", close: "Close", like: "Favorite", shuffle: "Shuffle", repeat: "Loop", volume: "Volume", expand: "Expand list", collapse: "Collapse list" },
-    tr: { playlist: "Çalma listesi", author: "Sanatçı", off: "Müziği kapat", close: "Kapat", like: "Favori", shuffle: "Karıştır", repeat: "Tekrarla", volume: "Ses", expand: "Listeyi aç", collapse: "Listeyi kapat" },
-    de: { playlist: "Wiedergabeliste", author: "Künstler", off: "Musik aus", close: "Schließen", like: "Favorit", shuffle: "Zufällig", repeat: "Schleife", volume: "Lautstärke", expand: "Liste öffnen", collapse: "Liste schließen" },
-    pl: { playlist: "Lista odtwarzania", author: "Artysta", off: "Wyłącz muzykę", close: "Zamknij", like: "Ulubione", shuffle: "Losowo", repeat: "Pętla", volume: "Głośność", expand: "Rozwiń listę", collapse: "Zwiń listę" },
-    es: { playlist: "Lista", author: "Artista", off: "Apagar música", close: "Cerrar", like: "Favorito", shuffle: "Aleatorio", repeat: "Repetir", volume: "Volumen", expand: "Ampliar lista", collapse: "Plegar lista" },
-    fr: { playlist: "Playlist", author: "Artiste", off: "Couper musique", close: "Fermer", like: "Favori", shuffle: "Aléatoire", repeat: "Boucle", volume: "Volume", expand: "Dérouler la liste", collapse: "Replier la liste" },
-    ja: { playlist: "プレイリスト", author: "アーティスト", off: "音楽オフ", close: "閉じる", like: "お気に入り", shuffle: "シャッフル", repeat: "ループ", volume: "音量", expand: "リストを開く", collapse: "リストを閉じる" }
+    uk: { playlist: "Плейлист", author: "Автор", off: "Вимкнути музику", close: "Закрити", like: "Улюблене", shuffle: "Перемішати", repeat: "Повторювати", volume: "Гучність", expand: "Розгорнути список", collapse: "Згорнути список", drag: "Пересунь плеєр за шапку; подвійний клік повертає його на місце" },
+    en: { playlist: "Playlist", author: "Artist", off: "Turn off music", close: "Close", like: "Favorite", shuffle: "Shuffle", repeat: "Loop", volume: "Volume", expand: "Expand list", collapse: "Collapse list", drag: "Drag the header to move the player; double-click puts it back" },
+    tr: { playlist: "Çalma listesi", author: "Sanatçı", off: "Müziği kapat", close: "Kapat", like: "Favori", shuffle: "Karıştır", repeat: "Tekrarla", volume: "Ses", expand: "Listeyi aç", collapse: "Listeyi kapat", drag: "Oynatıcıyı taşımak için başlığı sürükle; çift tıklayınca yerine döner" },
+    de: { playlist: "Wiedergabeliste", author: "Künstler", off: "Musik aus", close: "Schließen", like: "Favorit", shuffle: "Zufällig", repeat: "Schleife", volume: "Lautstärke", expand: "Liste öffnen", collapse: "Liste schließen", drag: "Player am Kopf ziehen zum Verschieben; Doppelklick setzt ihn zurück" },
+    pl: { playlist: "Lista odtwarzania", author: "Artysta", off: "Wyłącz muzykę", close: "Zamknij", like: "Ulubione", shuffle: "Losowo", repeat: "Pętla", volume: "Głośność", expand: "Rozwiń listę", collapse: "Zwiń listę", drag: "Przeciągnij nagłówek, aby przesunąć odtwarzacz; podwójne kliknięcie przywraca" },
+    es: { playlist: "Lista", author: "Artista", off: "Apagar música", close: "Cerrar", like: "Favorito", shuffle: "Aleatorio", repeat: "Repetir", volume: "Volumen", expand: "Ampliar lista", collapse: "Plegar lista", drag: "Arrastra la cabecera para mover el reproductor; doble clic lo devuelve" },
+    fr: { playlist: "Playlist", author: "Artiste", off: "Couper musique", close: "Fermer", like: "Favori", shuffle: "Aléatoire", repeat: "Boucle", volume: "Volume", expand: "Dérouler la liste", collapse: "Replier la liste", drag: "Fais glisser l'en-tête pour déplacer le lecteur ; double-clic le remet en place" },
+    ja: { playlist: "プレイリスト", author: "アーティスト", off: "音楽オフ", close: "閉じる", like: "お気に入り", shuffle: "シャッフル", repeat: "ループ", volume: "音量", expand: "リストを開く", collapse: "リストを閉じる", drag: "ヘッダーをドラッグで移動、ダブルクリックで元の位置に戻ります" }
   };
   const T = () => AL[global.I18n ? global.I18n.lang : "uk"] || AL.uk;
 
   let audio = null, cur = 0, panel = null, progressRAF = null, collapsed = false;
   const LIKES_KEY = "app.music.likes";
+  const POS_KEY = "app.music.pos";
   const likes = () => { try { return JSON.parse(localStorage.getItem(LIKES_KEY) || "[]"); } catch { return []; } };
   const setLike = (i, v) => { const L = likes(); const set = new Set(L); v ? set.add(i) : set.delete(i); localStorage.setItem(LIKES_KEY, JSON.stringify([...set])); };
 
@@ -157,6 +158,7 @@
     /* ----- Шапка: обкладинка, назва, автор + живі смужки, кнопка згортання ----- */
     const hero = document.createElement("div");
     hero.className = "mp-hero-wrap";
+    hero.title = t.drag;
     const bg = document.createElement("div");
     bg.className = "mp-hero";
     bg.style.backgroundImage = 'url("' + TRACKS[cur].cover + '")';
@@ -315,14 +317,75 @@
     updateProgress();
   }
 
+  /* ----- Переміщення панелі: тягнеться за шапку, позиція пам'ятається.
+         На вузькому екрані панель і так на всю ширину — там переміщення вимкнено. ----- */
+  const EDGE = 10;
+  const canDrag = () => innerWidth > 640;
+  const storedPos = () => { try { return JSON.parse(localStorage.getItem(POS_KEY) || "null"); } catch { return null; } };
+  const clampPos = (x, y, w, h) => ({
+    x: Math.max(EDGE, Math.min(innerWidth - w - EDGE, x)),
+    y: Math.max(EDGE, Math.min(innerHeight - h - EDGE, y))
+  });
+  function placeAt(x, y) {
+    const c = clampPos(x, y, panel.offsetWidth, panel.offsetHeight);
+    panel.style.left = c.x + "px";
+    panel.style.top = c.y + "px";
+    panel.style.right = "auto";
+    panel.style.bottom = "auto";
+    return c;
+  }
+  function applyPos() {
+    if (!panel || !panel.classList.contains("show")) return;
+    const p = storedPos();
+    if (!canDrag() || !p) { clearPos(); return; }
+    placeAt(p.x, p.y);
+  }
+  function clearPos() {
+    panel.style.left = panel.style.top = panel.style.right = panel.style.bottom = "";
+  }
+  let drag = null;
+  function onDragStart(e) {
+    if (!canDrag() || drag || e.button > 0) return;
+    if (!e.target.closest(".mp-hero-wrap") || e.target.closest(".mp-collapse")) return;
+    drag = { dx: e.clientX - panel.offsetLeft, dy: e.clientY - panel.offsetTop };
+    panel.classList.add("dragging");
+    panel.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  }
+  function onDragMove(e) {
+    if (!drag) return;
+    placeAt(e.clientX - drag.dx, e.clientY - drag.dy);
+  }
+  function onDragEnd(e) {
+    if (!drag) return;
+    drag = null;
+    panel.classList.remove("dragging");
+    if (panel.hasPointerCapture(e.pointerId)) panel.releasePointerCapture(e.pointerId);
+    localStorage.setItem(POS_KEY, JSON.stringify({ x: panel.offsetLeft, y: panel.offsetTop }));
+  }
+  function wireDrag() {
+    panel.addEventListener("pointerdown", onDragStart);
+    panel.addEventListener("pointermove", onDragMove);
+    panel.addEventListener("pointerup", onDragEnd);
+    panel.addEventListener("pointercancel", onDragEnd);
+    panel.addEventListener("dblclick", (e) => {
+      if (!canDrag() || !e.target.closest(".mp-hero-wrap") || e.target.closest(".mp-collapse")) return;
+      localStorage.removeItem(POS_KEY);
+      clearPos();
+    });
+    global.addEventListener("resize", applyPos);
+  }
+
   function showPanel(on) {
     if (!panel) {
       panel = document.createElement("div");
       panel.id = "musicPanel";
       document.body.appendChild(panel);
+      wireDrag();
     }
     panel.classList.toggle("show", !!on);
     renderPanel();
+    applyPos();
     if (on) startProgress(); else stopProgress();
   }
 
