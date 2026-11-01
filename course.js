@@ -42,25 +42,25 @@
           id: "literals",
           title: { uk: "Літерали: значення прямо в коді", en: "Literals: values right in the code", tr: "Literal: doğrudan kod içindeki değer" },
           theory: {
-            uk: "Літерал — це значення, записане прямо в коді: 42 (ціле int), 3.14 (дійсне float), \"текст\" (рядок str), True та False (логічний bool), None (порожнє значення). Рядок можна писати в одинарних або подвійних лапках, але лапки мають бути однакові з обох боків, а числа й True пишуться без лапок.",
-            en: "A literal is a value written directly in the code: 42 (integer int), 3.14 (float), \"text\" (string str), True and False (bool), None (empty value). A string may use single or double quotes, but they must match on both ends, while numbers and True are written without quotes.",
-            tr: "Literal, doğrudan kod içine yazılan değerdir: 42 (tam sayı int), 3.14 (float), \"metin\" (dize str), True ve False (bool), None (boş değer). Dize tek ya da çift tırnakla yazılabilir ama iki taraftaki tırnaklar aynı olmalıdır; sayılar ve True tırnaksız yazılır."
+            uk: "Літерал — це значення, записане прямо в коді: 42 (ціле int), 3.14 (дійсне float), \"текст\" (рядок str), True та False (логічний bool), None (порожнє значення). Рядок можна писати в одинарних або подвійних лапках, але лапки мають бути однакові з обох боків, а числа й True пишуться без лапок. Найпростіший вивід — передати літерал прямо в print(): print(\"hello\") надрукує hello без лапок, бо лапки існують лише в коді, щоб показати межу рядка.",
+            en: "A literal is a value written directly in the code: 42 (integer int), 3.14 (float), \"text\" (string str), True and False (bool), None (empty value). A string may use single or double quotes, but they must match on both ends, while numbers and True are written without quotes. The simplest output is passing a literal straight into print(): print(\"hello\") prints hello without the quotes, because quotes only exist in the source to mark where the string begins and ends.",
+            tr: "Literal, doğrudan kod içine yazılan değerdir: 42 (tam sayı int), 3.14 (float), \"metin\" (dize str), True ve False (bool), None (boş değer). Dize tek ya da çift tırnakla yazılabilir ama iki taraftaki tırnaklar aynı olmalıdır; sayılar ve True tırnaksız yazılır. En yalın çıktı bir literalı doğrudan print() içine yazmaktır: print(\"hello\") tırnaksız olarak hello yazdırır, çünkü tırnaklar yalnızca kaynak kodda dizenin sınırını gösterir."
           },
-          example: "print(42)\nprint(3.14)\nprint(\"текст\")\nprint(True)\nprint(None)\n",
+          example: "print(\"hello\")\nprint(42)\nprint(3.14)\nprint(True)\nprint(None)\n",
           task: {
             text: {
-              uk: "Виведи по одному на рядок три літерали: ціле число 42, дійсне 3.14 і логічне True.",
-              en: "Print three literals, one per line: the integer 42, the float 3.14 and the boolean True.",
-              tr: "Üç literalı satır satır yazdır: tam sayı 42, ondalık 3.14 ve mantıksal True."
+              uk: "Виведи по одному на рядок чотири літерали: текст hello, ціле число 42, дійсне 3.14 і логічне True.",
+              en: "Print four literals, one per line: the text hello, the integer 42, the float 3.14 and the boolean True.",
+              tr: "Satır satır dört literal yazdır: hello metni, tam sayı 42, ondalık 3.14 ve mantıksal True."
             },
             hint: {
-              uk: "Кожне значення друкуй окремим print(): print(42), print(3.14), print(True) — усе без лапок.",
-              en: "Print each value with its own print(): print(42), print(3.14), print(True) — all without quotes.",
-              tr: "Her değeri ayrı bir print() ile yazdır: print(42), print(3.14), print(True) — hepsi tırnaksız."
+              uk: "Чотири окремі виклики: print(\"hello\") — текст обов'язково в лапках, а print(42), print(3.14) і print(True) — без лапок.",
+              en: "Four separate calls: print(\"hello\") needs quotes around the text, while print(42), print(3.14) and print(True) need none.",
+              tr: "Dört ayrı çağrı: print(\"hello\") içinde metni tırnağa al, print(42), print(3.14) ve print(True) ise tırnaksız."
             },
             starter: "",
             tests: [
-              { in: "", out: "42\n3.14\nTrue" }
+              { in: "", out: "hello\n42\n3.14\nTrue" }
             ]
           }
         },

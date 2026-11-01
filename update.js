@@ -3,10 +3,24 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.80";
+  const VERSION = "26.10.81";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.81": {
+      uk: [
+        "Урок «Літерали» в курсі тепер реально вчить виводити текст: приклад починається з `print(\"hello\")`, а в теорії пояснено, чому на екрані з'являється `hello` без лапок",
+        "Завдання до уроку стало повнішим: чотири літерали замість трьох — текст `hello`, ціле `42`, дійсне `3.14` і логічне `True`, тож рядок у лапках теж треба перевірити на практики"
+      ],
+      en: [
+        "The \"Literals\" lesson now really teaches printing text: the example opens with `print(\"hello\")`, and the theory explains why the screen shows `hello` without the quotes",
+        "The exercise got fuller: four literals instead of three — the text `hello`, the integer `42`, the float `3.14` and the boolean `True` — so a quoted string has to pass the checker too"
+      ],
+      tr: [
+        "Kursdaki \"Literal\" dersi artık metin yazdırmayı gerçekten öğretiyor: örnek `print(\"hello\")` ile açılıyor ve kuramsal bölüm ekrana tırnaksız `hello` gelmesini açıklıyor",
+        "Alıştırmaya bir literal daha eklendi: dört literal — `hello` metni, tam sayı `42`, ondalık `3.14` ve mantıksal `True` — böylece tırnaklı dize de denetleyiciden geçiyor"
+      ]
+    },
     "26.10.80": {
       uk: [
         "Музична панель отримала новий інтерфейс: обкладинка, назва треку й автор тепер в одному рядку зверху, а не великим банером, і весь плеєр став помітно компактнішим",
