@@ -441,6 +441,12 @@
   let byImport = {};
   let loadedNames = [];
   let installedNow = [];
+  let rememberedNames = [];
+  let loadedKeys = {}, sessionKeys = {}, rememberedKeys = {};
+  /* Мультивибір карток: множина назв — єдине джерело правди, тож вибір переживає
+     фільтри й пагінацію: renderGrid() лише перебудовує картки з готового стану. */
+  const selected = new Set();
+  let selBarEl = null, selCountEl = null, selInstallBtn = null, selVisibleBtn = null, selClearBtn = null;
   let filter = "all";
   let query = "";
   let shown = PAGE_SIZE;
@@ -468,9 +474,80 @@
     return obj[l] || obj.uk || "";
   }
 
+  /* Нові тексти цього файлу тримаємо тут: ключі i18n.js ми не роздуваємо,
+     а мова бере той самий pick(), що й описи пакетів. Український — основний. */
+  const TXT = {
+    select: { uk: "Вибрати для встановлення", en: "Select to install", tr: "Kurmak için seç" },
+    selectBusy: { uk: "Зачекай: поки завантажується", en: "Wait: a download is running", tr: "Bekle: indirme sürüyor" },
+    alreadyIn: { uk: "Уже встановлено — вибирати не треба", en: "Already installed — no need to select", tr: "Zaten kurulu — seçmeye gerek yok" },
+    count: { uk: "Вибрано: {n}", en: "Selected: {n}", tr: "Seçilen: {n}" },
+    pickVisible: { uk: "Вибрати видимі", en: "Select visible", tr: "Görünürleri seç" },
+    pickVisibleHint: { uk: "Додати до вибору всі показані тут пакети, які ще не стоять", en: "Add every shown package that is not installed yet", tr: "Gösterilen ve henüz kurulmamış tüm paketleri seçime ekle" },
+    installSelected: { uk: "Встановити вибране", en: "Install selected", tr: "Seçilenleri kur" },
+    installSelectedHint: { uk: "Поставити все вибране в одному вікні з прогресом", en: "Install the whole selection in one progress window", tr: "Seçimin tümünü tek ilerleme penceresinde kur" },
+    clear: { uk: "Зняти вибір", en: "Clear selection", tr: "Seçimi bırak" },
+    batchTitle: { uk: "Встановлюємо вибране ({n})", en: "Installing the selection ({n})", tr: "Seçilenler kuruluyor ({n})" },
+    nothingNew: { uk: "У вибраному не залишилось того, що ставити", en: "Nothing left to install in the selection", tr: "Seçimde kurulacak paket kalmadı" },
+    prevBadge: { uk: "Раніше встановлював", en: "Installed before", tr: "Daha önce kurulmuştu" },
+    prevHint: { uk: "Ставили раніше, але після перезавантаження сторінки Pyodide довантажує його щоразу — притисни «Встановити знову».", en: "You installed it before, but after a page reload Pyodide fetches it again — press “Install again”.", tr: "Daha önce kurmuştun; sayfa yeniden yüklenince Pyodide onu tekrar indirir — “Yeniden yükle”e bas." },
+    again: { uk: "Встановити знову", en: "Install again", tr: "Yeniden yükle" }
+  };
+
+  function lt(obj, vars) {
+    let s = pick(obj);
+    Object.keys(vars || {}).forEach((k) => { s = s.split("{" + k + "}").join(String(vars[k])); });
+    return s;
+  }
+
+  /* Два різні стани — навмисне не однакові:
+     readyInRuntime() — Pyodide справді тримає модуль у пам'яті (або ми поставили
+     його цього сеансу), його можна import просто зараз; installedBefore() —
+     модуль лише в пам'ятці встановлень (modules.installedHistory), тож після
+     перезавантаження сторінки його ще треба дозавантажити. Фільтри
+     «Встановлені/Не встановлені» рахують обидва стани, а ґудзик ховаємо лише для
+     readyInRuntime — інакше історія виглядала б як «готово», хоча імпорту ще немає. */
+  // назви в історії й у реєстрі різноCase'яться («Pillow»/«pillow»,
+  // «python_barcode»/«python-barcode») — порівнюємо нормалізовано, інакше «раніше
+  // встановлював» губиться й пакет знову показується як новий
+  function norm(name) { return String(name || "").toLowerCase().replace(/_/g, "-"); }
+
+  function reindex() {
+    loadedKeys = {}; sessionKeys = {}; rememberedKeys = {};
+    loadedNames.forEach((n) => { loadedKeys[norm(n)] = true; });
+    installedNow.forEach((n) => { sessionKeys[norm(n)] = true; });
+    rememberedNames.forEach((n) => { rememberedKeys[norm(n)] = true; });
+  }
+
+  function readyInRuntime(name) {
+    const k = norm(name);
+    return !!loadedKeys[k] || !!sessionKeys[k];
+  }
+
+  function installedBefore(name) {
+    const k = norm(name);
+    return !readyInRuntime(name) && !!rememberedKeys[k];
+  }
+
   function isLoaded(name) {
-    if (loadedNames.indexOf(name) >= 0) return true;
-    return installedNow.indexOf(name) >= 0;
+    return readyInRuntime(name) || installedBefore(name);
+  }
+
+  /* Поки будь-яке завантаження йде — наше чи вікна встановлення — усі
+     «встановити/прибрати» гаснемо: другий запит збив би той, що в роботі. */
+  function installerBusy() {
+    if (busy) return true;
+    return !!(global.Installer && typeof global.Installer.busy === "function" && global.Installer.busy());
+  }
+
+  // data-locked — причини вимкнути контрол, що не залежать від завантаження
+  function applyGuard() {
+    const on = installerBusy();
+    document.querySelectorAll(".mod-sel-guard").forEach((btn) => {
+      const locked = btn.dataset.locked === "1";
+      btn.disabled = on || locked;
+      btn.classList.toggle("mod-sel-wait", on && !locked);
+      btn.title = on ? pick(TXT.selectBusy) : (btn.dataset.freeTitle || "");
+    });
   }
 
   /* ---------- Реєстр пакетів ---------- */
@@ -578,12 +655,12 @@
     if (global.PythonPad && typeof global.PythonPad.loadedPackages === "function") {
       try { loadedNames = global.PythonPad.loadedPackages() || []; } catch (e) { loadedNames = []; }
     }
-    // Те, що поставило вікно встановлення (і рекомендовані модулі, і магазинчик), теж «встановлено»
+    // Пам'ятка встановлень (її пише вікно встановлення й авто-довантаження з коду):
+    // для фільтрів це «встановлено», для імпорту — ще ні, див. readyInRuntime.
     if (global.Installer && typeof global.Installer.history === "function") {
-      (global.Installer.history() || []).forEach((name) => {
-        if (installedNow.indexOf(name) < 0) installedNow.push(name);
-      });
+      try { rememberedNames = global.Installer.history() || []; } catch (e) { rememberedNames = []; }
     }
+    reindex();
   }
 
   /* ---------- Фільтрація ---------- */
@@ -610,8 +687,9 @@
   /* ---------- Рендер ---------- */
   function loadedCount() {
     const set = {};
-    loadedNames.forEach((n) => { set[n] = true; });
-    installedNow.forEach((n) => { set[n] = true; });
+    loadedNames.forEach((n) => { set[norm(n)] = true; });
+    installedNow.forEach((n) => { set[norm(n)] = true; });
+    rememberedNames.forEach((n) => { set[norm(n)] = true; });
     return Object.keys(set).length;
   }
 
@@ -634,6 +712,7 @@
 
   function renderChips() {
     if (!chipsEl) return;
+    chipsEl.classList.add("mod-sel-chips");
     chipsEl.innerHTML = "";
     [["all", "modules.filterAll"], ["featured", "modules.filterFeatured"],
      ["pypi", "modules.filterPypi"], ["installed", "modules.filterInstalled"],
@@ -649,15 +728,117 @@
     if (!presetsEl) return;
     presetsEl.innerHTML = "";
     presetsEl.appendChild(el("span", "contest-field-label", t("modules.presets")));
-    const row = el("div", "contest-chips");
+    const row = el("div", "contest-chips mod-sel-row");
     Object.keys(PRESETS).forEach((id) => {
-      const chip = el("button", "contest-chip mod-preset", t("modules.preset." + id));
+      const chip = el("button", "contest-chip mod-preset mod-sel-guard", t("modules.preset." + id));
       chip.type = "button";
-      chip.title = PRESETS[id].join(" · ");
+      chip.dataset.freeTitle = PRESETS[id].join(" · ");
+      chip.dataset.locked = "0";
+      chip.title = chip.dataset.freeTitle;
       chip.onclick = () => installMany(PRESETS[id], chip);
       row.appendChild(chip);
     });
     presetsEl.appendChild(row);
+    renderSelBar();
+    applyGuard();
+  }
+
+  /* Панель мультивиббору стоїть просто під рядом готових наборів:
+     той самий візуальний рядок чіпів, тільки з лічильником і двома діями. */
+  function renderSelBar() {
+    if (!presetsEl) return;
+    if (selBarEl && selBarEl.parentNode === presetsEl) { updateSelBar(); return; }
+    const bar = el("div", "contest-chips mod-sel-row mod-sel-bar");
+
+    selCountEl = el("span", "mod-sel-count");
+    selCountEl.setAttribute("aria-live", "polite");
+
+    selVisibleBtn = el("button", "btn text mod-sel-visible", pick(TXT.pickVisible));
+    selVisibleBtn.type = "button";
+    selVisibleBtn.dataset.freeTitle = pick(TXT.pickVisibleHint);
+    selVisibleBtn.dataset.locked = "0";
+    selVisibleBtn.title = selVisibleBtn.dataset.freeTitle;
+    selVisibleBtn.onclick = selectVisible;
+
+    selInstallBtn = el("button", "btn contained mod-sel-install mod-sel-guard");
+    selInstallBtn.type = "button";
+    selInstallBtn.dataset.freeTitle = pick(TXT.installSelectedHint);
+    selInstallBtn.title = pick(TXT.installSelectedHint);
+    selInstallBtn.appendChild(el("span", "material-icons", "download"));
+    selInstallBtn.appendChild(el("span", null, pick(TXT.installSelected)));
+    selInstallBtn.onclick = installSelected;
+
+    selClearBtn = el("button", "btn text mod-sel-clear mod-sel-guard", pick(TXT.clear));
+    selClearBtn.type = "button";
+    selClearBtn.onclick = () => { clearSelected(); sfx("pop"); };
+
+    bar.append(selCountEl, selVisibleBtn, selInstallBtn, selClearBtn);
+    presetsEl.appendChild(bar);
+    selBarEl = bar;
+    updateSelBar();
+  }
+
+  // Оновлює лише текст лічильника й причини вимкнення — без перебудови сітки
+  function updateSelBar() {
+    if (selCountEl) {
+      selCountEl.textContent = lt(TXT.count, { n: selected.size });
+      selCountEl.classList.toggle("has-selection", selected.size > 0);
+    }
+    const locked = selected.size ? "0" : "1";
+    if (selInstallBtn) selInstallBtn.dataset.locked = locked;
+    if (selClearBtn) selClearBtn.dataset.locked = locked;
+  }
+
+  function syncCheckboxes() {
+    document.querySelectorAll(".mod-sel-input").forEach((box) => {
+      box.checked = selected.has(box.dataset.name);
+    });
+    updateSelBar();
+  }
+
+  function clearSelected() {
+    if (!selected.size) return;
+    selected.clear();
+    syncCheckboxes();
+    applyGuard();
+  }
+
+  // те, що стало, з вибору прибираємо; назви з вікна можуть відрінятись регістром
+  function unselect(name) {
+    const k = norm(name);
+    Array.from(selected).forEach((n) => { if (norm(n) === k) selected.delete(n); });
+  }
+
+  /* «Вибрати видимі» бере лише те, що показане за поточного фільтра й ще
+     не стоїть у Pyodide: вбудовані рушії й готове пропускаємо без помилок. */
+  function selectVisible() {
+    if (installerBusy()) { toast(pick(TXT.selectBusy)); return; }
+    visible().slice(0, shown).forEach((pkg) => {
+      if (pkg.src === "own" || readyInRuntime(pkg.name)) return;
+      selected.add(pkg.name);
+    });
+    syncCheckboxes();
+    applyGuard();
+    sfx("pop");
+  }
+
+  async function installSelected() {
+    if (installerBusy()) { toast(pick(TXT.selectBusy)); sfx("error"); return; }
+    const wanted = [];
+    Array.from(selected).forEach((name) => {
+      const pkg = packages.find((p) => p.name === name);
+      if (!pkg || pkg.src === "own" || readyInRuntime(name)) { selected.delete(name); return; }
+      wanted.push(name);
+    });
+    // разом із тим, що пакет потребує за собою — як і в одиночному встановленні
+    const withDeps = [];
+    wanted.forEach((name) => {
+      if (withDeps.indexOf(name) < 0) withDeps.push(name);
+      depsFor(name).forEach((d) => { if (d !== name && withDeps.indexOf(d) < 0) withDeps.push(d); });
+    });
+    updateSelBar();
+    if (!withDeps.length) { toast(pick(TXT.nothingNew)); applyGuard(); return; }
+    await installMany(withDeps, null, lt(TXT.batchTitle, { n: wanted.length }));
   }
 
   function renderCount(list) {
@@ -674,31 +855,67 @@
     gridEl.innerHTML = "";
     if (!packages.length) {
       gridEl.appendChild(el("p", "muted", t("modules.loading")));
+      updateSelBar();
       return;
     }
     if (!list.length) {
       gridEl.appendChild(el("p", "muted", t("modules.empty")));
       if (moreBtn) moreBtn.classList.add("hidden");
+      updateSelBar();
+      applyGuard();
       return;
     }
     list.slice(0, shown).forEach((pkg) => gridEl.appendChild(card(pkg)));
     if (moreBtn) moreBtn.classList.toggle("hidden", shown >= list.length);
+    updateSelBar();
+    applyGuard();
+  }
+
+  /* Прапорець вибору: стан завжди бере з `selected`, бо renderGrid() руйнує
+     картки й будує їх наново. label+input — тож ґудзик доступний з клавіатури. */
+  function selectBox(pkg) {
+    const ready = readyInRuntime(pkg.name);
+    const label = el("label", "mod-sel-box");
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.className = "mod-sel-input";
+    box.dataset.name = pkg.name;
+    box.checked = selected.has(pkg.name);
+    box.disabled = ready;
+    box.setAttribute("aria-label", pick(TXT.select) + ": " + pkg.name);
+    box.title = ready ? pick(TXT.alreadyIn) : pick(TXT.select);
+    box.onchange = () => {
+      if (box.checked) selected.add(pkg.name); else selected.delete(pkg.name);
+      updateSelBar();
+      applyGuard();
+    };
+    label.appendChild(box);
+    return label;
   }
 
   function card(pkg) {
-    const done = isLoaded(pkg.name);
+    const ready = readyInRuntime(pkg.name);
+    const before = installedBefore(pkg.name);
     const own = pkg.src === "own";
-    const box = el("div", "mod-card" + (done ? " installed" : "") + (pkg.src === "pypi" ? " ext" : "") + (own ? " own" : ""));
+    // «installed» — лише те, що реально імпортується; «раніше встановлював» — відмітка історії
+    const box = el("div", "mod-card" + (ready ? " installed" : "") + (before ? " mod-sel-prev-card" : "") + (pkg.src === "pypi" ? " ext" : "") + (own ? " own" : ""));
     box.dataset.name = pkg.name;
 
     const head = el("div", "mod-card-head");
+    if (!own) head.appendChild(selectBox(pkg));
     head.appendChild(el("span", "mod-name", pkg.name));
     if (pkg.src === "pypi") head.appendChild(el("span", "mod-src", t("modules.srcPypi")));
     if (own) head.appendChild(el("span", "mod-src mod-src-own", t("modules.srcOwn")));
     if (pkg.version) head.appendChild(el("span", "mod-version", pkg.version));
     // для вбудованих чіп «Вбудовано» уже все сказав — стан не дублюємо
     if (!own) {
-      head.appendChild(el("span", "mod-state" + (done ? " done" : ""), done ? t("modules.stateLoaded") : t("modules.stateIdle")));
+      const state = ready
+        ? el("span", "mod-state done", t("modules.stateLoaded"))
+        : (before
+          ? el("span", "mod-state mod-sel-prev", lt(TXT.prevBadge))
+          : el("span", "mod-state", t("modules.stateIdle")));
+      if (before) state.title = pick(TXT.prevHint);
+      head.appendChild(state);
     }
     box.appendChild(head);
 
@@ -715,12 +932,13 @@
     }
 
     const actions = el("div", "mod-actions");
-    const install = el("button", "btn contained mod-install");
+    const install = el("button", "btn contained mod-install mod-sel-guard");
     install.type = "button";
     install.appendChild(el("span", "material-icons", own ? "bolt" : (pkg.src === "pypi" ? "cloud_download" : "download")));
     install.appendChild(el("span", null, own ? t("modules.noInstall")
-      : (done ? t("modules.reinstall") : t(pkg.src === "pypi" ? "modules.installPypi" : "modules.install"))));
-    install.disabled = done || own;
+      : (ready ? t("modules.reinstall") : (before ? lt(TXT.again) : t(pkg.src === "pypi" ? "modules.installPypi" : "modules.install")))));
+    install.dataset.locked = (own || ready) ? "1" : "0";
+    install.disabled = own || ready;
     install.onclick = () => installOne(pkg);
     actions.appendChild(install);
 
@@ -747,8 +965,13 @@
     box.tabIndex = 0;
     box.setAttribute("role", "button");
     box.setAttribute("aria-label", t("installer.info") + ": " + pkg.name);
-    box.onclick = (ev) => { if (ev.target.closest("button")) return; details(pkg); };
+    // прапорець вибору — не «про деталі»: інакше клік по чекбоксу відкрив би вікно
+    box.onclick = (ev) => {
+      if (ev.target.closest("button") || ev.target.closest(".mod-sel-box")) return;
+      details(pkg);
+    };
     box.onkeydown = (ev) => {
+      if (ev.target.closest(".mod-sel-input")) return;
       if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); details(pkg); }
     };
     return box;
@@ -759,13 +982,15 @@
   async function installOne(pkg) {
     const name = pkg.name || pkg;
     if (pkg && pkg.src === "own") { toast(t("modules.noInstall")); return; }
-    if (busy) { toast(t("modules.busy")); return; }
+    // другий запит під час завантаження збив би перший — тож чемно відмовляємось
+    if (installerBusy()) { toast(t("modules.busy")); sfx("error"); return; }
     if (!global.Installer || !global.PythonPad) {
       toast(t("modules.unavailable"));
       sfx("error");
       return;
     }
     busy = true;
+    applyGuard();
     sfx("click");
     // разом із тим, що пакет потребує за собою (наприклад, «qrcode» малює лише через Pillow)
     const list = [name].concat(depsFor(name).filter((d) => d !== name));
@@ -773,14 +998,18 @@
       title: t("installer.title.one", { name: name })
     });
     busy = false;
+    applyGuard();
     if (!res || res.skipped) return;
-    if (res.ok && res.ok.indexOf(name) >= 0) {
+    // вікно перекрили іншим завантаженням — чесно кажемо, що сталося
+    if (res.chosen === "replaced") { toast(t("modules.busy")); return; }
+    if (res.ok && res.ok.some((n) => norm(n) === norm(name))) {
       if (installedNow.indexOf(name) < 0) installedNow.push(name);
+      unselect(name);
       syncLoaded();
       toast("📦 " + t(pkg.src === "pypi" ? "modules.installedPypiToast" : "modules.installedToast", { name: name }));
       sfx("success");
       document.dispatchEvent(new CustomEvent("packageinstalled", {
-        detail: { name: name, imports: (packages.find((p) => p.name === name) || {}).imports || [], count: installedNow.length }
+        detail: { name: name, imports: (packages.find((p) => p.name === name) || {}).imports || [], count: loadedCount() }
       }));
     } else {
       toast(t("modules.installFailed", { name: name }));
@@ -795,17 +1024,24 @@
   }
 
   // Набір ставиться через те саме вікно з прогресом, що й одиночний пакет
-  async function installMany(names, chip) {
-    if (busy) { toast(t("modules.busy")); return; }
+  async function installMany(names, chip, titleText) {
+    if (installerBusy()) { toast(t("modules.busy")); sfx("error"); return; }
     if (!global.Installer || !global.PythonPad) { toast(t("modules.unavailable")); return; }
     busy = true;
+    applyGuard();
     const res = await global.Installer.install(names, {
-      title: t("installer.title.set", { name: chip.textContent.trim() })
+      title: titleText || (chip ? t("installer.title.set", { name: chip.textContent.trim() }) : t("installer.title"))
     });
     busy = false;
+    applyGuard();
     if (!res || res.skipped) return;
+    if (res.chosen === "replaced") { toast(t("modules.busy")); return; }
     const ok = (res.ok || []).length;
-    (res.ok || []).forEach((name) => { if (installedNow.indexOf(name) < 0) installedNow.push(name); });
+    (res.ok || []).forEach((name) => {
+      if (installedNow.indexOf(name) < 0) installedNow.push(name);
+      // те, що стало, з вибору прибираємо; провали лишаються — можна спробувати ще
+      unselect(name);
+    });
     syncLoaded();
     renderGrid();
     toast("📦 " + t("modules.presetDone", { ok: ok, total: names.length }));
@@ -944,7 +1180,8 @@
 
   function details(pkg) {
     closeDetails();
-    const done = isLoaded(pkg.name);
+    const ready = readyInRuntime(pkg.name);
+    const before = installedBefore(pkg.name);
     const own = pkg.src === "own";
     const info = FEATURED[pkg.name] || EXT[pkg.name] || OWN[pkg.name];
     const bd = el("div", "wn-backdrop md-backdrop");
@@ -964,7 +1201,12 @@
       t(pkg.src === "pypi" ? "modules.srcPypi" : pkg.src === "own" ? "modules.srcOwn" : "modules.srcPyodide"));
     headText.appendChild(sub);
     head.append(emoji, headText);
-    if (!own) head.appendChild(el("span", "wn-chip", done ? t("modules.stateLoaded") : t("modules.stateIdle")));
+    if (!own) {
+      const chip = el("span", "wn-chip" + (ready ? " mod-sel-ready" : ""),
+        ready ? t("modules.stateLoaded") : (before ? lt(TXT.prevBadge) : t("modules.stateIdle")));
+      if (before) chip.title = pick(TXT.prevHint);
+      head.appendChild(chip);
+    }
 
     const panel = el("div", "wn-panel md-panel");
     const weight = mdRow(t("installer.weight"));
@@ -995,18 +1237,24 @@
     close.appendChild(el("span", null, t("installer.close")));
     close.onclick = closeDetails;
 
-    const install = el("button", "btn contained wn-ok");
+    const install = el("button", "btn contained wn-ok mod-sel-guard");
     install.type = "button";
     install.appendChild(el("span", "material-icons", own ? "bolt" : (pkg.src === "pypi" ? "cloud_download" : "download")));
     install.appendChild(el("span", null, own ? t("modules.noInstall")
-      : (done ? t("modules.reinstall") : t(pkg.src === "pypi" ? "modules.installPypi" : "modules.install"))));
-    install.disabled = own;
-    install.onclick = () => { closeDetails(); installOne(pkg); };
+      : (ready ? t("modules.reinstall") : (before ? lt(TXT.again) : t(pkg.src === "pypi" ? "modules.installPypi" : "modules.install")))));
+    install.dataset.locked = (own || ready) ? "1" : "0";
+    install.disabled = own || ready;
+    install.onclick = () => {
+      if (installerBusy()) { toast(t("modules.busy")); sfx("error"); return; }
+      closeDetails();
+      installOne(pkg);
+    };
     actions.append(close, install);
 
     card.append(head, panel, actions);
     bd.appendChild(card);
     document.body.appendChild(bd);
+    applyGuard();
     sfx("pop");
 
     // Це вікно — на відміну від вікна встановлення — можна закрити кліком по тлу чи Escape
@@ -1077,7 +1325,12 @@
     head.appendChild(el("span", "mod-name", info.name));
     head.appendChild(el("span", "mod-src", t("modules.srcPypi")));
     if (info.version) head.appendChild(el("span", "mod-version", info.version));
-    const state = el("span", "mod-state", t("modules.stateIdle"));
+    // Чекбокса тут навмисно немає: жива пошукова картка — не з каталогу, у вибір її не беремо
+    const ready = readyInRuntime(info.name);
+    const before = installedBefore(info.name);
+    const state = el("span", "mod-state" + (ready ? " done" : (before ? " mod-sel-prev" : "")),
+      ready ? t("modules.stateLoaded") : (before ? lt(TXT.prevBadge) : t("modules.stateIdle")));
+    if (before) state.title = pick(TXT.prevHint);
     head.appendChild(state);
     box.appendChild(head);
 
@@ -1112,11 +1365,12 @@
     box.appendChild(note);
 
     const actions = el("div", "mod-actions");
-    const install = el("button", "btn contained mod-install");
+    const install = el("button", "btn contained mod-install mod-sel-guard");
     install.type = "button";
     install.appendChild(el("span", "material-icons", "cloud_download"));
-    install.appendChild(el("span", null, t("modules.installPypi")));
-    install.disabled = info.verdict !== "pure" || isLoaded(info.name);
+    install.appendChild(el("span", null, before ? lt(TXT.again) : t("modules.installPypi")));
+    install.dataset.locked = (info.verdict !== "pure" || ready) ? "1" : "0";
+    install.disabled = info.verdict !== "pure" || ready;
     install.onclick = () => installOne({ name: info.name, src: "pypi" });
     actions.appendChild(install);
     box.appendChild(actions);
@@ -1177,7 +1431,7 @@
 
   async function load() {
     if (!gridEl) return;
-    if (packages.length) { renderGrid(); return; }
+    if (packages.length) { renderChips(); renderPresets(); renderGrid(); return; }
     errorEl && errorEl.classList.add("hidden");
     gridEl.innerHTML = "";
     gridEl.appendChild(el("p", "muted", t("modules.loading")));
@@ -1211,7 +1465,13 @@
     }
     if (moreBtn) moreBtn.onclick = () => { shown += PAGE_SIZE; renderGrid(); sfx("click"); };
     document.addEventListener("langchange", () => { renderChips(); renderPresets(); renderGrid(); });
-    document.addEventListener("pythonrun", syncLoaded);
+    document.addEventListener("pythonrun", () => { syncLoaded(); applyGuard(); });
+    // вікно встановлення сам сповіщає, коли звільнилось: перемальовуємо лише ґудзики
+    document.addEventListener("installerbusy", () => applyGuard());
+    // пішов з розділу — вибір гасимо, щоб наступного разу не ставити «щось із торішнього»
+    document.addEventListener("routechange", (ev) => {
+      if (ev.detail && ev.detail !== "modules") clearSelected();
+    });
     load();
   }
 
@@ -1251,10 +1511,23 @@
     return !!pkg && pkg.src === "pyodide";
   }
 
+  /* installed() — усе, що рахуємо встановленим (цей сеанс + пам'ятка + Pyodide);
+     ready() — лише те, що Pyodide реально імпортує просто зараз. */
+  function installedUnion() {
+    const out = {};
+    installedNow.forEach((n) => { out[norm(n)] = n; });
+    rememberedNames.forEach((n) => { if (!out[norm(n)]) out[norm(n)] = n; });
+    loadedNames.forEach((n) => { if (!out[norm(n)]) out[norm(n)] = n; });
+    return Object.keys(out).map((k) => out[k]);
+  }
+
   global.Modules = {
     init, render, load, providerFor, pypiFor, ensureCatalog, lookup: lookupPypi,
     depsFor, isPyodidePackage,
-    installed: () => installedNow.slice(),
+    installed: installedUnion,
+    ready: () => loadedNames.slice(),
+    selected: () => Array.from(selected),
+    clearSelection: clearSelected,
     all: () => packages.slice(),
     ext: () => Object.keys(EXT),
     count: () => packages.length

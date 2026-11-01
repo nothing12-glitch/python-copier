@@ -19,7 +19,7 @@
     document.removeEventListener("mousedown", onOutside, true);
     document.removeEventListener("keydown", onKey, true);
     window.removeEventListener("resize", close);
-    window.removeEventListener("scroll", close, true);
+    window.removeEventListener("scroll", onScroll, true);
     open.panel = null;
     open.owner = null;
     if (open.restore) { const f = open.restore; open.restore = null; f(); }
@@ -27,6 +27,12 @@
 
   function onOutside(e) {
     if (open.panel && !open.panel.contains(e.target) && open.owner && !open.owner.contains(e.target)) close();
+  }
+
+  /* панель меню сама прокручується — закривати лише коли рухається сторінка під нею */
+  function onScroll(e) {
+    if (open.panel && e && e.target && open.panel.contains(e.target)) return;
+    close();
   }
 
   let items = [];
@@ -113,7 +119,7 @@
     document.addEventListener("mousedown", onOutside, true);
     document.addEventListener("keydown", onKey, true);
     window.addEventListener("resize", close);
-    window.addEventListener("scroll", close, true);
+    window.addEventListener("scroll", onScroll, true);
     paintCursor();
   }
 

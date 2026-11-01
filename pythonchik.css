@@ -139,6 +139,7 @@ body.focus-mode .pychik-fab { opacity: 0; pointer-events: none; }
   flex: 1 1 auto;
   min-height: 120px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -365,6 +366,20 @@ body:not(.dark) .pychik-pre { background: rgba(0, 0, 0, .05); color: #1d3a1d; }
 }
 
 /* ---------- Туторіал-автопілот ---------- */
+/* Поки тур іде, сайт має бути недоступним для рук користувача. Шар лежить
+   під підсвіткою (+30), лапкою (+40) і реплікою (+50), щоб керування туру
+   лишалось клікабельним. На час завантаження модулів блокування знімають:
+   вікно установщика нижче за цей шар, інакше його кнопок не дістати. */
+.pychik-lock {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--pychik-z) + 20);
+  background: transparent;
+  pointer-events: auto;
+}
+.pychik.tour-locking .pychik-lock { display: block; }
+
 /* Спотлайт: рамка навколо елемента, а велетенська зовнішня тінь затемнює решту екрана. */
 .pychik-spot {
   position: fixed;

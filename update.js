@@ -3,10 +3,39 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.76";
+  const VERSION = "26.10.77";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.77": {
+      uk: [
+        "Під час туру Пайтончика сторінка заблокована: нічого випадково не натиснеш, а сам тур тисне «Запуск», дочекується, доки завантажаться модулі, і лише тоді іде далі",
+        "Магазинчик модулів навчився багатовибору: прапорці на картках, «Вибрати видимі» й «Встановити вибране» в одному вікні з прогресом; «раніше встановлював» більше не видається за «готово»",
+        "Плитки з цифрами й ряди фільтрів отримали відступи — в магазинчику, у змаганнях і взагалі скрізь, де цифри липли до краю",
+        "Ігри: зміна налаштувань під час партії тепер морозить гру з плашкою «Пауза», а кнопка налаштувань є й на картці гри — можна скерувати до старту. Там же «Застосувати й перезапустити»",
+        "Пайтончик став розумнішим: він знає про сайт удвічі більше (досягнення, гарячі клавіші, мови, експорт, редактор, музику, акаунт), а в Налаштуваннях → «Пайтончик» з'явився перемикач «Не давати готовий код» і поле для API-ключа хмарного мозку",
+        "Профіль рахує «Власні програми» — лише те, що ти сам написав і зберіг, без готових прикладів. У майданчику додалась група «Особисті»: свій код можна відкрити, відредагувати й зберегти ще раз, не плодячи дублів",
+        "Дрібниці: вузькі картки (Налаштування, Профіль) нарешті по центру, гортання всередині меню більше не закриває саме меню, а чат Пайтончика не смикає сторінку під собою"
+      ],
+      en: [
+        "While Pythonchik gives the tour the page is locked: nothing gets clicked by accident, and the tour now presses Run itself, waits for the modules to download and only then moves on",
+        "The module shop learned multi-selection: checkboxes on cards, \"Select visible\" and \"Install selected\" in one progress window; \"installed before\" no longer pretends to be \"ready\"",
+        "Number tiles and filter rows got real padding — in the shop, in contests and everywhere else where digits touched the edge",
+        "Games: changing settings mid-round now freezes the game under a \"Paused\" plate, and every game card has a tune button so you can set it up before starting. There's also \"Apply and restart\"",
+        "Pythonchik got smarter: he knows twice as much about the site (achievements, hotkeys, languages, export, editor, music, account), and Settings → \"Pythonchik\" now holds a \"Never hand out ready-made code\" switch plus a field for a cloud-brain API key",
+        "The profile counts \"Own programs\" — only what you wrote and saved yourself, ready-made examples excluded. The playground gained an \"Personal\" group: open your code, edit it, save it again without spawning duplicates",
+        "Small stuff: narrow cards (Settings, Profile) are finally centred, scrolling inside a menu no longer closes the menu, and Pythonchik's chat stopped dragging the page under itself"
+      ],
+      tr: [
+        "Pythonchik turu gösterirken sayfa kilitli: yanlışlıkla hiçbir şeye basılmaz; tur artık Çalıştır'a kendisi basıyor, modüllerin inmesini bekliyor ve ondan sonra devam ediyor",
+        "Modül dükkanı çoklu seçimi öğrendi: kartlarda işaret kutuları, \"Görünürleri seç\" ve tek ilerleme penceresinde \"Seçilenleri kur\"; \"daha önce kurulmuştu\" artık \"hazır\" gibi görünmüyor",
+        "Rakam kutuları ve filtre satırları nefes aldı — dükkanlarda, yarışmalarda ve rakamın kenara yapıştığı her yerde",
+        "Oyunlar: parti sırasında ayar değiştirmek oyunu \"Duraklatıldı\" levhasıyla donduruyor; oyun kartlarında da bir ayar düğmesi var, böylece başlamadan önce ayarlayabilirsin. Ayrıca \"Uygula ve yeniden başlat\"",
+        "Pythonchik akıllandı: site hakkında iki kat fazla şey biliyor (başarımlar, kısayol tuşları, diller, dışa aktarma, editör, müzik, hesap) ve Ayarlar → \"Pythonchik\" içinde \"Hazır kod verme\" anahtarı ile bulut beyni API anahtarı alanı var",
+        "Profil artık \"Kendi programlarım\" sayıyor — yalnızca kendinin yazıp kaydettiğin programlar, hazır örnekler hariç. Oyun alanında \"Kişisel\" grubu açıldı: kodu açıp düzenleyebilir, çoğaltmadan tekrar kaydedebilirsin",
+        "Küçük şeyler: dar kartlar (Ayarlar, Profil) sonunda ortalanıyor, menü içinde kaydırmak menüyü kapatmıyor, Pythonchik sohbeti alttaki sayfayı artık sürüklemiyor"
+      ]
+    },
     "26.10.76": {
       uk: [
         "У Пайтончика з'явився власний мозок: він розмовляє («привіт», «бувай», «дякую», «як справи», «розкажи жарт»), рахує («скільки буде 17*3», «10 відсотків від 250», «корінь з 144», «НСД 12 і 18») і пише цілі програмки на попит — усе офлайн, без жодного API та хмари",

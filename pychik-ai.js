@@ -1,8 +1,8 @@
-/* pychik-ai.js — локальний «мозок» Пайтончика: розмова, математика,
-   готові програмки, питання про сам сайт, команди («зміни мову», «відкрий курс»,
-   «покажи тур») і туманне вгадування одруківок.
-   Усе працює офлайн: жодного мережевого запитання, жодного API.
-   Викликається з pythonchik.js: PychikAI.think(текст, host). */
+/* pychik-ai.js — «мозок» Пайтончика: розмова, математика, програмки, питання
+   про сам сайт, команди («зміни мову», «відкрий курс», «покажи тур») і туманне
+   вгадування одруківок. Базово працює офлайн; хмарний мозок вмикається лише тоді,
+   коли користувач сам вписав API-ключ у Налаштуваннях.
+   Викликається з pythonchik.js: PychikAI.chat(текст, host, історія, зворотний виклик). */
 (function (global) {
   let api = null;          /* місточок із pythonchik.js */
   const MEM_KEY = "app.pychik.ai";
@@ -35,6 +35,23 @@
     const i = (cursors[id] || 0) % arr.length;
     cursors[id] = i + 1;
     return arr[i];
+  }
+
+  /* ---------- навчальний режим ---------- */
+  function setting(key, or) {
+    try {
+      const v = global.Settings && global.Settings.get ? global.Settings.get(key) : null;
+      return v == null || v === "" ? or : v;
+    } catch (e) { return or; }
+  }
+  function noCode() { return !!setting("pyNoCode", false); }
+  /* одна й та сама репліка для обох мозків: локального й хмарного */
+  function noCodeNote() {
+    return pick({
+      uk: "Готовий код не підказую — це тренування, а не шпаргалка. Спробуй сам, а я скажу, де зламалося.",
+      en: "I don't hand over ready-made code — this is training, not a cheat sheet. Try it yourself and I'll point out what broke.",
+      tr: "Hazır kod vermiyorum — bu talim, kopya değil. Kendin dene, neyin bozulduğunu söylerim."
+    });
   }
 
   /* ---------- текст ---------- */
@@ -230,6 +247,18 @@
     if (r.why) r.why = fill(r.why, v);
     /* код не чіпаємо: фігурні дужки в Python — це f-рядки й словники, а не наші підстановки */
     if (r.act) r.act = fill(r.act, v);
+    /* навчальний режим: ідея й «чому так» залишаються, готовий код зникає.
+       виняток — сам-один print(вираз): арифметика це не домашка, а лічба */
+    if (r.code && noCode() && !/^print\([0-9+\-*/%().,\s]+\)$/.test(String(r.code).trim())) {
+      r.text = String(r.text || "")
+        .replace(/Тримай готову програмку — копіюй у редактор і тисни «Запуск»\.\s*/g, "")
+        .replace(/Here's a ready little program[^.]*\.\s*/g, "")
+        .replace(/(Ось|Here|İşte)\s*:\s*$/g, "")
+        .trim();
+      r.text = (r.text ? r.text + " " : "") + noCodeNote();
+      r.code = null;
+      if (r.act === "pad") r.act = null;
+    }
     const m = mem();
     /* пам'ятаємо останню тему, але не викидаємо код/пояснення, якщо відповідь їх не мала */
     if (r.text || r.code) {
@@ -294,9 +323,9 @@
         { uk: "Пайтончик: наполовину богатир, наполовину інтерпретатор. Пояснюю Python, рахую, пишу код і воджу туром по сайту.",
           en: "Pythonchik: half folk hero, half interpreter. I explain Python, count, write code and show you around the site." }
       ] },
-    { id: "ai", kw: ["штучний інтелект", "ти ші", "ти робот", "чи ти справжній", "are you real", "chatgpt", "gemini"],
-      r: [{ uk: "Справжній ШІ тут один — той, хто написав цей сайт. Я його локальна маска: словники, правила й жарти. Працюю офлайн, що не кожному «справжньому» ШІ під силу.",
-        en: "The real AI here wrote this site. I'm its local face: dictionaries, rules and jokes. I work offline — not every \"real\" AI can say that." }] },
+    { id: "ai", kw: ["ти ші", "ти робот", "чи ти справжній", "are you real", "gemini"],
+      r: [{ uk: "Базово я локальний мозок: словники, правила й жарти, усе офлайн — що не кожному «справжньому» ШІ під силу. Але можу стати й хмарним: в Налаштуваннях є полі для API-ключа з моделлю. Без ключа я залишуся собою.",
+        en: "By default I'm a local brain: dictionaries, rules and jokes, all offline — something not every \"real\" AI can claim. But I can go cloud too: Settings has a field for an API key and a model. Without a key I stay me." }] },
     { id: "feelings", kw: ["почуття", "емоції", "тобі сумно", "ти живий", "feelings"],
       r: [{ uk: "Емоції в мене у вигляді настроїв: idle, think, happy, sad. Зараз, здається, happy — бо розмовляю з тобою.",
         en: "My feelings arrive as moods: idle, think, happy, sad. Right now it's happy, because I'm talking to you." }] },
@@ -396,6 +425,14 @@
     { id: "s_error", kw: ["помилка", "трейсбек", "не запускається", "видає помилку", "error", "hata"],
       t: { uk: "Встав сюди текст помилки з консолі — цілком, з рядком на кшталт line 5 — і я скажу, що не так і як виправити. Розбираю SyntaxError, IndentationError, NameError, TypeError, ValueError, ZeroDivisionError, IndexError, AttributeError, EOFError, RecursionError і ModuleNotFoundError.",
         en: "Paste the console error here — the whole thing, including the line 5 part — and I'll say what's wrong and how to fix it. I read SyntaxError, IndentationError, NameError, TypeError, ValueError, ZeroDivisionError, IndexError, AttributeError, EOFError, RecursionError and ModuleNotFoundError." } },
+    { id: "s_brain", kw: ["штучний інтелект", "повноцінний ai", "розумніший мозок", "ключ api", "api key", "chatgpt", "хмарний", "openai", "модель gpt"],
+      t: { uk: "Базово я офлайн-мозок: правила, словники й арифметика, нічого не летить з телефону. Повноцінну модель можна увімкнути саму: Налаштування → група «Пайтончик» → вписати API-ключ, за бажанням назву моделі й адресу ендпоінту. Після цього відповіді ходитимуть через хмару, а без ключа я знову офлайн. Ключ нікуди не публікується — він лежить у тебе в браузері.",
+        en: "By default I'm an offline brain: rules, dictionaries and arithmetic — nothing leaves your device. You can switch on a real model yourself: Settings → the \"Pythonchik\" group → paste an API key, optionally a model name and endpoint URL. From then on answers go through the cloud, and with no key I'm offline again. Your key is never published — it stays in your browser." },
+      act: "route:settings" },
+    { id: "s_nocode", kw: ["не давай готовий код", "готовий код", "готового коду", "не підкажи код", "не показуй код", "шпаргалка", "не підказуй рішення", "режим тренування", "я сам напишу", "підкажи ідею"],
+      t: { uk: "Це вмикається й вимикається: Налаштування → «Пайтончик» → «Не давати готовий код». Увімкнено — я пояснюю ідею, підказую, де саме ламалося, і не показую готову програмку. Вимкнено — даю код цілком, бо йноді простіше скопіювати й розібратися в ньому.",
+        en: "That's a switch: Settings → \"Pythonchik\" → \"Never hand out ready-made code\". On — I explain the idea and point at what broke, without dumping a finished program. Off — I give the whole code, because sometimes copying it and reading through is the faster way to learn." },
+      act: "route:settings" },
     { id: "s_pyodide", kw: ["pyodide", "вебасемблі", "wasm", "чому python у браузері"],
       t: { uk: "Python у браузері — це Pyodide: інтерпретатор CPython, зібраний у WebAssembly. Тому тут немає ssl, input() примхливий, а ставиться лише те, що зібрано під WASM або чистий Python. Частину позицій у магазинчику через це неможливо встановити — і це чесно позначено.",
         en: "Python in the browser is Pyodide: CPython compiled to WebAssembly. So there's no ssl, input() is moody, and only WASM or pure-Python packages install. That's why some shop items can't be installed — and say so openly." } },
@@ -409,6 +446,41 @@
     { id: "s_nickname", kw: ["змінити нікнейм", "як мене звати на сайті", "ім'я профілю", "change nickname"],
       t: { uk: "Нікнейм живуть у профілі — туди й веду. Там же можна змінити аватар.",
         en: "The nickname lives in the profile — heading there now. Avatar can be changed in the same place." },
+      act: "route:profile" },
+    { id: "s_achievements", kw: ["досягненн", "медалі", "нагороди", "скільки досягнень", "achievement", "başarım"],
+      t: { uk: "Досягнень тридцять дев'ять, і вони трьох ґатунків: бронза, срібло й золото. Категорії — Python, ігри, окремі ігри, інструменти, задачі, курс, модулі, профіль, серія днів, змагання й дослідження. Кожна показує, скільки ще лишилося до нагороди.",
+        en: "There are thirty-nine achievements in three tiers: bronze, silver and gold. Categories cover Python, games, individual games, tools, tasks, the course, modules, profile, day streaks, contests and exploration. Each one shows how far you still are from earning it." },
+      act: "route:achievements" },
+    { id: "s_hotkeys", kw: ["гарячі клавіші", "комбінації клавіш", "ctrl", "швидкі клавіші", "hotkey", "shortcut"],
+      t: { uk: "У редакторі працюють три: Ctrl+Enter — запустити код, Ctrl+S — зберегти, Ctrl+/ — закоментити або розкоментити виділене. Escape закриває будь-яке вікно.",
+        en: "The editor answers to three: Ctrl+Enter runs the code, Ctrl+S saves, Ctrl+/ comments or uncomments the selection. Escape closes any open dialog." } },
+    { id: "s_appearance", kw: ["змінити колір", "тема", "фонт", "анімації", "компактний", "вигляд сайту", "appearance", "tema"],
+      t: { uk: "Вигляд — у Налаштуваннях: тема, акцентний колір, сяйво фону й курсора, «менше анімацій», компактний режим і розмір шрифту (12–20). Там же вибирають, де житиме навігація — збоку, зверху чи знизу — і чи показувати її підписи.",
+        en: "Looks live in Settings: theme, accent color, background and cursor glow, reduced motion, compact mode and font size (12–20). The same place picks where navigation sits — side, top or bottom — and whether its labels show." },
+      act: "route:settings" },
+    { id: "s_editor", kw: ["номери рядків", "табуляція", "підсвітка синтаксису", "автодоповнення", "редактор налаштувати", "editor settings"],
+      t: { uk: "Редактор теж налаштовується: номери рядків, перенос довгих рядків, автодоповнення, авто-відступ, перевірка коду перед запуском, підсвітка синтаксису, таб у 2 або 4 пробіли, автозбереження коду й мітки часу в консолі.",
+        en: "The editor is configurable too: line numbers, word wrap, autocomplete, auto-indent, a code check before running, syntax highlighting, a 2- or 4-space tab, autosaving your code and timestamps in the console." },
+      act: "route:settings" },
+    { id: "s_export", kw: ["експорт", "зберегти дані", "вивантажити", "вивантажити прогрес", "export data", "yedek"],
+      t: { uk: "Налаштування → «Експорт» — і весь твій прогрес (профіль, рекорди, курс, задачі) зберігається у файл. Тим самим файлом можна повернути все на іншому пристрої. Побіч є окремі кнопки: стерти лише рекорди, стерти лише налаштування або стерти все.",
+        en: "Settings → \"Export\" writes your whole progress — profile, records, course, tasks — into a file, and that same file restores it on another device. Next to it are separate buttons: wipe only records, only settings, or everything." },
+      act: "route:settings" },
+    { id: "s_music", kw: ["музика", "трек", "увімкнути музику", "спокійна музика", "music", "müzik"],
+      t: { uk: "Музика є: кілька треків, вибір конкретного, перемішування й повтор, а гучність музики й ефектів регулюються окремо. Усе це в Налаштуваннях, у групі зі звуком.",
+        en: "There is music: several tracks, a picker, shuffle and loop, with music and effect volumes on separate sliders. All of it sits in Settings under the sound group." },
+      act: "route:settings" },
+    { id: "s_tools", kw: ["які інструменти", "що в інструментах", "конвертер", "генератор паролів", "tools", "araçlar"],
+      t: { uk: "Інструментів чотири: калькулятор, конвертер одиниць, генератор випадковостей (число, монетка, кубик) і генератор паролів. Кожне вживання рахується як досягнення.",
+        en: "Four tools: a calculator, a unit converter, a randomness generator (number, coin, die) and a password maker. Using each one counts toward an achievement." },
+      act: "route:tools" },
+    { id: "s_langs", kw: ["скільки мов", "перекласти сайт", "іншими мовами", "мови інтерфейсу", "languages"],
+      t: { uk: "Двадцять мов: українська, англійська, турецька, німецька, польська, іспанська, французька, італійська, португальська, нідерландська, шведська, чеська, угорська, румунська, грецька, індонезійська, гінді, китайська, японська й корейська. Перемикач — у Налаштуваннях; я перемкну теж.",
+        en: "Twenty languages: Ukrainian, English, Turkish, German, Polish, Spanish, French, Italian, Portuguese, Dutch, Swedish, Czech, Hungarian, Romanian, Greek, Indonesian, Hindi, Chinese, Japanese and Korean. The switch is in Settings — and I can flip it for you." },
+      act: "route:settings" },
+    { id: "s_account", kw: ["акаунт", "обліковий запис", "увійти", "зареєструватись", "реєстрація", "google login", "account", "giriş"],
+      t: { uk: "Акаунт тримається локально, на твоєму пристрої: нікнейм, аватар і рекорди окремо для кожного користувача. Увійти можна через Google чи GitHub або створити ім'я з паролем просто тут. Єдиний мінус: без експорту прогрес не переїде на інший телефон.",
+        en: "Accounts live locally on your device: nickname, avatar and records are kept per user. You can sign in with Google or GitHub, or make a username and password right here. Downside: without an export, progress won't travel to another phone." },
       act: "route:profile" },
     { id: "s_progress", kw: ["мій прогрес", "який у мене прогрес", "скільки я пройшов", "мої рекорди", "my progress", "rekorlar"],
       t: { uk: "{stats}", en: "{stats}" } }
@@ -967,5 +1039,95 @@
     return null;
   }
 
-  global.PychikAI = { think: think, calc: calc, dice: dice, norm: norm };
+  /* ---------- хмарний мозок (працює лише якщо користувач сам вписав ключ) ---------- */
+  function cloudCfg() {
+    const key = String(setting("pyAiKey", ""));
+    if (key.length < 12) return null;
+    return {
+      key: key,
+      url: String(setting("pyAiUrl", "https://api.openai.com/v1/chat/completions")),
+      model: String(setting("pyAiModel", "gpt-4o-mini"))
+    };
+  }
+
+  /* Пам'ятка сайту: без неї модель знала б лише «загальний Python» */
+  function manual() {
+    const who = api && api.name ? api.name() : "Пайтончик";
+    const here = api && api.section ? api.section() : "unknown";
+    const stats = api && api.stats ? api.stats() : "";
+    return [
+      "Ти — «" + who + "», талісман і помічник сайту python-copier. Пиши коротко: 1-4 речення, без простирадих списків, максимум один емодзі.",
+      "САЙТ: повністю офлайн PWA на GitHub Pages. Python виконується в браузері через Pyodide (WebAssembly), тому перший запуск коду триває довго — завантажується інтерпретатор, а далі все локально. Сервера й акаунтів немає: профіль, прогрес, рекорди, встановлені модулі та збережені програми живуть у localStorage пристрою.",
+      "РОЗДІЛИ: Головна (вікно-вітання і швидкі кнопки); Python (майданчик: редактор із підсвіткою, номери рядків, кнопка «Запуск», консоль, готові приклади й група «Особисті» для власних збережених програм, є повноекранний режим); Магазинчик модулів (каталог бібліотек Pyodide плюс пакети з PyPI через micropip, встановлення в один клік, фільтри, готові набори, живий пошук по PyPI); Курс (5 розділів і 12 уроків: теорія, приклад, практика з автоперевіркою, далі пускає лише після розв'язаної задачі); Задачі (олімпіадний тренажер із банком задач); Ігри (змійка, пам'ять, хрестики-нулики, 2048, камінь-ножиці-папір, реакція, Саймон, міни, вежа Ханой, п'ятнашки, лабіринт, вгадай число — у кожної свої налаштування); Інструменти (калькулятор, конвертер одиниць, випадкове число, генератор паролів); Відгуки; Профіль (нікнейм, аватар, фон, рекорди, лічильник власних програм); Досягнення; Налаштування (стиль, тема, колір акценту, фони, 20 мов, редактор, звук, ігрові опції, дані); Допомога (інструкція й повна історія оновлень).",
+      "ЩЕ НА САЙТІ: музична панель, звукові ефекти через Web Audio, автопілот-тур, який Пайтончик показує сам і на час якого сторінка заблокована від випадкових кліків, вікно встановлення модулів із реальними відсотками й швидкістю, мультивибір модулів у магазинчику, компактний режим, режим «Менше анімацій», рідке скло, пасхалки.",
+      "КОМАНДИ, ЯКІ Пайтончик виконує сам: «відкрий курс», «перейди в ігри», «зміни мову на англійську», «вимкни звук», «що нового», «який мій прогрес», «покажи тур».",
+      "ГАРЯЧІ КЛАВІШІ РЕДАКТОРА: Ctrl+Enter — запуск, Ctrl+S — зберегти, Ctrl+/ — коментар, Escape — закрити вікно.",
+      "ПРАВИЛА: не вигадувай того, чого на сайті немає, і не видавай себе за окрему хмарну модель — ти частина цього сайту. Відповідай мовою користувача." +
+        (noCode() ? " ГОТОВОГО КОДУ НЕ ДАВАЙ узагалі: ні блоків, ні рядків для копіювання. Пояснюй ідею, на що звернути увагу і з чого почати перший рядок — код пише користувач." : ""),
+      "Користувач зараз у розділі: " + here + "." + (stats ? " Його прогрес: " + stats + "." : "")
+    ].join("\n");
+  }
+
+  /* страховка: навіть якщо модель проігнорує заборону, код до користувача не дійде */
+  function defuse(s) {
+    return String(s)
+      .replace(/```[\s\S]*?(```|$)/g, "…")
+      .replace(/^\s{4,}.*$/gm, "")
+      .replace(/[ \t]{2,}/g, " ")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+  }
+
+  function cloudAsk(text, history, onDone) {
+    const cfg = cloudCfg();
+    if (!cfg || typeof global.fetch !== "function") { onDone(null); return; }
+    const msgs = [{ role: "system", content: manual() }];
+    (history || []).slice(-8).forEach(function (m) {
+      if (m && m.text) msgs.push({ role: m.me ? "user" : "assistant", content: String(m.text).slice(0, 800) });
+    });
+    msgs.push({ role: "user", content: String(text).slice(0, 900) });
+    const ctrl = typeof AbortController === "function" ? new AbortController() : null;
+    const timer = setTimeout(function () { if (ctrl) ctrl.abort(); onDone(null); }, 14000);
+    let settled = false;
+    const done = function (r) { if (settled) return; settled = true; clearTimeout(timer); onDone(r); };
+    global.fetch(cfg.url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + cfg.key },
+      body: JSON.stringify({ model: cfg.model, messages: msgs, temperature: 0.6, max_tokens: 400 }),
+      signal: ctrl ? ctrl.signal : undefined
+    })
+      .then(function (res) { return res.ok ? res.json() : Promise.reject(new Error("http " + res.status)); })
+      .then(function (data) {
+        const raw = data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : "";
+        let body, code = null;
+        if (noCode()) {
+          body = defuse(raw);
+          if (body.indexOf("…") !== -1) body = body + " " + noCodeNote();
+        } else {
+          const fence = String(raw).match(/```[a-z]*\n?([\s\S]*?)```/);
+          if (fence) code = fence[1].trim();
+          body = String(raw).replace(/```[a-z]*\n?/g, "").replace(/```/g, "").trim();
+        }
+        done(body || code ? { text: body, code: code, mood: "happy", cloud: true } : null);
+      })
+      .catch(function () { done(null); });
+  }
+
+  /* Єдина точка входу для чату: хмара, якщо є ключ, інакше — локальний мозок. */
+  function chat(raw, bridge, history, onDone) {
+    api = bridge || api;
+    cloudAsk(raw, history, function (remote) {
+      if (remote) {
+        const m = mem();
+        m.turns = (m.turns || 0) + 1;
+        m.last = { text: remote.text, why: "", code: null };
+        saveMem();
+        onDone(remote, true);
+        return;
+      }
+      onDone(think(raw, bridge), false);
+    });
+  }
+
+  global.PychikAI = { think: think, chat: chat, calc: calc, dice: dice, norm: norm, manual: manual, noCode: noCode };
 })(window);

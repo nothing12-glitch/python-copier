@@ -20,6 +20,25 @@
 
   function t(key, vars) { return global.I18n ? global.I18n.t(key, vars) : key; }
 
+  function toast(msg) { if (global.App && global.App.toast) global.App.toast(msg); }
+
+  // тексти, яких немає в i18n.js: той самий формат {uk,en,tr}, що в modules.js
+  function pick(obj) {
+    if (!obj) return "";
+    const l = global.I18n ? global.I18n.lang : "uk";
+    return obj[l] || obj.uk || "";
+  }
+
+  const TXT = {
+    busy: { uk: "Зачекай: поки завантажується", en: "Wait: a download is running", tr: "Bekle: indirme sürüyor" }
+  };
+
+  // єдиний замок: сповіщаємо каталог, щоб він сивив усі «встановити/прибрати»
+  function setCurrent(state) {
+    current = state;
+    document.dispatchEvent(new CustomEvent("installerbusy", { detail: { busy: !!current } }));
+  }
+
   function el(tag, cls, text) {
     const node = document.createElement(tag);
     if (cls) node.className = cls;
@@ -183,9 +202,18 @@
   }
 
   /* ---------- Вікно ---------- */
+  // відкрите «готове» вікно, що чекає на клік: якщо його перекрити новим,
+  // обіцянку треба дозволити ввічливо, інакше каталог зависне назавжди
+  let pendingFinish = null;
+
   function buildModal(opts) {
     const old = document.getElementById("installerModal");
     if (old) old.remove();
+    if (pendingFinish) {
+      const stale = pendingFinish;
+      pendingFinish = null;
+      stale.resolve({ ok: [], fail: [], chosen: "replaced" });
+    }
 
     const bd = el("div", "wn-backdrop ip-backdrop");
     bd.id = "installerModal";
@@ -300,107 +328,120 @@
   }
 
   async function install(names, opts) {
-    if (current) return { skipped: true };
+    // інше вікно вже щось тягне — не чіпаємо `current`, і чесно кажемо про це вгору
+    if (current) { toast(pick(TXT.busy)); return { skipped: true, busy: true }; }
     const o = opts || {};
-
-    let wheels = [], inLock = {};
-    try {
-      const data = await getLock();
-      wheels = await resolveWheelNames(names);
-      Object.keys(data.packages || {}).forEach((k) => { inLock[k] = true; inLock[k.toLowerCase()] = true; });
-    } catch (e) {
-      wheels = [];
-    }
-
-    const modal = buildModal({
-      title: o.title || t("installer.title"),
-      subtitle: o.subtitle || t("installer.wait"),
-      items: names.map((n) => ({ name: n, label: n }))
-    });
+    const list = (names || []).slice();
+    if (!list.length) return { skipped: true, empty: true };
 
     const meter = makeMeter();
+    // Замок беремо одразу: передбачення ваги — це теж частина завантаження.
+    // Інакше другий виклик устигне збудувати друге вікно поверх першого.
+    setCurrent({ fileDone: (url, loaded, totalHint) => meter.note(url, loaded, totalHint) });
 
-    // Предиктивна вага: колеса з реєстру разом із їхнім реальним розміром
-    if (wheels.length) {
-      await Promise.all(wheels.map(async (w) => {
-        const url = PY_BASE + w.file;
-        w.bytes = await wheelSize(url);
-        meter.predict(url, w.bytes);
-      }));
-      const byName = {};
-      wheels.forEach((w) => { byName[w.name.toLowerCase()] = w; });
-      modal.list.querySelectorAll(".ip-item").forEach((li) => {
-        const w = byName[li.dataset.name.toLowerCase()];
-        if (w && w.bytes) li.querySelector(".ip-item-size").textContent = bytes(w.bytes);
-      });
-    }
-
-    // Пакети просто з PyPI: їхню вагу дає сам PyPI, тож прогрес теж передбачуваний
-    const outside = names.filter((n) => !inLock[n] && !inLock[String(n).toLowerCase()]);
-    await Promise.all(outside.map(async (n) => {
-      const info = await pypiWheelInfo(n);
-      if (!info) return;
-      meter.predict(info.url, info.bytes);
-      const li = modal.list.querySelector('.ip-item[data-name="' + n + '"]');
-      if (li && info.bytes) li.querySelector(".ip-item-size").textContent = bytes(info.bytes);
-    }));
-
-    let lastPaint = 0;
-    function paint(force) {
-      const now = performance.now();
-      if (!force && now - lastPaint < 120) return;
-      lastPaint = now;
-      const { done, total } = meter.totals();
-      const rate = meter.speed(done);
-      modal.fill.style.width = (total > 0 ? Math.max(2, (done / total) * 100) : 6) + "%";
-      modal.bd.classList.toggle("ip-indeterminate", !total);
-      modal.pct.textContent = total > 0 ? Math.min(100, Math.round((done / total) * 100)) + "%" : "…";
-      modal.weight.textContent = bytes(done) + " / " + bytes(total);
-      const left = total > 0 && rate > 0 ? (total - done) / rate : 0;
-      modal.eta.textContent = total > 0 ? (left > 0.5 ? t("installer.left", { time: seconds(left) }) : t("installer.almost")) : "";
-      modal.speed.textContent = rate > 0 ? bytes(rate) + "/с" : "";
-    }
-
-    const timer = setInterval(() => paint(false), 140);
-    startWatching();
-    const keep = current;
-    current = { fileDone: (url, loaded, totalHint) => meter.note(url, loaded, totalHint) };
-
-    const markItem = (name, cls, icon) => {
-      const li = modal.list.querySelector('.ip-item[data-name="' + name + '"]');
-      if (!li) return;
-      li.className = "ip-item " + cls;
-      li.querySelector(".ip-item-icon").textContent = icon;
-    };
-
+    let modal = null;
+    let timer = 0;
     const ok = [], fail = [];
     try {
-      for (const name of names) {
-        markItem(name, "ip-active", "cloud_download");
-        try {
-          // Те, що є в реєстрі,бере Pyodide; решту — micropip просто з PyPI
-          if (inLock[name] || inLock[name.toLowerCase()]) await global.PythonPad.loadPackage(name);
-          else await global.PythonPad.installPypi(name);
-          ok.push(name);
-          markItem(name, "ip-ok", "check_circle");
-        } catch (e) {
-          // один пакет не заблокує решту — позначимо й підемо далі
-          fail.push(name);
-          markItem(name, "ip-bad", "error");
-        }
+      let wheels = [], inLock = {};
+      try {
+        const data = await getLock();
+        wheels = await resolveWheelNames(list);
+        Object.keys(data.packages || {}).forEach((k) => { inLock[k] = true; inLock[k.toLowerCase()] = true; });
+      } catch (e) {
+        wheels = [];
       }
-      await new Promise((r) => setTimeout(r, 160));
+
+      modal = buildModal({
+        title: o.title || t("installer.title"),
+        subtitle: o.subtitle || t("installer.wait"),
+        items: list.map((n) => ({ name: n, label: n }))
+      });
+
+      // Предиктивна вага: колеса з реєстру разом із їхнім реальним розміром
+      if (wheels.length) {
+        await Promise.all(wheels.map(async (w) => {
+          const url = PY_BASE + w.file;
+          w.bytes = await wheelSize(url);
+          meter.predict(url, w.bytes);
+        }));
+        const byName = {};
+        wheels.forEach((w) => { byName[w.name.toLowerCase()] = w; });
+        modal.list.querySelectorAll(".ip-item").forEach((li) => {
+          const w = byName[li.dataset.name.toLowerCase()];
+          if (w && w.bytes) li.querySelector(".ip-item-size").textContent = bytes(w.bytes);
+        });
+      }
+
+      // Пакети просто з PyPI: їхню вагу дає сам PyPI, тож прогрес теж передбачуваний
+      const outside = list.filter((n) => !inLock[n] && !inLock[String(n).toLowerCase()]);
+      await Promise.all(outside.map(async (n) => {
+        const info = await pypiWheelInfo(n);
+        if (!info) return;
+        meter.predict(info.url, info.bytes);
+        const li = modal.list.querySelector('.ip-item[data-name="' + n + '"]');
+        if (li && info.bytes) li.querySelector(".ip-item-size").textContent = bytes(info.bytes);
+      }));
+
+      let lastPaint = 0;
+      const paint = (force) => {
+        const now = performance.now();
+        if (!force && now - lastPaint < 120) return;
+        lastPaint = now;
+        const { done, total } = meter.totals();
+        const rate = meter.speed(done);
+        modal.fill.style.width = (total > 0 ? Math.max(2, (done / total) * 100) : 6) + "%";
+        modal.bd.classList.toggle("ip-indeterminate", !total);
+        modal.pct.textContent = total > 0 ? Math.min(100, Math.round((done / total) * 100)) + "%" : "…";
+        modal.weight.textContent = bytes(done) + " / " + bytes(total);
+        const left = total > 0 && rate > 0 ? (total - done) / rate : 0;
+        modal.eta.textContent = total > 0 ? (left > 0.5 ? t("installer.left", { time: seconds(left) }) : t("installer.almost")) : "";
+        modal.speed.textContent = rate > 0 ? bytes(rate) + "/с" : "";
+      };
+
+      const markItem = (name, cls, icon) => {
+        const li = modal.list.querySelector('.ip-item[data-name="' + name + '"]');
+        if (!li) return;
+        li.className = "ip-item " + cls;
+        li.querySelector(".ip-item-icon").textContent = icon;
+      };
+
+      timer = setInterval(() => paint(false), 140);
+      startWatching();
       paint(true);
-      sfx("success");
+
+      try {
+        for (const name of list) {
+          markItem(name, "ip-active", "cloud_download");
+          try {
+            // Те, що є в реєстрі,бере Pyodide; решту — micropip просто з PyPI
+            if (inLock[name] || inLock[name.toLowerCase()]) await global.PythonPad.loadPackage(name);
+            else await global.PythonPad.installPypi(name);
+            ok.push(name);
+            markItem(name, "ip-ok", "check_circle");
+          } catch (e) {
+            // один пакет не заблокує решту — позначимо й підемо далі
+            fail.push(name);
+            markItem(name, "ip-bad", "error");
+          }
+        }
+        await new Promise((r) => setTimeout(r, 160));
+        paint(true);
+        sfx("success");
+      } catch (e) {
+        sfx("error");
+      }
     } catch (e) {
       sfx("error");
     } finally {
-      clearInterval(timer);
+      if (timer) clearInterval(timer);
       stopWatching();
-      current = keep;
+      // завантаження скінчилось — відпускаємо замок, каталог знову дозволює дії
+      setCurrent(null);
     }
 
-    return finish(modal, names, ok, fail, o);
+    if (!modal) return { skipped: true, failed: true };
+    return finish(modal, list, ok, fail, o);
   }
 
   function sfx(name) { global.Audio2 && global.Audio2.SFX && global.Audio2.SFX[name] && global.Audio2.SFX[name](); }
@@ -420,14 +461,44 @@
 
     return new Promise((resolve) => {
       const actions = (o.actions || [{ key: "close", label: t("installer.close"), primary: true }]);
+      const buttons = [];
+
+      // поки щось іде у фоні, ґудзики вікна притуплені: «вийти» не повинно
+      // перервати завантаження і не повинно виглядати як «прибрати»
+      const markBusy = () => {
+        const on = !!current;
+        buttons.forEach((b) => {
+          b.disabled = on;
+          b.classList.toggle("mod-sel-wait", on);
+          b.title = on ? pick(TXT.busy) : "";
+        });
+      };
+
+      const onBusy = () => markBusy();
+      const settle = () => {
+        document.removeEventListener("installerbusy", onBusy);
+        if (pendingFinish && pendingFinish.resolve === resolve) pendingFinish = null;
+      };
+
       actions.forEach((a) => {
-        const b = el("button", "btn " + (a.primary ? "contained" : "outlined"));
+        const b = el("button", "btn mod-sel-guard " + (a.primary ? "contained" : "outlined"));
         b.type = "button";
         b.appendChild(el("span", "material-icons", a.icon || (a.primary ? "check" : "close")));
         b.appendChild(el("span", null, a.label));
-        b.onclick = () => { sfx("click"); closeModal(modal); resolve({ ok, fail, chosen: a.key }); };
+        b.onclick = () => {
+          if (current) { toast(pick(TXT.busy)); return; }
+          sfx("click");
+          closeModal(modal);
+          settle();
+          resolve({ ok, fail, chosen: a.key });
+        };
         modal.actions.appendChild(b);
+        buttons.push(b);
       });
+
+      pendingFinish = { resolve: resolve };
+      document.addEventListener("installerbusy", onBusy);
+      markBusy();
     });
   }
 
@@ -456,6 +527,9 @@
         { key: "stay", label: t("installer.stay"), icon: "close" }
       ]
     });
+    // ввічливо відхилений (« ще тягнеться») запуск не вважаємо зробленим:
+    // інакше рекомендовані модулі так і не з'явились б у сеансі
+    if (res && res.skipped) return res;
     sessionReady = true;
     return res;
   }

@@ -169,10 +169,14 @@
 
   const SNKEY = "app.snippets";
   const SN = {
-    uk: { title: "Особистий код", namePh: "Назва програми", save: "Зберегти", open: "Відкрити", del: "Видалити", empty: "Поки немає збережених програм. Напиши код і натисни «Зберегти».", saved: "Збережено!", needName: "Спершу введи назву", loaded: "Код завантажено" },
-    en: { title: "Personal code", namePh: "Program name", save: "Save", open: "Open", del: "Delete", empty: "No saved programs yet. Write some code and press Save.", saved: "Saved!", needName: "Enter a name first", loaded: "Code loaded" },
-    tr: { title: "Kişisel kod", namePh: "Program adı", save: "Kaydet", open: "Aç", del: "Sil", empty: "Henüz kayıtlı program yok. Kod yaz ve Kaydet'e bas.", saved: "Kaydedildi!", needName: "Önce bir ad gir", loaded: "Kod yüklendi" }
+    uk: { title: "Особистий код", namePh: "Назва програми", save: "Зберегти", open: "Відкрити", del: "Видалити", rename: "Перейменувати", update: "Оновити", empty: "Поки немає збережених програм. Напиши код і натисни «Зберегти».", saved: "Збережено!", needName: "Спершу введи назву", loaded: "Код завантажено", renameAsk: "Нова назва програми:", overwriteAsk: "Програма «{name}» уже є. Перезаписати її?", overwritten: "Запис перезаписано", updated: "Запис оновлено", renamed: "Назву змінено", deleted: "Запис видалено", cancelled: "Стару програму не чіпали", nothing: "Порожній код — спершу щось напиши" },
+    en: { title: "Personal code", namePh: "Program name", save: "Save", open: "Open", del: "Delete", rename: "Rename", update: "Update", empty: "No saved programs yet. Write some code and press Save.", saved: "Saved!", needName: "Enter a name first", loaded: "Code loaded", renameAsk: "New program name:", overwriteAsk: "Program “{name}” already exists. Overwrite it?", overwritten: "Entry overwritten", updated: "Entry updated", renamed: "Name changed", deleted: "Entry deleted", cancelled: "Kept the old program", nothing: "Empty code — write something first" },
+    tr: { title: "Kişisel kod", namePh: "Program adı", save: "Kaydet", open: "Aç", del: "Sil", rename: "Yeniden adlandır", update: "Güncelle", empty: "Henüz kayıtlı program yok. Kod yaz ve Kaydet'e bas.", saved: "Kaydedildi!", needName: "Önce bir ad gir", loaded: "Kod yüklendi", renameAsk: "Yeni program adı:", overwriteAsk: "“{name}” programı zaten var. Üzerine yazılsın mı?", overwritten: "Kayıt üzerine yazıldı", updated: "Kayıt güncellendi", renamed: "Ad değişti", deleted: "Kayıt silindi", cancelled: "Eski program kaldı", nothing: "Kod boş — önce bir şey yaz" }
   };
+  const SN_GROUP = { uk: "Особисті", en: "Personal", tr: "Kişisel" };
+  const SN_PH_VALUE = "__own_none__";
+  // Звідки в редакторі взявся код: приклад, власний запис чи набрана людиною програма.
+  const ORIGIN = { EXAMPLE: "example", SNIPPET: "snippet", OWN: "own" };
   const IDLE = {
     uk: "Натисни «Запуск», щоб завантажити Python",
     en: "Press Run to load Python",
@@ -187,6 +191,22 @@
   let statsText, statsTime, copyBtn, saveBtn;
   let lastLoadMs = null, lastExecMs = null;
   let snList, snName;
+  // Провенанс редактора: хто останній наповнив textarea. «own» — набрала людина.
+  let editorOrigin = ORIGIN.OWN;
+  let editorOriginId = null;
+
+  function setOrigin(kind, id) {
+    editorOrigin = kind;
+    editorOriginId = id == null ? null : String(id);
+  }
+  // Код, який збігається з готовим прикладом один-в-один, не вважається власним.
+  function originOfStoredCode(code) {
+    const k = Object.keys(EXAMPLES).find((key) => EXAMPLES[key].code === code);
+    if (k) return { kind: ORIGIN.EXAMPLE, id: k };
+    const sn = loadSnippets().find((s) => s && s.code === code);
+    if (sn) return { kind: ORIGIN.SNIPPET, id: sn.id };
+    return { kind: ORIGIN.OWN, id: null };
+  }
 
   function setStatus(state) {
     pyState = state;
@@ -407,28 +427,102 @@
   }
 
   function buildExamples(loadDefaultCode) {
-    const prev = exSel.value;
+    const prev = loadDefaultCode ? "hello" : exSel.value;
     exSel.innerHTML = "";
     const lang = global.I18n.lang;
+
+    // —— «Особисті»: збережені програми користувача (порожні, доки нічого не збережено) ——
+    const mine = loadSnippets();
+    const group = document.createElement("optgroup");
+    group.label = L(SN_GROUP);
+    if (!mine.length) {
+      const ph = document.createElement("option");
+      ph.value = SN_PH_VALUE;
+      ph.textContent = L(SN).empty;
+      ph.disabled = true;
+      group.appendChild(ph);
+    } else {
+      mine.forEach((it) => {
+        const o = document.createElement("option");
+        o.value = it.id;
+        o.textContent = it.name;
+        group.appendChild(o);
+      });
+    }
+    exSel.appendChild(group);
+
     Object.keys(EXAMPLES).forEach((k) => {
       const o = document.createElement("option");
       o.value = k;
       o.textContent = EXAMPLES[k].label[lang] || EXAMPLES[k].label.uk;
       exSel.appendChild(o);
     });
-    if (prev && EXAMPLES[prev]) exSel.value = prev;
+    restoreExampleSelection(prev, mine);
     if (loadDefaultCode) {
       codeEl.value = EXAMPLES.hello.code;
+      setOrigin(ORIGIN.EXAMPLE, "hello");
       updateLineNumbers();
     }
   }
 
+  // Повертаємо виділене, якщо воно ще існує; інакше — на заглушку/«нічого не вибрано».
+  function restoreExampleSelection(prev, mine) {
+    const list = mine || loadSnippets();
+    const stillThere = prev && (EXAMPLES[prev] || list.some((s) => s.id === prev));
+    if (stillThere) exSel.value = prev;
+    else if (!list.length) exSel.value = SN_PH_VALUE;
+    else exSel.selectedIndex = -1; // запис видалено — не вибираємо чужу програму
+    exSel.dispatchEvent(new Event("qmresync"));
+  }
+
+  function selectPersonalEntry(id) {
+    const o = Array.prototype.find.call(exSel.options, (opt) => opt.value === String(id));
+    if (o) { exSel.value = o.value; exSel.dispatchEvent(new Event("qmresync")); }
+    else restoreExampleSelection(exSel.value);
+  }
+
   /* ---------- Особистий код (збережені снипети) ---------- */
+  function newSnippetId() {
+    return "own-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+  }
   function loadSnippets() {
-    try { const a = JSON.parse(localStorage.getItem(SNKEY) || "[]"); return Array.isArray(a) ? a : []; }
+    let list = [];
+    try { const a = JSON.parse(localStorage.getItem(SNKEY) || "[]"); if (Array.isArray(a)) list = a; }
     catch (e) { return []; }
+    // Старі записи без id отримують стабільний id один раз — далі список можна
+    // безпечно будувати групами (картка + «Особисті» в меню прикладів).
+    let migrated = false;
+    list.forEach((it) => {
+      if (it && typeof it === "object" && !it.id) { it.id = newSnippetId(); migrated = true; }
+    });
+    if (migrated) persistSnippets(list);
+    return list;
   }
   function persistSnippets(list) { localStorage.setItem(SNKEY, JSON.stringify(list)); }
+  function snippetById(id) { return loadSnippets().find((s) => s && s.id === String(id)) || null; }
+
+  // Кладемо код у редактор і запам'ятовуємо, звідки він узявся.
+  // autosave — чи перезаписувати автозбережений код користувача (готові приклади не чіпають його).
+  function putCodeInEditor(code, kind, id, autosave) {
+    codeEl.value = code || "";
+    setOrigin(kind, id);
+    updateLineNumbers();
+    if (autosave && global.Settings && global.Settings.get("autosaveCode")) localStorage.setItem("app.code", codeEl.value);
+  }
+
+  // «Власні програми»: рахуємо окремі збережені програми, а не натискання кнопки.
+  // fromExample — код у редакторі був готовим прикладом; таке не вважаємо власним.
+  function countOwnProgram(id, fromExample) {
+    if (fromExample) return;
+    if (!global.Profile || typeof global.Profile.addOwnProgram !== "function") return;
+    global.Profile.addOwnProgram(id);
+  }
+
+  // Після будь-якої зміни записів: картка + група «Особисті» + виділене пункт.
+  function refreshSnippets() {
+    renderSnippets();
+    buildExamples(false);
+  }
 
   function renderSnippets() {
     if (!snList) return;
@@ -441,36 +535,72 @@
       snList.appendChild(e);
       return;
     }
-    items.forEach((it, idx) => {
+    items.forEach((it) => {
       const row = document.createElement("div");
-      row.className = "snippet-row";
+      row.className = "snippet-row own-snippet-row";
       const title = document.createElement("span");
       title.className = "snippet-title";
       title.textContent = it.name;
       const acts = document.createElement("div");
-      acts.className = "snippet-actions";
-      const openB = document.createElement("button");
-      openB.className = "btn text";
-      openB.textContent = L(SN).open;
-      openB.onclick = () => {
-        codeEl.value = it.code || "";
-        updateLineNumbers();
-        if (global.Settings && global.Settings.get("autosaveCode")) localStorage.setItem("app.code", codeEl.value);
-        codeEl.scrollIntoView({ behavior: "smooth", block: "center" });
-        global.Audio2 && global.Audio2.SFX.pop();
-        toast(L(SN).loaded);
+      acts.className = "snippet-actions own-snippet-actions";
+
+      const mk = (cls, label, handler) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = cls;
+        b.textContent = label;
+        b.onclick = handler;
+        return b;
       };
-      const delB = document.createElement("button");
-      delB.className = "btn outlined danger";
-      delB.textContent = L(SN).del;
-      delB.onclick = () => {
-        const list = loadSnippets();
-        list.splice(idx, 1);
-        persistSnippets(list);
-        renderSnippets();
-        global.Audio2 && global.Audio2.SFX.click();
-      };
-      acts.append(openB, delB);
+
+      acts.append(
+        mk("btn text", L(SN).open, () => {
+          putCodeInEditor(it.code, ORIGIN.SNIPPET, it.id, true);
+          selectPersonalEntry(it.id);
+          codeEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          global.Audio2 && global.Audio2.SFX.pop();
+          toast(L(SN).loaded);
+        }),
+        mk("btn text", L(SN).rename, () => {
+          const n = (prompt(L(SN).renameAsk, it.name) || "").trim().slice(0, 40);
+          if (!n || n === it.name) return;
+          const list = loadSnippets();
+          const rec = list.find((s) => s.id === it.id);
+          if (!rec) return;
+          rec.name = n;
+          rec.ts = Date.now();
+          persistSnippets(list);
+          refreshSnippets();
+          global.Audio2 && global.Audio2.SFX.click();
+          toast(L(SN).renamed);
+        }),
+        mk("btn text own-snippet-update", L(SN).update, () => {
+          if (!codeEl.value.trim()) { toast(L(SN).nothing); return; }
+          const fromExample = editorOrigin === ORIGIN.EXAMPLE;
+          const list = loadSnippets();
+          const rec = list.find((s) => s.id === it.id);
+          if (!rec) return;
+          rec.code = codeEl.value;
+          rec.ts = Date.now();          // те саме id, свіжий час
+          persistSnippets(list);
+          // Провенанс не чіпаємо: код у редакторі той самий, що й до «Оновити».
+          countOwnProgram(rec.id, fromExample);
+          refreshSnippets();
+          global.Audio2 && global.Audio2.SFX.success();
+          toast(L(SN).updated);
+        }),
+        mk("btn outlined danger", L(SN).del, () => {
+          const list = loadSnippets();
+          const at = list.findIndex((s) => s.id === it.id);
+          if (at < 0) return;
+          list.splice(at, 1);
+          persistSnippets(list);
+          if (editorOrigin === ORIGIN.SNIPPET && editorOriginId === it.id) setOrigin(ORIGIN.OWN, null);
+          refreshSnippets();
+          global.Audio2 && global.Audio2.SFX.click();
+          toast(L(SN).deleted);
+        })
+      );
       row.append(title, acts);
       snList.appendChild(row);
     });
@@ -509,13 +639,36 @@
     saveB.className = "btn contained snippet-save-btn";
     saveB.textContent = L(SN).save;
     const doSave = () => {
-      const name = (snName.value || "").trim();
+      const name = (snName.value || "").trim().slice(0, 40);
       if (!name) { toast(L(SN).needName); snName.focus(); return; }
+      if (!codeEl.value.trim()) { toast(L(SN).nothing); snName.focus(); return; }
+      const fromExample = editorOrigin === ORIGIN.EXAMPLE;
       const list = loadSnippets();
-      list.unshift({ name: name, code: codeEl.value, ts: Date.now() });
+      const dup = list.find((s) => String(s.name).toLowerCase() === name.toLowerCase());
+      if (dup) {
+        // Така сама назва — питаємо, чи перезаписати той самий запис (id залишається).
+        const ask = L(SN).overwriteAsk.replace("{name}", name);
+        if (!confirm(ask)) { global.Audio2 && global.Audio2.SFX.click(); toast(L(SN).cancelled); return; }
+        dup.name = name;
+        dup.code = codeEl.value;
+        dup.ts = Date.now();
+        persistSnippets(list);
+        snName.value = "";
+        countOwnProgram(dup.id, fromExample);
+        refreshSnippets();
+        selectPersonalEntry(dup.id);
+        global.Audio2 && global.Audio2.SFX.success();
+        toast(L(SN).overwritten);
+        return;
+      }
+      const rec = { id: newSnippetId(), name: name, code: codeEl.value, ts: Date.now() };
+      list.unshift(rec);
       persistSnippets(list);
       snName.value = "";
-      renderSnippets();
+      countOwnProgram(rec.id, fromExample);
+      document.dispatchEvent(new CustomEvent("snippetsaved", { detail: { id: rec.id, name: rec.name, own: !fromExample } }));
+      refreshSnippets();
+      selectPersonalEntry(rec.id);
       global.Audio2 && global.Audio2.SFX.success();
       toast(L(SN).saved);
     };
@@ -1080,6 +1233,12 @@
     const saved = localStorage.getItem("app.code");
     if (saved && global.Settings && global.Settings.get("autosaveCode")) {
       codeEl.value = saved; updateLineNumbers();
+      // Автозбережений код: якщо він один-в-один із готового прикладу — це ще не власна робота.
+      const stored = originOfStoredCode(saved);
+      setOrigin(stored.kind, stored.id);
+      if (stored.kind === ORIGIN.EXAMPLE) exSel.value = stored.id;
+      else if (stored.kind === ORIGIN.SNIPPET) selectPersonalEntry(stored.id);
+      exSel.dispatchEvent(new Event("qmresync"));
     }
     updateStats();
     if (hlEl) hlEl.innerHTML = highlightCode(codeEl.value);
@@ -1087,7 +1246,13 @@
     applyWrap();
     document.addEventListener("settingschange", (e) => { if (e.detail.key === "wordWrap") applyWrap(); });
 
-    codeEl.addEventListener("input", () => { updateLineNumbers(); showAutocomplete(); });
+    codeEl.addEventListener("input", (e) => {
+      // Тільки справжнє редагування людини; програмні `.value = …` подій не генерують,
+      // а synthetic-події (course.js, modules.js) приходять з isTrusted === false.
+      if (e.isTrusted) setOrigin(ORIGIN.OWN, null);
+      updateLineNumbers();
+      showAutocomplete();
+    });
     codeEl.addEventListener("scroll", () => {
       lineNums.scrollTop = codeEl.scrollTop;
       if (hlEl) { hlEl.scrollTop = codeEl.scrollTop; hlEl.scrollLeft = codeEl.scrollLeft; }
@@ -1124,7 +1289,7 @@
     runBtn.onclick = run;
     if (copyBtn) copyBtn.onclick = copyCode;
     if (saveBtn) saveBtn.onclick = savePyFile;
-    $("#clearCode").onclick = () => { codeEl.value = ""; updateLineNumbers(); global.Audio2 && global.Audio2.SFX.click(); };
+    $("#clearCode").onclick = () => { codeEl.value = ""; setOrigin(ORIGIN.OWN, null); updateLineNumbers(); global.Audio2 && global.Audio2.SFX.click(); };
     $("#clearOut").onclick = () => { out.innerHTML = ""; };
     const fullBtn = $("#fullOut");
     if (fullBtn) fullBtn.onclick = toggleOutFull;
@@ -1133,7 +1298,17 @@
     });
     exSel.onchange = () => {
       const k = exSel.value;
-      if (EXAMPLES[k]) { codeEl.value = EXAMPLES[k].code; updateLineNumbers(); global.Audio2 && global.Audio2.SFX.pop(); }
+      if (EXAMPLES[k]) {
+        // готовий приклад: автозбережений код користувача не чіпаємо
+        putCodeInEditor(EXAMPLES[k].code, ORIGIN.EXAMPLE, k, false);
+        global.Audio2 && global.Audio2.SFX.pop();
+        return;
+      }
+      const own = k === SN_PH_VALUE ? null : snippetById(k);
+      if (!own) return; // порожня група «Особисті»: вибрано заглушку — нічого вантажити
+      putCodeInEditor(own.code, ORIGIN.SNIPPET, own.id, true);
+      global.Audio2 && global.Audio2.SFX.pop();
+      toast(L(SN).loaded);
     };
 
     document.addEventListener("langchange", () => {

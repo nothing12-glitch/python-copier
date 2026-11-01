@@ -424,11 +424,18 @@
     });
 
     document.addEventListener("recordchange", (e) => {
-      if (e.detail) {
+      // stat: true — особистий показник (напр. «Власні програми»), не ігровий рекорд.
+      if (e.detail && !e.detail.stat) {
         bumpStat("record", { game: e.detail.game, val: e.detail.value });
         checkAll();
         rerenderIfActive();
       }
+    });
+
+    document.addEventListener("snippetsaved", () => {
+      bumpStat("snippets");
+      checkAll();
+      rerenderIfActive();
     });
 
     document.addEventListener("routechange", (e) => {

@@ -93,6 +93,42 @@
   }
 
   function clearRecords() { localStorage.removeItem(recKey(handle())); }
+
+  /* ---------- Особисті показники (не ігрові рекорди) ----------
+     Лежать у тому ж блоці app.records.<user>, тому їдуть за акаунтом:
+       "own_programs" : number  — скільки власних програм збережено (видано в профілі)
+       "_ownIds"      : string[] — id вже врахованих записів (службовий ключ, не показується)
+     Старі записи (лише ігрові цифри) читаються як раніше: показник просто 0. */
+  const OWN_STAT = "own_programs";
+  const OWN_IDS = "_ownIds";
+
+  function ownIdsOf(recs) {
+    return Array.isArray(recs[OWN_IDS]) ? recs[OWN_IDS].map(String) : [];
+  }
+  function getOwnPrograms() {
+    const recs = getRecords();
+    const ids = ownIdsOf(recs);
+    return ids.length || Number(recs[OWN_STAT]) || 0;
+  }
+  // Рахуємо лише нові id — повторний запис того самого програма не додає одиниць.
+  function addOwnProgram(id) {
+    id = id == null ? "" : String(id);
+    if (!id) return { added: false, count: getOwnPrograms() };
+    const recs = getRecords();
+    const ids = ownIdsOf(recs);
+    const prev = Number(recs[OWN_STAT]) || ids.length || 0;
+    if (ids.includes(id)) return { added: false, count: prev };
+    ids.push(id);
+    recs[OWN_IDS] = ids;
+    recs[OWN_STAT] = ids.length;
+    localStorage.setItem(recKey(handle()), JSON.stringify(recs));
+    document.dispatchEvent(new CustomEvent("recordchange", {
+      detail: { game: OWN_STAT, value: ids.length, prev, stat: true }
+    }));
+    return { added: true, count: ids.length };
+  }
+  function isOwnRecordKey(k) { return k === OWN_STAT || k === OWN_IDS || String(k).charAt(0) === "_"; }
+
   function clearAll() {
     localStorage.removeItem(USERS_KEY);
     localStorage.removeItem(SESSION_KEY);
@@ -117,6 +153,7 @@
   global.Profile = {
     register, login, logout, current, handle, info,
     getRecords, getRecord, setRecord, clearRecords, clearAll, socialLogin,
+    getOwnPrograms, addOwnProgram, isOwnRecordKey,
     getNickname, setNickname, getAvatar, setAvatar, rename
   };
 })(window);

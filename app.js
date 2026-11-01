@@ -95,6 +95,7 @@
       });
       if (global.Settings) { try { global.Settings.render($("#settingsBody")); } catch (e) {} }
       renderLearn();
+      try { renderProfile(); } catch (e) {}
     });
   }
 
@@ -288,7 +289,7 @@
     if (grid) {
       grid.innerHTML = "";
       const recs = global.Profile.getRecords() || {};
-      const keys = Object.keys(recs);
+      const keys = Object.keys(recs).filter((k) => !isOwnStatsKey(k));
       if (!keys.length) {
         const p = document.createElement("p");
         p.className = "muted";
@@ -310,8 +311,47 @@
           grid.appendChild(d);
         });
       }
+      grid.appendChild(ownProgramsCard());
     }
     updateHeaderProfile();
+  }
+
+  /* ---------- «Власні програми» в профілі ----------
+     Окремий показник (не ігровий рекорд): свої написані й збережені програми. */
+  const OWN_STATS = {
+    uk: { label: "Власні програми", tip: "Програми, які ти написав і зберіг сам. Готові приклади та запуск чужого коду не рахуються. «Запуски» в досягненнях — це всі виконання в майданчику, навіть приклади." },
+    en: { label: "Own programs", tip: "Programs you wrote and saved yourself. Ready-made examples and running example code are not counted. Runs in achievements count every execution, examples included." },
+    tr: { label: "Kendi programlarım", tip: "Kendinin yazıp kaydettiği programlar. Hazır örnekler ve örnek kodu çalıştırmalar sayılmaz. Çalıştırmalar ise her çalıştırmayı sayar." }
+  };
+  const OWN_STATS_KEYS = ["own_programs", "_ownIds"];
+  const ownT = (o) => o[((global.I18n && global.I18n.lang) || "uk")] || o.uk;
+  function isOwnStatsKey(k) {
+    if (OWN_STATS_KEYS.indexOf(k) >= 0 || String(k).charAt(0) === "_") return true;
+    return !!(global.Profile && global.Profile.isOwnRecordKey && global.Profile.isOwnRecordKey(k));
+  }
+  function ownProgramsCard() {
+    const txt = ownT(OWN_STATS);
+    const n = global.Profile && global.Profile.getOwnPrograms ? global.Profile.getOwnPrograms() : 0;
+    const d = document.createElement("div");
+    d.className = "record own-record";
+    d.title = txt.tip;
+    d.tabIndex = 0;
+    d.setAttribute("aria-label", txt.label + ": " + n + ". " + txt.tip);
+    const g = document.createElement("div");
+    g.className = "g own-record-label";
+    const label = document.createElement("span");
+    label.textContent = txt.label;
+    const ico = document.createElement("span");
+    ico.className = "material-icons own-record-info";
+    ico.textContent = "info";
+    ico.setAttribute("aria-hidden", "true");
+    ico.title = txt.tip;
+    g.append(label, ico);
+    const v = document.createElement("div");
+    v.className = "v own-record-value";
+    v.textContent = String(n);
+    d.append(g, v);
+    return d;
   }
 
   function updateHeaderProfile() {
@@ -326,6 +366,14 @@
     } else if (avatar) {
       avatar.textContent = avatarVal;
     }
+  }
+
+  function bindRecordRefresh() {
+    // Показник у профілі живий: «Власні програми» оновлюються відразу після збереження.
+    document.addEventListener("recordchange", () => {
+      const view = document.getElementById("view-profile");
+      if (view && view.classList.contains("active")) { try { renderProfile(); } catch (e) {} }
+    });
   }
 
   function bindProfileEdit() {
@@ -683,6 +731,7 @@
     try { bindAudio(); } catch (e) { console.warn("bindAudio", e); }
     try { bindAuth(); } catch (e) { console.warn("bindAuth", e); }
     try { bindProfileEdit(); } catch (e) { console.warn("bindProfileEdit", e); }
+    try { bindRecordRefresh(); } catch (e) { console.warn("bindRecordRefresh", e); }
     try { renderProfile(); } catch (e) { console.warn("renderProfile", e); }
     try {
       if (global.Settings) {

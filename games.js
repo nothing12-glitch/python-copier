@@ -5,6 +5,9 @@
   const SFX = () => global.Audio2 && global.Audio2.SFX;
   let cleanupFn = null;
   let currentId = null;
+  /* Пауза: двигун поточної відкритої гри + відкритий діалог її налаштувань. */
+  let ph = null;
+  let activeSettings = null;
 
   const GAMES = [
     { id: "ttt", ico: "\u{2B55}", name: "game.ttt", desc: "game.tttDesc", best: "high", unit: "rec.wins" },
@@ -120,7 +123,7 @@
       { key: "tttAi", label: "game.optAiLevel", vals: [["easy", "game.optEasy"], ["normal", "game.optNormal"], ["hard", "game.optHard"]] }
     ],
     snake: [
-      { key: "snakeSpeed", label: "game.optSpeed", vals: [["slow", "game.optSlow"], ["normal", "game.optNormalF"], ["fast", "game.optFast"]] },
+      { key: "snakeSpeed", label: "game.optSpeed", live: true, vals: [["slow", "game.optSlow"], ["normal", "game.optNormalF"], ["fast", "game.optFast"]] },
       { key: "snakeField", label: "game.optField", vals: [["14", "game.optSmall"], ["18", "game.optMedium"], ["24", "game.optBig"]] },
       { key: "snakeWrap", label: "game.optWalls", vals: [["off", "game.optWallsSolid"], ["on", "game.optWallsPortal"]] }
     ],
@@ -158,7 +161,7 @@
     ],
     maze: [
       { key: "mazeSize", label: "game.optField", vals: [["9", "9 × 9"], ["13", "13 × 13"], ["17", "17 × 17"], ["21", "21 × 21"]] },
-      { key: "mazeTrail", label: "game.optTrail", vals: [["on", "game.optOn"], ["off", "game.optOff"]] }
+      { key: "mazeTrail", label: "game.optTrail", live: true, vals: [["on", "game.optOn"], ["off", "game.optOff"]] }
     ]
   };
 
@@ -167,9 +170,237 @@
     return v === null || v === undefined || v === "" ? fallback : v;
   }
 
+  /* ---------- Локальні тексти паузи та діалогу (словник не чіпаємо) ---------- */
+  const UI_TXT = {
+    uk: {
+      paused: "Пауза",
+      pausedHint: "Гру заморожено, поки відкриті її налаштування",
+      resume: "Продовжити гру",
+      applyRestart: "Застосувати й перезапустити",
+      restartNote: "Гра читає це на старті розіграшу. Поточну гру можна продовжити зі старими параметрами.",
+      oldKept: "Наступного розіграшу гра вже матиме нові параметри.",
+      liveNote: "Застосовано одразу, гру не перервано."
+    },
+    en: {
+      paused: "Paused",
+      pausedHint: "The game is frozen while its settings are open",
+      resume: "Resume the game",
+      applyRestart: "Apply and restart",
+      restartNote: "The game reads this when a round starts. You can keep playing with the old values.",
+      oldKept: "The next round will already use the new values.",
+      liveNote: "Applied immediately, the game was not interrupted."
+    },
+    tr: {
+      paused: "Duraklatıldı",
+      pausedHint: "Ayarlar açıkken oyun donduruldu",
+      resume: "Oyuna devam et",
+      applyRestart: "Uygula ve yeniden başlat",
+      restartNote: "Oyun bunu tur başlarken okur. Eski ayarlarla devam edebilirsin.",
+      oldKept: "Sonraki tur yeni ayarlarla olacak.",
+      liveNote: "Hemen uygulandı, oyun kesilmedi."
+    }
+  };
+
+  function gtxt(k) {
+    const lang = global.I18n ? global.I18n.lang : "uk";
+    const d = UI_TXT[lang] || UI_TXT.uk;
+    return d[k] || UI_TXT.uk[k] || k;
+  }
+
+  /* ---------- Пауза: спільний двигун для всіх ігор ----------
+     Гра заморожується, коли відкрито її налаштування. Кожен mount
+     користується функціями нижче, тож дублювання по іграх не потрібне:
+       later(ms, fn)  — setTimeout, що докручує залишок часу після відновлення;
+       every(ms, fn)  — setInterval, який на паузі знімається, а при відновленні
+                        створюється знову з тим самим обробником;
+       onPause/onResume — хуки для годинників, що рахують від Date.now();
+       live(key, fn)  — застосування опції без перезапуску, якщо вона «жива»;
+       isPaused()     — захист обробників ходу на час паузи.
+     Кліки й клавіатуру до дошки перехоплює guard у capture-фазі документа. */
+  const PAUSE_EVENTS = ["keydown", "keypress", "pointerdown", "mousedown", "click", "touchstart", "contextmenu"];
+
+  function makePauseHub(area) {
+    const handles = new Set();
+    const pauseHooks = [];
+    const resumeHooks = [];
+    const liveFns = {};
+    let paused = false;
+    let overlay = null;
+
+    function armTo(h) {
+      if (h.dead || paused) return;
+      h.at = Date.now();
+      h.timer = setTimeout(() => {
+        h.timer = null;
+        handles.delete(h);
+        if (!h.dead) h.fn();
+      }, h.left);
+    }
+    function armInt(h) {
+      if (h.dead || paused || h.timer) return;
+      h.timer = setInterval(() => { if (!h.dead && !paused) h.fn(); }, h.period);
+    }
+    function freeze(h) {
+      if (!h.timer) return;
+      if (h.kind === "to") {
+        clearTimeout(h.timer);
+        h.left = Math.max(0, h.left - (Date.now() - h.at));
+      } else clearInterval(h.timer);
+      h.timer = null;
+    }
+
+    function showOverlay() {
+      if (overlay || !area || !area.appendChild) return;
+      area.classList.add("gs-area-host");
+      overlay = document.createElement("div");
+      overlay.className = "gs-pause";
+      const ico = document.createElement("div");
+      ico.className = "gs-pause-ico";
+      ico.innerHTML = '<span class="material-icons">pause_circle</span>';
+      const title = document.createElement("div");
+      title.className = "gs-pause-title";
+      title.textContent = gtxt("paused");
+      const hint = document.createElement("div");
+      hint.className = "gs-pause-hint";
+      hint.textContent = gtxt("pausedHint");
+      overlay.append(ico, title, hint);
+      area.appendChild(overlay);
+    }
+    function hideOverlay() {
+      if (area) area.classList.remove("gs-area-host");
+      if (overlay) { overlay.remove(); overlay = null; }
+    }
+
+    function guard(e) {
+      if (!paused) return;
+      const target = e.target;
+      if (!target || typeof target.closest !== "function") return;
+      /* відкриті діалоги (самі налаштування, «Як грати») не чіпаємо */
+      if (target.closest(".gs-backdrop,#gameSettingsModal,.ht-backdrop,#howToModal")) return;
+      const onBoard = !!target.closest("#gameStage .game-area");
+      const isKey = e.type === "keydown" || e.type === "keypress";
+      const boardKey = isKey && (target === document.body || target === document.documentElement || target === document);
+      if (!onBoard && !boardKey) return;
+      if (boardKey && e.key === "Escape") return; /* дозвіл закрити діалог */
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    function blockInput(on) {
+      const m = on ? "addEventListener" : "removeEventListener";
+      PAUSE_EVENTS.forEach((type) => document[m](type, guard, true));
+    }
+
+    const hub = {
+      isPaused: () => paused,
+      later(ms, fn) {
+        const h = { kind: "to", left: ms, fn, timer: null, at: 0, dead: false };
+        handles.add(h);
+        armTo(h);
+        return () => {
+          h.dead = true;
+          handles.delete(h);
+          if (h.timer) { clearTimeout(h.timer); h.timer = null; }
+        };
+      },
+      every(ms, fn) {
+        const h = { kind: "int", period: ms, fn, timer: null, dead: false };
+        handles.add(h);
+        armInt(h);
+        return {
+          stop() {
+            h.dead = true;
+            handles.delete(h);
+            if (h.timer) { clearInterval(h.timer); h.timer = null; }
+          },
+          setPeriod(v) {
+            h.period = v;
+            if (!h.timer) return;
+            clearInterval(h.timer);
+            h.timer = null;
+            armInt(h);
+          }
+        };
+      },
+      onPause(fn) { pauseHooks.push(fn); },
+      onResume(fn) { resumeHooks.push(fn); },
+      live(key, fn) { liveFns[key] = fn; },
+      applyLive(key, value) {
+        const fn = liveFns[key];
+        if (!fn) return false;
+        try { fn(value); } catch (e) { console.warn(e); }
+        return true;
+      },
+      pause() {
+        if (paused) return;
+        paused = true;
+        handles.forEach(freeze);
+        pauseHooks.forEach((fn) => { try { fn(); } catch (e) { console.warn(e); } });
+        showOverlay();
+        blockInput(true);
+      },
+      resume() {
+        if (!paused) return;
+        paused = false;
+        blockInput(false);
+        hideOverlay();
+        resumeHooks.forEach((fn) => { try { fn(); } catch (e) { console.warn(e); } });
+        handles.forEach((h) => { if (h.kind === "to") armTo(h); else armInt(h); });
+      },
+      destroy() {
+        if (paused) blockInput(false);
+        paused = false;
+        hideOverlay();
+        handles.forEach((h) => { h.dead = true; freeze(h); });
+        handles.clear();
+        pauseHooks.length = 0;
+        resumeHooks.length = 0;
+      }
+    };
+    return hub;
+  }
+
+  /* Хелпери для mount-функцій: без відкритої гри працюють як звичайні таймери. */
+  function isPaused() { return !!(ph && ph.isPaused()); }
+  function later(ms, fn) {
+    if (ph) return ph.later(ms, fn);
+    const id = setTimeout(fn, ms);
+    return () => clearTimeout(id);
+  }
+  function every(ms, fn) {
+    if (ph) return ph.every(ms, fn);
+    let id = setInterval(fn, ms);
+    return {
+      stop() { clearInterval(id); id = null; },
+      setPeriod(v) { clearInterval(id); id = setInterval(fn, v); }
+    };
+  }
+  function onPause(fn) { if (ph) ph.onPause(fn); }
+  function onResume(fn) { if (ph) ph.onResume(fn); }
+  function live(key, fn) { if (ph) ph.live(key, fn); }
+  function destroyPause() { if (ph) { ph.destroy(); ph = null; } }
+
+  function valueLabel(o, v) {
+    const hit = o.vals.filter((x) => String(x[0]) === String(v))[0] || o.vals[0];
+    return /^[a-z]+\./.test(hit[1]) ? t(hit[1]) : hit[1];
+  }
+
+  /* Короткий рядок вибраных налаштувань під назвою гри в хабі. */
+  function summaryFor(gameId) {
+    const opts = GAME_OPTS[gameId] || [];
+    if (!opts.length) return "";
+    const game = GAMES.filter((g) => g.id === gameId)[0];
+    const parts = opts.map((o) => t(o.label) + " — " + valueLabel(o, opt(o.key, o.vals[0][0])));
+    return (game ? t(game.name) + ": " : "") + parts.join(", ");
+  }
+
+  /* Діалог налаштувань гри має дві ролі: до старту гри (лише вибір опцій)
+     і під час гри (гра стоїть на паузі, після закриття відновлюється без втрат). */
   function showGameSettings(gameId) {
-    const old = document.getElementById("gameSettingsModal");
-    if (old) old.remove();
+    /* діалог уже відкритий — не дублюємо й не морозимо вдруге */
+    if (activeSettings) return;
+    const stale = document.getElementById("gameSettingsModal");
+    if (stale) stale.remove();
+    const running = currentId === gameId && !!ph;
     if (SFX() && SFX().pop) SFX().pop();
 
     const bd = document.createElement("div");
@@ -196,6 +427,18 @@
       body.appendChild(sub);
     }
 
+    let needsRestart = false;
+
+    /* помітка про зміни, що діють лише з нового розіграшу + друга дія */
+    const note = document.createElement("div");
+    note.className = "gs-note";
+    const noteText = document.createElement("div");
+    noteText.className = "gs-note-text";
+    const restartBtn = document.createElement("button");
+    restartBtn.className = "btn outlined gs-restart";
+    restartBtn.textContent = gtxt("applyRestart");
+    note.append(noteText, restartBtn);
+
     (GAME_OPTS[gameId] || []).forEach((o) => {
       const label = document.createElement("label");
       label.className = "gs-label";
@@ -213,9 +456,24 @@
         select.appendChild(el);
       });
       select.onchange = () => {
-        global.Settings.set(o.key, select.value);
+        const value = select.value;
+        global.Settings.set(o.key, value);
         toast(t("set.saved"));
-        if (global.Games.restartIfOpen) global.Games.restartIfOpen(gameId);
+        /* гра не відкрита — просто оновлюємо рядок налаштувань на картках */
+        if (!running) { renderHub(); return; }
+        /* живу опцію (період ходу, слід у лабіринті) застосовуємо без перезапуску */
+        if (o.live && ph && ph.applyLive(o.key, value)) {
+          noteText.textContent = gtxt("liveNote");
+          note.hidden = false;
+          restartBtn.hidden = true;
+          return;
+        }
+        /* решта читається на старті розіграшу: не перезапускаємо самі,
+           а пропонуємо користувачеві явну другу дію */
+        needsRestart = true;
+        noteText.textContent = gtxt("restartNote");
+        note.hidden = false;
+        restartBtn.hidden = false;
       };
       body.appendChild(select);
     });
@@ -227,18 +485,57 @@
       body.appendChild(p);
     }
 
+    if ((GAME_OPTS[gameId] || []).length) {
+      note.hidden = true;
+      restartBtn.hidden = true;
+      body.appendChild(note);
+    }
+
     card.appendChild(body);
 
     const closeBtn = document.createElement("button");
     closeBtn.className = "btn contained";
-    closeBtn.textContent = t("games.back") || "Close";
-    closeBtn.onclick = () => { bd.classList.add("gs-out"); setTimeout(() => bd.remove(), 180); };
+    closeBtn.textContent = running ? gtxt("resume") : (t("games.back") || "Close");
+    closeBtn.onclick = () => finish(false);
     card.appendChild(closeBtn);
 
+    let closed = false;
+    function onEsc(e) { if (e.key === "Escape") { e.preventDefault(); finish(false); } }
+    function detach() {
+      closed = true;
+      document.removeEventListener("keydown", onEsc, true);
+      activeSettings = null;
+    }
+    /* Закриття: ×, Escape, фон — усе однаково: гру розморожуємо.
+       Явний перезапуск — лише через іншу дію в діалозі. */
+    function finish(doRestart) {
+      if (closed) return;
+      detach();
+      bd.classList.add("gs-out");
+      setTimeout(() => bd.remove(), 180);
+      if (running && ph) {
+        if (doRestart) global.Games.restartIfOpen(gameId);
+        else {
+          ph.resume();
+          if (needsRestart) toast(gtxt("oldKept"));
+        }
+      } else if (!running) renderHub();
+    }
+    /* примусове зняття діалогу, коли гру закрито або перемонтовано */
+    function kill() {
+      if (closed) return;
+      detach();
+      bd.remove();
+    }
+    restartBtn.onclick = () => finish(true);
+
     bd.appendChild(card);
-    bd.onclick = (e) => { if (e.target === bd) { bd.classList.add("gs-out"); setTimeout(() => bd.remove(), 180); } };
+    bd.onclick = (e) => { if (e.target === bd) finish(false); };
     document.body.appendChild(bd);
+    document.addEventListener("keydown", onEsc, true);
+    activeSettings = { kill };
     if (global.UI) global.UI.enhance(card);
+    if (running && ph) ph.pause();
   }
 
 
@@ -269,7 +566,7 @@
     function winner(b){ for(const [x,y,z] of LINES){ if(b[x]&&b[x]===b[y]&&b[x]===b[z]) return b[x]; } return b.includes(null)?null:"draw"; }
     function render(){ cells.forEach((c,i)=>{ c.textContent = board[i]==="X"?"X":board[i]==="O"?"O":""; c.style.color = board[i]==="X"?"var(--accent)":"var(--primary)"; }); }
     function play(i){
-      if(over||board[i]) return;
+      if(over||isPaused()||board[i]) return;
       board[i]=turn; render(); SFX()&&SFX().pop();
       let w=winner(board);
       if(w) return finish(w);
@@ -304,7 +601,7 @@
       if(w==="X"){ wins++; setScore(score,t("games.score"),wins); status.textContent= duo ? t("games.p1Win") : t("games.youWin"); SFX()&&SFX().win(); saveRecord("ttt",wins,"high"); }
       else if(w==="O"){ status.textContent= duo ? t("games.p2Win") : t("games.youLose"); SFX()&&SFX().lose(); }
       else { status.textContent=t("games.draw"); SFX()&&SFX().pop(); }
-      setTimeout(reset,1400);
+      later(1400,reset);
     }
     function reset(){ board=Array(9).fill(null); over=false; turn="X"; status.textContent=""; render(); }
     render();
@@ -316,11 +613,12 @@
     const N=Math.max(10, Number(opt("snakeField", 18)) || 18), size=N>20?16:20;
     const wrap=opt("snakeWrap", "off") === "on";
     const home=()=>({x:(N/2)|0,y:(N/2)|0});
+    const SPEEDS={slow:160,normal:110,fast:70};
     const cv=document.createElement("canvas");
     cv.id="snakeCanvas"; cv.width=N*size; cv.height=N*size;
     area.appendChild(cv);
     const ctx=cv.getContext("2d");
-    let snake=[home()], dir={x:1,y:0}, next=dir, food=place(), pts=0, dead=false, timer=null, closed=false;
+    let snake=[home()], dir={x:1,y:0}, next=dir, food=place(), pts=0, dead=false, loop=null, closed=false;
     setScore(score,t("games.score"),0);
     function place(){ let p; do{ p={x:(Math.random()*N)|0,y:(Math.random()*N)|0}; }while(snake.some(s=>s.x===p.x&&s.y===p.y)); return p; }
     function draw(){
@@ -329,7 +627,7 @@
       snake.forEach((s,i)=>{ ctx.fillStyle=i===0?"#22d3ee":"#5b8cff"; ctx.fillRect(s.x*size+1,s.y*size+1,size-2,size-2); });
     }
     function step(){
-      if(closed) return;
+      if(closed||isPaused()) return;
       dir=next; let h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
       if(wrap){ h.x=(h.x+N)%N; h.y=(h.y+N)%N; }
       else if(h.x<0||h.y<0||h.x>=N||h.y>=N){ return gameOver(); }
@@ -339,9 +637,12 @@
       else snake.pop();
       draw();
     }
-    function gameOver(){ dead=true; clearInterval(timer); timer=null; SFX()&&SFX().lose(); saveRecord("snake",pts,"high"); draw(); ctx.fillStyle="#000a"; ctx.fillRect(0,0,cv.width,cv.height); ctx.fillStyle="#fff"; ctx.font="20px sans-serif"; ctx.textAlign="center"; ctx.fillText(t("games.over"),cv.width/2,cv.height/2); if(!closed) setTimeout(start,1600); }
-    function start(){ if(closed) return; snake=[home()]; dir={x:1,y:0}; next=dir; food=place(); pts=0; dead=false; setScore(score,t("games.score"),0); clearInterval(timer); const sp={slow:160,normal:110,fast:70}[opt("snakeSpeed","normal")]||110; timer=setInterval(step,sp); draw(); }
-    function setDir(x,y){ if(snake.length>1&&(x===-dir.x&&y===-dir.y))return; next={x,y}; }
+    function stopLoop(){ if(loop){ loop.stop(); loop=null; } }
+    function gameOver(){ dead=true; stopLoop(); SFX()&&SFX().lose(); saveRecord("snake",pts,"high"); draw(); ctx.fillStyle="#000a"; ctx.fillRect(0,0,cv.width,cv.height); ctx.fillStyle="#fff"; ctx.font="20px sans-serif"; ctx.textAlign="center"; ctx.fillText(t("games.over"),cv.width/2,cv.height/2); if(!closed) later(1600,start); }
+    function start(){ if(closed) return; snake=[home()]; dir={x:1,y:0}; next=dir; food=place(); pts=0; dead=false; setScore(score,t("games.score"),0); stopLoop(); loop=every(SPEEDS[opt("snakeSpeed","normal")]||110,step); draw(); }
+    /* швидкість — єдина опція змії, яку можна застосувати без перезапуску */
+    live("snakeSpeed", (v)=>{ if(loop) loop.setPeriod(SPEEDS[v]||110); });
+    function setDir(x,y){ if(isPaused()||closed) return; if(snake.length>1&&(x===-dir.x&&y===-dir.y))return; next={x,y}; }
     const key=(e)=>{ const k=e.key; if(k==="ArrowUp"||k==="w"){setDir(0,-1);e.preventDefault();} else if(k==="ArrowDown"||k==="s"){setDir(0,1);e.preventDefault();} else if(k==="ArrowLeft"||k==="a"){setDir(-1,0);e.preventDefault();} else if(k==="ArrowRight"||k==="d"){setDir(1,0);e.preventDefault();} };
     window.addEventListener("keydown",key);
     // touch dpad
@@ -350,7 +651,7 @@
     area.appendChild(dp);
     dp.querySelectorAll("button").forEach(b=>b.onclick=()=>{const d=b.dataset.d; if(d==="up")setDir(0,-1); if(d==="down")setDir(0,1); if(d==="left")setDir(-1,0); if(d==="right")setDir(1,0);});
     start();
-    return ()=>{ closed=true; clearInterval(timer); timer=null; window.removeEventListener("keydown",key); };
+    return ()=>{ closed=true; stopLoop(); window.removeEventListener("keydown",key); };
   }
 
   /* ---------------- Memory ---------------- */
@@ -371,18 +672,18 @@
       lock = true;
       const all=[...grid.children];
       all.forEach(c=>{ c.textContent=c.dataset.emo; c.classList.add("flip"); });
-      setTimeout(()=>{ all.forEach(c=>{ c.classList.remove("flip"); c.textContent=""; }); lock=false; }, peek*1000);
+      later(peek*1000, ()=>{ all.forEach(c=>{ c.classList.remove("flip"); c.textContent=""; }); lock=false; });
       return ()=>{};
     }
     function flip(c){
-      if(lock||c.classList.contains("flip")||c.classList.contains("done"))return;
+      if(isPaused()||lock||c.classList.contains("flip")||c.classList.contains("done"))return;
       c.textContent=c.dataset.emo; c.classList.add("flip"); SFX()&&SFX().pop();
       if(!first){ first=c; return; }
       moves++; setScore(score,t("games.score"),moves);
       if(first.dataset.emo===c.dataset.emo){ first.classList.add("done"); c.classList.add("done"); first=null; done++; SFX()&&SFX().coin(); if(done===set.length) win(); }
-      else { lock=true; const a=first,b=c; first=null; setTimeout(()=>{a.classList.remove("flip");b.classList.remove("flip");a.textContent="";b.textContent="";lock=false;},700); }
+      else { lock=true; const a=first,b=c; first=null; later(700,()=>{a.classList.remove("flip");b.classList.remove("flip");a.textContent="";b.textContent="";lock=false;}); }
     }
-    function win(){ SFX()&&SFX().win(); saveRecord("memory",moves,"low"); toast(t("games.youWin")); setTimeout(()=>Games.open("memory"),1600); }
+    function win(){ SFX()&&SFX().win(); saveRecord("memory",moves,"low"); toast(t("games.youWin")); later(1600,()=>Games.open("memory")); }
     return null;
   }
 
@@ -403,6 +704,7 @@
     function draw(){ g.forEach((r,y)=>r.forEach((v,x)=>{ const c=cells[y*SZ+x]; c.textContent=v||""; c.style.background=COLORS[v]||"#ff5b7a"; })); setScore(score,t("games.score"),pts); }
     function slide(row){ let a=row.filter(v=>v); for(let i=0;i<a.length-1;i++){ if(a[i]===a[i+1]){a[i]*=2;pts+=a[i];a.splice(i+1,1);} } while(a.length<SZ)a.push(0); return a; }
     function move(dir){
+      if(isPaused()) return;
       const before=JSON.stringify(g);
       if(dir==="left") g=g.map(slide);
       else if(dir==="right") g=g.map(r=>slide(r.slice().reverse()).reverse());
@@ -411,7 +713,7 @@
       if(JSON.stringify(g)!==before){ add(); SFX()&&SFX().pop(); draw(); if(!canMove()) end(); }
     }
     function canMove(){ for(let y=0;y<SZ;y++)for(let x=0;x<SZ;x++){ if(!g[y][x])return true; if(x<SZ-1&&g[y][x]===g[y][x+1])return true; if(y<SZ-1&&g[y][x]===g[y+1][x])return true; } return false; }
-    function end(){ SFX()&&SFX().lose(); saveRecord("g2048",pts,"high"); info.textContent=t("games.over"); setTimeout(()=>{info.textContent="";init();},1600); }
+    function end(){ SFX()&&SFX().lose(); saveRecord("g2048",pts,"high"); info.textContent=t("games.over"); later(1600,()=>{info.textContent="";init();}); }
     function init(){ g=Array.from({length:SZ},()=>Array(SZ).fill(0)); pts=0; add(); add(); draw(); }
     const key=(e)=>{ const m={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"up",ArrowDown:"down"}[e.key]; if(m){e.preventDefault();move(m);} };
     window.addEventListener("keydown",key);
@@ -434,7 +736,7 @@
     ["rock","paper","scissors"].forEach(k=>{ const b=document.createElement("button"); b.textContent=map[k]; b.onclick=()=>play(k); row.appendChild(b); });
     function beats(a,b){ return (a==="rock"&&b==="scissors")||(a==="paper"&&b==="rock")||(a==="scissors"&&b==="paper"); }
     function play(u){
-      if (match) return;
+      if (match || isPaused()) return;
       const keys=Object.keys(map); const c=keys[(Math.random()*3)|0];
       let msg;
       if(u===c){ msg=t("games.draw"); SFX()&&SFX().pop(); }
@@ -443,7 +745,7 @@
       if (target > 1 && (wins >= target || losses >= target)) {
         match = true;
         msg = wins >= target ? t("games.matchWin") : t("games.matchLose");
-        setTimeout(() => { wins = 0; losses = 0; match = false; setScore(score, t("games.score"), 0); res.textContent = ""; }, 1800);
+        later(1800, () => { wins = 0; losses = 0; match = false; setScore(score, t("games.score"), 0); res.textContent = ""; });
       }
       res.textContent = `${map[u]} vs ${map[c]} — ${msg}` + (target > 1 && !match ? ` (${wins}:${losses})` : "");
     }
@@ -455,10 +757,11 @@
     const rounds = Math.max(1, Number(opt("reactRounds", 1)) || 1);
     const box=document.createElement("div"); box.className="react-box"; box.textContent=t("react.tapStart"); area.appendChild(box);
     setScore(score,t("games.best"), (global.Profile.getRecord("react")||"—")+" ms");
-    let state="idle", t0=0, to=null, hits=[], sum=0;
+    let state="idle", t0=0, cancelWait=null, hits=[], sum=0;
     box.onclick=()=>{
-      if(state==="idle"){ state="wait"; box.className="react-box wait"; box.textContent=t("react.wait"); to=setTimeout(()=>{ state="go"; box.className="react-box go"; box.textContent=t("react.go"); t0=performance.now(); }, 800+Math.random()*2200); }
-      else if(state==="wait"){ clearTimeout(to); state="idle"; box.className="react-box"; box.textContent=t("react.tooSoon"); SFX()&&SFX().error(); }
+      if(isPaused()) return;
+      if(state==="idle"){ state="wait"; box.className="react-box wait"; box.textContent=t("react.wait"); cancelWait=later(800+Math.random()*2200, ()=>{ cancelWait=null; state="go"; box.className="react-box go"; box.textContent=t("react.go"); t0=performance.now(); }); }
+      else if(state==="wait"){ if(cancelWait) cancelWait(); cancelWait=null; state="idle"; box.className="react-box"; box.textContent=t("react.tooSoon"); SFX()&&SFX().error(); }
       else if(state==="go"){
         const ms=Math.round(performance.now()-t0); state="idle"; box.className="react-box";
         SFX()&&SFX().success();
@@ -474,7 +777,7 @@
         setScore(score,t("games.best"),Math.min(ms, global.Profile.getRecord("react")||ms)+" ms");
       }
     };
-    return ()=>clearTimeout(to);
+    return ()=>{ if(cancelWait) cancelWait(); };
   }
 
   /* ---------------- Simon Says ---------------- */
@@ -497,23 +800,23 @@
     status.className = "game-score";
     area.appendChild(status);
     setScore(score, t("games.score"), 0);
-    function flash(i, ms) { pads[i].classList.add("lit"); setTimeout(() => pads[i].classList.remove("lit"), ms || FLASH); SFX() && SFX().pop(); }
+    function flash(i, ms) { pads[i].classList.add("lit"); later(ms || FLASH, () => pads[i].classList.remove("lit")); SFX() && SFX().pop(); }
     function playSeq() {
       accepting = false; status.textContent = t("simon.watch");
-      seq.forEach((v, n) => setTimeout(() => flash(v), 500 + n * 450));
-      setTimeout(() => { accepting = true; idx = 0; status.textContent = t("simon.your"); }, 500 + seq.length * 450);
+      seq.forEach((v, n) => later(500 + n * 450, () => flash(v)));
+      later(500 + seq.length * 450, () => { accepting = true; idx = 0; status.textContent = t("simon.your"); });
     }
     function next() { level++; setScore(score, t("games.score"), level); seq.push((Math.random() * 4) | 0); while (seq.length < START) seq.push((Math.random() * 4) | 0); playSeq(); }
     function press(i) {
-      if (!accepting) return;
+      if (!accepting || isPaused()) return;
       flash(i, 180);
       if (i === seq[idx]) {
         idx++;
-        if (idx === seq.length) { accepting = false; saveRecord("simon", level, "high"); setTimeout(next, 700); }
+        if (idx === seq.length) { accepting = false; saveRecord("simon", level, "high"); later(700, next); }
       } else {
         accepting = false; status.textContent = t("games.over"); SFX() && SFX().lose();
         saveRecord("simon", level, "high");
-        setTimeout(() => { seq = []; level = 0; setScore(score, t("games.score"), 0); next(); }, 1600);
+        later(1600, () => { seq = []; level = 0; setScore(score, t("games.score"), 0); next(); });
       }
     }
     next();
@@ -526,7 +829,12 @@
     const M = Math.min(N * N - 9, Math.max(5, Number(opt("minesCount", 10)) || 10));
     area.style.setProperty("--mines-n", N);
     area.style.setProperty("--mines-cell", (N > 12 ? 26 : N > 9 ? 30 : 34) + "px");
-    let grid, revealed, flags, over, started, t0, timerInt, left;
+    let grid, revealed, flags, over, started, t0, clock, left, pauseAt = 0;
+    const stopClock = () => { if (clock) { clock.stop(); clock = null; } };
+    const tickClock = () => { if (!over) setScore(score, t("games.score"), Math.floor((Date.now() - t0) / 1000)); };
+    /* годинник рахує від Date.now(), тому на паузі зсуваємо старт відліку */
+    onPause(() => { pauseAt = Date.now(); });
+    onResume(() => { if (pauseAt && started && !over) t0 += Date.now() - pauseAt; pauseAt = 0; });
     const wrap = document.createElement("div"); wrap.className = "mines";
     area.appendChild(wrap);
     const info = document.createElement("div"); info.className = "game-score"; area.appendChild(info);
@@ -536,7 +844,7 @@
       revealed = Array.from({ length: N }, () => Array(N).fill(false));
       flags = Array.from({ length: N }, () => Array(N).fill(false));
       over = false; started = false; left = N * N - M; t0 = 0;
-      clearInterval(timerInt);
+      stopClock();
       setScore(score, t("games.score"), 0);
       info.textContent = t("mines.flags") + ": " + M;
       wrap.innerHTML = ""; cells.length = 0;
@@ -573,8 +881,8 @@
       b.className = "op" + (v > 0 ? " n" + Math.min(v, 3) : "");
     }
     function open(x, y) {
-      if (over || flags[y][x] || revealed[y][x]) return;
-      if (!started) { started = true; place(x, y); t0 = Date.now(); timerInt = setInterval(() => setScore(score, t("games.score"), Math.floor((Date.now() - t0) / 1000)), 500); }
+      if (isPaused() || over || flags[y][x] || revealed[y][x]) return;
+      if (!started) { started = true; place(x, y); t0 = Date.now(); clock = every(500, tickClock); }
       if (grid[y][x] === -1) return lose();
       const stack = [[x, y]];
       while (stack.length) {
@@ -587,25 +895,25 @@
       if (left === 0) win();
     }
     function flag(x, y) {
-      if (over || revealed[y][x]) return;
+      if (isPaused() || over || revealed[y][x]) return;
       flags[y][x] = !flags[y][x];
       let f = 0; flags.forEach((r) => r.forEach((v) => { if (v) f++; }));
       info.textContent = t("mines.flags") + ": " + (M - f);
       draw(x, y); SFX() && SFX().click();
     }
     function lose() {
-      over = true; clearInterval(timerInt); SFX() && SFX().lose();
+      over = true; stopClock(); SFX() && SFX().lose();
       for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (grid[y][x] === -1) { revealed[y][x] = true; draw(x, y); }
-      setTimeout(init, 1800);
+      later(1800, init);
     }
     function win() {
-      over = true; clearInterval(timerInt);
+      over = true; stopClock();
       const sec = Math.floor((Date.now() - t0) / 1000);
       SFX() && SFX().win(); saveRecord("mines", sec, "low"); toast(t("games.youWin"));
-      setTimeout(init, 1800);
+      later(1800, init);
     }
     init();
-    return () => clearInterval(timerInt);
+    return () => stopClock();
   }
 
   /* ---------------- Guess the number ---------------- */
@@ -619,6 +927,7 @@
     const res = document.createElement("div"); res.className = "game-score"; res.style.fontSize = "18px"; area.appendChild(res);
     setScore(score, t("games.score"), 0);
     function check() {
+      if (isPaused()) return;
       const v = Number(inp.value);
       if (!v || v < 1 || v > MAX) return;
       tries++; setScore(score, t("games.score"), tries);
@@ -626,7 +935,7 @@
         res.textContent = t("games.youWin") + " " + target;
         SFX() && SFX().win(); saveRecord("guess", tries, "low");
         target = 1 + ((Math.random() * MAX) | 0); tries = 0; inp.value = "";
-        setTimeout(() => { res.textContent = ""; setScore(score, t("games.score"), 0); }, 1800);
+        later(1800, () => { res.textContent = ""; setScore(score, t("games.score"), 0); });
       } else {
         res.textContent = v < target ? t("guess.higher") : t("guess.lower");
         SFX() && SFX().pop();
@@ -676,7 +985,7 @@
       draw();
     }
     function tap(i) {
-      if (over) return;
+      if (over || isPaused()) return;
       if (picked === -1) { if (!pegs[i].length) return; picked = i; }
       else if (picked === i) { picked = -1; }
       else {
@@ -694,7 +1003,7 @@
       over = true; SFX() && SFX().win(); draw();
       info.textContent = t("hanoi.done", { n: moves, best: OPT });
       saveRecord("hanoi", moves, "low");
-      setTimeout(reset, 2800);
+      later(2800, reset);
     }
     reset();
     return null;
@@ -745,10 +1054,10 @@
       over = true; SFX() && SFX().win();
       status.textContent = t("slide.done", { n: moves });
       saveRecord("slide", moves, "low");
-      setTimeout(reset, 2800);
+      later(2800, reset);
     }
     function tap(i) {
-      if (over || i === blank || near(blank).indexOf(i) < 0) return;
+      if (over || isPaused() || i === blank || near(blank).indexOf(i) < 0) return;
       tiles[blank] = tiles[i]; tiles[i] = 0; blank = i; moves++;
       setScore(score, t("games.score"), moves); SFX() && SFX().pop();
       render();
@@ -789,7 +1098,7 @@
   /* ---------------- Лабіринт ---------------- */
   function mountMaze(area, score) {
     const C = Math.min(21, Math.max(7, (Number(opt("mazeSize", 13)) || 13) | 1));
-    const showTrail = opt("mazeTrail", "on") !== "off";
+    let showTrail = opt("mazeTrail", "on") !== "off";
     const W = C * 2 + 1;
     const cell = C > 15 ? 16 : C > 11 ? 22 : 30;
     const cv = document.createElement("canvas");
@@ -798,7 +1107,13 @@
     area.appendChild(cv);
     const ctx = cv.getContext("2d");
     const status = document.createElement("div"); status.className = "game-score"; area.appendChild(status);
-    let g, seen, px, py, t0, timer, over, moves;
+    let g, seen, px, py, t0, loop, over, moves, pauseAt = 0;
+    const stopLoop = () => { if (loop) { loop.stop(); loop = null; } };
+    /* час проходження теж рахуємо від Date.now(), тому паузу віднімаємо від старту */
+    onPause(() => { pauseAt = Date.now(); });
+    onResume(() => { if (pauseAt && !over) t0 += Date.now() - pauseAt; pauseAt = 0; });
+    /* слід можна вимкнути й увімкнути без перезапуску — він лише мальовний */
+    live("mazeTrail", (v) => { showTrail = v !== "off"; draw(); });
 
     function gen() {
       const m = Array.from({ length: W }, () => Array(W).fill(1));
@@ -861,14 +1176,14 @@
       seen = Array.from({ length: W }, () => Array(W).fill(false));
       px = 1; py = 1; seen[1][1] = true;
       moves = 0; over = false; t0 = Date.now();
-      clearInterval(timer);
-      timer = setInterval(() => { if (!over) setScore(score, t("games.score"), Math.floor((Date.now() - t0) / 1000)); }, 500);
+      stopLoop();
+      loop = every(500, () => { if (!over && !isPaused()) setScore(score, t("games.score"), Math.floor((Date.now() - t0) / 1000)); });
       setScore(score, t("games.score"), 0);
       status.textContent = t("maze.goal");
       draw();
     }
     function go(dx, dy) {
-      if (over) return;
+      if (over || isPaused()) return;
       const nx = px + dx, ny = py + dy;
       if (nx < 0 || ny < 0 || nx >= W || ny >= W || g[ny][nx]) { SFX() && SFX().lose(); return; }
       px = nx; py = ny; moves++; seen[ny][nx] = true;
@@ -876,11 +1191,11 @@
       if (px === W - 2 && py === W - 2) finish();
     }
     function finish() {
-      over = true; clearInterval(timer); SFX() && SFX().win();
+      over = true; stopLoop(); SFX() && SFX().win();
       const sec = Math.max(1, Math.round((Date.now() - t0) / 1000));
       status.textContent = t("maze.done", { n: sec, m: moves });
       saveRecord("maze", sec, "low");
-      setTimeout(reset, 2800);
+      later(2800, reset);
     }
     const key = (e) => {
       const k = e.key;
@@ -915,7 +1230,7 @@
       };
     });
     reset();
-    return () => { clearInterval(timer); window.removeEventListener("keydown", key); };
+    return () => { stopLoop(); window.removeEventListener("keydown", key); };
   }
 
   const MOUNTS = { ttt:mountTTT, snake:mountSnake, memory:mountMemory, g2048:mount2048, rps:mountRPS, react:mountReact, simon:mountSimon, mines:mountMines, guess:mountGuess, hanoi:mountHanoi, slide:mountSlide, maze:mountMaze };
@@ -930,6 +1245,15 @@
       card.innerHTML=`<div class="ico">${g.ico}</div><h3>${t(g.name)}</h3><p>${t(g.desc)}</p>`+
         (best!=null?`<div class="best">${t("games.best")}: ${best}</div>`:"");
       
+      // Короткий рядок вибраних налаштувань гри
+      const line = summaryFor(g.id);
+      if (line) {
+        const opts = document.createElement("div");
+        opts.className = "gs-card-opts";
+        opts.textContent = line;
+        card.appendChild(opts);
+      }
+
       // Кнопка "i" для інструкції
       const infoBtn = document.createElement("button");
       infoBtn.className = "game-info-btn";
@@ -941,6 +1265,18 @@
         showHowToPlay(g.id);
       };
       card.appendChild(infoBtn);
+
+      // Налаштування гри ще до старту: той самий діалог, без питання про перезапуск
+      const optBtn = document.createElement("button");
+      optBtn.className = "gs-opt-btn";
+      optBtn.innerHTML = '<span class="material-icons">tune</span>';
+      optBtn.title = t("game.settings") || "Game Settings";
+      optBtn.onclick = (e) => {
+        e.stopPropagation();
+        SFX() && SFX().click();
+        showGameSettings(g.id);
+      };
+      card.appendChild(optBtn);
       
       card.onclick=()=>{ SFX()&&SFX().click(); Games.open(g.id); };
       hub.appendChild(card);
@@ -987,9 +1323,27 @@
 
   const Games = {
     init(){ renderHub(); document.addEventListener("langchange",()=>{ if(!$("#gamesHub").classList.contains("hidden")) renderHub(); }); },
-    open(id){ const g=GAMES.find(x=>x.id===id); if(!g)return; currentId=id; const {area,score}=stageShell(g); if(cleanupFn){cleanupFn();cleanupFn=null;} cleanupFn=MOUNTS[id](area,score)||null; document.dispatchEvent(new CustomEvent("gameplayed", { detail: { id } })); },
-    close(){ currentId=null; if(cleanupFn){cleanupFn();cleanupFn=null;} const st=$("#gameStage"); st.innerHTML=""; st.classList.add("hidden"); $("#gamesHub").classList.remove("hidden"); renderHub(); },
+    open(id){
+      const g=GAMES.find(x=>x.id===id); if(!g)return;
+      /* попередня гра закривається разом із своєю паузою та діалогом налаштувань */
+      if (activeSettings) activeSettings.kill();
+      destroyPause();
+      currentId=id;
+      const {area,score}=stageShell(g);
+      if(cleanupFn){cleanupFn();cleanupFn=null;}
+      ph = makePauseHub(area);
+      cleanupFn=MOUNTS[id](area,score)||null;
+      document.dispatchEvent(new CustomEvent("gameplayed", { detail: { id } }));
+    },
+    close(){
+      if (activeSettings) activeSettings.kill();
+      currentId=null;
+      destroyPause();
+      if(cleanupFn){cleanupFn();cleanupFn=null;}
+      const st=$("#gameStage"); st.innerHTML=""; st.classList.add("hidden"); $("#gamesHub").classList.remove("hidden"); renderHub();
+    },
     restartIfOpen(id){ if (currentId === id) Games.open(id); },
+    isPaused: () => isPaused(),
     list: () => GAMES.slice(),
     renderHub
   };

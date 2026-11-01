@@ -33,6 +33,7 @@
       tourDone: "Ось і весь сайт. Щасти у вивченні Python!",
       tourChip: "Показати тур",
       tourBtnL: "Показати тур сайтом",
+      tourWaitInstall: "Завантажую потрібні модулі — це займе мить чи дві. Як закінчу, поїдемо далі.",
       padToast: "Код уже в редакторі — тисни «Запуск»",
       whyLabel: "Чому так",
       tutPrevL: "Крок назад",
@@ -70,6 +71,7 @@
       tourDone: "That is the whole site. Good luck learning Python!",
       tourChip: "Show the tour",
       tourBtnL: "Take the site tour",
+      tourWaitInstall: "I am downloading the modules now — a moment or two. As soon as they are ready, we move on.",
       padToast: "The code is in the editor — hit Run",
       whyLabel: "Why this way",
       tutPrevL: "Previous step",
@@ -107,6 +109,7 @@
       tourDone: "Tüm site bu kadar. Python öğrenirken bol şans!",
       tourChip: "Tur göster",
       tourBtnL: "Site turunu başlat",
+      tourWaitInstall: "Modülleri şimdi indiriyorum — bir an, belki iki. Hazır olunca devam ederiz.",
       padToast: "Kod düzenleyicide — Çalış'a bas",
       whyLabel: "Neden böyle",
       tutPrevL: "Önceki adım",
@@ -726,7 +729,7 @@
   let inited = false;
   let root = null, fab = null, panel = null, msgsEl = null, chipsEl = null,
       inputEl = null, mascotEl = null,
-      spotEl = null, petEl = null, pawEl = null, sayEl = null,
+      spotEl = null, petEl = null, pawEl = null, sayEl = null, lockEl = null,
       sayTextEl = null, sayCountEl = null,
       sayPrevBtn = null, sayAutoBtn = null, sayNextBtn = null;
   let ctx = { section: "home" };
@@ -964,16 +967,28 @@
     };
   }
 
-  function aiAsk(question) {
+  /* Останні репліки — щоб хмарний мозок пам'ятав, про що мова. */
+  let transcript = [];
+
+  function aiAsk(question, done) {
     const AI = global.PychikAI;
-    if (!AI || !AI.think) return false;
-    let r = null;
-    try { r = AI.think(question, aiBridge()); } catch (e) { r = null; }
-    if (!r || !r.text) return false;
-    mood(r.mood || "happy");
-    addMsg("bot", r.text, r.code || null, r.sugs || null, r.why || null);
-    applyAct(r.act, r.code);
-    return true;
+    if (!AI || !AI.chat) { done(false); return; }
+    let settled = false;
+    const fin = (r) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(guard);
+      if (!r || !r.text) { done(false); return; }
+      mood(r.mood || "happy");
+      addMsg("bot", r.text, r.code || null, r.sugs || null, r.why || null);
+      transcript.push({ me: true, text: question }, { me: false, text: r.text });
+      if (transcript.length > 16) transcript = transcript.slice(-16);
+      applyAct(r.act, r.code);
+      done(true);
+    };
+    /* хмара мовчить довше за п'ятнадцять секунд — не будемо тримати користувача в підвішеному стані */
+    const guard = setTimeout(() => { try { fin(AI.think(question, aiBridge())); } catch (e) { fin(null); } }, 18000);
+    try { AI.chat(question, aiBridge(), transcript, fin); } catch (e) { clearTimeout(guard); fin(null); }
   }
 
   /* ---------- Мозок ---------- */
@@ -985,15 +1000,17 @@
       return;
     }
     /* спершу розмовний мозок: він сам звертається до бази знань, коли треба */
-    if (aiAsk(question)) return;
-    const entry = matchKB(question);
-    if (entry) {
-      mood("happy");
-      addMsg("bot", pick(entry.a), entry.code || null);
-    } else {
-      mood("sad");
-      addMsg("bot", tx("fallback"), null, SUGGEST.map((s) => ({ label: pick(s), q: s.q })));
-    }
+    aiAsk(question, (handled) => {
+      if (handled) return;
+      const entry = matchKB(question);
+      if (entry) {
+        mood("happy");
+        addMsg("bot", pick(entry.a), entry.code || null);
+      } else {
+        mood("sad");
+        addMsg("bot", tx("fallback"), null, SUGGEST.map((s) => ({ label: pick(s), q: s.q })));
+      }
+    });
   }
 
   function ask(question) {
@@ -1025,11 +1042,11 @@
         en: "This is the Python playground. I click it myself — I have no mouse, only paws. Look: a real click and a real page switch!",
         tr: "Burası Python alanı. Kendim tıklıyorum — farem yok, sadece patilerim var. Bak: gerçek tıklama, gerçek geçiş!"
       } },
-    { route: "python", sel: "#run", act: "show",
+    { route: "python", sel: "#run", act: "click", wait: "install",
       say: {
-        uk: "Ця кнопка запускає твій код у браузері. Я сидітиму поруч — як талісман і як служба підтримки водночас.",
-        en: "This button runs your code right in the browser. I'll sit nearby — as a mascot and as a support desk at the same time.",
-        tr: "Bu düğme kodunu tarayıcıda çalıştırır. Ben yanında oturacağım — hem maskot hem destek masası olarak."
+        uk: "Це «Запуск» — тисну її сам. Спершу вона вантажить потрібні модулі, а вже тоді запускає твій код у браузері.",
+        en: "This is Run — I press it myself. First it downloads the modules it needs, and only then it runs your code right in the browser.",
+        tr: "Bu Çalıştır düğmesi — kendim basıyorum. Önce gerekli modülleri indirir, sonra kodunu tarayıcıda çalıştırır."
       } },
     { route: "modules", nav: "modules", act: "click",
       say: {
@@ -1087,7 +1104,12 @@
       } }
   ];
 
-  let tutor = null; /* { i, auto, steps, timer, tapTimer } */
+  let tutor = null; /* { i, auto, done, waiting, steps, timer, tapTimer } */
+  let installWait = null; /* { timer, started, waited, shown } — чекання на завантаження модулів */
+
+  const INSTALL_POLL_MS = 320;
+  const INSTALL_START_GRACE_MS = 9000;
+  const INSTALL_MAX_MS = 300000;
 
   function goto(routeName) {
     try {
@@ -1213,7 +1235,7 @@
   function tutorSayTexts() {
     if (!tutor) return;
     const step = tutor.steps[tutor.i];
-    sayTextEl.textContent = pick(step.say);
+    sayTextEl.textContent = installWait && installWait.shown ? tx("tourWaitInstall") : pick(step.say);
     sayCountEl.textContent = tx("tourCounter", { n: tutor.i + 1, m: tutor.steps.length });
     sayNextBtn.textContent = tutor.i === tutor.steps.length - 1 ? tx("tourFinish") : tx("tourNext");
     sayPrevBtn.disabled = tutor.i === 0;
@@ -1235,6 +1257,79 @@
     moveSpot(r);
     aimPaw(movePet(r), r);
   }
+  /* ---------- Блокування сторінки й чекання на модулі ---------- */
+  function setTourLock(on) {
+    if (root) root.classList.toggle("tour-locking", !!on);
+  }
+  function installerBusyNow() {
+    const I = global.Installer;
+    return !!(I && typeof I.busy === "function" && I.busy());
+  }
+  function installerReadyNow() {
+    const I = global.Installer;
+    return !!(I && typeof I.recommendedDone === "function" && I.recommendedDone());
+  }
+  function stopInstallWait() {
+    if (!installWait) return;
+    clearInterval(installWait.timer);
+    installWait = null;
+    if (tutor) tutor.waiting = false;
+  }
+  /* «Запуск» відкриває вікно завантаження модулів. Автопілот завмирає, доки
+     пакети не приїдуть, — інакше тур пробіг би повз сам процес установлення. */
+  function waitForInstall() {
+    if (!tutor || !global.Installer || installerReadyNow()) return;
+    stopInstallWait();
+    tutor.waiting = true;
+    if (tutor.timer) { clearTimeout(tutor.timer); tutor.timer = null; }
+    installWait = {
+      started: false, waited: 0, shown: false,
+      timer: setInterval(pollInstallWait, INSTALL_POLL_MS)
+    };
+  }
+  function pollInstallWait() {
+    if (!tutor || !installWait) return;
+    if (installerBusyNow() || document.querySelector("#installerModal")) {
+      installWait.started = true;
+      installWait.waited = 0;
+      /* вікно установщика має z-index 98 — воно під блокуючим шаром, тому на
+         час його відкриття шар знімаємо, інакше кнопку в вікні не натиснути */
+      setTourLock(false);
+      if (!installWait.shown) {
+        installWait.shown = true;
+        spotEl.classList.remove("pychik-spot-on");
+        mood("think");
+        tutorSayTexts();
+      }
+      return;
+    }
+    if (installerReadyNow()) { releaseInstallWait(true); return; }
+    installWait.waited += INSTALL_POLL_MS;
+    if (installWait.waited > (installWait.started ? INSTALL_MAX_MS : INSTALL_START_GRACE_MS)) {
+      releaseInstallWait(false);
+    }
+  }
+  function releaseInstallWait(completed) {
+    stopInstallWait();
+    if (!tutor) return;
+    setTourLock(true);
+    mood(completed ? "happy" : "idle");
+    tutorSayTexts();
+    tutorReposition();
+    if (completed && tutor.auto) {
+      tutor.timer = setTimeout(tutorNext, slowMotion() ? 1500 : 80);
+      return;
+    }
+    armAutoTimer();
+  }
+  function armAutoTimer() {
+    if (!tutor || !tutor.auto || tutor.waiting) return;
+    if (tutor.timer) clearTimeout(tutor.timer);
+    const step = tutor.steps[tutor.i];
+    tutor.timer = setTimeout(() => { if (tutor && tutor.auto) tutorNext(); },
+      step.act === "click" ? 6400 : 4600);
+  }
+
   /* «Натискання» елемента: кільце, звук і справжній клік. */
   function tutorPoke(node) {
     tapAt(node.getBoundingClientRect());
@@ -1250,7 +1345,15 @@
       const r = target.getBoundingClientRect();
       moveSpot(r);
       aimPaw(movePet(r), r);
-      if (step.act !== "click" || !step.nav) return;
+      if (step.act !== "click") return;
+      if (!step.nav) {
+        /* крок без навігації тисне свою кнопку — і, якщо вона щось вантажить, чекаємо */
+        const node = tutorTarget(step);
+        if (!node) return;
+        tutorPoke(node);
+        if (step.wait === "install") waitForInstall();
+        return;
+      }
       const rail = tutorNavBtn(step.nav);
       const more = tutorMoreBtn();
       tutor.tapTimer = setTimeout(() => {
@@ -1276,17 +1379,18 @@
   function tutorGo(i) {
     if (!tutor) return;
     clearTutorTimers();
+    stopInstallWait();
+    setTourLock(true);
     tutor.i = Math.min(Math.max(0, i), tutor.steps.length - 1);
     tutor.done = false;
     const step = tutor.steps[tutor.i];
     if (step.route && !tutorCanClick(step)) goto(step.route);
     tutorSayTexts();
     tutorPlace(step);
-    tutor.timer = setTimeout(() => { if (tutor && tutor.auto) tutorNext(); },
-      step.act === "click" ? 6400 : 4600);
+    armAutoTimer();
   }
   function tutorNext() {
-    if (!tutor) return;
+    if (!tutor || tutor.waiting) return;
     if (tutor.i >= tutor.steps.length - 1) { endTour(true); return; }
     tutorGo(tutor.i + 1);
   }
@@ -1297,11 +1401,13 @@
     clearTutorTimers();
     tutorSayTexts();
     sfx("click");
-    if (tutor.auto) tutor.timer = setTimeout(tutorNext, 2400);
+    if (tutor.auto && !tutor.waiting) tutor.timer = setTimeout(tutorNext, 2400);
   }
   function endTour(finished) {
     clearTutorTimers();
+    stopInstallWait();
     tutor = null;
+    setTourLock(false);
     spotEl.classList.remove("pychik-spot-on");
     petEl.classList.remove("pychik-pet-on");
     pawEl.classList.remove("pychik-paw-on");
@@ -1322,7 +1428,9 @@
       if (one.length) steps = one;
     }
     if (panel && panel.classList.contains("pychik-open")) close();
-    tutor = { i: -1, auto: true, done: false, steps: steps, timer: null, tapTimer: null };
+    stopInstallWait();
+    tutor = { i: -1, auto: true, done: false, waiting: false, steps: steps, timer: null, tapTimer: null };
+    setTourLock(true);
     sayEl.classList.add("pychik-say-open");
     mood("happy");
     sfx("pop");
@@ -1359,6 +1467,8 @@
     root = el("div", "pychik mood-idle");
 
     spotEl = el("div", "pychik-spot");
+    lockEl = el("div", "pychik-lock");
+    lockEl.setAttribute("aria-hidden", "true");
     petEl = el("div", "pychik-pet");
     petEl.appendChild(mascotSVG("pychik-svg pychik-svg-pet"));
     pawEl = el("div", "pychik-paw");
@@ -1444,8 +1554,20 @@
     row.appendChild(sendBtn);
     panel.appendChild(row);
 
+    /* Коліщатко над панеллю гортає лише розмову: без цього скролилася б ще й сторінка.
+       Жест із дельтою по X не чіпаємо — ним гортають довгі рядки коду. */
+    panel.addEventListener("wheel", (e) => {
+      if (!e.deltaY) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (!msgsEl) return;
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? msgsEl.clientHeight : 1;
+      msgsEl.scrollTop += e.deltaY * unit;
+    }, { passive: false });
+
     root.appendChild(panel);
     root.appendChild(fab);
+    root.appendChild(lockEl);
     root.appendChild(spotEl);
     root.appendChild(petEl);
     root.appendChild(pawEl);

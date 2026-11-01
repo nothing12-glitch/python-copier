@@ -1591,7 +1591,7 @@ body[data-style="new"] .view.active {
 }
 body[data-style="new"] .view.active > .section-head,
 body[data-style="new"] .view.active > .card,
-body[data-style="new"] .view.active > .hero { margin: 0; }
+body[data-style="new"] .view.active > .hero { margin: 0 auto; }
 body[data-style="new"] .card > .card-body,
 body[data-style="new"] .pad { padding: 16px; }
 body[data-style="new"] .cards { gap: 16px; margin-top: 0; }
@@ -2324,4 +2324,198 @@ body.vlt-noscroll { overflow: hidden; }
 .mod-src-own {
   background: color-mix(in srgb, var(--md-primary) 18%, transparent);
   color: var(--md-primary);
+}
+
+/* ==== Пауза гри під час налаштувань + налаштування з хаба ==== */
+/* ігрове поле стає контекстом для накладання «Пауза» */
+.gs-area-host { position: relative; }
+
+.gs-pause {
+  position: absolute; inset: 0; z-index: 4;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; padding: 16px;
+  border-radius: 18px;
+  background: rgba(7, 11, 24, .68);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  color: #fff; text-align: center;
+  animation: gsfade .18s ease both;
+}
+.gs-pause-ico { display: block; line-height: 1; }
+.gs-pause-ico .material-icons { font-size: 44px; color: var(--md-primary); }
+.gs-pause-title {
+  font-size: 22px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+}
+.gs-pause-hint { font-size: 12.5px; opacity: .78; max-width: 300px; line-height: 1.4; }
+
+/* помітка в діалозі: опція діє лише з нового розіграшу */
+.gs-note {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--md-primary) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--md-primary) 30%, transparent);
+}
+.gs-note-text { font-size: 12.5px; line-height: 1.45; opacity: .9; }
+.gs-restart { width: 100%; }
+
+/* рядок вибраних налаштувань на картці гри в хабі */
+.gs-card-opts {
+  margin-top: 8px;
+  font-size: 11.5px; line-height: 1.4;
+  color: var(--md-on-surface-var, var(--md-on-surface));
+  opacity: .78;
+}
+
+/* кнопка налаштувань гри на картці хаба (ліворуч від «i») */
+.gs-opt-btn {
+  position: absolute;
+  top: 8px;
+  right: 42px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: color-mix(in srgb, var(--md-primary) 20%, transparent);
+  color: var(--md-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, transform .15s;
+  padding: 0;
+}
+.gs-opt-btn .material-icons { font-size: 18px; }
+.gs-opt-btn:hover {
+  background: color-mix(in srgb, var(--md-primary) 35%, transparent);
+  transform: scale(1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gs-pause, .gs-opt-btn { animation: none !important; transition: none !important; }
+}
+
+/* ==== Особисті програми: рядки картки та показник у профілі ==== */
+/* рядок з чотирма діями: назва ліворуч, кнопки праворуч і в переноску */
+.own-snippet-row { align-items: flex-start; }
+.own-snippet-actions { flex-wrap: wrap; justify-content: flex-end; row-gap: 2px; }
+.own-snippet-actions .btn.text,
+.own-snippet-actions .btn.outlined {
+  height: 30px;
+  padding: 0 9px;
+  font-size: 12.5px;
+}
+.own-snippet-actions .btn.outlined.danger { margin-left: 2px; }
+.own-snippet-actions .btn.own-snippet-update { color: var(--md-primary); font-weight: 600; }
+
+@media (max-width: 560px) {
+  .own-snippet-row { flex-direction: column; align-items: stretch; }
+  .own-snippet-row .snippet-title { white-space: normal; }
+  .own-snippet-actions { flex: 1 1 auto; justify-content: flex-start; }
+}
+
+/* картка «Власні програми» в сітці рекордів профілю */
+.own-record {
+  cursor: help;
+  border: 1px dashed color-mix(in srgb, var(--md-primary) 45%, transparent);
+  background: color-mix(in srgb, var(--md-primary) 8%, var(--md-surface-dim));
+}
+.own-record-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.own-record-info { font-size: 15px; line-height: 1; opacity: .6; }
+.own-record:hover .own-record-info,
+.own-record:focus-within .own-record-info { opacity: 1; }
+.own-record-value { font-variant-numeric: tabular-nums; }
+
+
+/* ---------- 41) Магазинчик: мультивибір модулів + повітря навколо плиток (modules.js) ---------- */
+/* Плитки статистики: цифра не повинна торкатись краю, а ряд — обірвано закінчуватись.
+   Тільки нові правила в кінці файлу: існуючі не чіпаємо, перевизначаємо нижче. */
+.mod-stats { gap: 13px; margin-bottom: 24px; }
+.mod-stat {
+  flex: 1 1 148px; min-width: 148px;
+  padding: 16px 18px; border-radius: 14px;
+}
+.mod-stat .mod-stat-value { margin: 0; font-size: 24px; line-height: 1.2; }
+.mod-stat .mod-stat-label { margin-top: 5px; }
+
+/* Ряди чіпів (фільтри, набори, панель вибору) — дихання під кожним рядом */
+.mod-sel-chips { gap: 9px; margin: 0 0 14px; }
+.mod-sel-row { gap: 9px; }
+.mod-sel-bar { gap: 10px; margin: 14px 0 0; }
+
+/* Прапорець вибору в шапці картки */
+.mod-sel-box {
+  display: inline-flex; align-items: center; flex: none;
+  margin: 0 2px 0 0; cursor: pointer;
+}
+.mod-sel-input {
+  width: 16px; height: 16px; margin: 0; cursor: pointer;
+  accent-color: var(--md-primary);
+}
+.mod-sel-input:disabled { cursor: not-allowed; opacity: .35; }
+.mod-sel-input:focus-visible {
+  outline: 2px solid var(--md-primary); outline-offset: 3px; border-radius: 4px;
+}
+
+/* «Раніше встановлював» — суміжний стан: не «готово», але й не «вперше тут» */
+.mod-sel-prev { border-style: dashed; opacity: .85; }
+.mod-sel-prev-card {
+  border-color: color-mix(in srgb, var(--md-primary) 32%, var(--nu-line, transparent));
+}
+
+/* Панель мультивиббору: лічильник + дії, у тому ж дусі, що й набір чіпів вище */
+.mod-sel-bar {
+  display: flex; align-items: center; flex-wrap: wrap;
+  padding: 12px 14px; border-radius: 14px;
+  border: 1px solid var(--nu-line, var(--md-outline-var));
+  background: color-mix(in srgb, var(--md-primary) 6%, var(--nu-surface-solid, var(--md-surface-dim)));
+}
+.mod-sel-count {
+  flex: 0 0 auto; margin-right: 4px;
+  font-family: var(--md-mono); font-size: 13px; font-weight: 700;
+  color: var(--nu-dim, var(--md-on-surface-var));
+}
+.mod-sel-count.has-selection { color: var(--md-primary); }
+.mod-sel-bar .btn { font-size: 13px; padding: 6px 14px; }
+.mod-sel-install .material-icons { font-size: 18px; }
+
+/* Притуплені на час завантаження контроли: «прибрати/встановити» не пропонуємо */
+.mod-sel-wait,
+.mod-sel-guard[disabled],
+body[data-style="new"] .mod-sel-guard[disabled] {
+  opacity: .45;
+  cursor: not-allowed;
+  filter: saturate(.55);
+}
+
+@media (max-width: 768px) {
+  .mod-stat { flex: 1 1 calc(50% - 13px); min-width: 0; padding: 14px 16px; }
+  .mod-stats { gap: 11px; margin-bottom: 20px; }
+  .mod-sel-bar { margin-top: 12px; padding: 10px 12px; }
+  .mod-sel-bar .btn { flex: 1 1 auto; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mod-sel-box, .mod-sel-input { transition: none; }
+}
+
+
+/* ---------- 42) Те саме «повітря» для решіток цифр усюди (прохання «в кожному так») ---------- */
+/* Плитки змагань у «Задачах» і рядок статистики під редактором мали ту саму ваду,
+   що й плитки магазинчика: цифра впритул до краю, ряд обірваний. */
+.contest-stats { gap: 13px; margin-bottom: 22px; }
+.contest-stat { flex: 1 1 148px; min-width: 148px; padding: 16px 18px; }
+.contest-stat .contest-stat-value { margin: 0; font-size: 24px; line-height: 1.2; }
+.contest-stat .contest-stat-label { margin-top: 5px; }
+
+/* ряди вибіркових чіпів скрізь однаково дихають */
+.contest-chips { gap: 9px; }
+@media (max-width: 768px) {
+  .contest-stat { flex: 1 1 calc(50% - 13px); min-width: 0; padding: 14px 16px; }
+  .contest-stats { gap: 11px; margin-bottom: 18px; }
 }

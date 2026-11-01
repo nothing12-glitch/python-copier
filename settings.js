@@ -24,6 +24,7 @@
     hanoiDisks: 4, slideSize: 4, slideShuffle: "normal",
     mazeSize: 13, mazeTrail: "on",
     trackRecords: true, showHints: true, shortcuts: true,
+    pyNoCode: true, pyAiUrl: "https://api.openai.com/v1/chat/completions", pyAiModel: "gpt-4o-mini", pyAiKey: "",
     language: null
   };
 
@@ -148,6 +149,12 @@
       { id: "sfxVolume", type: "range", label: "set.sfxVolume", min: 0, max: 1, step: 0.05 },
       { id: "musicVolume", type: "range", label: "set.musicVolume", min: 0, max: 1, step: 0.05 }
     ]},
+    { group: "set.pychik", items: [
+      { id: "pyNoCode", type: "switch", label: "set.pyNoCode" },
+      { id: "pyAiKey", type: "text", label: "set.pyAiKey", secret: true, placeholder: "sk-..." },
+      { id: "pyAiModel", type: "text", label: "set.pyAiModel", placeholder: "gpt-4o-mini" },
+      { id: "pyAiUrl", type: "text", label: "set.pyAiUrl", placeholder: "https://..." }
+    ]},
     { group: "set.account", items: [
       { id: "google", type: "button", label: "set.google", icon: "login", variant: "contained" },
       { id: "github", type: "button", label: "set.github", icon: "login", variant: "outlined" }
@@ -186,6 +193,18 @@
       inp.onchange = () => set(item.id, isToggleVal ? (inp.checked ? item.on : item.off) : inp.checked);
       const tr = document.createElement("span"); tr.className = "track";
       lab.append(inp, tr); wrap.appendChild(lab);
+    }
+    else if (item.type === "text") {
+      const inp = document.createElement("input");
+      inp.type = item.secret ? "password" : "text";
+      inp.className = "md-input";
+      inp.dataset.set = item.id;
+      inp.placeholder = item.placeholder || "";
+      inp.autocomplete = "off";
+      inp.spellcheck = false;
+      inp.value = String(state[item.id] || "");
+      inp.onchange = () => set(item.id, inp.value.trim());
+      wrap.appendChild(inp);
     }
     else if (item.type === "select") {
       const sel = document.createElement("select"); sel.className = "md-select"; sel.dataset.set = item.id;
