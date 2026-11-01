@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.81";
+  const VERSION = "26.10.82";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.82": {
+      uk: [
+        "Картка уроку в курсі нарешті дихає: текст більше не лежить упритул до рамки — картка дістала внутрішній відступ, зліва найбільший",
+        "Рядки теорії та умови задачі стали коротшими: замість ~140 символів у рядок тепер близько 70, і текст став помітно легшим для ока",
+        "Приклад коду й поле практики отримали свою межу ширини, а між собою вони вирівняні в один стовпчик"
+      ],
+      en: [
+        "The lesson card in the course finally breathes: text no longer lies flush against the frame — the card gained inner padding, largest on the left",
+        "Theory and task lines got shorter: instead of ~140 characters per line there are now about 70, which is noticeably easier on the eye",
+        "The code example and the practice field each got their own width limit, and the two line up in a single column"
+      ],
+      tr: [
+        "Kursdaki ders kartı sonunda nefes alıyor: metin artık çerçeveye yapışık değil — kartın iç boşluğu arttı, solda en geniş haliyle",
+        "Kuram ve soru satırları kısaldı: satır başına ~140 yerine artık ~70 karakter var, bu da gözü belirgin biçimde yormuyor",
+        "Kod örneği ve alıştırma alanı kendi genişlik sınırını aldı; ikisi tek bir sütunda hizalanıyor"
+      ]
+    },
     "26.10.81": {
       uk: [
         "Урок «Літерали» в курсі тепер реально вчить виводити текст: приклад починається з `print(\"hello\")`, а в теорії пояснено, чому на екрані з'являється `hello` без лапок",

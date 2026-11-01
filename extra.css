@@ -2934,3 +2934,19 @@ body[data-style="new"]:not(.dark) .mp-ctrls .big { color: #fff; }
   body[data-style="new"] #musicPanel { max-height: min(74vh, 560px); border-radius: 22px; }
   body[data-style="new"] .mp-hero-front { width: 50px; height: 50px; }
 }
+
+/* ===== 46. Курс: картка уроку — внутрішній відступ і читабельна мірка ===== */
+/* Раніше .course-detail не мала свого padding узагалі: текст ліг упритул до
+   рамки картки, а рядки теорії розтягувались на ~140 символів. */
+body[data-style="new"] .course-detail { padding: 26px 28px 30px 34px; }
+body[data-style="new"] .course-theory,
+body[data-style="new"] .course-task-text,
+body[data-style="new"] .course-detail .task-hint { max-width: min(100%, 72ch); }
+body[data-style="new"] .course-example,
+body[data-style="new"] .course-code { max-width: min(100%, 680px); }
+body[data-style="new"] .course-theory { line-height: 1.72; }
+body[data-style="new"] .course-task-text { line-height: 1.65; }
+
+@media (max-width: 768px) {
+  body[data-style="new"] .course-detail { padding: 18px 16px 20px 18px; }
+}
