@@ -342,9 +342,9 @@
           id: "comments",
           title: { uk: "Коментарі", en: "Comments", tr: "Yorumlar" },
           theory: {
-            uk: "Усе, що стоїть після # до кінця рядка, Python не читає — це коментар. Він пояснює задум коду, а не повторює його: «# початкова температура» корисніше, ніж «# start = 20». Якщо треба вимкнути кілька рядків, # ставлять на початку кожного з них; такий закоментований print уже нічого не виводить.",
-            en: "Everything after # up to the end of the line is a comment — Python never reads it. A comment explains the intent instead of repeating the code: “# starting temperature” is more useful than “# start = 20”. To disable several lines, put # at the start of each one; a commented-out print then outputs nothing.",
-            tr: "# işaretinden satır sonuna kadar yazılan her şey yorumdur, Python onu okumaz. Yorum kodun tekrarını değil amacını açıklar: “# başlangıç sıcaklığı”, “# start = 20” satırından daha faydalıdır. Birkaç satırı devre dışı bırakmak için her satırın başına # koy; yorum yapılmış bir print hiçbir şey yazdırmaz."
+            uk: "Усе, що стоїть після # до кінця рядка, Python не читає — це коментар. Він пояснює задум коду, а не повторює його: «# початкова температура» корисніше, ніж «# start = 20». Якщо треба вимкнути кілька рядків, # ставлять на початку кожного з них; такий закоментований print уже нічого не виводить. Ще коментар рятує, коли рядок поки що зайвий і його ліпше не видаляти, а призупинити — наприклад, рядок із змінною, якої в програмі ще немає; про це йтиметься в наступному уроці.",
+            en: "Everything after # up to the end of the line is a comment — Python never reads it. A comment explains the intent instead of repeating the code: “# starting temperature” is more useful than “# start = 20”. To disable several lines, put # at the start of each one; a commented-out print then outputs nothing. A comment also saves you when a line is not needed yet and you would rather pause it than delete it — for instance, a line that uses a variable the program does not have yet; that is the next lesson.",
+            tr: "# işaretinden satır sonuna kadar yazılan her şey yorumdur, Python onu okumaz. Yorum kodun tekrarını değil amacını açıklar: “# başlangıç sıcaklığı”, “# start = 20” satırından daha faydalıdır. Birkaç satırı devre dışı bırakmak için her satırın başına # koy; yorum yapılmış bir print hiçbir şey yazdırmaz. Yorum ayrıca, bir satır henüz gerekmediğinde onu silmek yerine askıya almak için işe yarar — sözgelimi programda henüz olmayan bir değişkeni kullanan satır; bu bir sonraki dersin konusu."
           },
           example: "# Рахуємо, на скільки градусів похолодало\nstart = 20\nend = 15\nprint(end - start)\n",
           task: {
@@ -361,6 +361,32 @@
             starter: "print(\"1\")\nprint(\"зайве\")\nprint(\"2\")\nprint(\"3\")\n",
             tests: [
               { in: "", out: "1\n2\n3" }
+            ]
+          }
+        },
+        {
+          id: "undeclared",
+          title: { uk: "Спочатку оголоси, потім використовуй", en: "Declare it first, then use it", tr: "Önce tanımla, sonra kullan" },
+          theory: {
+            uk: "Python читає код зверху вниз і знає лише ті назви, які вже з'явилися в програмі, тому змінну спочатку створюють (y = 5), а тільки потім пишуть у формулі. Рядок x = y + 1, де y ніде не оголошена, зупинить програму з NameError: name 'y' is not defined — Python назве змінну, якої не знайшов, і вкаже номер рядка, тож помилку легко знайти. Якщо такий рядок потрібен буде потім, його не видаляють, а закоментовують: # на початку робить рядок невидимим, решта коду працює далі, а рядок лишається в файлі. Якщо цей результат далі лише друкували, то рядок print закоментовують теж: без нього друкувати нічого.",
+            en: "Python reads the code top to bottom and knows only the names that already appeared in the program, so a variable is created first (y = 5) and only then written into a formula. The line x = y + 1, where y was never declared, stops the program with NameError: name 'y' is not defined — Python names the variable it could not find and points at the line number, so the mistake is easy to locate. If you need that line later, do not delete it, comment it out: # at the start makes the line invisible, the rest of the code keeps running and the line stays in the file. If that result was only ever printed, comment out the print line as well: with the value gone there is nothing to print.",
+            tr: "Python kodu yukarıdan aşağı okur ve yalnız programda daha önce ortaya çıkmış adları bilir; bu yüzden değişken önce oluşturulur (y = 5), sonra formüle yazılır. y'nin hiç tanımlanmadığı x = y + 1 satırı programı NameError: name 'y' is not defined ile durdurur — Python bulamadığı değişkenin adını ve satır numarasını söyler, hata kolayca bulunur. Bu satırı sonra kullanacaksan silme, yoruma al: başındaki # satırı görünmez kılar, kodun kalanı çalışmaya devam eder ve satır dosyada kalır. Bu sonuç yalnızca yazdırılmak için kullanıldıysa print satırını da yoruma al: değer olmayınca yazdırılacak bir şey kalmaz."
+          },
+          example: "print(\"програма стартувала\")\nx = y + 1\nprint(x)\n",
+          task: {
+            text: {
+              uk: "Програма падає на рядку c = b + y: змінної y в ній немає, і створювати її теж не треба. Вимкнути зайве — робота для # : закоментуй цей рядок і той, що друкує c, щоб вивелося лише початок і кінець.",
+              en: "The program stops at the line c = b + y: there is no variable y in it, and you should not create one either. Turning things off is the job of # : comment out that line and the line that prints c, so that only початок and кінець are printed.",
+              tr: "Program c = b + y satırında düşüyor: böyle bir y değişkeni yok ve onu oluşturmak da gerekmez. Fazlalığı kapatmak # işaretinin işi: o satırı ve c'yi yazdıran satırı yoruma al, böylece yalnızca початок і кінець yazdırılsın."
+            },
+            hint: {
+              uk: "Почни кожен вимкнений рядок з #: # c = b + y та # print(c). Інші рядки не чіпай — вони працюють правильно.",
+              en: "Start each disabled line with #: # c = b + y and # print(c). Leave the other lines alone — they are already correct.",
+              tr: "Kapattığın her satıra # ile başla: # c = b + y ve # print(c). Diğer satırlara dokunma — onlar zaten doğru."
+            },
+            starter: "print(\"початок\")\na = 4\nb = a * 2\nc = b + y\nprint(c)\nprint(\"кінець\")\n",
+            tests: [
+              { in: "", out: "початок\nкінець" }
             ]
           }
         },

@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.86";
+  const VERSION = "26.10.87";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.87": {
+      uk: [
+        "Новий урок «Спочатку оголоси, потім використовуй»: Python читає код зверху вниз і не знає назв, яких ще не було, тому x = y + 1 без попередньої y дає NameError: name 'y' is not defined",
+        "У прикладі уроку програма друкує перший рядок і падає на другому — так видно, що помилка чіпляється не до всього коду, а до конкретного рядка з конкретним ім'ям",
+        "У задачі серед шести рядків треба знайти той, що бере значення неоголошеної y, і закоментувати його разом із рядком, який друкував результат — решта коду має запрацювати",
+        "Перевірка не пропустить обхідний шлях: якщо замість коментаря домалювати y = 0 чи спростити формулу, вивід стане іншим і задача не зарахується",
+        "Урок «Коментарі» тепер закінчується містком: коментар не лише пояснює код, а й призупиняє зайвий рядок, щоб повернутися до нього, коли змінна з'явиться"
+      ],
+      en: [
+        "New lesson \"Declare it first, then use it\": Python reads code top to bottom and does not know names that have not appeared yet, so x = y + 1 without a previous y gives NameError: name 'y' is not defined",
+        "In the lesson example the program prints the first line and then stops on the second — this shows that an error clings to one specific line and one specific name, not to the whole file",
+        "The task asks you to find, among six lines, the one that reads the undeclared y and comment it out together with the line that printed its result, so the rest of the code runs",
+        "The check blocks the way around it: adding y = 0 or simplifying the formula instead of commenting changes the output, and the task will not be accepted",
+        "The \"Comments\" lesson now ends with a bridge: a comment not only explains code, it also pauses a line you do not need yet, so you can return to it when the variable appears"
+      ],
+      tr: [
+        "Yeni ders \"Önce tanımla, sonra kullan\": Python kodu yukarıdan aşağı okur ve henüz ortaya çıkmamış adları bilmez; bu yüzden önceden tanımlanmamış y ile yazılan x = y + 1, NameError: name 'y' is not defined verir",
+        "Dersin örneğinde program ilk satırı yazdırıp ikincide duruyor — böylece hatanın tüm dosyaya değil, belirli bir satıra ve belirli bir ada yapıştığı görülüyor",
+        "Soru altı satır arasında tanımsız y'yi okuyan satırı bulmayı ve onun sonucunu yazdıran satırla birlikte yoruma almayı istiyor; kodun kalanı çalışmalı",
+        "Denetim dolambaçlı yolu geçirmiyor: yorum yerine y = 0 eklersen ya da formülü kısaltırsan çıktı değişir ve soru kabul edilmez",
+        "\"Yorumlar\" dersi artık bir köprüyle bitiyor: yorum yalnız kodu açıklamaz, henüz gerekmeyen satırı askıya da alır; değişken ortaya çıkınca geri dönersin"
+      ]
+    },
     "26.10.86": {
       uk: [
         "З уроку «Правила назв змінних» прибрано незрозуміле для початківця «перекривання» — тепер це окремий урок «Перекриті назви: print, len, int»",
