@@ -117,38 +117,12 @@
           }
         },
         {
-          id: "casting",
-          title: { uk: "Перетворення типів", en: "Type conversion", tr: "Tür dönüştürme" },
-          theory: {
-            uk: "Тип можна змінити свідомо: int(\"10\") перетворює рядок на ціле число, str(10) — число на рядок, float(\"2.5\") — рядок на дійсне, а int(3.9) обрізає дробову частину (не округлює!). Рядок і число напряму не складаються: \"a\" + 1 — це TypeError, зате рядки склеюються: \"a\" + \"b\".",
-            en: "You can change a type on purpose: int(\"10\") turns a string into an integer, str(10) turns a number into a string, float(\"2.5\") makes a float, and int(3.9) cuts off the fractional part (it does not round!). A string and a number do not add directly — \"a\" + 1 is a TypeError — but strings concatenate: \"a\" + \"b\".",
-            tr: "Türü bilinçli olarak değiştirebilirsin: int(\"10\") dizeyi tam sayıya, str(10) sayıyı dizeye, float(\"2.5\") ondalık sayıya çevirir; int(3.9) ise kesirli kısmı atar (yuvarlamaz!). Dize ile sayı doğrudan toplanmaz: \"a\" + 1 bir TypeError'dır; ama dizeler birleşir: \"a\" + \"b\"."
-          },
-          example: "s = \"10\"\nprint(int(s) + 5)\nn = 7\nprint(str(n) + \"!\")\nprint(int(3.9))\n",
-          task: {
-            text: {
-              uk: "Дано рядок s = \"12\". Виведи два рядки: суму як числа (12 + 12) і з'єднання як рядки (1212).",
-              en: "Given the string s = \"12\". Print two lines: the sum as numbers (12 + 12) and the concatenation as strings (1212).",
-              tr: "Verilen dize s = \"12\". İki satır yazdır: sayı olarak toplam (12 + 12) ve dize olarak birleştirme (1212)."
-            },
-            hint: {
-              uk: "int(s) дає число, тому print(int(s) + int(s)) друкує 24; print(s + s) друкує 1212.",
-              en: "int(s) gives a number, so print(int(s) + int(s)) shows 24, while print(s + s) shows 1212.",
-              tr: "int(s) sayı verir; bu yüzden print(int(s) + int(s)) 24, print(s + s) ise 1212 yazdırır."
-            },
-            starter: "s = \"12\"\n",
-            tests: [
-              { in: "", out: "24\n1212" }
-            ]
-          }
-        },
-        {
           id: "input",
           title: { uk: "Ввід: функція input()", en: "Input: the input() function", tr: "Girdi: input() işlevi" },
           theory: {
-            uk: "input() читає один рядок, який набрав користувач, і завжди повертає рядок — навіть коли введено числа. Тому для числа пишуть int(input()) або float(input()). У майданчику для цього є поле «Ввід для input()»: впиши туди значення, по одному на рядок.",
-            en: "input() reads one line typed by the user and always returns a string — even if you type numbers. That is why a number is read as int(input()) or float(input()). The playground has an “Input for input()” field for this: put the values there, one per line.",
-            tr: "input(), kullanıcının yazdığı bir satırı okur ve her zaman bir dize döndürür — sayı girsen bile. Bu yüzden sayı int(input()) ya da float(input()) olarak okunur. Oyun alanında bunun için “input() için girdi” alanı var: değerleri satır satır oraya gir."
+            uk: "input() зупиняє програму й чекає, поки ти щось надрукуєш і натиснеш Enter. Все, що ти ввів, Python зберігає як текст — рядок. Навіть якщо набрати 25, програма отримає не число, а два символи: \"2\" і \"5\" — рівно як у print(\"25\"). Через такий текст одразу не множиться й не складається: спочатку його треба перетворити на число — int(input()) дає ціле, float(input()) — дійсне (як саме це працює, буде в наступному уроці). У майданчику для введення є поле «Ввід для input()»: впиши туди значення, по одному на рядок.",
+            en: "input() stops the program and waits until you type something and press Enter. Whatever you type, Python keeps it as text — a string. Even if you type 25, the program does not get the number 25 but two characters, \"2\" and \"5\" — exactly like in print(\"25\"). That is why this text cannot be multiplied or added right away: first it has to become a number — int(input()) for a whole number, float(input()) for a decimal (the next lesson shows how). The playground has an “Input for input()” field for this: put the values there, one per line.",
+            tr: "input() programı durdurur ve bir şey yazıp Enter'a basmanı bekler. Ne yazarsan yaz, Python onu metin — bir dize — olarak saklar. 25 yazsan bile program sayı 25'i değil, tıpkı print(\"25\") içindeki gibi \"2\" ve \"5\" karakterlerini alır. Bu yüzden o metin hemen çarpılıp toplanamaz: önce sayıya dönüşmesi gerekir — tam sayı için int(input()), ondalık için float(input()) (nasıl olduğu bir sonraki derste). Oyun alanında bunun için “input() için girdi” alanı var: değerleri satır satır oraya gir."
           },
           example: "name = input()\nprint(\"Привіт,\", name)\n",
           task: {
@@ -167,6 +141,34 @@
               { in: "4\n", out: "8" },
               { in: "0\n", out: "0" },
               { in: "-3\n", out: "-6" }
+            ]
+          }
+        },
+        {
+          id: "casting",
+          title: { uk: "Перетворення типів", en: "Type conversion", tr: "Tür dönüştürme" },
+          theory: {
+            uk: "Тип можна змінити свідомо: int(\"10\") перетворює рядок на ціле число, str(10) — число на рядок, float(\"2.5\") — рядок на дійсне, а int(3.9) обрізає дробову частину (не округлює!). Саме int() рятує після input(): int(input()) бере те, що ти набрав, і робить з цього справжнє число. Рядок і число напряму не складаються: \"a\" + 1 — це TypeError, зате рядки склеюються: \"a\" + \"b\".",
+            en: "You can change a type on purpose: int(\"10\") turns a string into an integer, str(10) turns a number into a string, float(\"2.5\") makes a float, and int(3.9) cuts off the fractional part (it does not round!). This is exactly what saves you after input(): int(input()) takes what you typed and makes a real number out of it. A string and a number do not add directly — \"a\" + 1 is a TypeError — but strings concatenate: \"a\" + \"b\".",
+            tr: "Türü bilinçli olarak değiştirebilirsin: int(\"10\") dizeyi tam sayıya, str(10) sayıyı dizeye, float(\"2.5\") ondalık sayıya çevirir; int(3.9) ise kesirli kısmı atar (yuvarlamaz!). input() sonrası seni tam da bu kurtarır: int(input()) yazdığını alıp gerçek bir sayıya çevirir. Dize ile sayı doğrudan toplanmaz: \"a\" + 1 bir TypeError'dır; ama dizeler birleşir: \"a\" + \"b\"."
+          },
+          example: "s = \"10\"\nprint(int(s) + 5)\nn = 7\nprint(str(n) + \"!\")\nprint(int(3.9))\n",
+          task: {
+            text: {
+              uk: "Програма зчитує значення з клавіатури — це текст. Виведи два рядки: спочатку суму двох таких чисел, а потім з'єднання двох таких рядків.",
+              en: "The program reads a value from the keyboard — it is text. Print two lines: first the sum of two such numbers, then the concatenation of two such strings.",
+              tr: "Program klavyeden bir değer okuyor — bu bir metindir. İki satır yazdır: önce iki böyle sayının toplamını, sonra iki böyle dizenin birleşimini."
+            },
+            hint: {
+              uk: "Зчитане — текст, тому число беруть як int(s): print(int(s) + int(s)) дає суму, а print(s + s) — склеєні рядки.",
+              en: "What you read is text, so take the number as int(s): print(int(s) + int(s)) gives the sum, print(s + s) gives the joined strings.",
+              tr: "Okuduğun metindir, bu yüzden sayı int(s) ile alınır: print(int(s) + int(s)) toplamı, print(s + s) birleşmiş dizeleri verir."
+            },
+            starter: "s = input()\n",
+            tests: [
+              { in: "12\n", out: "24\n1212" },
+              { in: "7\n", out: "14\n77" },
+              { in: "30\n", out: "60\n3030" }
             ]
           }
         },

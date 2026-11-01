@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.83";
+  const VERSION = "26.10.84";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.84": {
+      uk: [
+        "У курсі «Перетворення типів» переставлено після уроку `input()`: тепер учень уже вміє зчитувати з клавіатури, тож перевірка стає справжньою",
+        "Задача на перетворення типів більше не чітиться: значення зчитується через `input()`, а перевірка проганяє три різні вводи (12, 7 і 30), тому написати заздалегідь `print(24)` і `print(\"1212\")` уже не вийде",
+        "В уроці про `input()` прибрано незрозуміле «повертає рядок»: пояснено, що навіть набрані 25 — це для програми два символи, \"2\" і \"5\", як у print(\"25\"), і тому текст спершу треба перетворити на число"
+      ],
+      en: [
+        "In the course, \"Type conversion\" now comes after the `input()` lesson: the student already knows how to read from the keyboard, so the check becomes a real one",
+        "The type-conversion task can no longer be cheated: the value is read with `input()` and the checker runs three different inputs (12, 7 and 30), so hardcoding `print(24)` and `print(\"1212\")` stops working",
+        "The `input()` lesson drops the confusing \"returns a string\": it now explains that even typing 25 gives the program two characters, \"2\" and \"5\", just like print(\"25\"), so the text has to become a number first"
+      ],
+      tr: [
+        "Kursta \"Tür dönüştürme\" artık `input()` dersinden sonra geliyor: öğrenci klavyeden okumayı çoktan bildiği için denetim gerçek oluyor",
+        "Tür dönüştürme sorusu artık kopyayla geçilemiyor: değer `input()` ile okunuyor ve denetleyici üç farklı girdi (12, 7 ve 30) çalıştırıyor, yani baştan `print(24)` ile `print(\"1212\")` yazmak işe yaramıyor",
+        "`input()` dersindeki muğlak \"bir dize döndürür\" ifadesi kaldırıldı: artık 25 yazsan bile programın iki karakter, \"2\" ve \"5\" aldığı — tıpkı print(\"25\") gibi — ve bu yüzden metnin önce sayıya dönüştüğü anlatılıyor"
+      ]
+    },
     "26.10.83": {
       uk: [
         "Музична панель більше не приклеєна до нижнього краю: за замовчуванням вона стоїть помітно вище, щоб не закривати кнопку Пайтончика й нижню частину сторінки",
