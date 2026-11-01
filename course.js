@@ -174,29 +174,85 @@
         },
         {
           id: "strings",
-          title: { uk: "Рядки", en: "Strings", tr: "Dizeler" },
+          title: { uk: "Рядки: тип str і склеювання", en: "Strings: the str type and joining", tr: "Dizeler: str türü ve birleştirme" },
           theory: {
-            uk: "Рядок — це текст у лапках. Рядки можна склеювати (+) і множити на число (*). Функція len() дає довжину рядка.",
-            en: "A string is text in quotes. Strings can be joined (+) and multiplied by a number (*). The len() function gives the length.",
-            tr: "Dize, tırnak içindeki metindir. Dizeler birleştirilebilir (+) ve bir sayıyla çarpılabilir (*). len() fonksiyonu uzunluğu verir."
+            uk: "Текст у Python має тип str — такий текст називають рядком і пишуть у лапках: a = \"red\". Два рядки можна склеїти знаком +, і вийде один новий рядок: \"red\" + \"blue\" дає redblue. Склеювання нічого не додає від себе, тож дефіс, пробіл чи крапка теж мають бути окремим рядком: \"red\" + \"-\" + \"blue\" дає red-blue. Перевірити, що перед тобою саме текст, допомагає type(a) — він повертає <class 'str'>.",
+            en: "Text in Python has the type str — such text is called a string and is written in quotes: a = \"red\". Two strings can be glued together with + and you get one new string: \"red\" + \"blue\" gives redblue. Joining adds nothing on its own, so a hyphen, a space or a dot must also be a string of its own: \"red\" + \"-\" + \"blue\" gives red-blue. type(a) helps you check that you really have text — it returns <class 'str'>.",
+            tr: "Python'da metin str türündedir; bu metne dize denir ve tırnak içinde yazılır: a = \"red\". İki dize + ile birleştirilebilir ve tek yeni bir dize çıkar: \"red\" + \"blue\" → redblue. Birleştirme kendiliğinden hiçbir şey eklemez, bu yüzden tire, boşluk ya da nokta da ayrı bir dize olmalıdır: \"red\" + \"-\" + \"blue\" → red-blue. Elindeki şeyin gerçekten metin olup olmadığını type(a) gösterir — <class 'str'> döndürür."
           },
-          example: "s = \"Py\"\nprint(s + \"thon\")\nprint(s * 2)\nprint(len(s))\n",
+          example: "a = \"red\"\nb = \"blue\"\nprint(a + b)\nprint(a + \"-\" + b)\nprint(type(a))\n",
           task: {
             text: {
-              uk: "Дано два слова, кожне в окремому рядку. Виведи їх, з'єднавши через дефіс (наприклад, red-blue).",
-              en: "Two words are given, one per line. Print them joined with a hyphen (for example, red-blue).",
-              tr: "Her biri ayrı satırda iki sözcük veriliyor. Tire ile birleştirip yazdır (örneğin red-blue)."
+              uk: "Дано два слова, кожне в окремому рядку — обидва рядки вже написані в стартері. Виведи їх з'єднаними через дефіс (наприклад, red-blue).",
+              en: "Two words are given, one per line — both lines are already written in the starter. Print them joined with a hyphen (for example, red-blue).",
+              tr: "Her biri ayrı satırda iki sözcük veriliyor — bu iki satır başlangıçta zaten yazılı. Tire ile birleştirip tek satır yazdır (örneğin red-blue)."
             },
             hint: {
-              uk: "Зчитай обидва рядки через input() і склей: a + \"-\" + b.",
-              en: "Read both lines with input() and join them: a + \"-\" + b.",
-              tr: "İki satırı input() ile oku ve birleştir: a + \"-\" + b."
+              uk: "Склей три рядки в одному print: a + \"-\" + b.",
+              en: "Join three strings inside one print: a + \"-\" + b.",
+              tr: "Tek bir print içinde üç dizeyi birleştir: a + \"-\" + b."
             },
-            starter: "",
+            starter: "a = input()\nb = input()\n",
             tests: [
               { in: "red\nblue\n", out: "red-blue" },
               { in: "a\nb\n", out: "a-b" },
               { in: "hello\nworld\n", out: "hello-world" }
+            ]
+          }
+        },
+        {
+          id: "str_len",
+          title: { uk: "Довжина рядка: len()", en: "String length: len()", tr: "Dize uzunluğu: len()" },
+          theory: {
+            uk: "len(рядок) показує, скільки символів у рядку — це і є його довжина. Рахується все: літери, цифри, знаки та пробіли, бо пробіл — теж символ. Лапки в рахунок не потрапляють: вони існують лише в коді, щоб показати, де рядок починається й закінчується. Тому len(\"abr\") = 3, len(\"ab cd\") = 5, а len(\"\") = 0 — порожній рядок має довжину нуль. Результат len() — звичайне число (int), тому з ним можна рахувати: len(a) + len(b).",
+            en: "len(string) tells you how many characters the string holds — that is its length. Everything counts: letters, digits, signs and spaces, because a space is a character too. The quotes are not counted: they only exist in the code to show where the string starts and ends. So len(\"abr\") = 3, len(\"ab cd\") = 5 and len(\"\") = 0 — an empty string has length zero. The result of len() is an ordinary number (int), so you can compute with it: len(a) + len(b).",
+            tr: "len(dize) o dizede kaç karakter olduğunu söyler — işte uzunluk budur. Her şey sayılır: harfler, rakamlar, işaretler ve boşluklar; çünkü boşluk da bir karakterdir. Tırnaklar sayılmaz: onlar yalnızca dizenin nerede başlayıp bittiğini göstermek için kodda durur. Bu yüzden len(\"abr\") = 3, len(\"ab cd\") = 5 ve len(\"\") = 0 — boş dizenin uzunluğu sıfırdır. len() sonucu sıradan bir sayıdır (int), yani onunla işlem yapabilirsin: len(a) + len(b)."
+          },
+          example: "word = \"abrakadabra\"\nprint(len(word))\nprint(len(\"abr\"))\nprint(len(\"ab cd\"))\nprint(len(\"\"))\n",
+          task: {
+            text: {
+              uk: "Дано слово — рядки стартера вже зчитують його через input(). Виведи його довжину: скільки символів у слові.",
+              en: "A word is given — the starter lines already read it with input(). Print its length: how many characters the word has.",
+              tr: "Bir sözcük veriliyor — başlangıç satırları onu zaten input() ile okuyor. Uzunluğunu yazdır: sözcükte kaç karakter var."
+            },
+            hint: {
+              uk: "Довжина — це len(word): print(len(word)).",
+              en: "The length is len(word): print(len(word)).",
+              tr: "Uzunluk len(word) ile bulunur: print(len(word))."
+            },
+            starter: "word = input()\n",
+            tests: [
+              { in: "python\n", out: "6" },
+              { in: "2+2\n", out: "3" },
+              { in: "hi there\n", out: "8" }
+            ]
+          }
+        },
+        {
+          id: "str_mul",
+          title: { uk: "Множення рядка на число", en: "Multiplying a string by a number", tr: "Dizeyi sayıyla çarpma" },
+          theory: {
+            uk: "Рядок можна помножити на ціле число — Python просто повторить його стільки разів, скільки вказано: \"ab\" * 3 дає ababab. Множення не змінює сам текст, воно лише дописує копії підряд — без пробілів і розділових знаків між ними. Порядок не важливий: 3 * \"ab\" — той самий результат. Якщо помножити на 0, вийде порожній рядок. Не плутай це з математикою: \"5\" * 2 — це \"55\", а не 10, бо тут 5 — текст.",
+            en: "A string can be multiplied by a whole number — Python simply repeats it as many times as you say: \"ab\" * 3 gives ababab. Multiplying does not change the text itself, it only appends copies one after another, with no spaces or punctuation between them. The order does not matter: 3 * \"ab\" gives the same result. Multiply by 0 and you get an empty string. Do not confuse this with arithmetic: \"5\" * 2 is \"55\", not 10, because the 5 here is text.",
+            tr: "Bir dizeyi tam sayıyla çarpabilirsin — Python onu söylediğin sayıda yineler: \"ab\" * 3 → ababab. Çarpma metnin kendisini değiştirmez, yalnızca kopyalarını aralarına boşluk veya nokta koymadan alt alta ekler. Sıra önemli değil: 3 * \"ab\" aynı sonucu verir. 0 ile çarparsan boş dize çıkar. Bunu aritmetikle karıştırma: \"5\" * 2 bu \"55\"tir, 10 değil; çünkü buradaki 5 bir metindir."
+          },
+          example: "print(\"ab\" * 3)\nprint(\"Ha\" * 2 + \"!\")\nprint(4 * \">> \")\nprint(\"5\" * 2)\n",
+          task: {
+            text: {
+              uk: "Дано слово — стартер уже зчитує його через input(). Виведи це слово тричі поспіль в одному рядку, без пробілів.",
+              en: "A word is given — the starter already reads it with input(). Print the word three times in a row on one line, without spaces.",
+              tr: "Bir sözcük veriliyor — başlangıç onu zaten input() ile okuyor. Sözcüğü tek satırda arka arkaya üç kez, boşluksuz yazdır."
+            },
+            hint: {
+              uk: "Достатньо одного print: word * 3.",
+              en: "One print is enough: word * 3.",
+              tr: "Tek bir print yeter: word * 3."
+            },
+            starter: "word = input()\n",
+            tests: [
+              { in: "ab\n", out: "ababab" },
+              { in: "Hi\n", out: "HiHiHi" },
+              { in: "-\n", out: "---" }
             ]
           }
         },

@@ -3,10 +3,36 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.84";
+  const VERSION = "26.10.85";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.85": {
+      uk: [
+        "Урок «Рядки» розбито на три окремі: «Рядки: тип str і склеювання», «Довжина рядка: len()» та «Множення рядка на число» — кожен зі своєю теорією, прикладом і задачею",
+        "У нових уроках перші рядки коду вже написані за тебе (a = input(), b = input()), тож не треба одразу вигадувати зчитування — одразу йдеться про склейку, довжину чи множення",
+        "Пояснено, що текст у Python має тип str, що лапки існують лише в коді та не рахуються, а len() рахує кожен символ, навіть пробіл; результат len() — звичайне число",
+        "Пояснено множення рядка на число: \"ab\" * 3 — три копії підряд без пробілів, на 0 виходить порожній рядок, а \"5\" * 2 — це \"55\", а не 10",
+        "Приклад уроку показує два рядки з текстом і результат, який із них виходить: redblue, red-blue та <class 'str'>",
+        "У кожному з трьох уроків задачу перевіряють три різні тести — зі словом, знаками та пробілом, тому випадковий збіг не пройде"
+      ],
+      en: [
+        "The \"Strings\" lesson is split into three: \"Strings: the str type and joining\", \"String length: len()\" and \"Multiplying a string by a number\" — each with its own theory, example and task",
+        "In the new lessons the first lines of code are already written for you (a = input(), b = input()), so you are not asked to invent keyboard input first — you go straight to joining, length or multiplication",
+        "It is now explained that text in Python has the type str, that quotes exist only in the code and are not counted, and that len() counts every character, even a space; the result of len() is an ordinary number",
+        "Multiplying a string by a number is explained: \"ab\" * 3 is three copies in a row with no spaces, times 0 gives an empty string, and \"5\" * 2 is \"55\", not 10",
+        "The lesson example shows two strings holding text and the result you get from them: redblue, red-blue and <class 'str'>",
+        "Each of the three tasks is checked by three different tests — a word, symbols and a phrase with a space — so a lucky coincidence won't pass"
+      ],
+      tr: [
+        "\"Dizeler\" dersi üç ayrı derse bölündü: \"Dizeler: str türü ve birleştirme\", \"Dize uzunluğu: len()\" ve \"Dizeyi sayıyla çarpma\" — her biri kendi teorisi, örneği ve sorusuyla",
+        "Yeni derslerde ilk satırlar senin için zaten yazılmış (a = input(), b = input()); önce klavye okumasını uydurman istenmiyor — doğrudan birleştirme, uzunluk veya çarmaya geçiyorsun",
+        "Artık açıklanıyor: Python'da metin str türündedir, tırnaklar yalnızca kodda durur ve sayılmaz, len() ise boşluk dahil her karakteri sayar; len() sonucu sıradan bir sayıdır",
+        "Dizeyi sayıyla çarpma açıklanıyor: \"ab\" * 3 aralarında boşluk olmadan üç kopya, 0 ile çarpınca boş dize çıkar, \"5\" * 2 ise 10 değil \"55\"tir",
+        "Dersin örneği metin içeren iki dizeyi ve onlardan çıkan sonucu gösteriyor: redblue, red-blue ve <class 'str'>",
+        "Üç sorunun her biri üç farklı testle denetleniyor — bir sözcük, işaretler ve boşluklu bir ifade — yani şansa eşleşme geçmez"
+      ]
+    },
     "26.10.84": {
       uk: [
         "У курсі «Перетворення типів» переставлено після уроку `input()`: тепер учень уже вміє зчитувати з клавіатури, тож перевірка стає справжньою",
