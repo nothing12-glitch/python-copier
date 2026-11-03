@@ -392,27 +392,29 @@
         },
         {
           id: "indent",
-          title: { uk: "Відступи — частина синтаксису", en: "Indentation is part of the syntax", tr: "Girinti sözdiziminin parçasıdır" },
+          title: { uk: "Відступ на початку рядка", en: "Indentation at the start of a line", tr: "Satır başındaki girinti" },
           theory: {
-            uk: "У Python відступ — не красота, а синтаксис. Блок починається з рядка з двокрапкою, а кожен рядок цього блоку зсувають вправо — типово на 4 пробіли. Таби з пробілами не змішують. Відступ також вирішує, які рядки належать циклу чи умові, а які виконуються вже після нього.",
-            en: "In Python indentation is not decoration but syntax. A block starts with a line ending in a colon and every line of that block is shifted right — usually by 4 spaces. Never mix tabs with spaces. Indentation also decides which lines belong to the loop or condition and which run only after it.",
-            tr: "Python'da girinti süs değil, sözdizimidir. Blok iki nokta ile biten bir satırla başlar ve o bloğun her satırı sağa — genellikle 4 boşluk — kaydırılır. Sekmeleri boşluklarla karıştırmayın. Girinti ayrıca hangi satırların döngüye/kosule, hangi satırların sonrasına ait olduğunu belirler."
+            uk: "Python бачить, чи стоїть пробіл на початку рядка. Звичайні команди пишуть від самого лівого краю, а рядок, зайво зсунутий управо, зупиняє програму: з'являється IndentationError: unexpected indent із номером рядка, тож помилку легко знайти. Таби з пробілами не мішають. А от пробели всередині рядка на результат не впливають: print( 2 + 3 ) і print(2+3) дадуть те саме 5 — там відступ потрібен лише для читабельності. Про блоки, тобто рядки після двокрапки, де відступ обов'язковий, поговоримо пізніше — в уроках про умову та цикл.",
+            en: "Python notices whether a line starts with a space. Ordinary commands are written from the very left edge, and a line shifted right for no reason stops the program: you get IndentationError: unexpected indent with the line number, so the mistake is easy to find. Don't mix tabs and spaces. Spaces inside a line, however, change nothing: print( 2 + 3 ) and print(2+3) both give 5 — there the indent only serves readability. Blocks, i.e. the lines after a colon where an indent is required, come later, in the lessons on conditions and loops.",
+            tr: "Python, satırın boşlukla başlayıp başlamadığına bakar. Normal komutlar en soldan yazılır; gereksiz yere sağa kaydırılan satır programı durdurur: satır numarasıyla birlikte IndentationError: unexpected indent hatası çıkar, yani hatayı bulmak kolaydır. Sekmeleri boşluklarla karıştırma. Satır içindeki boşluklar ise sonucu değiştirmez: print( 2 + 3 ) ile print(2+3) aynı 5'i verir — oradaki girinti yalnızca okunabilirlik içindir. İki noktadan sonra gelen, girintinin zorunlu olduğu blokları ise sonra, koşul ve döngü derslerinde göreceğiz."
           },
-          example: "for i in range(3):\n    print(\"у циклі\", i)\nprint(\"після циклу\")\n",
+          example: "price = 4\nqty = 3\nprint( price * qty )\nprint(price*qty)\n",
           task: {
             text: {
-              uk: "Програма має вивести 1, 2, 3 усередині циклу, а слово готово — лише один раз після циклу. Зсунь рядок циклу на 4 пробіли, а останній print лиши на початку.",
-              en: "The program must print 1, 2, 3 inside the loop and the word готово only once after the loop. Shift the loop body by 4 spaces and keep the last print at the start of the line.",
-              tr: "Program döngü içinde 1, 2, 3, hazır sözcüğünü ise döngüden sonra yalnızca bir kez yazdırmalı. Döngü gövdesini 4 boşluk kaydır, son print satırı başta kalsın."
+              uk: "Програма рахує вартість покупки, але падає, ще не встигши почати: три рядки зайво зсунуті вправо. Прибери відступи на початку кожного рядка, а пробіли всередині лиши як були — вони ні на що не впливають. Для 4 і 3 має вивестися 12.",
+              en: "The program computes the cost of a purchase but crashes before it even starts: three lines are shifted right for no reason. Remove the indentation at the start of each line and leave the spaces inside them as they are — they change nothing. With 4 and 3 it must print 12.",
+              tr: "Program alışveriş tutarını hesaplıyor ama başlamadan çöküyor: üç satır gereksiz yere sağa kaydırılmış. Satır başlarındaki girintileri sil, satır içi boşluklara dokunma — bir şey değiştirmezler. 4 ve 3 girilirse 12 yazdırmalı."
             },
             hint: {
-              uk: "Тіло циклу — це print(i): зсунь його на 4 пробіли. print(\"готово\") без відступу виконається один раз після циклу.",
-              en: "The loop body is print(i) — shift it 4 spaces. print(\"готово\") with no indent runs once after the loop.",
-              tr: "Döngü gövdesi print(i)'dir — onu 4 boşluk kaydır. Başında boşluğu olmayan print(\"готово\") döngüden sonra bir kez çalışır."
+              uk: "Почни всі три рядки від лівого краю, прибравши пробіли перед price, qty та print. Пробіли всередині print( price * qty ) можна лишити — на результат вони не впливають.",
+              en: "Start all three lines at the left edge by removing the spaces before price, qty and print. You may keep the spaces inside print( price * qty ) — they do not change the result.",
+              tr: "Üç satırın tamamını en soldan başlat; price, qty ve print önündeki boşlukları sil. print( price * qty ) içindeki boşlukları bırakabilirsin — sonucu değiştirmezler."
             },
-            starter: "for i in range(1, 4):\nprint(i)\nprint(\"готово\")\n",
+            starter: "  price = int(input())\n    qty = int(input())\n        print( price * qty )\n",
             tests: [
-              { in: "", out: "1\n2\n3\nготово" }
+              { in: "4\n3", out: "12" },
+              { in: "7\n2", out: "14" },
+              { in: "0\n5", out: "0" }
             ]
           }
         },
@@ -555,9 +557,9 @@
           id: "if",
           title: { uk: "Умови (if / else)", en: "Conditions (if / else)", tr: "Koşullar (if / else)" },
           theory: {
-            uk: "if перевіряє умову: якщо вона істинна, виконується блок із відступом. else задає інший блок. Порівняння: ==, !=, >, <, >=, <=.",
-            en: "if checks a condition: when it is true, the indented block runs. else provides another block. Comparisons: ==, !=, >, <, >=, <=.",
-            tr: "if bir koşulu denetler: doğruysa girintili blok çalışır. else başka bir blok verir. Karşılaştırmalar: ==, !=, >, <, >=, <=."
+            uk: "if перевіряє умову: якщо вона істинна, виконується блок — рядки після двокрапки, зсунуті вправо. Це той самий відступ з уроку про відступи, але тут він обов'язковий: без нього Python не зрозуміє, що рядок належить умові. else задає інший блок. Порівняння: ==, !=, >, <, >=, <=.",
+            en: "if checks a condition: when it is true, the block runs — the lines after the colon, shifted to the right. This is the same indentation as in the indentation lesson, but here it is required: without it Python cannot tell that the line belongs to the condition. else provides another block. Comparisons: ==, !=, >, <, >=, <=.",
+            tr: "if bir koşulu denetler: koşul doğruysa blok çalışır — iki noktadan sonra sağa kaydırılmış satırlar. Bu, girinti dersindeki aynı girintidir, ama burada zorunludur: olmadan Python satırın koşula ait olduğunu anlayamaz. else başka bir blok verir. Karşılaştırmalar: ==, !=, >, <, >=, <=."
           },
           example: "n = 5\nif n > 0:\n    print(\"додатне\")\nelse:\n    print(\"не додатне\")\n",
           task: {
@@ -567,9 +569,9 @@
               tr: "Bir n tam sayısı veriliyor. Sıfırdan büyükse positive, değilse nonpositive yazdır."
             },
             hint: {
-              uk: "Перевір умову n > 0 у if, а в else виведи інше слово.",
-              en: "Check the condition n > 0 in if, and print the other word in else.",
-              tr: "if içinde n > 0 koşulunu denetle, diğer sözcüğü else içinde yazdır."
+              uk: "Напиши if n > 0: , а наступний рядок зсунь вправо на 4 пробіли — це блок. Потім так само: else: і своя команда під нею.",
+              en: "Write if n > 0: and shift the next line 4 spaces to the right — that is the block. Then do the same: else: and its own command below it.",
+              tr: "if n > 0: yaz, sonraki satırı 4 boşluk sağa kaydır — bu blok. Sonra aynısını yap: else: ve altında kendi komutu."
             },
             starter: "n = int(input())\n",
             tests: [

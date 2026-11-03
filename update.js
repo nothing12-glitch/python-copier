@@ -3,10 +3,36 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.87";
+  const VERSION = "26.10.88";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.88": {
+      uk: [
+        "Урок про відступи переписано без циклів: учні їх ще не проходили, тож приклад і задача — без `for`, і пояснюється лише одне: зайвий пробіл на початку рядка зупиняє програму з `IndentationError: unexpected indent`",
+        "Задача стала зворотньою до попередньої: три рядки вже зайво зсунуті вправо, і їх треба повернути до лівого краю. Провернути можна й частковий ремонт — позначено рядок, де відступ лишився",
+        "Друга половина уроку показує, що всередині рядка пробіли нічого не міняють: `print( 2 + 3 )` і `print(2+3)` дають те саме 5, — там відступ потрібен лише для читабельності",
+        "Поняття блоку відкладено до кращих часів: урок прямо каже, що рядки після двокрапки, де відступ обов'язковий, чекають на уроки про умову та цикл",
+        "Урок «Умови (if / else)» нарешті називає блок своїм ім'ям і вказує на той самий відступ із попереднього уроку, а підказка задачі підказує зсунути рядок на 4 пробіли",
+        "Підказка Пайтончика про `IndentationError` тепер розрізняє обидві причини: зайвий відступ у звичайному рядку (прибрати пробіли) і різні відступи в блоці (вирівняти)"
+      ],
+      en: [
+        "The indentation lesson was rewritten without loops: students have not had them yet, so the example and the task work without `for` — only one idea is taught: a stray space at the start of a line stops the program with `IndentationError: unexpected indent`",
+        "The task became the reverse of the old one: three lines are already shifted right and you have to bring them back to the left edge. A half-fix is caught too — the checker names the line where an indent is still left",
+        "The second half of the lesson shows that spaces inside a line change nothing: `print( 2 + 3 )` and `print(2+3)` both give 5 — there indentation only serves readability",
+        "The notion of a block is postponed until better times: the lesson says outright that the lines after a colon, where an indent is required, wait for the lessons on conditions and loops",
+        "The \"Conditions (if / else)\" lesson finally names the block and points back to the same indentation from the earlier lesson, and the task hint now tells you to shift the line by 4 spaces",
+        "Pychik's `IndentationError` advice now tells the two causes apart: an extra indent on a plain line (delete the spaces) and mismatched indents inside a block (align them)"
+      ],
+      tr: [
+        "Girinti dersi döngüler olmadan yeniden yazıldı: öğrenciler daha görmediği için örnek ve soru `for` içermiyor — tek bir şey anlatılıyor: satır başındaki fazladan boşluk programı `IndentationError: unexpected indent` ile durdurur",
+        "Soru eskisinin tersine döndü: üç satır zaten sağa kaydırılmış, onları en sola geri getirmek gerekiyor. Yarım düzeltme de yakalanıyor — denetleyici girintisi kalmış satırı numarasıyla söylüyor",
+        "Dersin ikinci yarısı satır içi boşlukların hiçbir şeyi değiştirmediğini gösterir: `print( 2 + 3 )` ile `print(2+3)` aynı 5'i verir — orada girinti yalnızca okunabilirlik içindir",
+        "Blok kavramı daha iyi zamana bırakıldı: ders açıkça söylüyor — iki noktadan sonraki satırlarda girinti zorunludur ve onu koşul ile döngü derslerinde göreceksin",
+        "\"Koşullar (if / else)\" dersi bloğu sonunda adıyla anıyor ve önceki dersteki aynı girintiye atıf yapıyor; sorunun ipucu artık satırı 4 boşluk kaydırmayı hatırlatıyor",
+        "Pychik'in `IndentationError` önerisi artık iki nedeni ayırıyor: düz satırdaki fazladan girinti (boşlukları sil) ve blok içindeki eşitsiz girintiler (eşitle)"
+      ]
+    },
     "26.10.87": {
       uk: [
         "Новий урок «Спочатку оголоси, потім використовуй»: Python читає код зверху вниз і не знає назв, яких ще не було, тому x = y + 1 без попередньої y дає NameError: name 'y' is not defined",

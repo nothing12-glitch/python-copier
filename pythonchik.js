@@ -356,9 +356,9 @@
     {
       kw: "indentation відступ отступ indentationerror табуляц tab пропуск girinti",
       a: {
-        uk: "Python розуміє структуру коду за відступами. Усі рядки одного блоку починай однаково — зазвичай це 4 пропуски. Не мішай пропуски й таби.",
-        en: "Python reads code structure from indentation. Start all lines of one block the same way — usually 4 spaces. Do not mix spaces and tabs.",
-        tr: "Python kod yapısını girintiden okur. Bir bloğun tüm satırlarını aynı başlat — genelde 4 boşluk. Boşlukla sekmeyi karıştırma."
+        uk: "Відступ — це пробіли на початку рядка. Звичайні рядки пишуть від лівого краю, а рядки блоку після двокрапки зсувають вправо, зазвичай на 4 пропуски. Не мішай пропуски й таби.",
+        en: "Indentation is the spaces at the start of a line. Ordinary lines are written from the left edge, while the lines of a block after a colon are shifted right, usually by 4 spaces. Do not mix spaces and tabs.",
+        tr: "Girinti, satır başındaki boşluklardır. Normal satırlar en soldan yazılır; iki noktadan sonraki bloğun satırları ise sağa, genelde 4 boşluk kaydırılır. Boşlukla sekmeyi karıştırma."
       },
       code: "if True:\n    print(\"так\")  # рівно 4 пропуски"
     },
@@ -463,14 +463,14 @@
         tr: "IndentationError — girinti hatalı."
       },
       cause: {
-        uk: "Рядки одного блоку мають починатися з однакової кількості пропусків, зазвичай чотирьох.",
-        en: "Lines of one block must start with the same number of spaces, usually four.",
-        tr: "Bir bloğun satırları aynı sayıda boşlukla başlamalı, genelde dört."
+        uk: "Дві типові причини: звичайний рядок зайво зсунутий управо або рядки одного блоку починаються з різної кількості пропусків.",
+        en: "Two typical causes: a plain line shifted right for no reason, or lines of one block starting with different numbers of spaces.",
+        tr: "İki yaygın neden: gereksiz yere sağa kaydırılmış düz bir satır ya da aynı bloğun satırlarının farklı sayıda boşlukla başlaması."
       },
       fix: {
-        uk: "Вирівняй відступи: після двокрапки починай наступний рядок з 4 пропусків і не мішай пропуски з табами.",
-        en: "Align the indentation: after a colon start the next line with 4 spaces and do not mix spaces with tabs.",
-        tr: "Girintileri eşitle: iki noktadan sonra yeni satırı 4 boşlukla başlat, boşlukla sekmeyi karıştırma."
+        uk: "Якщо вище немає рядка з двокрапкою — прибери пробіли на початку рядка й пиши від лівого краю. У блоці після двокрапки навпаки: тримай однакові 4 пропуски й не мішай пропуски з табами.",
+        en: "If there is no colon line above, delete the spaces at the start of the line and write from the left edge. Inside a block after a colon it is the opposite: keep the same 4 spaces and do not mix spaces with tabs.",
+        tr: "Yukarıda iki noktalı bir satır yoksa satır başındaki boşlukları sil ve en soldan yaz. İki noktadan sonraki blokta tam tersi: aynı 4 boşluğu koru, boşlukla sekmeyi karıştırma."
       },
       code: "if x > 0:\n    print(\"додатне\")"
     },
