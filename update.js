@@ -3,10 +3,36 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.88";
+  const VERSION = "26.10.89";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.89": {
+      uk: [
+        "Новий урок «Незакрита дужка та лапка» — одразу після читання помилок: незакрита `(` дає `SyntaxError: '(' was never closed`, незакрита лапка — `SyntaxError: unterminated string literal`, і в обох випадках програма зупиняється ще до першої команди",
+        "Приклад в уроці навмисно зламаний: один дотик «Запуск» показує справжнє повідомлення Python із номером рядка, а не умовний опис",
+        "У задачі два злами поспіль — у першому рядку не закрито дужку, у другому лапку; виправляти треба послідовно, бо поки обидва не закриті, код далі не йде",
+        "Фінал вишуканіший за просте «зроби, щоб працювало»: учень дописує рядок із назвою типу помилки, тож правильний вивід — привіт, світ і SyntaxError",
+        "Хитрощів тут немає: зламаний код не друкує нічого, три рядки виводу з'являються лише тоді, коли обидва рядки виправлені й жоден не викинутий",
+        "Картка `SyntaxError` у Пайтончика тепер називає обидва повідомлення й нагадує, що програма стає ще до першої команди"
+      ],
+      en: [
+        "New lesson \"Unclosed bracket and quote\" right after reading error messages: an unclosed `(` gives `SyntaxError: '(' was never closed`, an unclosed quote gives `SyntaxError: unterminated string literal`, and in both cases the program stops before the very first command",
+        "The example in the lesson is broken on purpose: one tap on Run shows the real Python message with its line number instead of an invented description",
+        "The task has two breakages in a row — the first line misses its bracket, the second its quote — and they must be repaired in order, because the code goes nowhere until both are closed",
+        "The finish is subtler than a plain \"make it work\": the student adds a line naming the error type, so the correct output is привіт, світ and SyntaxError",
+        "There is no way to fake it: broken code prints nothing, so the three output lines only appear when both lines are fixed and neither has been deleted",
+        "Pychik's `SyntaxError` card now names both messages and reminds you that the program halts before the first command"
+      ],
+      tr: [
+        "Yeni ders \"Kapatılmamış parantez ve tırnak\", hata mesajı okumanın hemen ardından: kapatılmamış `(` → `SyntaxError: '(' was never closed`, kapatılmamış tırnak → `SyntaxError: unterminated string literal`; her iki durumda program daha ilk komuttan önce durur",
+        "Dersin örneği bilerek bozuk: bir kez Çalıştır'a dokununca uydurma açıklama değil, Python'ın gerçek mesajı satır numarasıyla görünür",
+        "Soruda arka arkaya iki kırık var — birinci satırın parantezi, ikincinin tırnağı kapanmamış; ikisi de kapatılana kadar kod ilerlemez, bu yüzden sırayla düzeltmek gerekir",
+        "Bitiş sıradan \"çalışır hâle getir\" isteminden daha kıvrak: öğrenci hata türünün adını yazan bir satır ekliyor, doğru çıktı привіт, світ ve SyntaxError",
+        "Hile yolu yok: bozuk kod hiçbir şey yazdırmaz, üç çıktı satırı ancak iki satır da düzeltilip hiçbiri silinirse görünür",
+        "Pychik'in `SyntaxError` kartı artık her iki mesajı da adıyla söylüyor ve programın ilk komuttan önce durduğunu hatırlatıyor"
+      ]
+    },
     "26.10.88": {
       uk: [
         "Урок про відступи переписано без циклів: учні їх ще не проходили, тож приклад і задача — без `for`, і пояснюється лише одне: зайвий пробіл на початку рядка зупиняє програму з `IndentationError: unexpected indent`",

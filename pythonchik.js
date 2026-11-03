@@ -445,9 +445,9 @@
         tr: "SyntaxError — Python komutun yazılışını anlayamadı."
       },
       cause: {
-        uk: "Найчастіше це незакрита лапка чи дужка або символ не за правилами Python.",
-        en: "Usually an unclosed quote or bracket, or a symbol against Python rules.",
-        tr: "Genelde kapanmamış bir tırnak ya da parantez, veya Python kurallarına uymayan bir sembol."
+        uk: "Програма зупиняється ще до першої команди. Найчастіше це незакрита дужка — тоді видно «'(' was never closed» — або незакрита лапка: «unterminated string literal»; буває й символ не за правилами Python.",
+        en: "The program stops before its first command. Most often it is an unclosed bracket — the message says “'(' was never closed” — or an unclosed quote: “unterminated string literal”; sometimes a symbol against Python rules.",
+        tr: "Program ilk komuttan önce durur. Genelde kapatılmamış parantez — mesaj «'(' was never closed» olur — ya da kapatılmamış tırnak: «unterminated string literal»; bazen de Python kurallarına uymayan bir sembol."
       },
       fix: {
         uk: "Перевір вказаний рядок: закрий усі лапки й дужки, прибери зайві символи.",

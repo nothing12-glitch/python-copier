@@ -445,6 +445,32 @@
           }
         },
         {
+          id: "syntax",
+          title: { uk: "Незакрита дужка та лапка", en: "Unclosed bracket and quote", tr: "Kapatılmamış parantez ve tırnak" },
+          theory: {
+            uk: "Дужку й лапки закривають у тому ж рядку. Команда print(\"привіт\" без дужки та print(\"світ) без другої лапки не запускаються взагалі: Python зупиняється ще до першої команди. Незакриті дужки пояснює як '(' was never closed, а незакриті лапки — як unterminated string literal. Тип для обох випадків один — SyntaxError, змінюється лише пояснення й номер рядка. Лапки мають збігатися: відкрив двойною — подвійною й закривай, а текст усередині лапок не перенось на новий рядок.",
+            en: "You close the bracket and the quotes on the same line. print(\"привіт\" without its bracket and print(\"світ) without its closing quote never start: Python stops before the very first command. Unclosed brackets are explained as '(' was never closed, unclosed quotes as unterminated string literal. Both cases give the same type — SyntaxError — only the wording and the line number change. Quotes must match: open with a double quote, close with a double quote, and never wrap text inside the quotes onto a new line.",
+            tr: "Parantez ve tırnak aynı satırda kapatılır. Parantezi olmayan print(\"привіт\" ile ikinci tırnağı olmayan print(\"світ) hiç başlamaz: Python daha ilk komuttan önce durur. Kapatılmamış parantezi '(' was never closed, kapatılmamış tırnağı unterminated string literal diye açıklar. Her iki durumda da tür aynıdır — SyntaxError — yalnızca açıklama ve satır numarası değişir. Tırnaklar aynı olmalı: çift tırnakla açtığını çift tırnakla kapat ve tırnakların içindeki metni yeni satıra bölme."
+          },
+          example: "print(\"привіт\"\nprint(\"світ\")\n",
+          task: {
+            text: {
+              uk: "Тут два зламаних рядки: у першому не закрито дужку, у другому — лапку. Виправ обидва по порядку, не прибираючи жодного з них, і допиши рядок із назвою типу помилки, через який код не запускався. Має вивестися привіт, світ і SyntaxError.",
+              en: "Two lines here are broken: the first has an unclosed bracket, the second an unclosed quote. Fix both in order without removing either, then add a line with the name of the error type that stopped the code. It must print привіт, світ and SyntaxError.",
+              tr: "Burada iki bozuk satır var: birincisinde parantez, ikincisinde tırnak kapatılmamış. İkisini de sırayla düzelt, hiçbirini silme, ardından kodu durduran hata türünün adını yazan bir satır ekle. Çıktıda привіт, світ ve SyntaxError görünmeli."
+            },
+            hint: {
+              uk: "Спершу закрий дужку в першому рядку: print(\"привіт\"). Потім закрий лапку в другому: print(\"світ\"). Далі допиши print(\"SyntaxError\") — саме так називається тип помилки, яку видавав зламаний код.",
+              en: "First close the bracket on the first line: print(\"привіт\"). Then close the quote on the second: print(\"світ\"). Finally add print(\"SyntaxError\") — that is the name of the error type the broken code raised.",
+              tr: "Önce birinci satırda parantezi kapat: print(\"привіт\"). Sonra ikinci satırda tırnağı kapat: print(\"світ\"). Ardından print(\"SyntaxError\") ekle — bozuk kodun verdiği hata türünün adı budur."
+            },
+            starter: "print(\"привіт\"\nprint(\"світ)\n",
+            tests: [
+              { in: "", out: "привіт\nсвіт\nSyntaxError" }
+            ]
+          }
+        },
+        {
           id: "chrord",
           title: { uk: "Коди символів: ord() та chr()", en: "Character codes: ord() and chr()", tr: "Karakter kodları: ord() ve chr()" },
           theory: {
