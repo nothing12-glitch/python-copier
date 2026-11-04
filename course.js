@@ -474,25 +474,103 @@
           id: "chrord",
           title: { uk: "Коди символів: ord() та chr()", en: "Character codes: ord() and chr()", tr: "Karakter kodları: ord() ve chr()" },
           theory: {
-            uk: "Кожен символ має номер у таблиці кодування: \"A\" — 65, \"a\" — 97, \"0\" — 48. ord(\"A\") повертає номер символа, а chr(65) — символ за номером. Це обернені дії: chr(ord(\"a\")) знову дає \"a\", а ord(chr(97)) знову дає 97. Коди українських літер більші за 127, тому текст завжди тримають у рядках, а не в числах.",
-            en: "Every character has a number in the encoding table: \"A\" is 65, \"a\" is 97, \"0\" is 48. ord(\"A\") returns the number of a character and chr(65) returns the character for a number. They are inverse operations: chr(ord(\"a\")) gives \"a\" again, and ord(chr(97)) gives 97 again. Ukrainian letters have codes above 127, so text always stays in strings rather than numbers.",
-            tr: "Her karakterin kodlama tablosunda bir numarası vardır: \"A\" 65, \"a\" 97, \"0\" 48. ord(\"A\") karakterin numarasını, chr(65) ise numaradan karakteri döndürür. Bunlar ters işlemlerdir: chr(ord(\"a\")) yine \"a\" verir, ord(chr(97)) yine 97 verir. Ukraynaca harflerin kodu 127'den büyüktür, bu yüzden metin sayılarda değil dizelerde tutulur."
+            uk: "Кожен символ має номер у таблиці кодування: \"A\" — 65, \"a\" — 97, \"0\" — 48. ord(\"A\") повертає номер символа, а chr(65) — символ за номером. Це обернені дії: chr(ord(\"a\")) знову дає \"a\", а ord(chr(97)) знову дає 97. Коди українських літер набагато більші: \"я\" — 1103, тому текст тримають у рядках, а не в числах. І ще одна пастка: літери з різних алфавітів, однакові на вигляд, мають різні номери — англійська \"B\" це 66, а українська \"В\" це 1042. Тому в умові завжди називають алфавіт: без нього один і той самий на вигляд символ має дві різні відповіді.",
+            en: "Every character has a number in the encoding table: \"A\" is 65, \"a\" is 97, \"0\" is 48. ord(\"A\") returns the number of a character and chr(65) returns the character for a number. They are inverse operations: chr(ord(\"a\")) gives \"a\" again, and ord(chr(97)) gives 97 again. Ukrainian letters have much bigger numbers: \"я\" is 1103, so text always stays in strings rather than numbers. One more trap: letters from different alphabets that look identical have different numbers — English \"B\" is 66, while Ukrainian \"В\" is 1042. So a task always names the alphabet, because without it one and the same sign has two different answers.",
+            tr: "Her karakterin kodlama tablosunda bir numarası vardır: \"A\" 65, \"a\" 97, \"0\" 48. ord(\"A\") karakterin numarasını, chr(65) ise numaradan karakteri döndürür. Bunlar ters işlemlerdir: chr(ord(\"a\")) yine \"a\" verir, ord(chr(97)) yine 97 verir. Ukraynaca harflerin numaraları çok daha büyüktür: \"я\" 1103, bu yüzden metin sayılarda değil dizelerde tutulur. Bir tuzak daha: farklı alfabelerden, aynı görünen harflerin numaraları farklıdır — İngilizce \"B\" 66, Ukraynaca \"В\" 1042. Bu yüzden soruda alfabe mutlaka adıyla anılır; aksi hâlde aynı görünen işaretin iki farklı cevabı olur."
           },
           example: "print(ord(\"A\"))\nprint(chr(97))\nprint(chr(ord(\"a\") + 1))\n",
           task: {
             text: {
-              uk: "Виведи два рядки: символ, чий код дорівнює 97, і код символу B.",
-              en: "Print two lines: the character whose code is 97, and the code of the character B.",
-              tr: "İki satır yazdır: kodu 97 olan karakter ve B karakterinin kodu."
+              uk: "Виведи два рядки: символ, чий код дорівнює 97, і код першої літери англійського слова BALL. Має вивестися a та 66; схожа на вигляд українська «В» із слова ВІКНО дає 1042, і така відповідь не пройде.",
+              en: "Print two lines: the character whose code is 97, and the code of the first letter of the English word BALL. It must print a and 66; the look-alike Ukrainian «В» from ВІКНО gives 1042 and will not pass.",
+              tr: "İki satır yazdır: kodu 97 olan karakter ve İngilizce BALL kelimesinin ilk harfinin kodu. Çıktıda a ve 66 olmalı; aynı görünen Ukraynaca «В» (ВІКНО) 1042 verir ve bu cevap geçmez."
             },
             hint: {
-              uk: "chr(97) дає символ a, а ord(\"B\") — число 66. Кожне виведи окремим print().",
-              en: "chr(97) gives the character a, and ord(\"B\") gives the number 66. Print each with its own print().",
-              tr: "chr(97) karakteri a'yı, ord(\"B\") ise 66 sayısını verir. Her birini ayrı bir print() ile yazdır."
+              uk: "chr(97) дає символ a. Перша літера BALL — англійська \"B\", тобто ord(\"B\") = 66. Найпростіше не помилишитися: скопіювати цю літеру прямо з умови, а не набирати схожу з клавіатури. Кожне виведи окремим print().",
+              en: "chr(97) gives the character a, and the first letter of BALL is the English \"B\": ord(\"B\") = 66. The easy way to avoid a mistake is to copy that letter straight from the task instead of typing a look-alike. Print each with its own print().",
+              tr: "chr(97) karakteri a'yı verir; BALL'ın ilk harfi İngilizce \"B\"dir, yani ord(\"B\") = 66. Yanılmamanın en kolay yolu o harfi doğrudan sorudan kopyalamak, benzerini klavyede aramamak. Her birini ayrı bir print() ile yazdır."
             },
             starter: "",
             tests: [
               { in: "", out: "a\n66" }
+            ]
+          }
+        },
+        {
+          id: "case_codes",
+          title: { uk: "Велика й мала: різниця 32", en: "Upper and lower: 32 apart", tr: "Büyük ve küçük: 32 fark" },
+          theory: {
+            uk: "Велика й мала літери — різні символи, а різниця між їхніми номерами — 32: ord(\"A\") = 65, ord(\"a\") = 97, ord(\"F\") = 70, ord(\"f\") = 102. Тож регістр можна змінити арифметикою, без списків на пам'ять: chr(ord(\"f\") - 32) дає \"F\", а chr(ord(\"F\") + 32) — знову \"f\". Літери в таблиці йдуть алфавітом, спочатку великі, потім малі, тому пара «велика — мала» всюди лежить на 32 одиниці. У кирилиці трюк той самий: \"А\" — 1040, \"а\" — 1072. Алфавіт при цьому не міняй: між англійською \"A\" і українською \"а\" різниця вже не 32, а 1007. І є винятки: \"Є\" — 1028, а \"є\" — 1108, там 32 не працює, тож надійно перевіряти через ord.",
+            en: "An uppercase and a lowercase letter are different characters, and their numbers are 32 apart: ord(\"A\") is 65, ord(\"a\") is 97, ord(\"F\") is 70, ord(\"f\") is 102. So you can switch case with arithmetic instead of memorising lists: chr(ord(\"f\") - 32) gives \"F\" and chr(ord(\"F\") + 32) gives \"f\" back. The table runs letters in alphabet order, uppercase first and lowercase after, so every upper-lower pair sits exactly 32 apart. Cyrillic behaves the same way: \"А\" is 1040, \"а\" is 1072. Just do not mix alphabets: English \"A\" and Ukrainian \"а\" are 1007 apart, not 32. There are exceptions too: \"Є\" is 1028 while \"є\" is 1108, so when in doubt check with ord.",
+            tr: "Büyük ve küçük harf farklı karakterlerdir ve numaraları 32 fark eder: ord(\"A\") 65, ord(\"a\") 97, ord(\"F\") 70, ord(\"f\") 102. Yani bellekten liste saymadan aritmetikle değiştirebilirsin: chr(ord(\"f\") - 32) \"F\" verir, chr(ord(\"F\") + 32) yeniden \"f\" verir. Tablo harfleri alfabe sırasıyla dizer, önce büyükler sonra küçükler; her büyük-küçük çifti tam 32 adım ötededir. Kirilcede de aynı şey geçerli: \"А\" 1040, \"а\" 1072. Yalnız alfabeyi karıştırma: İngilizce \"A\" ile Ukraynaca \"а\" arasında 32 değil 1007 fark var. İstisna da var: \"Є\" 1028 iken \"є\" 1108; şüphe edince ord ile bak."
+          },
+          example: "print(ord(\"A\"))\nprint(ord(\"a\"))\nprint(ord(\"a\") - ord(\"A\"))\nprint(chr(ord(\"f\") - 32))\n",
+          task: {
+            text: {
+              uk: "Мала \"p\" і велика \"P\" — різні символи, але пов'язані. Виведи три рядки: на скільки код \"p\" більший за код \"P\", велику літеру, діставши її з \"p\" через ord і chr, і код цієї великої літери. Має вивестися 32, P і 80.",
+              en: "The lowercase \"p\" and the uppercase \"P\" are different characters that are related. Print three lines: by how much the code of \"p\" is bigger than the code of \"P\", the uppercase letter you get from \"p\" through ord and chr, and the code of that uppercase letter. It must print 32, P and 80.",
+              tr: "Küçük \"p\" ile büyük \"P\" farklı ama bağlantılı karakterlerdir. Üç satır yazdır: \"p\" kodu ile \"P\" kodu arasındaki fark, ord ve chr ile \"p\"'den elde edilen büyük harf ve o büyük harfin kodu. Çıktıda 32, P ve 80 olmalı."
+            },
+            hint: {
+              uk: "Різницю порахуй як ord(\"p\") - ord(\"P\") — вийде 32. Велику літеру дістань із малої арифметикою: chr(ord(\"p\") - 32), це P. Її код знову через ord: ord(chr(ord(\"p\") - 32)) = 80.",
+              en: "Count the difference as ord(\"p\") - ord(\"P\") — you get 32. Get the uppercase from the lowercase by arithmetic: chr(ord(\"p\") - 32), which is P. Read its code again with ord: ord(chr(ord(\"p\") - 32)) = 80.",
+              tr: "Farkı ord(\"p\") - ord(\"P\") olarak hesapla — 32 çıkar. Büyük harfi küçükten aritmetikle elde et: chr(ord(\"p\") - 32), yani P. Kodunu yine ord ile oku: ord(chr(ord(\"p\") - 32)) = 80."
+            },
+            starter: "",
+            tests: [
+              { in: "", out: "32\nP\n80" }
+            ]
+          }
+        },
+        {
+          id: "homoglyph",
+          title: { uk: "Літери-двійники: якою мовою?", en: "Look-alike letters: which language?", tr: "İkiz harfler: hangi dille?" },
+          theory: {
+            uk: "«Виведи код символу В» — не задача, а пастка: в ній не сказано, який алфавіт. Англійська \"B\" — це 66, а українська \"В\", яку на екрані не відрізнити, — 1042. Двійників у таблиці багато: \"A\" (65) і \"А\" (1040), \"C\" (67) і \"С\" (1057), \"E\" (69) і \"Е\" (1045), \"P\" (80) і \"Р\" (1056). Тому в умові називають слово з потрібного алфавіту: перша літера BALL — англійська, а перша літера АБЕТКА — українська. Python бачить тут теж різні символи: змінна, названа латинською \"a\", і змінна, названа українською \"а\", — дві різні змінні, хоча на рядку не відрізниш. Найбезпечніший шлях — скопіювати символ прямо з умови або перевірити його номер через ord.",
+            en: "\"Print the code of B\" is not a task, it is a trap: it never says which alphabet. English \"B\" is 66, while the Ukrainian \"В\", impossible to tell apart on screen, is 1042. The table is full of twins: \"A\" (65) and \"А\" (1040), \"C\" (67) and \"С\" (1057), \"E\" (69) and \"Е\" (1045), \"P\" (80) and \"Р\" (1056). That is why a task names a word from the alphabet you need: the first letter of BALL is English, the first letter of АБЕТКА is Ukrainian. Python sees different characters here too: a variable named with Latin \"a\" and one named with Ukrainian \"а\" are two different variables, although the line looks identical. The safest move is to copy the character straight from the task or to check its number with ord.",
+            tr: "\"B'nin kodunu yazdır\" bir soru değil tuzaktır: hangi alfabe olduğu söylenmez. İngilizce \"B\" 66'dır, ekranda ayrımı imkânsız Ukraynaca \"В\" ise 1042. Tablo ikizlerle dolu: \"A\" (65) ile \"А\" (1040), \"C\" (67) ile \"С\" (1057), \"E\" (69) ile \"Е\" (1045), \"P\" (80) ile \"Р\" (1056). Bu yüzden soru gerektiği alfabeden bir kelime adıyla konuşur: BALL'ın ilk harfi İngilizce, АБЕТКА'nın ilk harfi Ukraynacadır. Python burada da farklı karakterler görür: Latince \"a\" ile adlandırılmış değişken ile Ukraynaca \"а\" ile adlandırılmışı iki ayrı değişkendir, satır aynı görünse de. En güvenli hamle: işareti doğrudan sorudan kopyala ya da ord ile numarasına bak."
+          },
+          example: "print(ord(\"B\"))\nprint(ord(\"В\"))\nprint(ord(\"A\"))\nprint(ord(\"А\"))\n",
+          task: {
+            text: {
+              uk: "Виведи три рядки: код першої літери українського слова АБЕТКА, код першої літери англійського слова APPLE і різницю між цими кодами в тому ж порядку. Має вивестися 1040, 65 і 975.",
+              en: "Print three lines: the code of the first letter of the Ukrainian word АБЕТКА, the code of the first letter of the English word APPLE, and the difference between these codes in the same order. It must print 1040, 65 and 975.",
+              tr: "Üç satır yazdır: Ukraynaca АБЕТКА kelimesinin ilk harfinin kodu, İngilizce APPLE kelimesinin ilk harfinin kodu ve bu iki kod arasındaki fark, yine aynı sırada. Çıktıda 1040, 65 ve 975 olmalı."
+            },
+            hint: {
+              uk: "Перша літера АБЕТКА — українська «А», її код 1040. Перша літера APPLE — англійська «A», код 65. Обидві літери краще скопіювати прямо зі слів в умові: з клавіатури легко потрапити не в той ряд. Різниця: 1040 - 65 = 975.",
+              en: "The first letter of АБЕТКА is the Ukrainian «А», code 1040. The first letter of APPLE is the English «A», code 65. Copy both letters straight from the words in the task — a keyboard easily gives you the other row. The difference: 1040 - 65 = 975.",
+              tr: "АБЕТКА'nın ilk harfi Ukraynaca «А», kodu 1040. APPLE'nin ilk harfi İngilizce «A», kodu 65. İkisini de sorudaki kelimelerden kopyala; klavye kolayca diğer alfabeten karakter verebilir. Fark: 1040 - 65 = 975."
+            },
+            starter: "",
+            tests: [
+              { in: "", out: "1040\n65\n975" }
+            ]
+          }
+        },
+        {
+          id: "emoji",
+          title: { uk: "Емодзі теж мають коди", en: "Emoji have codes too", tr: "Emoji'nin de kodu var" },
+          theory: {
+            uk: "Емодзі — звичайні символи з тієї самої таблиці, тільки з величезними номерами: ord(\"😀\") = 128512, ord(\"🙂\") = 128578, а chr(128512) знову дає \"😀\". Літери й цифри займають перші сотні номерів, емодзі — сотні тисяч, тому їх не тримають у голові, а дістають через ord і chr. Номер, більший за 65535, у деяких форматах записують двома половинками, тому в файлі емодзі важчий за літеру, а стара консоль або шрифт показують замість усмішки порожній квадратик. У назвах змінних емодзі краще не вживати: Python дозволить, але без копіювання таке ім'я не набереш, а на іншому комп'ютері його ще й не видно. Справа не в емодзі, а в головному: для Python будь-який символ — це число, де б у таблиці воно не стояло.",
+            en: "Emoji are ordinary characters from the same table, only with enormous numbers: ord(\"😀\") is 128512, ord(\"🙂\") is 128578, and chr(128512) gives \"😀\" back. Letters and digits take the first few hundred numbers, emoji live in the hundred thousands, so nobody keeps them in memory — you get them through ord and chr. A number above 65535 is written as two halves in some formats, so in a file an emoji weighs more than a letter, and an old console or font shows an empty box instead of the smile. Keep emoji out of variable names: Python allows them, but you cannot type such a name without copying it, and another machine may not even show it. The point is not the emoji but the main idea: for Python every character is a number, wherever it sits in the table.",
+            tr: "Emoji de aynı tablodan sıradan karakterlerdir, yalnızca numaraları devcadır: ord(\"😀\") 128512, ord(\"🙂\") 128578 ve chr(128512) yeniden \"😀\" verir. Harf ve rakamlar ilk birkaç yüz numarayı kaplar, emojiler yüz binlerdedir; kimse onları bellekte tutmaz, ord ve chr ile bulunur. 65535'ten büyük numara bazı biçimlerde iki parçayla yazılır, bu yüzden dosyada emoji bir harften ağır gelir ve eski bir konsol ya da yazı tipi gülümseme yerine boş kutu gösterir. Değişken adlarında emoji kullanma: Python izin verir ama kopyalamadan o adı yazamazsın, başka bir makine göstermeyebilir. Mesele emoji değil, ana fikir: Python için her karakter bir sayıdır, tabloda nerede durursa dursun."
+          },
+          example: "print(ord(\"😀\"))\nprint(chr(128512))\nprint(ord(\"😀\") - ord(\"A\"))\n",
+          task: {
+            text: {
+              uk: "Виведи два рядки: код жовтої усмішки «😀» і сам емодзі, який ховається під номером 128512. Має вивестися 128512 і усмішка. Скопіюй «😀» прямо з умови: схожих усмішок у таблиці десятки, і код у кожної свій.",
+              en: "Print two lines: the code of the yellow smiley «😀» and the emoji hiding behind the number 128512. It must print 128512 and the smiley. Copy «😀» straight from the task: the table has dozens of similar smiles and each has its own code.",
+              tr: "İki satır yazdır: sarı gülümseme «😀» kodu ve 128512 numarasının ardına saklanmış emoji. Çıktıda 128512 ve gülümseme olmalı. «😀»'yi doğrudan sorudan kopyala: tabloda buna benzeyen onlarca ifade var ve her birinin kodu ayrı."
+            },
+            hint: {
+              uk: "ord(\"😀\") дає 128512 — код дістають саме так, а не напам'ять. Другий рядок — chr(128512), і вийде знову та сама усмішка.",
+              en: "ord(\"😀\") gives 128512 — that is how you get a code, not from memory. The second line is chr(128512), and the same smiley comes back.",
+              tr: "ord(\"😀\") 128512 verir — kod böyle bulunur, bellekten değil. İkinci satır chr(128512); yeniden aynı gülümseme çıkar."
+            },
+            starter: "",
+            tests: [
+              { in: "", out: "128512\n😀" }
             ]
           }
         },

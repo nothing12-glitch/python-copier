@@ -3,10 +3,36 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.89";
+  const VERSION = "26.10.90";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.90": {
+      uk: [
+        "Урок «Коди символів» позбувся двозначності: замість «код символу B», який можна прочитати двома алфавітами, тепер «код першої літери англійського слова BALL» — це 66, а схожа на вигляд українська «В» дає 1042 і перевірку не проходить",
+        "Теорія того самого уроку тепер прямо каже: без назви алфавіту в умові один і той самий на вигляд символ має дві різні відповіді, бо літери з різних письм живуть у таблиці за окремими номерами",
+        "Новий урок «Велика й мала: різниця 32»: `ord(\"A\")` — 65, а `ord(\"a\")` — 97, тож регістр перемикають арифметикою (`chr(ord(\"p\") - 32)`); у кирилиці крок той самий, хіба що є винятки на кшталт «Є» (1028) проти «є» (1108)",
+        "Новий урок «Літери-двійники: якою мовою?»: англійська та українська пари — A (65) проти А (1040), C (67) проти С (1057), E (69) проти Е (1045), P (80) проти Р (1056) — вигляд той самий, коди різні; у задачі алфавіт задано словом (АБЕТКА проти APPLE), тому символ можна просто скопіювати",
+        "Новий урок «Емодзі теж мають коди»: `ord(\"😀\")` — 128512, `chr(128512)` повертає усмішку, а номери емодзі раптом у сотнях тисяч; той, що більший за 65535, у деяких форматах записують двома половинками, тому стара консоль показує замість усмішки порожній квадратик",
+        "Розділ «Основи» виріс до 24 уроків, увесь курс — 33"
+      ],
+      en: [
+        "The \"Character codes\" lesson lost its ambiguity: instead of \"the code of the character B\", which two alphabets can answer, it now asks for \"the code of the first letter of the English word BALL\" — that is 66, while the look-alike Ukrainian «В» gives 1042 and fails the check",
+        "The same lesson's theory now says it outright: without a named alphabet in the task, one and the same sign has two different answers, because letters from different scripts live on separate numbers in the table",
+        "New lesson \"Upper and lower: 32 apart\": `ord(\"A\")` is 65 and `ord(\"a\")` is 97, so case is switched by arithmetic (`chr(ord(\"p\") - 32)`); Cyrillic takes the same step, except for exceptions such as «Є» (1028) against «є» (1108)",
+        "New lesson \"Look-alike letters: which language?\": English-Ukrainian pairs — A (65) vs А (1040), C (67) vs С (1057), E (69) vs Е (1045), P (80) vs Р (1056) — identical look, different codes; the task pins the alphabet with a word (АБЕТКА vs APPLE), so the sign can simply be copied",
+        "New lesson \"Emoji have codes too\": `ord(\"😀\")` is 128512, `chr(128512)` returns the smiley, and emoji numbers sit in the hundred thousands; anything above 65535 is written as two halves in some formats, so an old console shows an empty box instead of the smile",
+        "The Basics chapter grew to 24 lessons, the whole course now has 33"
+      ],
+      tr: [
+        "\"Karakter kodları\" dersi belirsizlikten kurtuldu: iki alfabenin ayrı yanıt verebildiği \"B karakterinin kodu\" yerine artık \"İngilizce BALL kelimesinin ilk harfinin kodu\" soruluyor — bu 66'dır, aynı görünen Ukraynaca «В» ise 1042 verir ve denetimi geçmez",
+        "Aynı dersin teorisi artık açıkça söylüyor: soruda alfabe adıyla verilmeyince tek işaretin iki farklı cevabı olur, çünkü farklı yazıların harfleri tabloda ayrı numaralarda durur",
+        "Yeni ders \"Büyük ve küçük: 32 fark\": `ord(\"A\")` 65, `ord(\"a\")` 97 — yani büyük/küçük aritmetikle değişir (`chr(ord(\"p\") - 32)`); Kirilcede adım aynı, «Є» (1028) ve «є» (1108) gibi istisnalar hariç",
+        "Yeni ders \"İkiz harfler: hangi dille?\": İngilizce-Ukraynaca çiftler — A (65) ile А (1040), C (67) ile С (1057), E (69) ile Е (1045), P (80) ile Р (1056) — görünüm aynı, kodlar farklı; soruda alfabe bir kelimeyle sabit (АБЕТКА ile APPLE), o yüzden işareti doğrudan kopyalayabilirsin",
+        "Yeni ders \"Emoji'nin de kodu var\": `ord(\"😀\")` 128512, `chr(128512)` gülümsemeyi geri verir ve emoji numaraları yüz binlerdedir; 65535'ten büyüğü bazı biçimlerde iki parçayla yazılır, bu yüzden eski bir konsol gülümseme yerine boş kutu gösterir",
+        "Temeller bölümü 24 derse büyüdü, tüm kurs artık 33 ders"
+      ]
+    },
     "26.10.89": {
       uk: [
         "Новий урок «Незакрита дужка та лапка» — одразу після читання помилок: незакрита `(` дає `SyntaxError: '(' was never closed`, незакрита лапка — `SyntaxError: unterminated string literal`, і в обох випадках програма зупиняється ще до першої команди",
