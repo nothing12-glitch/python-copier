@@ -575,28 +575,80 @@
           }
         },
         {
-          id: "escapes",
-          title: { uk: "Екранування символів", en: "Escaping characters", tr: "Karakter kaçışı" },
+          id: "escapes_quotes",
+          title: { uk: "Екранування лапок", en: "Escaping quotes", tr: "Tırnak kaçışı" },
           theory: {
-            uk: "Усередині рядка деякі символи записують через зворотний слеш: \\n — новий рядок, \\t — табуляція, \\\\ — один зворотний слеш, \\\" — лапка всередині рядка в подвійних лапках. Без екранування Python не розуміє, де рядок закінчується, або просто не бачить потрібного символу. Зворотний слеш перед звичайною літерою не «захистить» її, а зламає рядок.",
-            en: "Inside a string some characters are written with a backslash: \\n is a new line, \\t is a tab, \\\\ is a single backslash and \\\" is a quote inside a double-quoted string. Without escaping, Python cannot tell where the string ends or simply misses the character you need. A backslash before a plain letter does not “protect” it — it breaks the string.",
-            tr: "Dizenin içinde bazı karakterler ters bölü ile yazılır: \\n yeni satır, \\t sekme, \\\\ tek ters bölü, \\\" ise çift tırnaklı dizenin içindeki tırnaktır. Kaçış olmazsa Python dizenin nerede bittiğini anlayamaz ya da istediğin karakteri göremez. Sıradan bir harften önceki ters bölü onu “korumaz”, dizeyi bozar."
+            uk: "Лапка для Python — не звичайний символ, а межа рядка: перша лапка рядок відчиняє, така сама закриває. Тому в print(\"Він каже: \"Привіт\"\") Python закриє рядок ще перед словом Привіт і зупинить програму з SyntaxError. Щоб лапка стала частиною тексту, перед нею ставлять зворотний слеш: \\\" — це й називають екрануванням. Є викрутка й без слеша: взяти текст у лапки іншого виду — подвійні лапки всередині одинарних межею не вважаються, як і апостроф всередині подвійних. Але коли в тексті є і лапки, і апострофи, одну пару доведеться екранувати все одно. Інша викрутка — дробити текст на шматки й склеювати через +, проте рядок стає довгим і в ньому легко загубити лапку. Екранування лишає текст одним цілим, який читається саме так, як пишеться, тому воно коротше й надійніше.",
+            en: "For Python a quote is not an ordinary character but the edge of the string: the first quote opens the string, the same kind of quote closes it. So in print(\"Він каже: \"Привіт\"\") Python closes the string before the word and stops the program with SyntaxError. To make a quote part of the text you put a backslash in front of it: \\\" — that is escaping. There is a way round a backslash too: wrap the text in the other kind of quote, because double quotes inside single quotes are not edges, and an apostrophe inside double quotes is not either. But when the text holds both quotes and apostrophes, one pair still has to be escaped. The other way out is chopping the text into pieces and gluing them with +, yet the line grows long and a quote is easy to lose. Escaping keeps the text one whole line that reads exactly as it is written, so it is shorter and safer.",
+            tr: "Tırnak Python için sıradan bir karakter değil, dizenin sınırıdır: ilk tırnak dizeyi açar, aynı tırnak kapatır. Bu yüzden print(\"O: \"Merhaba\"\") içinde Python sözcükten önce dizeyi kapatır ve programı SyntaxError ile durdurur. Tırnağı metnin parçası yapmak için önüne ters bölü koyarsın: \\\" — buna kaçış denir. Ters bölüsüz de yol var: metni öteki tırnak türünün içine almak; çift tırnak tek tırnağın içinde sınır sayılmaz, tek tırnak da çiftin içinde sayılmaz. Ama metinde hem tırnak hem kesme işareti varsa, bir ikiliyi yine de kaçırman gerekir. Öteki yol metni parçalara bölüp + ile yapıştırmak, fakat satır uzar ve tırnağı kaybetmek kolaydır. Kaçış metni tek satır olarak bırakır ve yazıldığı gibi okunur; bu yüzden hem kısa hem güvenli."
           },
-          example: "print(\"перший\\nдругий\")\nprint(\"таб\\tуляція\")\nprint(\"Шлях: C:\\\\py\\\\file.py\")\nprint(\"Він сказав: \\\"Привіт\\\"\")\n",
+          example: "print(\"Він каже: \\\"Привіт\\\"\")\nprint('Вона каже: \"Добре\"')\nprint(\"Кажуть: \\\"не мій 'дім'\\\"\")\n",
           task: {
             text: {
-              uk: "Виведи два рядки, екрануючи потрібні символи: перший — He said \"Hi!\", другий — C:\\py\\file.py",
-              en: "Print two lines, escaping the characters you need: first He said \"Hi!\", second C:\\py\\file.py",
-              tr: "Gerekli karakterleri kaçırarak iki satır yazdır: birincisi He said \"Hi!\", ikincisi C:\\py\\file.py"
+              uk: "Виведи три рядки, кожен своїм способом. Перший — Він каже: \"Привіт\"; текст у подвійних лапках, тому кожну внутрішню лапку екрануй. Другий — Вона каже: \"Добре\"; тут текст візьми в одинарні лапки, тоді внутрішні подвійні напишеш без слеша. Третій — Кажуть: \"не мій 'дім'\"; у цьому рядку є і лапки, і апострофи, тому одну пару все одно доведеться екранувати.",
+              en: "Print three lines, each one a different way. First — Він каже: \"Привіт\"; the text sits in double quotes, so escape every inner quote. Second — Вона каже: \"Добре\"; wrap this one in single quotes and the inner double quotes need no backslash. Third — Кажуть: \"не мій 'дім'\"; this line has both quotes and apostrophes, so one pair still must be escaped.",
+              tr: "Üç satır yazdır, her birini ayrı yolla. Birinci — Він каже: \"Привіт\"; metin çift tırnak içinde, bu yüzden her iç tırnağı kaçır. İkinci — Вона каже: \"Добре\"; bunu tek tırnağın içine al, içerideki çift tırnaklar ters bölü istemez. Üçüncü — Кажуть: \"не мій 'дім'\"; bu satırda hem tırnak hem kesme işareti var, o yüzden bir ikiliyi yine de kaçırman gerekecek."
             },
             hint: {
-              uk: "Рядок у подвійних лапках: внутрішню лапку напиши як \\\", а кожен зворотний слеш — як \\\\.",
-              en: "Put the text in double quotes: write each inner quote as \\\" and each backslash as \\\\.",
-              tr: "Metni çift tırnak içine al: her iç tırnağı \\\", her ters bölüyü \\\\ olarak yaz."
+              uk: "print(\"Він каже: \\\"Привіт\\\"\") — два зворотні слеші, по одному на лапку. print('Вона каже: \"Добре\"') — рядок в одинарних лапках, а всередині звичайні подвійні. print(\"Кажуть: \\\"не мій 'дім'\\\"\") — лапки екрануй, апострофи всередині подвійних лапок лишаються як є. Обереш зовнішні одинарні лапки — доведеться екранувати апострофи: print('Кажуть: \"не мій \\'дім\\'\"').",
+              en: "print(\"Він каже: \\\"Привіт\\\"\") — two backslashes, one per quote. print('Вона каже: \"Добре\"') — the line is in single quotes, so plain double quotes inside. print(\"Кажуть: \\\"не мій 'дім'\\\"\") — escape the quotes, leave the apostrophes alone inside double quotes. Choose outer single quotes instead and you escape the apostrophes: print('Кажуть: \"не мій \\'дім\\'\"').",
+              tr: "print(\"Він каже: \\\"Привіт\\\"\") — iki ters bölü, tırnak başına bir. print('Вона каже: \"Добре\"') — satır tek tırnak içinde, içeride sıradan çift tırnaklar var. print(\"Кажуть: \\\"не мій 'дім'\\\"\") — tırnakları kaçır, kesme işaretlerini çift tırnağın içinde dokunmadan bırak. Dışarıda tek tırnak seçersen bu kez kesme işaretlerini kaçırırsın: print('Кажуть: \"не мій \\'дім\\'\"')."
             },
             starter: "",
             tests: [
-              { in: "", out: "He said \"Hi!\"\nC:\\py\\file.py" }
+              { in: "", out: "Він каже: \"Привіт\"\nВона каже: \"Добре\"\nКажуть: \"не мій 'дім'\"" }
+            ]
+          }
+        },
+        {
+          id: "escapes_newline",
+          title: { uk: "Новий рядок і табуляція", en: "New line and tab", tr: "Yeni satır ve sekme" },
+          theory: {
+            uk: "Зворотний слеш діє не лише з лапками: комбінація \\n означає «тут почни новий рядок», а \\t — табуляцію, стрибок до наступної колонки. У коді це два знаки, а в рядку — один символ, тому рядок лишається одним, хоч на екрані й розпадається на кілька. Перенести текст звичайними лапками по-справжньому не вийде: Python обрве рядок і видасть SyntaxError: unterminated string literal. Для тексту, де кожен рядок важливий, є потрійні лапки — у них текст можна перенести самою клавішею Enter, але \\n і \\t придатні усюди. Табуляція розсуває стовпчики, однак вирівнювання не гарантує: різні консолі дають їй різний крок. І ще: порожній print() — той самий новий рядок, тільки без тексту.",
+            en: "A backslash does more than quotes: \\n means «start a new line here» and \\t is a tab, a jump to the next column. In the code they look like two characters, in the string they become one, so the string stays a single one even though the screen shows several lines. A real line break inside ordinary quotes will not work: Python cuts the string and answers SyntaxError: unterminated string literal. For text where every line matters there are triple quotes, and there a real Enter works, but \\n and \\t are useful everywhere. A tab pushes columns apart yet does not guarantee alignment: different consoles give it a different width. And one more thing: an empty print() is the same new line, only without text.",
+            tr: "Ters bölü yalnız tırnak için değil: \\n «burada yeni satıra geç» demek, \\t ise sekme, bir sonraki sütuna sıçramadır. Kodda iki işaret gibi görünürler, dizede tek karakter olurlar; bu yüzden dize tek kalır ama ekranda birkaç satıra dağılır. Sıradan tırnakların içinde gerçek satır sonu işlemez: Python dizeyi keser ve SyntaxError: unterminated string literal verir. Her satırın önemli olduğu metin için üçlü tırnaklar vardır, orada gerçek Enter çalışır, ama \\n ve \\t her yerde işe yarar. Sekme sütunları ayırır ama hizayı garanti etmez: farklı konsoller farklı genişlik verir. Bir de şu var: boş print() aynı yeni satırdır, yalnız metinsiz."
+          },
+          example: "print(\"Раз\\nдва\\nтри\")\nprint(\"ім'я\\tвік\")\nprint(\"Оля\\t12\")\nprint()\nprint(\"це після порожнього print()\")\n",
+          task: {
+            text: {
+              uk: "Одним print() виведи три рядки: Один, Два, Три — розділи їх комбінацією \\n. Другим print() виведи два рядки по два стовпчики, де стовпчики розділені \\t: у першому ім'я та вік, у другому Оля та 12. Усього має вивестися п'ять рядків.",
+              en: "With one print() output three lines — Один, Два, Три — separated by the \\n combination. With a second print() output two lines of two columns separated by \\t: name and age in the first, Оля and 12 in the second. Five lines in all.",
+              tr: "Tek print() ile üç satır yazdır: Один, Два, Три — aralarında \\n kombinasyonu. İkinci print() ile iki satır, iki sütun yazdır, sütunları \\t ayırsın: ilk satırda ad ve yaş, ikincisinde Оля ve 12. Toplamda beş satır çıkmalı."
+            },
+            hint: {
+              uk: "print(\"Один\\nДва\\nТри\") — три рядки виводу з одного рядка коду. Другий виклик теж можна одним рядком: print(\"ім'я\\tвік\\nОля\\t12\") — \\t між стовпчиками, \\n між рядками.",
+              en: "print(\"Один\\nДва\\nТри\") — three output lines from one line of code. The second call fits one line too: print(\"ім'я\\tвік\\nОля\\t12\") — \\t between the columns, \\n between the rows.",
+              tr: "print(\"Один\\nДва\\nТри\") — kodda tek satır, çıktıda üç satır. İkinci çağrı da tek satıra sığar: print(\"ім'я\\tвік\\nОля\\t12\") — sütunlar arasında \\t, satırlar arasında \\n."
+            },
+            starter: "",
+            tests: [
+              { in: "", out: "Один\nДва\nТри\nім'я\tвік\nОля\t12" }
+            ]
+          }
+        },
+        {
+          id: "escapes_path",
+          title: { uk: "Зворотний слеш у шляхах", en: "Backslashes in paths", tr: "Yollarda ters bölü" },
+          theory: {
+            uk: "Зворотний слеш — це початок комбінації, тому сам він теж потребує екранування: один справжній слеш пишеться як \\\\. Через це шляхи Windows ламаються: у \"C:\\new\" комбінація \\n перетворюється на розрив рядка, і вивід стає двома рядками замість одного, а \\t у \"C:\\test\" стрибає до колонки замість назви теки. Коротша дорога — префікс r перед першою лапкою: r\"C:\\new\" лишає всі слеші звичайними символами, такий рядок називають «сирим»; є в нього й межа — не можна закінчити рядок одним слешем. Тож для шляхів або \\\\ у звичайних лапках, або r\"...\". І ще: слеш перед звичайною літерою її не «захистить» — комбінацій, які Python знає, небагато, решту він лишає як є, тільки попереджає про підозрілий запис.",
+            en: "A backslash is the start of a combination, so it needs escaping itself: one real backslash is written \\\\. That is what breaks Windows paths: in \"C:\\new\" the \\n turns into a line break, so the output becomes two lines instead of one, and the \\t in \"C:\\test\" jumps to a column instead of naming a folder. The shorter road is the r prefix before the first quote: r\"C:\\new\" keeps every backslash an ordinary character — such a string is called raw; it has one limit though, a string cannot end with a single backslash. So for paths either \\\\ in normal quotes or r\"...\". And one more thing: a backslash in front of a plain letter does not «protect» it — Python knows only a handful of combinations, leaves the rest as written, and just warns about the suspicious code.",
+            tr: "Ters bölü bir kombinasyonun başlangıcıdır, bu yüzden kendisi de kaçış ister: gerçek bir ters bölü \\\\ olarak yazılır. Windows yolları bu yüzden bozulur: \"C:\\new\" içindeki \\n satır sonuna dönüşür ve çıktı tek satır yerine iki satır olur, \"C:\\test\" içindeki \\t ise klasör adı yerine sütuna sıçrar. Daha kısa yol ilk tırnaktan önceki r ön eki: r\"C:\\new\" her ters bölüyü sıradan karakter bırakır — buna ham dize denir; tek sınırı var, dize tek ters bölüyle bitemez. Yani yollar için ya normal tırnak içinde \\\\ ya da r\"...\". Bir de şu: sıradan bir harften önceki ters bölü onu «korumaz» — Python birkaç kombinasyonu bilir, gerisini yazıldığı gibi bırakır, yalnız şüpheli yazımı uyararak geçer."
+          },
+          example: "print(\"C:\\new\")\nprint(\"C:\\\\new\")\nprint(r\"C:\\py\\file.py\")\nprint(\"і так теж: C:\\\\py\\\\file.py\")\n",
+          task: {
+            text: {
+              uk: "Виведи два рядки: C:\\new\\test і C:\\py\\file.py. Перший збери у звичайних лапках, екрануючи кожен зворотний слеш, а другий дістав одним «сирим» рядком із префіксом r. Має вийти саме два рядки — без розривів посередині.",
+              en: "Print two lines: C:\\new\\test and C:\\py\\file.py. Build the first in ordinary quotes, escaping every backslash, and get the second as one raw string with the r prefix. It must be exactly two lines — no breaks in the middle.",
+              tr: "İki satır yazdır: C:\\new\\test ve C:\\py\\file.py. Birincisini normal tırnak içinde her ters bölüyü kaçırarak kur, ikincisini r ön ekiyle tek ham dize olarak yaz. Çıktı tam iki satır olmalı — ortada satır sonu olmayacak."
+            },
+            hint: {
+              uk: "print(\"C:\\\\\\\\new\\\\\\\\test\") — два слеші в коді на один у виводі. Другий рядок коротший: print(r\"C:\\py\\file.py\") — літера r стоїть перед самою першою лапкою, а слеші всередині писатимеш по одному.",
+              en: "print(\"C:\\\\\\\\new\\\\\\\\test\") — two backslashes in the code for one in the output. The second line is shorter: print(r\"C:\\py\\file.py\") — the letter r sits right before the very first quote, and inside you write single backslashes.",
+              tr: "print(\"C:\\\\\\\\new\\\\\\\\test\") — kodda iki ters bölü, çıktıda bir. İkinci satır daha kısa: print(r\"C:\\py\\file.py\") — harf r en ilk tırnağın hemen önünde durur, içeride ters bölüleri tek tek yazarsın."
+            },
+            starter: "",
+            tests: [
+              { in: "", out: "C:\\new\\test\nC:\\py\\file.py" }
             ]
           }
         },

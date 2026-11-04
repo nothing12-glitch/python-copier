@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.90";
+  const VERSION = "26.10.91";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.91": {
+      uk: [
+        "Тему екранування розбито на три уроки. Перший — «Екранування лапок»: лапка для Python не звичайний символ, а межа рядка, тому «Він каже: \"Привіт\"» у подвійних лапках без слеша зупиняє програму на SyntaxError; справжню лапку в тексті пишуть зворотним слешем попереду",
+        "Там само пояснюють альтернативи: текст із подвійними лапками можна взяти в одинарні й навпаки, можна порізати на шматки та склеїти через +. Є й рядок, де є і лапки, і апострофи, — там одну пару доведеться екранувати, і саме тому екранування коротше й надійніше за дроблення",
+        "Новий урок «Новий рядок і табуляція»: комбінації `\\n` і `\\t` — у коді два знаки, а в рядку один символ; текст звичайними лапками не перенести (SyntaxError: unterminated string literal), для цього є потрійні лапки, а порожній `print()` — той самий розрив без тексту",
+        "Новий урок «Зворотний слеш у шляхах»: слеш сам потребує екранування, тому `\"C:\\new\"` розпадається на два рядки — комбінація `\\n` уже означає розрив. Коротша дорога — `r\"...\"`, «сирий» рядок із префіксом r; у ньому, щоправда, не можна закінчити шлях одним слешем",
+        "Розділ «Основи» виріс до 26 уроків, увесь курс — 35"
+      ],
+      en: [
+        "The escaping topic is split into three lessons. The first — \"Escaping quotes\": for Python a quote is not an ordinary character but the border of a string, so `He says: \"Hello\"` inside double quotes without a backslash stops the program with SyntaxError; a real quote in the text is written with a backslash in front",
+        "The same lesson covers the alternatives: text with double quotes can be wrapped in single ones and the other way round, or cut into pieces and joined with +. There is also a line holding both quotes and apostrophes — one pair still has to be escaped, which is exactly why escaping is shorter and safer than splitting",
+        "New lesson \"New line and tab\": the `\\n` and `\\t` pairs — two signs in the code, one character in the string; text cannot be wrapped across ordinary quotes (SyntaxError: unterminated string literal), triple quotes do that, and an empty `print()` is the same break without text",
+        "New lesson \"Backslashes in paths\": the backslash itself needs escaping, so `\"C:\\new\"` falls apart into two lines — the `\\n` pair already means a break. The shorter road is `r\"...\"`, a raw string with the r prefix, though it cannot end with a single backslash",
+        "The Basics chapter grew to 26 lessons, the whole course now has 35"
+      ],
+      tr: [
+        "Kaçış konusu üç derse bölündü. Birincisi \"Tırnak kaçışı\": Python için tırnak sıradan bir işaret değil, satırın sınırıdır; bu yüzden çift tırnak içindeki `O der ki: \"Merhaba\"`, başında ters bölü olmadan programı SyntaxError ile durdurur — metindeki gerçek tırnağın önüne ters bölü konur",
+        "Aynı ders başka yolları da anlatıyor: çift tırnaklı metni tek tırnağa (veya tersine) almak, ya da parçalara bölüp + ile birleştirmek mümkün. Hem tırnak hem kesme işareti bulunan bir satırda ise bir çifti yine kaçırman gerekir — işte bu yüzden kaçış, parçalamadan daha kısa ve daha güvenlidir",
+        "Yeni ders \"Yeni satır ve sekme\": `\\n` ve `\\t` çiftleri — kodda iki işaret, dizgede tek karakter; metni sıradan tırnakla satırlara bölemezsin (SyntaxError: unterminated string literal), onun için üçlü tırnak var, boş `print()` ise metinsiz aynı satır kırımı",
+        "Yeni ders \"Yollarda ters bölü\": ters bölünün kendisi de kaçış ister, bu yüzden `\"C:\\new\"` iki satıra dağılır — `\\n` çifti zaten satır kırımı demek. Kısa yol `r\"...\"`, yani r ön ekli ham dizge; yalnız onun tek ters bölüyle bitmesine izin verilmiyor",
+        "Temeller bölümü 26 derse büyüdü, tüm kurs artık 35 ders"
+      ]
+    },
     "26.10.90": {
       uk: [
         "Урок «Коди символів» позбувся двозначності: замість «код символу B», який можна прочитати двома алфавітами, тепер «код першої літери англійського слова BALL» — це 66, а схожа на вигляд українська «В» дає 1042 і перевірку не проходить",
