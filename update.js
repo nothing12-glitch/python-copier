@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.92";
+  const VERSION = "26.10.93";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.93": {
+      uk: [
+        "Тему параметрів print() розбито на три уроки. Перший — «Параметр sep: що ставити між значеннями»: без sep це один пробіл, sep=\"-\" дає 1-2, sep=\", \" — «1, 2», а порожній sep=\"\" зліпить значення без жодного символу; діє sep лише між значеннями, тому на початку й наприкінці рядка його не видно",
+        "Новий урок «Параметр end: чим закінчити рядок»: кожен print сам додає \\n, а end= замінює цей кінець — print(\"a\", end=\"\") і print(\"b\") дають ab в одному рядку, end=\" \" лишає пробіл, end=\"!\" ставить знак оклику замість розриву; за проміжки всередині виклику й далі відповідає sep",
+        "Третій урок — «Разом: sep і end в одному print()»: print(10, 20, sep=\"+\", end=\"=\") друкує 10+20=, а наступний print(30) продовжує той самий рядок, тож стара рівність 10+20=30 повернулася, але тепер із числами з вводу",
+        "Усі три практики беруть дані з input() і мають по три тести, тому переписати відповідь від руки не вийде: жорстко кодований рядок проходить лише перший тест",
+        "Розділ «Основи» виріс до 29 уроків, увесь курс — 38"
+      ],
+      en: [
+        "The print() parameters topic is split into three lessons. The first — \"The sep parameter: what goes between the values\": without sep it is a single space, sep=\"-\" gives 1-2, sep=\", \" gives «1, 2», and an empty sep=\"\" glues the values with nothing at all; sep only acts between values, so it is invisible at the start and at the end of the line",
+        "New lesson \"The end parameter: how to close the line\": every print appends \\n by itself, and end= replaces that tail — print(\"a\", end=\"\") followed by print(\"b\") gives ab on one line, end=\" \" leaves a space, end=\"!\" puts an exclamation mark instead of the break; the gaps inside the call remain sep's job",
+        "The third lesson — \"Together: sep and end in one print()\": print(10, 20, sep=\"+\", end=\"=\") prints 10+20= and the next print(30) continues the same line, so the old 10+20=30 equality is back, now with numbers taken from input",
+        "All three practices read their data from input() and carry three tests each, so retyping an answer by hand will not work: a hard-coded line passes only the first test",
+        "The Basics chapter grew to 29 lessons, the whole course now has 38"
+      ],
+      tr: [
+        "print() parametreleri konusu üç derse bölündü. Birincisi \"sep parametresi: değerlerin arasına ne konur\": sep yoksa tek boşluktur, sep=\"-\" → 1-2, sep=\", \" → «1, 2», boş sep=\"\" ise değerleri hiçbir karakter koymadan yapıştırır; sep yalnızca değerlerin arasında çalışır, bu yüzden satırın başında ve sonunda görünmez",
+        "Yeni ders \"end parametresi: satırı nasıl bitirmek\": her print sonuna kendiliğinden \\n ekler, end= bu sonu değiştirir — print(\"a\", end=\"\") ve ardından print(\"b\") tek satırda ab verir, end=\" \" boşluk bırakır, end=\"!\" kırılma yerine ünlem koyar; çağrının içindeki boşluklar yine sep'in işi",
+        "Üçüncü ders — \"Birlikte: tek print() içinde sep ve end\": print(10, 20, sep=\"+\", end=\"=\") 10+20= yazdırır, sonraki print(30) aynı satırı sürdürür; eski 10+20=30 eşitliği geri döndü, ama artık sayılar girdiden geliyor",
+        "Üç alıştırma da verileri input() ile okur ve her biri üç test taşır; bu yüzden yanıtı elle yazmak işe yaramaz: baştan yazılmış satır yalnızca ilk testi geçer",
+        "Temeller bölümü 29 derse büyüdü, tüm kurs artık 38 ders"
+      ]
+    },
     "26.10.92": {
       uk: [
         "Урок про інтерполяцію розбито на два. Перший — «Інтерполяція: лише змінні»: у фігурні дужки f-рядка ставлять саму назву змінної — f\"Привіт, {name}!\" — а префікс f пишуть перед першою лапкою всього рядка",

@@ -710,27 +710,85 @@
         },
         {
           id: "print_sep",
-          title: { uk: "Параметри sep і end у print()", en: "The sep and end parameters of print()", tr: "print() içindeki sep ve end parametreleri" },
+          title: { uk: "Параметр sep: що ставити між значеннями", en: "The sep parameter: what goes between the values", tr: "sep parametresi: değerlerin arasına ne konur" },
           theory: {
-            uk: "print() приймає додаткові параметри. sep= задає, що ставити між кількома значеннями — типово це один пробіл: print(1, 2, sep=\"-\") дає 1-2, а sep=\"\" зліпить їх без роздільника. end= задає, що друкувати наприкінці — типово \\n, тож рядка кінця немає: print(\"a\", end=\"\") і print(\"b\") дадуть ab в одному рядку.",
-            en: "print() accepts extra parameters. sep= sets what goes between several values — by default a single space: print(1, 2, sep=\"-\") gives 1-2 and sep=\"\" glues them with no separator. end= sets what is printed at the end — by default \\n, so end=\"\" leaves the line open: print(\"a\", end=\"\") followed by print(\"b\") gives ab on one line.",
-            tr: "print() ek parametreler alır. sep=, birkaç değerin arasına ne konacağını belirler — varsayılan tek boşluktur: print(1, 2, sep=\"-\") 1-2 verir, sep=\"\" ise ayraçsız yapıştırır. end= satır sonunda ne yazılacağını belirler — varsayılan \\n'dir; bu yüzden print(\"a\", end=\"\") ve ardından print(\"b\") tek satırda ab verir."
+            uk: "print() вміє друкувати кілька значень одночасно, а sep= вирішує, що поставити між ними. Без sep це один пробіл: print(1, 2) дає «1 2». sep=\"-\" дає 1-2, sep=\", \" — «1, 2», а порожній sep=\"\" зліпить значення без жодного символу. sep діє лише між значеннями, тому на початку й наприкінці рядка роздільника не зʼявляється. Чим закінчується рядок — параметр end — розберемо в наступному уроці.",
+            en: "print() can print several values at once, and sep= decides what goes between them. Without sep it is a single space: print(1, 2) gives «1 2». sep=\"-\" gives 1-2, sep=\", \" gives «1, 2», and an empty sep=\"\" glues the values with nothing in between. sep only acts between values, so no separator appears at the start or at the end of the line. What closes the line — the end parameter — comes in the next lesson.",
+            tr: "print() birkaç değeri aynı anda yazdırabilir; sep= ise aralarına ne konacağını belirler. sep yoksa tek boşluktur: print(1, 2) → «1 2». sep=\"-\" → 1-2, sep=\", \" → «1, 2», boş sep=\"\" ise değerleri hiçbir karakter koymadan yapıştırır. sep yalnızca değerlerin arasında çalışır; bu yüzden satırın başında ve sonunda ayraç belirmesin. Satırın nasıl bittiği — end parametresi — bir sonraki derste."
           },
-          example: "print(1, 2, 3, sep=\", \")\nprint(\"a\", end=\"\")\nprint(\"b\")\n",
+          example: "print(1, 2, 3, sep=\", \")\nprint(10, 20, sep=\"-\")\nprint(\"а\", \"б\", sep=\"\")\n",
           task: {
             text: {
-              uk: "Виведи одним рядком 10+20=30: першим виклич print(10, 20, sep=\"+\", end=\"=\"), другим — print(30).",
-              en: "Print 10+20=30 on a single line: first call print(10, 20, sep=\"+\", end=\"=\"), then call print(30).",
-              tr: "10+20=30 değerini tek satırda yazdır: önce print(10, 20, sep=\"+\", end=\"=\") çağrısını, sonra print(30) çağrısını kullan."
+              uk: "Прочитай три рядки вводу — це три імена — і виведи їх одним рядком через кому з пробілом: Оля, Максим, Галина. Один виклик print із трьома значеннями та sep=\", \"; назви не переписуй від руки, бо перевірка дасть інші.",
+              en: "Read three input lines — three names — and print them on one line separated by a comma and a space: Оля, Максим, Галина. One print call with three values and sep=\", \"; do not retype the names, because the checker will feed different ones.",
+              tr: "Üç giriş satırı oku — üç ad — ve tek satırda virgülle, ardından boşlukla yazdır: Оля, Максим, Галина. sep=\", \" ile tek bir print çağrısı, üç değerle; adları elle yazma, denetleyici başkalarını verecek."
             },
             hint: {
-              uk: "sep=\"+\" ставить + між 10 і 20, а end=\"=\" прибирає перехід на новий рядок і друкує замість нього =.",
-              en: "sep=\"+\" puts a + between 10 and 20, and end=\"=\" removes the line break and prints = instead of it.",
-              tr: "sep=\"+\", 10 ile 20'nin arasına + koyar; end=\"=\" ise satır sonunu kaldırır ve yerine = yazdırır."
+              uk: "a = input()\nb = input()\nc = input()\nprint(a, b, c, sep=\", \") — sep пишеться після всіх значень і не чіпає ані початку, ані кінця рядка.",
+              en: "a = input()\nb = input()\nc = input()\nprint(a, b, c, sep=\", \") — sep is written after all the values and touches neither the start nor the end of the line.",
+              tr: "a = input()\nb = input()\nc = input()\nprint(a, b, c, sep=\", \") — sep tüm değerlerden sonra yazılır; satırın başına ve sonuna dokunmaz."
             },
             starter: "",
             tests: [
-              { in: "", out: "10+20=30" }
+              { in: "Оля\nМаксим\nГалина\n", out: "Оля, Максим, Галина" },
+              { in: "ананас\nбанан\nвишня\n", out: "ананас, банан, вишня" },
+              { in: "1\n2\n3\n", out: "1, 2, 3" }
+            ]
+          }
+        },
+        {
+          id: "print_end",
+          title: { uk: "Параметр end: чим закінчити рядок", en: "The end parameter: how to close the line", tr: "end parametresi: satırı nasıl bitirmek" },
+          theory: {
+            uk: "Кожен print автоматично додає наприкінці \\n — тому наступний виклик починає новий рядок. end= замінює цей кінець: print(\"a\", end=\"\") нічого не додає, тож print(\"b\") друкується одразу після — виходить ab в одному рядку. end=\" \" лишає пробіл, end=\"!\" ставить знак оклику замість розриву. Зверни увагу: end не чіпає того, що всередині виклику, — за проміжки між значеннями й далі відповідає sep.",
+            en: "Every print appends \\n at the end, so the next call starts a fresh line. end= replaces that tail: print(\"a\", end=\"\") adds nothing, so print(\"b\") prints right after it — you get ab on one line. end=\" \" leaves a space, end=\"!\" puts an exclamation mark instead of the break. Note that end never touches what is inside the call — the gaps between values are still sep's job.",
+            tr: "Her print sonuna kendiliğinden \\n ekler, bu yüzden sonraki çağrı yeni satırda başlar. end= bu sonu değiştirir: print(\"a\", end=\"\") hiçbir şey eklemez, print(\"b\") hemen ardına yazılır ve tek satırda ab olur. end=\" \" boşluk bırakır, end=\"!\" kırılma yerine ünlem koyar. Dikkat: end çağrının içindekilere dokunmaz — değerlerin arası hâlâ sep'in işi."
+          },
+          example: "print(\"Пай\", end=\"\")\nprint(\"тон\", end=\"!\")\nprint(\"Готово\")\n",
+          task: {
+            text: {
+              uk: "Прочитай два рядки вводу — слово та число — і виведи їх в один рядок, поставивши між ними « — » (пробіл, тире, пробіл): перший виклик print з end=\" — \", другий — звичайний. Для слова код і числа 42 має вийти код — 42.",
+              en: "Read two input lines — a word and a number — and print them on one line with « — » between them (space, dash, space): the first print call uses end=\" — \", the second is ordinary. For the word код and the number 42 the output must be код — 42.",
+              tr: "İki giriş satırı oku — bir sözcük ve bir sayı — ve aralarında « — » (boşluk, tire, boşluk) olacak şekilde tek satırda yazdır: ilk print end=\" — \" ile, ikincisi bildiğin gibi. код sözcüğü ve 42 sayısı için çıktı код — 42 olmalı."
+            },
+            hint: {
+              uk: "a = input()\nb = input()\nprint(a, end=\" — \")\nprint(b) — перший виклик лишає курсор у тому ж рядку, тому другий print друкується одразу після тире.",
+              en: "a = input()\nb = input()\nprint(a, end=\" — \")\nprint(b) — the first call keeps the cursor on the same line, so the second print comes right after the dash.",
+              tr: "a = input()\nb = input()\nprint(a, end=\" — \")\nprint(b) — ilk çağrı imleci aynı satırda bırakır, ikinci print tireden hemen sonra yazılır."
+            },
+            starter: "",
+            tests: [
+              { in: "Привіт\n5\n", out: "Привіт — 5" },
+              { in: "код\n42\n", out: "код — 42" },
+              { in: "їжа\n0\n", out: "їжа — 0" }
+            ]
+          }
+        },
+        {
+          id: "print_sep_end",
+          title: { uk: "Разом: sep і end в одному print()", en: "Together: sep and end in one print()", tr: "Birlikte: tek print() içinde sep ve end" },
+          theory: {
+            uk: "sep і end не заважають одне одному й працюють в самому виклику: sep розставляє роздільник між значеннями, end закриває рядок. Тому print(10, 20, sep=\"+\", end=\"=\") друкує 10+20=, а наступний print(30) продовжує той самий рядок — разом виходить 10+20=30. Якщо забути end, друге число стрибне на новий рядок; якщо забути sep, між числами стане пробіл. Ці два параметри завершують розділ «Основи».",
+            en: "sep and end do not interfere and both work inside the very same call: sep places the separator between the values, end closes the line. So print(10, 20, sep=\"+\", end=\"=\") prints 10+20=, and the next print(30) continues the same line — together it becomes 10+20=30. Forget end and the second number jumps to a new line; forget sep and a space sits between the numbers. These two parameters close the Basics chapter.",
+            tr: "sep ve end birbirine engel olmaz, ikisi de aynı çağrıda çalışır: sep değerlerin arasına ayraç koyar, end satırı kapatır. Bu yüzden print(10, 20, sep=\"+\", end=\"=\") 10+20= yazdırır, sonraki print(30) aynı satırı sürdürür — birlikte 10+20=30 olur. end'i unutursan ikinci sayı yeni satıra sıçrar; sep'i unutursan sayıların arasına boşluk girer. Bu iki parametre Temeller bölümünü tamamlar."
+          },
+          example: "print(10, 20, sep=\"+\", end=\"=\")\nprint(30)\nprint(\"а\", \"б\", sep=\"-\", end=\"!\")\nprint(\"в\")\n",
+          task: {
+            text: {
+              uk: "Прочитай два числа з вводу (int) і виведи рівність одним рядком: для 10 і 20 має вийти 10+20=30. Першим виклич print(a, b, sep=\"+\", end=\"=\"), другим — print(a + b). Суму рахує Python, тому значення від руки не переписуй.",
+              en: "Read two numbers from input (int) and print an equality on one line: for 10 and 20 the output must be 10+20=30. First call print(a, b, sep=\"+\", end=\"=\"), then call print(a + b). Python computes the sum, so do not retype the values.",
+              tr: "Girdiden iki sayı oku (int) ve eşitliği tek satırda yazdır: 10 ve 20 için çıktı 10+20=30 olmalı. Önce print(a, b, sep=\"+\", end=\"=\"), sonra print(a + b). Toplamı Python hesaplar, değerleri elle yazma."
+            },
+            hint: {
+              uk: "a = int(input())\nb = int(input())\nprint(a, b, sep=\"+\", end=\"=\")\nprint(a + b) — sep дає + між числами, end=\"=\" прибирає розрив і друкує =, тому сума прилипає до того ж рядка.",
+              en: "a = int(input())\nb = int(input())\nprint(a, b, sep=\"+\", end=\"=\")\nprint(a + b) — sep gives the + between the numbers, end=\"=\" drops the break and prints =, so the sum sticks to the same line.",
+              tr: "a = int(input())\nb = int(input())\nprint(a, b, sep=\"+\", end=\"=\")\nprint(a + b) — sep sayıların arasına + koyar, end=\"=\" satır kırılmasını kaldırıp yerine = yazar; toplam aynı satıra yapışır."
+            },
+            starter: "",
+            tests: [
+              { in: "10\n20\n", out: "10+20=30" },
+              { in: "3\n4\n", out: "3+4=7" },
+              { in: "0\n9\n", out: "0+9=9" }
             ]
           }
         }
