@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.93";
+  const VERSION = "26.10.94";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.94": {
+      uk: [
+      "У «Параметрі sep» приклад тепер збирає з чисел дату й час: print(5, 11, 2026, sep=\".\") дає 5.11.2026, а print(9, 30, 15, sep=\":\") — 9:30:15. Той самий трюк, що й зі словами",
+      "«Параметр end» показує підписаний рядок: print(\"Дата:\", end=\" \"), а далі print(5, 11, 2026, sep=\".\") — разом це «Дата: 5.11.2026», бо значення лишається на тому самому рядку",
+      "У «Разом: sep і end» приклад виводить три рядки: 10+20=30, «Дата: 5.11.2026» та «9:30:15 — зараз»",
+      "В теорії пояснено, чому підпис виноситься в окремий виклик: sep діє між усіма значеннями, тому в одному виклику «Дата:» склеїлося б з числами так само, як і крапки",
+      "Кнопка «Запустити в майданчику» переносить нові приклади у редактор Python, тож дату й час можна запустити й побачити справжній вивід"
+      ],
+      en: [
+      "In \"The sep parameter\" the example now builds a date and a time out of numbers: print(5, 11, 2026, sep=\".\") gives 5.11.2026 and print(9, 30, 15, sep=\":\") gives 9:30:15 — the same trick as with words",
+      "\"The end parameter\" shows a labelled line: print(\"Дата:\", end=\" \") followed by print(5, 11, 2026, sep=\".\") together give \"Дата: 5.11.2026\", because the value stays on the same line",
+      "In \"Together: sep and end\" the example prints three lines: 10+20=30, \"Дата: 5.11.2026\" and \"9:30:15 — зараз\"",
+      "The theory explains why the label is a separate call: sep acts between every value, so in one call \"Дата:\" would be glued to the numbers exactly like the dots",
+      "The \"Run in the playground\" button moves the new examples into the Python editor, so the date and time can actually be run and their output seen"
+      ],
+      tr: [
+      "\"sep parametresi\" dersinde örnek artık sayılardan tarih ve saat kuruyor: print(5, 11, 2026, sep=\".\") → 5.11.2026, print(9, 30, 15, sep=\":\") → 9:30:15; kelimelerle yapılanın aynı yolu",
+      "\"end parametresi\" etiketli satırı gösteriyor: print(\"Дата:\", end=\" \") ve ardından print(5, 11, 2026, sep=\".\") birleşince «Дата: 5.11.2026» oluyor, çünkü değer aynı satırda kalıyor",
+      "\"Birlikte: sep ve end\" dersi üç satır yazdırıyor: 10+20=30, «Дата: 5.11.2026» ve «9:30:15 — зараз»",
+      "Teoride etiketin neden ayrı çağrıldığı açıklanıyor: sep tüm değerlerin arasında çalışır, tek çağrıda «Дата:» sayılarla aynı şekilde yapışırdı",
+      "«Playground'da çalıştır» düğmesi yeni örnekleri Python editörüne taşır; tarihi ve saati gerçekten çalıştırıp çıktıyı görmek mümkün"
+      ]
+    },
     "26.10.93": {
       uk: [
         "Тему параметрів print() розбито на три уроки. Перший — «Параметр sep: що ставити між значеннями»: без sep це один пробіл, sep=\"-\" дає 1-2, sep=\", \" — «1, 2», а порожній sep=\"\" зліпить значення без жодного символу; діє sep лише між значеннями, тому на початку й наприкінці рядка його не видно",
