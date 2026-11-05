@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.91";
+  const VERSION = "26.10.92";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.92": {
+      uk: [
+        "Урок про інтерполяцію розбито на два. Перший — «Інтерполяція: лише змінні»: у фігурні дужки f-рядка ставлять саму назву змінної — f\"Привіт, {name}!\" — а префікс f пишуть перед першою лапкою всього рядка",
+        "Там само названо дві типові помилки: забутий f, коли рядок друкується буквально, з назвою замість значення, та незакрита дужка, коли Python не бачить кінця вставки. Практика бере ім'я з input(), тому переписати відповідь від руки не вийде",
+        "Новий урок «Інтерполяція: вирази та len() у дужках»: у дужках рахується весь вираз — f\"{a + b}\" дає суму, а для txt = \"це текст\" рядок print(f\"довжина тексту - {len(txt)}\") дає 8; лапки всередині дужок не повинні збігатися з лапками рядка, тож складний виклик краще винести в змінну вище",
+        "Задача другого уроку читає три рядки вводу — слово та два числа — і перевіряє і довжину, і суму, тому жорстко кодована відповідь проходить лише перший із трьох тестів",
+        "Розділ «Основи» виріс до 27 уроків, увесь курс — 36"
+      ],
+      en: [
+        "The interpolation lesson is split into two. The first — \"Interpolation: variables only\": the braces of an f-string hold just the name of a variable — f\"Привіт, {name}!\" — and the f prefix stands before the very first quote of the whole line",
+        "The same lesson names two typical mistakes: a forgotten f, which prints the line literally with the name instead of the value, and an unclosed brace, where Python cannot see where the insertion ends. The practice takes the name from input(), so retyping the answer by hand will not work",
+        "New lesson \"Interpolation: expressions and len() in braces\": the whole expression inside the braces is computed — f\"{a + b}\" gives the sum, and for txt = \"це текст\" the line print(f\"довжина тексту - {len(txt)}\") gives 8; the quotes inside the braces must not match the quotes wrapping the string, so a long call is better lifted into a variable above",
+        "The task of the second lesson reads three input lines — a word and two numbers — and checks both the length and the sum, so a hard-coded answer passes only the first of three tests",
+        "The Basics chapter grew to 27 lessons, the whole course now has 36"
+      ],
+      tr: [
+        "Satıra gömme dersi ikiye bölündü. Birincisi \"Satıra gömme: yalnızca değişkenler\": f-dizesinin küme parantezinin içine yalnızca değişkenin adı yazılır — f\"Merhaba, {name}!\" — f ön eki de tüm satırın en ilk tırnağından önce durur",
+        "Aynı ders iki tipik hatayı da sayıyor: unutulan f, o zaman satır aynen, değer yerine adla yazdırılır; kapanmayan parantez, o zaman Python eklemenin nerede bittiğini göremez. Alıştırma adı input() ile okur, bu yüzden yanıtı elle yazmak işe yaramaz",
+        "Yeni ders \"Satıra gömme: parantezde ifade ve len()\": parantez içinde tüm ifade hesaplanır — f\"{a + b}\" toplamı verir, txt = \"це текст\" ise print(f\"довжина тексту - {len(txt)}\") satırı 8 verir; parantez içindeki tırnaklar dizgeyi saran tırnaklarla aynı olmamalı, bu yüzden uzun çağrıyı yukarıda bir değişkene almak daha iyi",
+        "İkinci dersin görevi üç giriş satırı okur — bir sözcük ve iki sayı — hem uzunluğu hem toplamı denetler; bu yüzden baştan yazılmış yanıt üç testin yalnızca birincisini geçer",
+        "Temeller bölümü 27 derse büyüdü, tüm kurs artık 36 ders"
+      ]
+    },
     "26.10.91": {
       uk: [
         "Тему екранування розбито на три уроки. Перший — «Екранування лапок»: лапка для Python не звичайний символ, а межа рядка, тому «Він каже: \"Привіт\"» у подвійних лапках без слеша зупиняє програму на SyntaxError; справжню лапку в тексті пишуть зворотним слешем попереду",

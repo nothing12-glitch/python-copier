@@ -653,28 +653,58 @@
           }
         },
         {
-          id: "fstring",
-          title: { uk: "Інтерполяція: f-рядки", en: "Interpolation: f-strings", tr: "Satıra gömme: f-dizeleri" },
+          id: "fstring_vars",
+          title: { uk: "Інтерполяція: лише змінні", en: "Interpolation: variables only", tr: "Satıra gömme: yalnızca değişkenler" },
           theory: {
-            uk: "f-рядок починається з префікса f, а значення вставляють у фігурні дужки: f\"Привіт, {name}!\". У дужках можна писати цілий вираз: f\"{2 + 3}\" дає 5, а f\"{price * qty}\" — добуток. Це найзручніший спосіб зібрати речення зі слів і змінних — довгих ланцюжків із + зазвичай уже не потрібно.",
-            en: "An f-string starts with the f prefix and puts values inside curly braces: f\"Привіт, {name}!\". A full expression works inside the braces: f\"{2 + 3}\" gives 5 and f\"{price * qty}\" gives the product. It is the easiest way to build a sentence out of words and variables, so long chains of + are usually no longer needed.",
-            tr: "f-dizesi f ön ekiyle başlar ve değerler küme parantezine yazılır: f\"Merhaba, {name}!\". Parantezin içinde tam bir ifade de çalışabilir: f\"{2 + 3}\" 5 verir, f\"{price * qty}\" çarpımı verir. Sözcüklerle değişkenleri bir cümlede birleştirmenin en kolay yolu budur; uzun + zincirlerine artık gerek kalmaz."
+            uk: "f-рядок — це звичайний рядок із префіксом f, а у фігурні дужки ставлять назву змінної: f\"Привіт, {name}!\". Python підставляє туди значення цієї змінної, тому перетворювати значення через str() вже не треба. Префікс f діє на весь рядок, тому його пишуть перед самою першою лапкою, а не перед дужками. Найчастіша помилка — забути f: тоді рядок друкується буквально, з назвою замість значення. Інша — не закрита дужка, і тоді Python не бачить, де кінець вставки. У цьому уроці в дужках лише назва змінної; вирази та виклики функцій — у наступному.",
+            en: "An f-string is an ordinary string with the f prefix, and the curly braces hold the name of a variable: f\"Привіт, {name}!\". Python pastes in that variable's value, so wrapping things in str() is no longer needed. The f prefix applies to the whole string, so it stands before the very first quote, not before the braces. The usual mistake is forgetting the f: then the line prints literally, with the name instead of the value. Another one is an unclosed brace, where Python cannot see where the insertion ends. In this lesson the braces hold only a variable name; expressions and function calls come in the next one.",
+            tr: "f-dizesi başında f ön eki olan sıradan bir dizgedir; küme parantezinin içine değişkenin adı yazılır: f\"Merhaba, {name}!\". Python oraya o değişkenin değerini koyar, bu yüzden değerleri str() ile sarmaya gerek kalmaz. f ön eki tüm dizgeye etki eder, bu yüzden parantezden önce değil, en ilk tırnaktan önce yazılır. En sık hata f'yi unutmaktır: o satır aynen, değer yerine adla yazdırılır. Bir diğeri kapanmayan parantezdir; Python o zaman eklemenin nerede bittiğini göremez. Bu derste parantezin içinde yalnızca değişken adı var; ifadeler ve fonksiyon çağrıları sonraki derste."
           },
-          example: "name = \"Оля\"\nage = 12\nprint(f\"{name}, мені {age} років\")\nprint(f\"через 5 років: {age + 5}\")\n",
+          example: "name = \"Оля\"\nage = 12\nprint(f\"Мене звати {name}, мені {age}\")\nprint(\"{name} — це без префікса f\")\n",
           task: {
             text: {
-              uk: "У стартері item = \"кава\", price = 4, qty = 3. Виведи одним рядком через f-рядок: кава: 12 — слово, двокрапка, пробіл і добуток ціни на кількість.",
-              en: "The starter has item = \"кава\", price = 4, qty = 3. Print one line with an f-string: кава: 12 — the word, a colon, a space and the price times the quantity.",
-              tr: "Başlangıçta item = \"кава\", price = 4, qty = 3 var. f-dizesiyle tek satır yazdır: кава: 12 — sözcük, iki nokta, boşluk ve fiyat ile miktarın çarpımı."
+              uk: "Прочитай ім'я з першого рядка вводу (input()) і виведи його у реченні через f-рядок: Привіт, Оля! — тільки замість Оля має стояти те, що введе перевірка. Один рядок коду з print, у дужках лише назва змінної.",
+              en: "Read a name from the first input line with input() and print it in a sentence using an f-string: Привіт, Оля! — but where Оля stands, the checker's own input must appear. One print line, and the braces hold only the variable name.",
+              tr: "İlk giriş satırından input() ile bir ad oku ve bunu bir f-dizesiyle cümle içinde yazdır: Привіт, Оля! — Оля yerine denetleyicinin girdisi gelmeli. Tek bir print satırı, parantezin içinde yalnızca değişken adı."
             },
             hint: {
-              uk: "print(f\"{item}: {price * qty}\") — префікс f стоїть перед самою першою лапкою, а обидва значення — у фігурних дужках.",
-              en: "print(f\"{item}: {price * qty}\") — the f prefix goes before the very first quote, and both values sit in curly braces.",
-              tr: "print(f\"{item}: {price * qty}\") — f ön eki en ilk tırnaktan önce durur, iki değer de küme parantezine yazılır."
+              uk: "name = input()\nprint(f\"Привіт, {name}!\") — спочатку зберігаєш введений текст у змінну, потім ставиш її назву у дужки та не забуваєш f перед першою лапкою.",
+              en: "name = input()\nprint(f\"Привіт, {name}!\") — first you keep the typed text in a variable, then you put its name into the braces and do not forget f before the first quote.",
+              tr: "name = input()\nprint(f\"Привіт, {name}!\") — önce yazılan metni bir değişkende saklarsın, sonra adını paranteze koyarsın ve ilk tırnaktan önce f'yi unutmazsın."
             },
-            starter: "item = \"кава\"\nprice = 4\nqty = 3\n",
+            starter: "",
             tests: [
-              { in: "", out: "кава: 12" }
+              { in: "Оля\n", out: "Привіт, Оля!" },
+              { in: "Максим\n", out: "Привіт, Максим!" },
+              { in: "Галина\n", out: "Привіт, Галина!" }
+            ]
+          }
+        },
+        {
+          id: "fstring_expr",
+          title: { uk: "Інтерполяція: вирази та len() у дужках", en: "Interpolation: expressions and len() in braces", tr: "Satıra gömme: parantezde ifade ve len()" },
+          theory: {
+            uk: "У фігурних дужках f-рядка можна писати не лише назву змінної, а цілий вираз: f\"{2 + 3}\" дає 5, а f\"{a + b}\" — суму двох змінних. Працюють і виклики функцій: txt = \"це текст\"; print(f\"довжина тексту - {len(txt)}\") дає 8. Python спершу обчислює те, що всередині дужок, і лише результат уставляє в рядок. Одна межа: лапки всередині дужок не повинні збігатися з лапками самого рядка, інакше рядок обірветься — складний виклик краще винести в змінну вище. Вираз у дужках обчислюється один раз, тому речення й обчислення живуть в одному рядку, без зайвих склеювань через +.",
+            en: "Inside the curly braces of an f-string you can write not only a variable name but a whole expression: f\"{2 + 3}\" gives 5 and f\"{a + b}\" gives the sum of two variables. Function calls work too: with txt = \"це текст\", the line print(f\"довжина тексту - {len(txt)}\") gives 8. Python first evaluates what sits inside the braces and only then pastes the result into the string. One border: the quotes inside the braces must not match the quotes wrapping the string itself, otherwise the string breaks off — a long call is better lifted into a variable above. An expression in the braces is evaluated once, so the sentence and the calculation live on one line with no extra gluing by +.",
+            tr: "f-dizesinin küme parantezinin içinde yalnızca değişken adı değil, tam bir ifade de yazılabilir: f\"{2 + 3}\" 5 verir, f\"{a + b}\" iki değişkenin toplamını verir. Fonksiyon çağrıları da çalışır: txt = \"це текст\" ise print(f\"довжина тексту - {len(txt)}\") satırı 8 verir. Python önce parantez içindekini hesaplar, sonra sonucu dizgeye yerleştirir. Bir sınır: parantezin içindeki tırnaklar dizgeyi saran tırnaklarla aynı olmamalı, yoksa dizge kopar — uzun çağrıyı yukarıda bir değişkene almak daha iyi. Parantezdeki ifade bir kez hesaplanır; böylece cümleyle hesaplama tek satırda, ek yapıştırmaksızın durur."
+          },
+          example: "txt = \"це текст\"\nprint(f\"довжина тексту - {len(txt)}\")\na = 5\nb = 7\nprint(f\"сума: {a + b}\")\n",
+          task: {
+            text: {
+              uk: "Три рядки вводу: перший — слово, другий і третій — по числу. Прочитай їх через input() (числа перетвори на int) і виведи два рядки: перший — довжина тексту - 8 для слова «це текст», другий — сума: 12 для чисел 5 і 7. В обох рядках значення має обчислювати сам вираз усередині дужок.",
+              en: "Three input lines: the first is a word, the second and third are numbers. Read them with input() (turn the numbers into int) and print two lines: the first — довжина тексту - 8 for the word «це текст», the second — сума: 12 for the numbers 5 and 7. In both lines the value inside the braces must do the computing itself.",
+              tr: "Üç giriş satırı: ilki bir sözcük, ikincisi ve üçüncüsü birer sayı. Bunları input() ile oku (sayıları int'e çevir) ve iki satır yazdır: birincisi — «це текст» sözcüğü için довжина тексту - 8, ikincisi — 5 ve 7 sayıları için сума: 12. Her iki satırda da parantez içindeki değer kendisi hesaplanmalı."
+            },
+            hint: {
+              uk: "txt = input()\na = int(input())\nb = int(input())\nprint(f\"довжина тексту - {len(txt)}\")\nprint(f\"сума: {a + b}\") — і len(txt), і a + b стоять просто у фігурних дужках, без лапок навколо.",
+              en: "txt = input()\na = int(input())\nb = int(input())\nprint(f\"довжина тексту - {len(txt)}\")\nprint(f\"сума: {a + b}\") — both len(txt) and a + b sit right inside the curly braces, with no quotes around them.",
+              tr: "txt = input()\na = int(input())\nb = int(input())\nprint(f\"довжина тексту - {len(txt)}\")\nprint(f\"сума: {a + b}\") — hem len(txt) hem a + b doğrudan küme parantezinin içinde, etraflarında tırnak yok."
+            },
+            starter: "",
+            tests: [
+              { in: "це текст\n5\n7\n", out: "довжина тексту - 8\nсума: 12" },
+              { in: "код\n3\n4\n", out: "довжина тексту - 3\nсума: 7" },
+              { in: "привіт світ\n0\n9\n", out: "довжина тексту - 11\nсума: 9" }
             ]
           }
         },
