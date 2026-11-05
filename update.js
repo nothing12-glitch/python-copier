@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.94";
+  const VERSION = "26.10.95";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.95": {
+      uk: [
+      "У «Основах» почався блок про роботу з текстом. Перший урок — «Регістр літер: upper() і lower()»: метод пишеться через крапку після рядка, круглі дужки наприкінці обов'язкові навіть порожні, а сам рядок метод не переписує — w.upper() лише повертає новий",
+      "Другий — «Пробіли по краях: strip()»: w.strip() прибирає пробіли, табуляції та розриви рядка на початку й наприкінці, не чіпаючи середину («a b» лишається «a b»); для одного боку є lstrip() і rstrip()",
+      "Третій — «Методи ланцюжком: strip() і lower() разом»: name = input().strip().lower() читається зліва праворуч, кожен метод бере результат попереднього, і в такій парі порядок не змінює відповіді",
+      "Усі три практики зчитують слово через input() і мають по три тести, тому переписати відповідь від руки не вийде. У уроці про strip() слово обгортають у квадратні дужки — так зайві пробіли одразу кидаються в очі, а ланцюжковий урок перевіряє ще й довжину очищеного слова",
+      "Розділ «Основи» тепер має 32 уроки, увесь курс — 41"
+      ],
+      en: [
+      "A new block about working with text has started in Basics. The first lesson — \"Letter case: upper() and lower()\": a method is written after a dot following the string, its round brackets are required even when empty, and the method does not rewrite the string itself — w.upper() only returns a new one",
+      "The second — \"Spaces at the edges: strip()\": w.strip() removes spaces, tabs and line breaks from the beginning and the end without touching the middle (\"a b\" stays \"a b\"); for a single side there are lstrip() and rstrip()",
+      "The third — \"Chaining methods: strip() and lower() together\": name = input().strip().lower() is read left to right, each method taking the result of the previous one, and in this pair the order does not change the answer",
+      "All three practices read the word with input() and have three tests each, so retyping an answer by hand will not work. In the strip() lesson the word is wrapped in square brackets so that the leftover spaces stand out, and the chaining lesson also checks the length of the cleaned word",
+      "The Basics chapter now has 32 lessons, the whole course 41"
+      ],
+      tr: [
+      "Temeller'de metinle çalışma bloğu başladı. İlk ders \"Harf durumu: upper() ve lower()\": metot dizeden sonra nokta ile yazılır, sonda parantezler boş olsa bile şarttır ve metot dizeyi yerinde değiştirmez — w.upper() yalnızca yeni bir dize verir",
+      "İkincisi \"Kenarlardaki boşluklar: strip()\": w.strip(), baştaki ve sondaki boşlukları, sekmeleri ve satır sonlarını siler, içerisine dokunmaz (\"a b\" yine \"a b\"); tek taraf için lstrip() ve rstrip() var",
+      "Üçüncüsü \"Metotları zincirleme: strip() ve lower() birlikte\": name = input().strip().lower() soldan sağa okunur, her metot bir öncekinin sonucunu alır, ve bu ikilide sıra cevabı değiştirmez",
+      "Üç alıştırma da sözcüğü input() ile okur ve üçer test taşır, yani yanıtı elle yazmak işe yaramaz. strip() dersinde sözcük köşeli parantez içine alınır ki kalan boşluklar göze batsın; zincir dersinde temizlenmiş sözcüğün uzunluğu da denetlenir",
+      "Temeller bölümü artık 32 ders, tüm kurs 41 ders"
+      ]
+    },
     "26.10.94": {
       uk: [
       "У «Параметрі sep» приклад тепер збирає з чисел дату й час: print(5, 11, 2026, sep=\".\") дає 5.11.2026, а print(9, 30, 15, sep=\":\") — 9:30:15. Той самий трюк, що й зі словами",

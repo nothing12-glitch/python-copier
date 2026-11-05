@@ -257,6 +257,90 @@
           }
         },
         {
+          id: "str_case",
+          title: { uk: "Регістр літер: upper() і lower()", en: "Letter case: upper() and lower()", tr: "Harf durumu: upper() ve lower()" },
+          theory: {
+            uk: "У текста є вбудовані дії — методи: вони прив'язані до конкретного рядка, пишуться через крапку після нього, і круглі дужки наприкінці обов'язкові, навіть коли порожні. w.upper() дає весь текст великими літерами, w.lower() — малими, а цифрам, пробілам і знакам байдуже: вони лишаються як були. Метод не переписує рядок усередині себе — w.upper() лише повертає новий рядок, а сам w лишається попередній, тому результат використовують одразу або зберігають (w = w.upper()). Пастка — написати w.upper без дужок: тоді виведеться сам метод, а не великий текст. Є ще w.title() — великою стає перша літера кожного слова. Найчастіше lower() ставлять, щоб порівняти текст без уваги на регістр: «Привіт» і «привіт» для Python — різні рядки, а після lower() вони стають однакові.",
+            en: "Text comes with built-in actions — methods: they belong to one specific string, are written after a dot, and the round brackets at the end are required even when empty. w.upper() returns the whole text in capital letters and w.lower() in small ones; digits, spaces and signs do not care — they stay as they were. A method does not rewrite the string in place: w.upper() only hands back a new string while w itself stays unchanged, so you use the result right away or save it (w = w.upper()). A common trap is writing w.upper without brackets — that prints the method itself, not the capitalised text. There is also w.title(), which capitalises the first letter of every word. lower() is mostly used to compare text regardless of case: for Python \"Привіт\" and \"привіт\" are different strings, but after lower() they become the same.",
+            tr: "Metnin kendi içinde gelen eylemleri — metotları — vardır: bunlar belirli bir dizeye bağlıdır, noktadan sonra yazılır ve sonda parantezler boş olsa bile şarttır. w.upper() tüm metni büyük harfle, w.lower() küçük harfle döndürür; rakamlar, boşluklar ve işaretler etkilenmez, öylece kalır. Metot dizeyi yerinde değiştirmez — w.upper() yeni bir dize verir, w ise eski hâlinde kalır; bu yüzden sonucu ya hemen kullanırsın ya da saklarsın (w = w.upper()). Tuzak: parantezi unutup w.upper diye yazmak — o zaman büyük metin değil, metodun kendisi yazdırılır. Bir de w.title() var: her kelimenin ilk harfini büyütür. lower() çoğu kez yazıyı büyük-küçük harfe bakmadan karşılaştırmak için kullanılır: Python için \"Привіт\" ile \"привіт\" ayrı dizelerdir, ama lower()'den sonra aynı olurlar."
+          },
+          example: "w = \"привіт, WORLD 123\"\nprint(w.upper())\nprint(w.lower())\nprint(w)\nprint(w.title())\n",
+          task: {
+            text: {
+              uk: "Дано слово — стартер уже зчитує його через input() у змінну word. Виведи два рядки: першим — слово ВЕЛИКИМИ літерами, другим — те саме слово малими.",
+              en: "A word is given — the starter already reads it with input() into the variable word. Print two lines: first the word in CAPITAL letters, then the same word in small letters.",
+              tr: "Bir sözcük veriliyor — başlangıç onu zaten input() ile word değişkenine okuyor. İki satır yazdır: önce sözcüğü BÜYÜK harflerle, sonra aynı sözcüğü küçük harflerle."
+            },
+            hint: {
+              uk: "Друкуй не сам word, а word.upper() і word.lower(): спершу print(word.upper()), потім print(word.lower()).",
+              en: "Print word.upper() and word.lower() rather than word itself: first print(word.upper()), then print(word.lower()).",
+              tr: "word'ün kendisini değil word.upper() ve word.lower() yazdır: önce print(word.upper()), ardından print(word.lower())."
+            },
+            starter: "word = input()\n",
+            tests: [
+              { in: "Привіт\n", out: "ПРИВІТ\nпривіт" },
+              { in: "MixEd 42\n", out: "MIXED 42\nmixed 42" },
+              { in: "абВГ\n", out: "АБВГ\nабвг" }
+            ]
+          }
+        },
+        {
+          id: "str_strip",
+          title: { uk: "Пробіли по краях: strip()", en: "Spaces at the edges: strip()", tr: "Kenarlardaki boşluklar: strip()" },
+          theory: {
+            uk: "Текст, який вводить людина, майже завжди має зайве по краях: «   оля   » на екрані виглядає як «оля», але для Python це інший, довший рядок. w.strip() повертає той самий текст, почистивши його на початку та наприкінці від пробілів, табуляцій і розривів рядка; усередині нічого не зникає — «a b» так і лишається «a b». Якщо треба прибрати лише з одного боку, є w.lstrip() — зліва, і w.rstrip() — справа. Як і решта методів, strip() не чіпає сам w, тому чистий рядок беруть одразу в print() або зберігають у змінну. А найшвидше побачити, скільки сміття зникло, порівнявши довжини: len(w) і len(w.strip()) — різні числа.",
+            en: "Text typed by a person almost always carries something at its edges: \"   оля   \" looks like «оля» on screen, but for Python it is a different, longer string. w.strip() returns the same text with spaces, tabs and line breaks cleaned off the beginning and the end; nothing inside disappears — \"a b\" stays \"a b\". When only one side is needed there is w.lstrip() (left) and w.rstrip() (right). Like the other methods, strip() leaves w itself untouched, so you take the clean string right in print() or save it in a variable. And the quickest way to see how much junk went away is to compare the lengths: len(w) and len(w.strip()) are different numbers.",
+            tr: "İnsanın yazdığı metnin kenarlarında neredeyse hep fazlalık vardır: \"   оля   \" ekranda «оля» gibi görünür ama Python için bu ayrı ve daha uzun bir dizedir. w.strip() aynı metni döndürür, yalnızca başındaki ve sonundaki boşlukları, sekmeleri ve satır sonlarını temizler; içeride hiçbir şey yok olmaz — \"a b\" yine \"a b\" olarak kalır. Sadece bir taraf gerekirse w.lstrip() (sol) ve w.rstrip() (sağ) var. Diğer metotlar gibi strip() de w'ye dokunmaz; bu yüzden temiz diziyi ya doğrudan print() içinde kullanırsın ya da değişkene saklarsın. Ne kadar fazlalık gittiğini görmenin en hızlı yolu uzunlukları karşılaştırmak: len(w) ile len(w.strip()) farklı sayılardır."
+          },
+          example: "w = \"   оля   \"\nprint(len(w))\nprint(len(w.strip()))\nprint(w.strip())\nprint(\"a b\".strip())\n",
+          task: {
+            text: {
+              uk: "Стартер уже зчитує рядок у word — по його краях можуть стояти зайві пробіли. Виведи одним рядком це слово у квадратних дужках, але без пробілів по краях, щоб дужки показали межі слова: для «   оля   » має вивестися [оля].",
+              en: "The starter already reads a line into word — there may be extra spaces at its edges. Print one line: the word wrapped in square brackets but with the edge spaces removed, so the brackets show where the word starts and ends; for \"   оля   \" it must print [оля].",
+              tr: "Başlangıç satırı zaten word değişkenine okuyor — kenarlarında fazladan boşluklar olabilir. Tek satır yazdır: sözcüğü köşeli parantez içinde ama kenar boşlukları atılmış halde göster, böylece parantezler sınırın nerede olduğunu göstersin; \"   оля   \" için [оля] çıkmalı."
+            },
+            hint: {
+              uk: "Спершу прибери краї методом, а потім склей три рядки: print(\"[\" + word.strip() + \"]\") — якщо друкувати сам word у дужках, пробіли залишаться всередині.",
+              en: "First clean the edges with the method, then join three strings: print(\"[\" + word.strip() + \"]\") — printing word itself inside the brackets would keep the spaces.",
+              tr: "Önce metotla kenarları temizle, sonra üç dizeyi birleştir: print(\"[\" + word.strip() + \"]\") — word'ün kendisini paranteze alırsan boşluklar içeride kalır."
+            },
+            starter: "word = input()\n",
+            tests: [
+              { in: "   оля   \n", out: "[оля]" },
+              { in: "  a b  \n", out: "[a b]" },
+              { in: "    12 34 \n", out: "[12 34]" }
+            ]
+          }
+        },
+        {
+          id: "str_chain",
+          title: { uk: "Методи ланцюжком: strip() і lower() разом", en: "Chaining methods: strip() and lower() together", tr: "Metotları zincirleme: strip() ve lower() birlikte" },
+          theory: {
+            uk: "Очищення вводу зазвичай роблять одним рядком: name = input().strip().lower(). Це ланцюжок методів, і Python читає його зліва праворуч: щойно зчитаний рядок спершу чистять по краях, а те, що лишилося, переводять у нижній регістр — кожен метод бере результат попереднього. У такій парі порядок не важливий: lower() ні не створює пробілів, ні не знищує їх, тому .strip().lower() і .lower().strip() дадуть те саме. Інша справа, коли метод сам додає чи забирає пробіли — тоді варто подумати, що іде першим. Такий рядок віддає значення, готове до дальшої роботи: його зручніше порівнювати, шукати в ньому та рахувати його довжину, і len(name) уже показує чистий результат без пробілів по краях.",
+            en: "Cleaning typed input is usually done on a single line: name = input().strip().lower(). That is a method chain, and Python reads it left to right — the freshly read string is first trimmed at its edges, then what remains is switched to lowercase, so each method works on the result of the previous one. In this pair the order does not matter: lower() neither creates nor destroys spaces, so .strip().lower() and .lower().strip() give the same thing. It is a different story when a method adds or removes spaces itself — then you should think about which one comes first. Such a line hands you a value ready for further work: it is easier to compare, to search inside and to measure, and len(name) already reports the clean text without the edge spaces.",
+            tr: "Girdiyi temizlemek genellikle tek satırda yapılır: name = input().strip().lower(). Bu bir metot zinciridir ve Python onu soldan sağa okur — önce yeni okunan dizenin kenarları temizlenir, sonra kalanı küçük harfe çevrilir; yani her metot bir öncekinin sonucuyla çalışır. Bu ikilide sıra önemli değil: lower() boşluk ne üretir ne yok eder, bu yüzden .strip().lower() ile .lower().strip() aynı şeyi verir. Bir metot kendi boşluk ekleyip çıkarıyorsa durum farklı — o zaman hangisinin önce geldiği üzerine düşünmek gerekir. Böyle bir satır sonrası için hazır değer teslim eder: onu karşılaştırmak, içinde arama yapmak ve uzunluğunu ölçmek daha kolaydır, len(name) de artık kenar boşluksuz temiz metni gösterir."
+          },
+          example: "w = \"   Python  \"\nclean = w.strip().lower()\nprint(\"[\" + clean + \"]\")\nprint(len(clean))\nprint(w.strip().upper())\n",
+          task: {
+            text: {
+              uk: "Стартер зчитує рядок у word: по краях можливі зайві пробіли, а літери — будь-які. Виведи два рядки: першим — очищене слово у квадратних дужках (без пробілів по краях і все малими літерами), другим — його довжину. Для «   Python  » має вивестися [python] і 6.",
+              en: "The starter reads a line into word: there may be extra spaces at the edges and the letters may be of any case. Print two lines: first the cleaned word in square brackets (no edge spaces, all lowercase), then its length. For \"   Python  \" it must print [python] and 6.",
+              tr: "Başlangıç satırı word değişkenine okuyor: kenarlarda fazladan boşluk olabilir ve harfler herhangi bir durumda olabilir. İki satır yazdır: önce temizlenmiş sözcüğü köşeli parantez içinde (kenar boşlukları yok, hepsi küçük harf), sonra onun uzunluğunu. \"   Python  \" için [python] ve 6 çıkmalı."
+            },
+            hint: {
+              uk: "Збери обидві дії в одну змінну: clean = word.strip().lower(), а тоді print(\"[\" + clean + \"]\") і print(len(clean)).",
+              en: "Combine both actions into one variable: clean = word.strip().lower(), then print(\"[\" + clean + \"]\") and print(len(clean)).",
+              tr: "İki işlemi tek değişkende topla: clean = word.strip().lower(), ardından print(\"[\" + clean + \"]\") ve print(len(clean))."
+            },
+            starter: "word = input()\n",
+            tests: [
+              { in: "   Привіт \n", out: "[привіт]\n6" },
+              { in: "  MIX 42  \n", out: "[mix 42]\n6" },
+              { in: "абВГ\n", out: "[абвг]\n4" }
+            ]
+          }
+        },
+        {
           id: "names",
           title: { uk: "Правила назв змінних", en: "Rules for variable names", tr: "Değişken adı kuralları" },
           theory: {
