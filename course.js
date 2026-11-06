@@ -1119,14 +1119,78 @@
               { in: "0\n0\n1\n", out: "False" }
             ]
           }
+        }
+      ]
+    },
+    {
+      chapter: { uk: "Умовний оператор", en: "Conditional statements", tr: "Koşullu komutlar" },
+      lessons: [
+        {
+          id: "if_basic",
+          title: { uk: "Якщо: перший if", en: "If: choosing an action", tr: "Eğer: ilk if" },
+          theory: {
+            uk: "Першу частину завершено: ти вже знаєш основи Python, порівняння та логічні оператори. Тепер навчимо програму обирати дію. У грі бонус дають, якщо набрано щонайменше 10 очок. Раніше print(score >= 10) лише показував True або False. Умовний оператор if використовує цю відповідь, щоб вирішити, чи виконувати команду.\n\nЗапис if score >= 10: читаємо «якщо score не менше 10». Наприкінці ставимо двокрапку. Наступний рядок print(\"bonus\") зсуваємо вправо на 4 пробіли — так він належить до if. Якщо умова True, Python виконає цей рядок; якщо False — пропустить. if сам не друкує True або False: він керує виконанням команд.\n\nКоманда print(\"finish\") без відступу вже не належить до if. У цьому прикладі вона виконається за будь-якої відповіді на перевірку. Для score = 10 побачимо bonus, а потім finish; для score = 9 — лише finish. else поки не потрібен: одного if достатньо, коли дію треба або виконати, або пропустити. Далі докладніше розберемо групи команд — блоки.",
+            en: "The first part is complete: you know Python basics, comparisons and logical operators. Now we will teach a program to choose an action. In a game, a bonus requires at least 10 points. Previously, print(score >= 10) only displayed True or False. The if statement uses that answer to decide whether to run a command.\n\nRead if score >= 10: as 'if score is at least 10'. Put a colon at the end. Indent the next line, print(\"bonus\"), by 4 spaces so it belongs to if. When the condition is True, Python runs that line; when it is False, Python skips it. if does not print True or False itself: it controls which commands run.\n\nThe unindented print(\"finish\") is no longer part of if. In this example, it runs regardless of the answer to the check. With score = 10 we see bonus, then finish; with score = 9 we see only finish. We do not need else yet: a single if is enough when an action should either run or be skipped. Next we will explore groups of commands called blocks.",
+            tr: "İlk bölüm tamamlandı: Python temellerini, karşılaştırmaları ve mantıksal operatörleri biliyorsun. Şimdi programa eylem seçmeyi öğreteceğiz. Bir oyunda bonus için en az 10 puan gerekiyor. Önceden print(score >= 10) yalnızca True veya False gösteriyordu. if komutu bu yanıtı kullanarak bir komutun çalışıp çalışmayacağına karar verir.\n\nif score >= 10: satırını 'score en az 10 ise' diye oku. Sonuna iki nokta koy. Sonraki print(\"bonus\") satırını 4 boşluk girintile; böylece if'e ait olur. Koşul True ise Python bu satırı çalıştırır, False ise atlar. if kendi başına True veya False yazdırmaz; komutların çalışmasını yönetir.\n\nGirintisiz print(\"finish\") artık if'e ait değildir. Bu örnekte denetimin yanıtından bağımsız olarak çalışır. score = 10 için önce bonus, sonra finish; score = 9 için yalnızca finish görürüz. Henüz else gerekmez: bir eylem ya yapılacak ya atlanacaksa tek if yeterlidir. Sonraki derste blok denen komut gruplarını inceleyeceğiz."
+          },
+          example: "score = 10\nif score >= 10:\n    print(\"bonus\")\nprint(\"finish\")\n",
+          task: {
+            text: {
+              uk: "Прочитай цілу невід'ємну кількість очок score. Якщо score >= 10, виведи bonus. Після перевірки за будь-якої кількості очок виведи finish. Кожне слово — з нового рядка. Використай if без else: для 9 очок має бути лише finish, а для 10 — bonus і finish.",
+              en: "Read a nonnegative integer score. If score >= 10, print bonus. After the check, print finish for every score. Put each word on its own line. Use if without else: 9 points should produce only finish; 10 points should produce bonus and finish.",
+              tr: "Negatif olmayan bir tam sayı olan score değerini oku. score >= 10 ise bonus yazdır. Denetimden sonra her puan için finish yazdır. Her sözcük ayrı satırda olsun. else olmadan if kullan: 9 puanda yalnızca finish, 10 puanda bonus ve finish çıkmalı."
+            },
+            hint: {
+              uk: "Після if score >= 10: постав print(\"bonus\") з відступом 4 пробіли. Наступний print(\"finish\") напиши без відступу, на одному рівні з if.",
+              en: "After if score >= 10:, indent print(\"bonus\") by 4 spaces. Write the following print(\"finish\") without indentation, aligned with if.",
+              tr: "if score >= 10: satırından sonra print(\"bonus\") komutunu 4 boşluk girintile. Sonraki print(\"finish\") komutunu girintisiz, if ile aynı hizada yaz."
+            },
+            starter: "score = int(input())\n",
+            tests: [
+              { in: "0\n", out: "finish" },
+              { in: "9\n", out: "finish" },
+              { in: "10\n", out: "bonus\nfinish" },
+              { in: "11\n", out: "bonus\nfinish" },
+              { in: "25\n", out: "bonus\nfinish" }
+            ]
+          }
+        },
+        {
+          id: "if_blocks",
+          title: { uk: "Блоки: відступи мають значення", en: "Blocks: indentation matters", tr: "Bloklar: girintiler önemlidir" },
+          theory: {
+            uk: "Блок — це група команд, що належать до однієї конструкції. Під if можна записати не одну, а кілька команд: коли умова True, увесь його блок виконується згори вниз; коли False — увесь пропускається. Наприклад, якщо температура не вища за 0, беремо і шапку, і шарф. Обидві команди мають належати до тієї самої перевірки.\n\nPython бачить межі блоку за відступами, а не за фігурними дужками. У цьому курсі додаємо 4 пробіли на кожний рівень вкладеності — це звичний стиль Python. Важлива узгодженість: команди одного рівня вирівнюємо однаково. Не змішуй табуляцію та пробіли; використовуй пробіли. Двокрапка після if починає блок, а повернення до попереднього рівня відступу завершує його.\n\nУ прикладі print(\"hat\") та print(\"scarf\") стоять з однаковим відступом. print(\"ready\") повертається на рівень if, тому виконується незалежно від температури. Якщо випадково прибрати відступ перед scarf, Python може не показати помилки, але шарф друкуватиметься навіть у теплу погоду — зміниться зміст програми.\n\nЯкщо після двокрапки зовсім немає команди з відступом, отримаємо IndentationError. Зайвий відступ без початку нового блоку теж може бути помилкою. Відступ — це не просто краса: він показує, які команди об'єднані та коли їх виконувати.",
+            en: "A block is a group of commands belonging to one construct. An if can contain several commands: when its condition is True, the entire block runs from top to bottom; when it is False, the entire block is skipped. For example, when the temperature is at most 0, we take both a hat and a scarf. Both commands must belong to the same check.\n\nPython identifies block boundaries using indentation, not curly braces. In this course we add 4 spaces per nesting level, the usual Python style. Consistency matters: align commands at the same level equally. Do not mix tabs and spaces; use spaces. The colon after if starts a block, and returning to the previous indentation level ends it.\n\nIn the example, print(\"hat\") and print(\"scarf\") have the same indentation. print(\"ready\") returns to the level of if, so it runs regardless of temperature. If you accidentally remove the indentation before scarf, Python may report no error, but scarf will print even in warm weather: the program's meaning has changed.\n\nIf no indented command follows the colon, you get IndentationError. Extra indentation without a new block can also be an error. Indentation is not just decoration: it shows which commands form a group and when they should run.",
+            tr: "Blok, aynı yapıya ait komutlar grubudur. Bir if altında birden fazla komut olabilir: koşul True ise bütün blok yukarıdan aşağıya çalışır; False ise tamamı atlanır. Örneğin sıcaklık en fazla 0 ise hem şapka hem atkı alırız. İki komut da aynı denetime ait olmalı.\n\nPython blok sınırlarını süslü parantezlerle değil, girintilerle belirler. Bu kursta her iç içe geçme düzeyi için 4 boşluk ekliyoruz; bu Python'da yaygın bir yazım biçimidir. Tutarlılık önemlidir: aynı düzeydeki komutları aynı hizada yaz. Sekmeleri ve boşlukları karıştırma; boşluk kullan. if sonundaki iki nokta bloğu başlatır, önceki girinti düzeyine dönmek bloğu bitirir.\n\nÖrnekte print(\"hat\") ile print(\"scarf\") aynı girintidedir. print(\"ready\") if ile aynı düzeye döner, bu yüzden sıcaklıktan bağımsız çalışır. scarf önündeki girintiyi yanlışlıkla kaldırırsan Python hata vermeyebilir; ama sıcak havada bile scarf yazdırılır, yani programın anlamı değişir.\n\nİki noktadan sonra girintili bir komut yoksa IndentationError oluşur. Yeni bir blok başlamadan fazladan girinti yapmak da hata olabilir. Girinti yalnızca görüntü için değildir; hangi komutların bir grup olduğunu ve ne zaman çalışacağını gösterir."
+          },
+          example: "temperature = 0\nif temperature <= 0:\n    print(\"hat\")\n    print(\"scarf\")\nprint(\"ready\")\n",
+          task: {
+            text: {
+              uk: "Прочитай цілу температуру temperature. Якщо вона не вища за 0, в одному блоці if виведи спочатку hat, потім scarf, кожне з нового рядка. Після блоку завжди виводь ready. За додатної температури потрібен лише рядок ready. Перевір відступи обох команд усередині блоку.",
+              en: "Read an integer temperature. If it is at most 0, use one if block to print hat, then scarf, each on its own line. Always print ready after the block. A positive temperature should produce only ready. Check the indentation of both commands inside the block.",
+              tr: "Bir tam sayı olan temperature değerini oku. En fazla 0 ise tek bir if bloğunda önce hat, sonra scarf yazdır; her biri ayrı satırda olsun. Bloktan sonra her zaman ready yazdır. Pozitif sıcaklıkta yalnızca ready çıkmalı. Blok içindeki iki komutun da girintisini kontrol et."
+            },
+            hint: {
+              uk: "Умова — if temperature <= 0:. Обидва print() для hat і scarf зсунь на 4 пробіли. print(\"ready\") постав без відступу: він уже поза блоком.",
+              en: "Use if temperature <= 0:. Indent both print() calls for hat and scarf by 4 spaces. Leave print(\"ready\") unindented: it is outside the block.",
+              tr: "Koşul if temperature <= 0: olmalı. hat ve scarf için iki print() çağrısını da 4 boşluk girintile. print(\"ready\") girintisiz olsun; bloğun dışındadır."
+            },
+            starter: "temperature = int(input())\n",
+            tests: [
+              { in: "-5\n", out: "hat\nscarf\nready" },
+              { in: "0\n", out: "hat\nscarf\nready" },
+              { in: "1\n", out: "ready" },
+              { in: "20\n", out: "ready" }
+            ]
+          }
         },
         {
           id: "if",
-          title: { uk: "Умови (if / else)", en: "Conditions (if / else)", tr: "Koşullar (if / else)" },
+          title: { uk: "Інакше: else", en: "Otherwise: else", tr: "Aksi halde: else" },
           theory: {
-            uk: "Ти вже вмієш отримувати True/False за допомогою порівнянь і поєднувати перевірки через and, or, not. Раніше ми друкували цю відповідь, а тепер за нею обиратимемо дію. if перевіряє умову: якщо вона істинна, виконується блок — рядки після двокрапки, зсунуті вправо на 4 пробіли. Якщо умова хибна, виконується блок else.\n\nЦе той самий відступ з уроку про відступи, але тут він потрібний: без нього Python не зрозуміє, що рядок належить блоку. if та else пишемо на одному рівні, а команди під ними — з відступом. У прикладі n > 0 — вже знайоме порівняння: нуль не більший за нуль, тому для нього спрацює else.",
-            en: "You already know how comparisons produce True/False and how and, or and not combine checks. Before, we printed that answer; now we use it to choose an action. if checks a condition: when it is true, its block runs — the lines after the colon, indented by 4 spaces. When it is false, the else block runs.\n\nThis is the same indentation as in the indentation lesson, but now it is needed: without it Python cannot tell which lines belong to a block. Align if and else, and indent their commands. In the example, n > 0 is a familiar comparison: zero is not greater than zero, so it takes the else branch.",
-            tr: "Karşılaştırmaların True/False ürettiğini ve and, or, not ile denetimleri birleştirmeyi artık biliyorsun. Önce yanıtı yazdırıyorduk; şimdi ona göre bir eylem seçeceğiz. if bir koşulu denetler: doğruysa iki noktadan sonraki, 4 boşluk girintili satırlardan oluşan blok çalışır. Koşul yanlışsa else bloğu çalışır.\n\nBu, girinti dersindeki aynı girintidir ama artık gereklidir: olmadan Python hangi satırın bloğa ait olduğunu anlayamaz. if ve else aynı hizada, altlarındaki komutlar ise girintili yazılır. Örnekteki n > 0 bildiğin bir karşılaştırmadır: sıfır, sıfırdan büyük değildir; bu nedenle else dalı çalışır."
+            uk: "Один if або виконує блок, або пропускає його. А якщо потрібна інша дія, коли умова хибна? Для цього є else — «інакше». Уяви: якщо надворі дощ — беремо парасолю, інакше — виходимо без неї. У парі if/else виконується рівно одна гілка: блок if за True або блок else за False.\n\nПиши if та else на одному рівні відступу. Після обох потрібна двокрапка, а команди кожної гілки мають відступ 4 пробіли. Після else не пишемо умову: else: уже означає всі випадки, що не підійшли до if. Код після обох блоків на початковому рівні знову є спільним продовженням.\n\nУ прикладі if n > 0: відокремлює додатні числа. Решта — це нуль і від'ємні числа, тому else не означає лише «від'ємне». Для n = 0 порівняння 0 > 0 дає False, тож виконається else. Перевіряй обидві гілки й значення на межі. Знайома практика тепер закріплює саме вибір між двома діями.",
+            en: "A single if either runs its block or skips it. What if a false condition needs a different action? Use else, meaning 'otherwise'. Imagine: if it is raining, take an umbrella; otherwise, go without it. An if/else pair runs exactly one branch: the if block for True or the else block for False.\n\nAlign if and else at the same indentation level. Both need a colon, and each branch's commands are indented by 4 spaces. Do not put a condition after else: else: already covers every case that did not match if. Code after both blocks, back at the original level, is the shared continuation.\n\nIn the example, if n > 0: selects positive numbers. The remaining numbers include zero and negatives, so else does not mean only 'negative'. With n = 0, the comparison 0 > 0 is False, so else runs. Test both branches and the boundary value. This familiar practice now reinforces choosing between two actions.",
+            tr: "Tek if ya bloğunu çalıştırır ya da atlar. Peki koşul yanlış olduğunda başka bir eylem gerekiyorsa? Bunun için 'aksi halde' anlamına gelen else vardır. Yağmur varsa şemsiye almayı, yoksa şemsiyesiz çıkmayı düşün. if/else çiftinde tam bir dal çalışır: True için if bloğu, False için else bloğu.\n\nif ve else aynı girinti düzeyinde olmalı. İkisinin sonunda da iki nokta bulunmalı; her dalın komutları 4 boşluk girintili olmalı. else sonrasına koşul yazma: else: zaten if'e uymayan bütün durumları kapsar. İki bloktan sonra başlangıç düzeyine dönen kod, ortak devam bölümüdür.\n\nÖrnekte if n > 0: pozitif sayıları seçer. Geriye sıfır ve negatif sayılar kalır; else yalnızca 'negatif' demek değildir. n = 0 için 0 > 0 karşılaştırması False olur ve else çalışır. İki dalı da sınır değeriyle birlikte dene. Bildiğin bu alıştırma artık iki eylem arasında seçim yapmayı pekiştiriyor."
           },
           example: "n = 5\nif n > 0:\n    print(\"додатне\")\nelse:\n    print(\"не додатне\")\n",
           task: {
@@ -1145,6 +1209,132 @@
               { in: "5\n", out: "positive" },
               { in: "0\n", out: "nonpositive" },
               { in: "-2\n", out: "nonpositive" }
+            ]
+          }
+        },
+        {
+          id: "if_elif",
+          title: { uk: "Кілька варіантів: elif", en: "Several choices: elif", tr: "Birden çok seçenek: elif" },
+          theory: {
+            uk: "Не кожен вибір має лише два варіанти. У грі за 90 або більше очок дають золоту медаль, за 60–89 — срібну, а за меншу кількість — бронзову. Тут допоможе elif: це скорочення від else if, тобто «інакше, якщо». Після if можна додати одну або кілька перевірок elif, а наприкінці — else для решти випадків.\n\nPython перевіряє умови згори вниз. Щойно знайде першу істинну, виконає її блок і пропустить решту цього ланцюжка. Тому спершу перевіряємо score >= 90, потім score >= 60. До другої перевірки дійдуть лише числа, менші за 90, тож ще раз писати score < 90 не потрібно. Для 95 очок буде тільки gold, а для 85 — тільки silver.\n\nif, elif та else вирівнюємо на одному рівні; після кожного ставимо двокрапку. Команди їхніх блоків зсуваємо на 4 пробіли. У if та elif є умови, а в else її немає. Фінальний else необов'язковий: без нього, якщо всі перевірки хибні, жоден блок ланцюжка не виконається. У нашій задачі else потрібен для бронзової медалі.\n\nПорядок важливий: якщо спершу поставити score >= 60, то 95 одразу потрапить у silver і до золота справа не дійде. Два окремі if — теж інша програма: вони перевіряються незалежно, тому для 95 можуть надрукувати і gold, і silver. Ланцюжок if/elif/else обирає одну гілку, а не всі відповідні.",
+            en: "Not every choice has only two options. In a game, 90 or more points earn gold, 60–89 earn silver, and fewer points earn bronze. Use elif, short for else if: 'otherwise, if'. After if you can add one or more elif checks, then else for the remaining cases.\n\nPython checks conditions from top to bottom. As soon as it finds the first true condition, it runs that block and skips the rest of this chain. So check score >= 90 first, then score >= 60. Only numbers below 90 reach the second check; there is no need to repeat score < 90. A score of 95 prints only gold; 85 prints only silver.\n\nAlign if, elif and else at the same level, each ending with a colon. Indent their block commands by 4 spaces. if and elif have conditions; else has none. The final else is optional: without it, if every check is false, no block in the chain runs. Our task needs else for the bronze medal.\n\nOrder matters: checking score >= 60 first would send 95 straight to silver, never reaching gold. Two separate if statements are different too: they check independently, so 95 could print both gold and silver. An if/elif/else chain chooses one branch, not every matching branch.",
+            tr: "Her seçimin yalnızca iki olasılığı yoktur. Bir oyunda 90 veya daha fazla puan altın, 60–89 puan gümüş, daha azı bronz madalya kazandırır. Bunun için else if kısaltması olan elif kullanılır: 'aksi halde, eğer'. if sonrasına bir veya birkaç elif denetimi, en sona da kalan durumlar için else ekleyebilirsin.\n\nPython koşulları yukarıdan aşağıya denetler. İlk doğru koşulu bulunca onun bloğunu çalıştırır ve bu zincirin geri kalanını atlar. Bu yüzden önce score >= 90, sonra score >= 60 denetlenir. İkinci denetime yalnızca 90'dan küçük sayılar ulaşır; score < 90 koşulunu yeniden yazmak gerekmez. 95 puanda yalnızca gold, 85 puanda yalnızca silver çıkar.\n\nif, elif ve else aynı hizada olmalı; her biri iki noktayla bitmeli. Blok komutlarını 4 boşluk girintile. if ve elif koşul içerir, else içermez. Sondaki else zorunlu değildir: yoksa ve bütün koşullar yanlışsa zincirin hiçbir bloğu çalışmaz. Bizim görevimizde bronz madalya için else gerekir.\n\nSıra önemlidir: önce score >= 60 denetlenirse 95 hemen silver dalına gider, altına hiç ulaşamaz. İki ayrı if de farklıdır: bağımsız denetlendikleri için 95 puanda hem gold hem silver yazdırabilirler. if/elif/else zinciri uyan bütün dalları değil, tek bir dalı seçer."
+          },
+          example: "score = 85\nif score >= 90:\n    print(\"gold\")\nelif score >= 60:\n    print(\"silver\")\nelse:\n    print(\"bronze\")\n",
+          task: {
+            text: {
+              uk: "Прочитай цілу кількість очок score від 0 до 100. Виведи рівно одну медаль: gold за 90–100 очок, silver за 60–89, bronze за 0–59. Побудуй ланцюжок if/elif/else, починаючи з найбільшого порога. Перевір, куди належать рівно 60 та рівно 90 очок.",
+              en: "Read an integer score from 0 to 100. Print exactly one medal: gold for 90–100 points, silver for 60–89, bronze for 0–59. Build an if/elif/else chain, starting with the highest threshold. Check where exactly 60 and exactly 90 belong.",
+              tr: "0 ile 100 arasında bir tam sayı olan score değerini oku. Tam bir madalya yazdır: 90–100 puan için gold, 60–89 için silver, 0–59 için bronze. En yüksek eşikten başlayarak if/elif/else zinciri kur. Tam 60 ve tam 90 puanın hangi dala girdiğini kontrol et."
+            },
+            hint: {
+              uk: "Почни з if score >= 90:, потім elif score >= 60:, наприкінці else:. У кожному блоці — один print() з назвою медалі. Не замінюй elif другим незалежним if.",
+              en: "Start with if score >= 90:, then elif score >= 60:, and finally else:. Each block has one print() with the medal name. Do not replace elif with a second independent if.",
+              tr: "Önce if score >= 90:, sonra elif score >= 60:, en sonda else: yaz. Her blokta madalya adını yazdıran bir print() olsun. elif yerine ikinci bağımsız if kullanma."
+            },
+            starter: "score = int(input())\n",
+            tests: [
+              { in: "0\n", out: "bronze" },
+              { in: "59\n", out: "bronze" },
+              { in: "60\n", out: "silver" },
+              { in: "89\n", out: "silver" },
+              { in: "90\n", out: "gold" },
+              { in: "100\n", out: "gold" }
+            ]
+          }
+        },
+        {
+          id: "if_nested",
+          title: { uk: "Умова всередині умови", en: "A condition inside a condition", tr: "Koşul içinde koşul" },
+          theory: {
+            uk: "Іноді другу перевірку варто робити лише після першої. На атракціон пускають з 8 років. Якщо вік підходить, перевіряємо квиток: є квиток — можна кататися, немає — спочатку купити. Якщо дитині менше 8, квиток нічого не змінює. Це вкладена умова: один if стоїть усередині блоку іншого if.\n\nЗовнішній if age >= 8: починається без відступу. Внутрішній if ticket == 1: уже належить до його блоку, тому має 4 пробіли. Команда print(\"ride\") належить до внутрішнього if — додаємо ще 4, разом 8 пробілів. Кожен новий рівень вкладеності має свій відступ. Python дійде до перевірки квитка тільки тоді, коли перевірка віку дасть True.\n\nКожен else належить до if на тому самому рівні відступу. Внутрішній else із 4 пробілами означає «вік підходить, але квитка немає» — buy_ticket. Зовнішній else без відступу означає «вік не підходить» — too_young. Пересунути else — це змінити, до якої перевірки він належить.\n\nДля age = 9 і ticket = 0 отримаємо buy_ticket, для age = 9 і ticket = 1 — ride, а для age = 7 з будь-яким квитком — too_young. and міг би об'єднати дві вимоги для катання, але вкладені умови тут допомагають ще й пояснити різні причини відмови. Не ускладнюй вкладення без потреби; читай програму рівень за рівнем.",
+            en: "Sometimes a second check is useful only after the first. A ride admits children aged 8 or older. If the age fits, check the ticket: with a ticket, ride; without one, buy it first. Below age 8, a ticket changes nothing. This is a nested condition: one if sits inside another if's block.\n\nThe outer if age >= 8: starts without indentation. The inner if ticket == 1: belongs to its block, so it has 4 spaces. print(\"ride\") belongs to the inner if: add 4 more, making 8 spaces. Each nesting level has its own indentation. Python reaches the ticket check only when the age check is True.\n\nEach else belongs to the if at the same indentation level. The inner else with 4 spaces means 'old enough, but no ticket': buy_ticket. The outer unindented else means 'too young': too_young. Moving an else changes which check it belongs to.\n\nFor age = 9 and ticket = 0, the result is buy_ticket; with age = 9 and ticket = 1, it is ride; with age = 7, any ticket gives too_young. and could combine both requirements for riding, but nesting also helps explain different reasons for refusal. Avoid unnecessary nesting; read the program one level at a time.",
+            tr: "Bazen ikinci denetim yalnızca ilkinden sonra anlamlıdır. Bir oyuncağa 8 yaş ve üzeri binebilir. Yaş uygunsa bileti denetleriz: bilet varsa bin, yoksa önce satın al. 8 yaşından küçük biri için bilet sonucu değiştirmez. Bu, iç içe koşuldur: bir if başka bir if bloğunun içindedir.\n\nDıştaki if age >= 8: girintisiz başlar. İçteki if ticket == 1: onun bloğuna aittir, bu yüzden 4 boşluk girintilidir. print(\"ride\") içteki if'e aittir: 4 boşluk daha ekleriz, toplam 8 olur. Her iç içe geçme düzeyinin kendi girintisi vardır. Python bilet denetimine yalnızca yaş denetimi True olduğunda ulaşır.\n\nHer else aynı girinti düzeyindeki if'e aittir. 4 boşluklu iç else, 'yaş uygun ama bilet yok' demektir: buy_ticket. Girintisiz dış else, 'yaş uygun değil' demektir: too_young. else satırını kaydırmak, hangi denetime ait olduğunu değiştirir.\n\nage = 9 ve ticket = 0 için buy_ticket; age = 9 ve ticket = 1 için ride; age = 7 için bilet ne olursa olsun too_young çıkar. and iki binme şartını birleştirebilirdi, ancak iç içe koşullar farklı ret nedenlerini de açıklamamızı sağlar. Gereksiz iç içe yapı kurma; programı düzey düzey oku."
+          },
+          example: "age = 9\nticket = 0\nif age >= 8:\n    if ticket == 1:\n        print(\"ride\")\n    else:\n        print(\"buy_ticket\")\nelse:\n    print(\"too_young\")\n",
+          task: {
+            text: {
+              uk: "Прочитай цілий невід'ємний вік age і позначку ticket з окремих рядків: 1 — квиток є, 0 — немає. Якщо age < 8, виведи too_young незалежно від квитка. Інакше вкладеною умовою обери ride за наявності квитка або buy_ticket без нього. Виведи рівно один рядок.",
+              en: "Read a nonnegative integer age and a ticket marker on separate lines: 1 means a ticket is present, 0 means absent. If age < 8, print too_young regardless of the ticket. Otherwise use a nested condition to choose ride with a ticket or buy_ticket without one. Print exactly one line.",
+              tr: "Negatif olmayan bir tam sayı age ve ticket işaretini ayrı satırlardan oku: 1 bilet var, 0 yok demektir. age < 8 ise biletten bağımsız olarak too_young yazdır. Aksi halde içteki koşulla bilet varsa ride, yoksa buy_ticket seç. Tam bir satır yazdır."
+            },
+            hint: {
+              uk: "Зовні перевір if age >= 8:. Усередині з відступом 4 пробіли напиши if ticket == 1: та його else:. Їхні print() мають 8 пробілів. Зовнішній else: вирівняй із першим if.",
+              en: "Check if age >= 8: on the outside. Inside, write if ticket == 1: and its else: with 4 spaces. Their print() calls have 8 spaces. Align the outer else: with the first if.",
+              tr: "Dışta if age >= 8: denetle. İçte if ticket == 1: ve onun else: satırını 4 boşlukla yaz. Bunların print() çağrıları 8 boşluklu olur. Dış else: ilk if ile aynı hizada olmalı."
+            },
+            starter: "age = int(input())\nticket = int(input())\n",
+            tests: [
+              { in: "7\n0\n", out: "too_young" },
+              { in: "7\n1\n", out: "too_young" },
+              { in: "8\n0\n", out: "buy_ticket" },
+              { in: "8\n1\n", out: "ride" },
+              { in: "12\n0\n", out: "buy_ticket" },
+              { in: "12\n1\n", out: "ride" }
+            ]
+          }
+        },
+        {
+          id: "if_logic",
+          title: { uk: "and, or та not в умові if", en: "and, or and not in an if condition", tr: "if koşulunda and, or ve not" },
+          theory: {
+            uk: "Повернімося до знайомого правила гри надворі: сьогодні вихідний або канікули, і при цьому немає дощу. Раніше ми лише виводили результат такого правила як True або False. Тепер поставимо весь логічний вираз після if, щоб обрати дію: outside — грати надворі, inside — залишитися в приміщенні.\n\nУмова має вигляд (weekend == 1 or holiday == 1) and not (rain == 1). or поєднує два приводи для вільного дня; and вимагає ще й сухої погоди; not заперечує перевірку на дощ. Кожен оператор працює зі знайомими порівняннями. У if не потрібні окремі вкладені блоки для кожного оператора: увесь вираз — це одна умова, а двокрапка стоїть після неї.\n\nДужки навколо or важливі: без них and має вищий пріоритет, і вихідний дозволив би гру навіть у дощ. Явно згрупуй альтернативи, а потім додай спільну вимогу. Не скорочуй дві перевірки до weekend or holiday == 1: для навчання пиши обидва порівняння повністю — weekend == 1 or holiday == 1.\n\nЩоб умову було легше читати, її результат можна зберегти: can_play = (weekend == 1 or holiday == 1) and not (rain == 1), а наступним рядком написати if can_play:. Тут can_play уже має тип bool, тому порівняння == True зайве. Для дощу завжди обираємо inside; без дощу обираємо outside лише у вихідний або на канікулах.",
+            en: "Return to our familiar outdoor-play rule: it is a weekend or a school holiday, and it is not raining. Previously we only printed the rule's result as True or False. Now put the whole logical expression after if to choose an action: outside for outdoor play, inside for staying indoors.\n\nThe condition is (weekend == 1 or holiday == 1) and not (rain == 1). or combines two reasons for a free day; and also requires dry weather; not negates the rain check. Each operator works with familiar comparisons. if needs no separate nested blocks for each operator: the whole expression is one condition, followed by a colon.\n\nThe parentheses around or matter: without them, and has higher precedence and a weekend would allow play even in the rain. Group the alternatives explicitly, then add the shared requirement. Do not shorten the two checks to weekend or holiday == 1: for learning, write both comparisons in full, weekend == 1 or holiday == 1.\n\nFor readability, save the result: can_play = (weekend == 1 or holiday == 1) and not (rain == 1), then write if can_play: on the next line. can_play already has type bool, so == True is unnecessary. Rain always selects inside; without rain, select outside only on weekends or school holidays.",
+            tr: "Bildiğimiz dışarıda oynama kuralına dönelim: hafta sonu veya okul tatili olmalı ve yağmur yağmamalı. Önceden bu kuralın sonucunu yalnızca True veya False olarak yazdırıyorduk. Şimdi bütün mantıksal ifadeyi if sonrasına koyarak eylem seçeceğiz: dışarıda oynamak için outside, içeride kalmak için inside.\n\nKoşul (weekend == 1 or holiday == 1) and not (rain == 1) biçimindedir. or boş günün iki nedenini birleştirir; and ayrıca yağmursuz hava ister; not yağmur denetimini tersine çevirir. Her operatör bildiğimiz karşılaştırmalarla çalışır. if içinde her operatör için ayrı iç içe blok gerekmez: bütün ifade tek koşuldur ve ardından iki nokta gelir.\n\nor çevresindeki parantezler önemlidir: onlar olmadan and daha önceliklidir ve hafta sonu yağmurda bile oyuna izin verirdi. Seçenekleri açıkça grupla, sonra ortak şartı ekle. İki denetimi weekend or holiday == 1 şeklinde kısaltma: öğrenirken iki karşılaştırmayı da tam yaz, weekend == 1 or holiday == 1.\n\nOkumayı kolaylaştırmak için sonucu saklayabilirsin: can_play = (weekend == 1 or holiday == 1) and not (rain == 1), sonra yeni satıra if can_play: yaz. can_play zaten bool türündedir, bu yüzden == True gereksizdir. Yağmurda her zaman inside seçilir; yağmur yoksa yalnızca hafta sonu veya okul tatilinde outside seçilir."
+          },
+          example: "weekend = 1\nholiday = 0\nrain = 1\nif (weekend == 1 or holiday == 1) and not (rain == 1):\n    print(\"outside\")\nelse:\n    print(\"inside\")\n",
+          task: {
+            text: {
+              uk: "Прочитай weekend, holiday та rain — три позначки 0 або 1, кожну з нового рядка. Виведи outside, якщо сьогодні вихідний або канікули й водночас немає дощу; інакше inside. Поєднай and, or та not в умові if. Дощ має залишати нас у приміщенні навіть у вихідний і на канікулах.",
+              en: "Read weekend, holiday and rain: three 0/1 markers, one per line. Print outside if it is a weekend or a school holiday and there is no rain; otherwise inside. Combine and, or and not in the if condition. Rain must keep us indoors even on weekends and school holidays.",
+              tr: "weekend, holiday ve rain değerlerini ayrı satırlardan oku; her biri 0 veya 1 işaretidir. Hafta sonu veya okul tatiliyse ve yağmur yoksa outside, aksi halde inside yazdır. if koşulunda and, or ve not birleştir. Yağmur, hafta sonu ve okul tatilinde bile bizi içeride tutmalı."
+            },
+            hint: {
+              uk: "Після if напиши (weekend == 1 or holiday == 1) and not (rain == 1):. У його блоці виведи outside, у блоці else — inside. Або спочатку збережи цей вираз у can_play та використай if can_play:.",
+              en: "After if write (weekend == 1 or holiday == 1) and not (rain == 1):. Print outside in its block and inside in else. Or first save that expression in can_play and use if can_play:.",
+              tr: "if sonrasına (weekend == 1 or holiday == 1) and not (rain == 1): yaz. Bloğunda outside, else bloğunda inside yazdır. Ya da önce ifadeyi can_play içinde saklayıp if can_play: kullan."
+            },
+            starter: "weekend = int(input())\nholiday = int(input())\nrain = int(input())\n",
+            tests: [
+              { in: "1\n0\n0\n", out: "outside" },
+              { in: "0\n1\n0\n", out: "outside" },
+              { in: "1\n1\n0\n", out: "outside" },
+              { in: "0\n0\n0\n", out: "inside" },
+              { in: "1\n0\n1\n", out: "inside" },
+              { in: "0\n1\n1\n", out: "inside" },
+              { in: "1\n1\n1\n", out: "inside" },
+              { in: "0\n0\n1\n", out: "inside" }
+            ]
+          }
+        },
+        {
+          id: "if_ternary",
+          title: { uk: "Короткий вибір: тернарний вираз", en: "A short choice: the ternary expression", tr: "Kısa seçim: üçlü koşullu ifade" },
+          theory: {
+            uk: "Іноді дві гілки потрібні лише для вибору одного значення. Наприклад, напис на кнопці залежить від наявності квитка: ride, якщо квиток є, або buy_ticket, якщо його немає. Такий вибір можна записати коротко: label = \"ride\" if ticket == 1 else \"buy_ticket\". Це умовний вираз, який часто називають тернарним оператором: він складається з умови та двох значень на вибір.\n\nПорядок відрізняється від звичайного if: спочатку значення для True, потім if і умова, потім else і значення для False. Шаблон: значення_так if умова else значення_ні. Python спершу перевіряє умову, а потім обчислює тільки обрану частину. Результат виразу можна присвоїти змінній або передати у print(). Саме присвоєння нічого не друкує.\n\nУ прикладі за ticket = 1 змінна label отримає рядок ride; за ticket = 0 — buy_ticket. print(label) окремо покаже обране слово. Тут немає двокрапки й блоку з відступом, а else обов'язковий: вираз повинен мати значення для обох випадків. Не плутай цей запис із багаторядковим if/else, який обирає команди для виконання.\n\nВикористовуй короткий вираз для простого вибору одного значення. Якщо в гілках кілька дій або умова складна, звичайний if/else читатиметься краще. Не стискай вкладені умови в довгий рядок заради стислості. У практиці оберемо напис про парність числа: остача n % 2 дорівнює 0 саме для парних чисел.",
+            en: "Sometimes two branches only choose one value. For example, a button label depends on a ticket: ride if it is present, buy_ticket otherwise. Write that choice briefly: label = \"ride\" if ticket == 1 else \"buy_ticket\". This is a conditional expression, often called the ternary operator: it consists of a condition and two alternative values.\n\nIts order differs from a regular if: first the value for True, then if and the condition, then else and the value for False. The pattern is value_if_true if condition else value_if_false. Python checks the condition first, then evaluates only the chosen part. Assign the expression's result to a variable or pass it to print(). Assignment itself prints nothing.\n\nIn the example, ticket = 1 gives label the string ride; ticket = 0 gives buy_ticket. A separate print(label) displays the chosen word. There is no colon or indented block here, and else is required: the expression needs a value for both cases. Do not confuse this with a multiline if/else, which chooses commands to execute.\n\nUse the short expression for a simple choice of one value. If branches contain several actions or the condition is complicated, a regular if/else is easier to read. Do not squeeze nested conditions into a long line just to be brief. In practice, choose a label for an integer's parity: the remainder n % 2 is 0 exactly for even integers.",
+            tr: "Bazen iki dal yalnızca tek bir değer seçmek içindir. Örneğin düğme yazısı bilete bağlıdır: bilet varsa ride, yoksa buy_ticket. Bu seçimi kısaca yazabiliriz: label = \"ride\" if ticket == 1 else \"buy_ticket\". Bu, genellikle üçlü operatör denen koşullu ifadedir: bir koşuldan ve seçilebilecek iki değerden oluşur.\n\nSıralaması normal if'ten farklıdır: önce True için değer, sonra if ve koşul, ardından else ve False için değer gelir. Kalıp: doğru_değer if koşul else yanlış_değer. Python önce koşulu denetler, sonra yalnızca seçilen kısmı hesaplar. İfadenin sonucunu değişkene atayabilir veya print() içine verebilirsin. Atama tek başına hiçbir şey yazdırmaz.\n\nÖrnekte ticket = 1 ise label, ride dizesini; ticket = 0 ise buy_ticket dizesini alır. Ayrı bir print(label) seçilen sözcüğü gösterir. Burada iki nokta ve girintili blok yoktur; else zorunludur, çünkü ifade iki durum için de bir değer vermelidir. Bunu çalışacak komutları seçen çok satırlı if/else ile karıştırma.\n\nKısa ifadeyi tek bir değerin basit seçimi için kullan. Dallarda birkaç eylem varsa veya koşul karmaşıksa normal if/else daha okunaklıdır. Yalnızca kısa olsun diye iç içe koşulları uzun bir satıra sıkıştırma. Alıştırmada sayının tek veya çift oluşuna göre yazı seçeceğiz: n % 2 kalanı tam olarak çift sayılarda 0 olur."
+          },
+          example: "ticket = 1\nlabel = \"ride\" if ticket == 1 else \"buy_ticket\"\nprint(label)\n",
+          task: {
+            text: {
+              uk: "Прочитай ціле число n. За допомогою тернарного виразу збережи в label рядок even, якщо n парне, або odd, якщо непарне. Потім виведи label. Перевірка парності — n % 2 == 0; нуль теж парний, а від'ємні числа також бувають парними й непарними.",
+              en: "Read an integer n. Use a ternary expression to store even in label if n is even, or odd if it is odd. Then print label. The evenness check is n % 2 == 0; zero is even, and negative integers can also be even or odd.",
+              tr: "Bir n tam sayısı oku. Üçlü koşullu ifadeyle n çiftse even, tekse odd dizesini label içinde sakla. Sonra label yazdır. Çiftlik denetimi n % 2 == 0 biçimindedir; sıfır da çifttir, negatif tam sayılar da tek veya çift olabilir."
+            },
+            hint: {
+              uk: "label = \"even\" if n % 2 == 0 else \"odd\". На наступному рядку — print(label). Двокрапка тут не потрібна; слова even та odd — рядки, тому мають бути в лапках.",
+              en: "label = \"even\" if n % 2 == 0 else \"odd\". On the next line, print(label). No colon is needed here; even and odd are strings, so they need quotes.",
+              tr: "label = \"even\" if n % 2 == 0 else \"odd\". Sonraki satıra print(label) yaz. Burada iki nokta gerekmez; even ve odd dizedir, bu yüzden tırnak içinde olmalı."
+            },
+            starter: "n = int(input())\n",
+            tests: [
+              { in: "0\n", out: "even" },
+              { in: "1\n", out: "odd" },
+              { in: "2\n", out: "even" },
+              { in: "7\n", out: "odd" },
+              { in: "-4\n", out: "even" },
+              { in: "-3\n", out: "odd" }
             ]
           }
         }

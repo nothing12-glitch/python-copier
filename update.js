@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.98";
+  const VERSION = "26.10.99";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.99": {
+      uk: [
+        "Основи й логіка завершують першу частину курсу. Далі — окремий розділ «Умовний оператор» із сімома уроками: if без else, блоки та відступи, else, elif, вкладені умови, and/or/not в умові та тернарний вираз",
+        "Бонуси у грі, шапка й шарф, медалі та квитки допомагають зрозуміти гілки й блоки. Пояснюємо 4 пробіли на рівень, спільне продовження після блоку, першу істинну гілку elif та відповідність else рівню вкладеності",
+        "Практика з input() перевіряє межі, різні гілки, усі вісім комбінацій погоди та парність нуля й від'ємних чисел. Тернарний вираз обирає значення, а не замінює складні блоки",
+        "Усі уроки перекладено uk/en/tr. Попередня практика if/else зберегла свій прогрес; нові вправи мають окремі записи. У курсі 54 уроки й 6 розділів: «Логіка» — 8, «Умовний оператор» — 7"
+      ],
+      en: [
+        "Basics and Logic finish the first part of the course. A separate Conditional statements chapter follows with seven lessons: if without else, blocks and indentation, else, elif, nested conditions, and/or/not in conditions and the ternary expression",
+        "Game bonuses, hats and scarves, medals and tickets explain branches and blocks. Covers 4 spaces per level, shared continuation after a block, the first matching elif branch and matching else to its nesting level",
+        "Input-based practice tests boundaries, different branches, all eight weather combinations and the parity of zero and negative integers. The ternary expression chooses a value rather than replacing complicated blocks",
+        "All lessons include uk/en/tr translations. The existing if/else practice retains its progress; new exercises have separate records. The course now has 54 lessons in 6 chapters: 8 in Logic and 7 in Conditional statements"
+      ],
+      tr: [
+        "Temeller ve Mantık, kursun ilk kısmını tamamlıyor. Ardından yedi derslik ayrı Koşullu komutlar bölümü geliyor: else olmadan if, bloklar ve girintiler, else, elif, iç içe koşullar, koşullarda and/or/not ve üçlü koşullu ifade",
+        "Oyun bonusları, şapka ve atkı, madalyalar ve biletlerle dallar ve bloklar açıklanıyor. Her düzeyde 4 boşluk, bloktan sonraki ortak devam, ilk doğru elif dalı ve else ile girinti düzeyinin eşleşmesi ele alınıyor",
+        "input() alıştırmaları sınırları, farklı dalları, sekiz hava birleşiminin tamamını, sıfırın ve negatif sayıların tek veya çift oluşunu denetliyor. Üçlü koşullu ifade karmaşık blokların yerine geçmek yerine bir değer seçiyor",
+        "Bütün derslerde uk/en/tr çevirileri var. Önceki if/else alıştırmasının ilerlemesi korunuyor; yeni alıştırmaların kayıtları ayrı. Kursta 6 bölüm ve 54 ders var: Mantık bölümünde 8, Koşullu komutlar bölümünde 7"
+      ]
+    },
     "26.10.98": {
       uk: [
         "Одразу після == з'явився окремий урок «True, False і тип bool»: спочатку учні бачать результат порівняння, а потім дізнаються про два логічні значення. False — це відповідь «ні», а не помилка програми",
