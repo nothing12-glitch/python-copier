@@ -182,6 +182,11 @@
     en: "Press Run to load Python",
     tr: "Python'u yüklemek için Çalıştır'a bas"
   };
+  const ASK = {
+    uk: "Програма чекає на твій ввід",
+    en: "The program is waiting for your input",
+    tr: "Program senin girdini bekliyor"
+  };
   const L = (obj) => obj[global.I18n ? global.I18n.lang : "uk"] || obj.uk;
   const toast = (m) => { if (global.App && global.App.toast) global.App.toast(m); };
 
@@ -213,6 +218,11 @@
     if (state === "idle") {
       statusEl.className = "md-chip loading";
       statusEl.textContent = L(IDLE);
+      return;
+    }
+    if (state === "ask") {
+      statusEl.className = "md-chip loading";
+      statusEl.textContent = L(ASK);
       return;
     }
     const map = { loading: "python.loading", ready: "python.ready", error: "python.error", running: "python.running" };
@@ -316,6 +326,11 @@
     if (!stdinBar || !codeEl) return;
     const need = /(^|[^\w.])input\s*\(/.test(codeEl.value);
     stdinBar.classList.toggle("hidden", !need);
+    // Порожнє поле = живий ввід у консолі; заповнене = старий пакетний режим.
+    const liveHint = $("#pyStdinLive");
+    if (liveHint) {
+      liveHint.classList.toggle("hidden", !(need && String(stdinEl.value).trim() === ""));
+    }
   }
 
   /* Один рядок поля = один виклик input(). Коли рядки закінчились, повертаємо undefined:
@@ -325,6 +340,192 @@
     const lines = String(stdinEl && stdinEl.value ? stdinEl.value : "").split("\n");
     let i = 0;
     return { stdin: () => (i < lines.length ? lines[i++] + "\n" : undefined) };
+  }
+
+  /* ---------- Живий ввід просто в консолі ---------- */
+  /* Зупинити CPython і чекати на клавіатуру тут неможливо: stdin викликається
+     синхронно, а справжнє блокування потребує окремого потоку з SharedArrayBuffer,
+     якого GitHub Pages не дає (сторінка не може видати COOP/COEP-заголовки).
+     Тому програму перериваємо на першому неготованому input() і запускаємо знову
+     вже з накопиченою відповіддю. Код до місця зупинки виконується ще раз, тож
+     недетермінований вивід (random) може відрізнитися від попереднього прогону. */
+  const live = {
+    on: false, shim: false, code: "", lines: [], idx: 0,
+    pending: null, eof: false, ask: null
+  };
+
+  /* Шим ставиться один раз на сесію Pyodide. Поза інтерактивним режимом він
+     віддає виклик справжньому input(), тож автоперевірка задач і тестів суддею
+     `Tasks.judge` лишається рівно такою, як була. */
+  const INPUT_SHIM = [
+    "import builtins as _pc_b",
+    "if not getattr(_pc_b, '_pc_patched', False):",
+    "    _pc_real = _pc_b.input",
+    "    class _PCPause(BaseException):",
+    "        pass",
+    "    def _pc_input(prompt=''):",
+    "        p = '' if prompt is None else str(prompt)",
+    "        if not pc_interactive():",
+    "            return _pc_real(p)",
+    "        v = pc_take(p)",
+    "        if v is None:",
+    "            if pc_eof():",
+    "                raise EOFError('EOF when reading a line')",
+    "            raise _PCPause(p)",
+    "        return str(v)",
+    "    _pc_b.input = _pc_input",
+    "    _pc_b._pc_patched = True",
+    ""
+  ].join("\n");
+
+  function pcInteractive() { return live.on; }
+  function pcEof() { return live.eof; }
+
+  /* Підказку друкуємо звідси, а не з Python: Pyodide тримає рядок без \n у буфері,
+     і «Як тебе звати?» виїхав би лише після наступного print.
+     Повертає накопичену відповідь і друкує її, ніби її набрано вручну.
+     Коли черга порожня — зазначаємо паузу (pending) або даємо EOF після «Стоп». */
+  function pcTake(prompt) {
+    if (prompt) setOutput(prompt);
+    if (live.idx < live.lines.length) {
+      const v = live.lines[live.idx++];
+      setOutput(v === "" ? "⏎" : "▸ " + v, false, "in");
+      return v;
+    }
+    if (!live.eof) live.pending = prompt || "";
+    return undefined;
+  }
+
+  function liveStdin() {
+    return { stdin: () => { const v = pcTake(""); return v == null ? undefined : v + "\n"; } };
+  }
+
+  async function ensureInputShim() {
+    if (live.shim) return;
+    py.globals.set("pc_interactive", pcInteractive);
+    py.globals.set("pc_take", pcTake);
+    py.globals.set("pc_eof", pcEof);
+    await py.runPythonAsync(INPUT_SHIM);
+    live.shim = true;
+  }
+
+  /* Резервне поле має пріоритет: якщо в ньому щось написано, працює старий
+     пакетний режим. Під час автопілот-туру Пайтончика інтерактив вимкнено,
+     бо тур не може вміти відповідати за людину. */
+  function interactiveWanted(code) {
+    if (!/(^|[^\w.])input\s*\(/.test(code)) return false;
+    if (stdinEl && String(stdinEl.value).trim() !== "") return false;
+    // Під час автопілот-туру Пайтончика сторінку заблоковано — програма не має нічого питати.
+    if (document.querySelector(".pychik.tour-locking")) return false;
+    return true;
+  }
+
+  function hideAsk() {
+    if (live.ask) { live.ask.remove(); live.ask = null; }
+  }
+
+  function showAsk() {
+    hideAsk();
+    const t = (k) => global.I18n.t(k);
+    const box = document.createElement("div");
+    box.className = "py-ask";
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.className = "py-ask-input";
+    inp.autocomplete = "off";
+    inp.spellcheck = false;
+    inp.enterKeyHint = "done";
+    inp.placeholder = t("python.askPh");
+    inp.title = t("python.askHint");
+    inp.setAttribute("aria-label", t("python.askLabel"));
+    const stop = document.createElement("button");
+    stop.type = "button";
+    stop.className = "py-ask-stop";
+    const ico = document.createElement("span");
+    ico.className = "material-icons";
+    ico.textContent = "stop";
+    const label = document.createElement("span");
+    label.textContent = t("python.askStop");
+    stop.appendChild(ico);
+    stop.appendChild(label);
+    inp.addEventListener("keydown", (e) => {
+      e.stopPropagation();
+      if (e.key === "Enter") {
+        e.preventDefault();
+        live.lines.push(inp.value);
+        hideAsk();
+        runPass();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        stopLive();
+      }
+    });
+    stop.addEventListener("click", stopLive);
+    box.appendChild(inp);
+    box.appendChild(stop);
+    out.appendChild(box);
+    live.ask = box;
+    out.scrollTop = out.scrollHeight;
+    setTimeout(() => { try { inp.focus(); } catch (e) { /* фокус не обовʼязковий */ } }, 40);
+  }
+
+  /* «Стоп» = Ctrl+D у терміналі: наступний неготований input() отримає EOFError,
+     тож програма завершується чесно, а не просто зникає. */
+  function stopLive() {
+    live.eof = true;
+    hideAsk();
+    runPass();
+  }
+
+  function isEofError(e) {
+    const s = String((e && (e.type || e.name)) || "") + " " + String((e && e.message) || e || "");
+    return s.indexOf("EOFError") !== -1 || s.indexOf("EOF when reading a line") !== -1;
+  }
+
+  async function runPass() {
+    if (!py) return;
+    hideAsk();
+    live.on = true;
+    live.pending = null;
+    live.idx = 0;
+    out.innerHTML = "";
+    runBtn.disabled = true;
+    setStatus("running");
+    py.setStdout({ batched: (s) => setOutput(s) });
+    py.setStderr({ batched: (s) => setOutput(s, true, null, tracebackLine(s)) });
+    py.setStdin(liveStdin());
+    const t1 = performance.now();
+    let failed = false;
+    let stopped = false;
+    try {
+      await py.runPythonAsync(live.code);
+    } catch (e) {
+      if (live.pending !== null) {
+        // це наша пауза, а не помилка програми
+      } else if (live.eof && isEofError(e)) {
+        stopped = true;
+      } else {
+        failed = true;
+        printRunError(e, live.code);
+      }
+    }
+    lastExecMs = performance.now() - t1;
+    renderExecInfo();
+    if (live.pending !== null) {
+      setStatus("ask");
+      runBtn.disabled = false;
+      showAsk();
+      return;
+    }
+    if (live.eof) setOutput(global.I18n.t("python.askEof"), false, "warn");
+    live.on = false;
+    py.setStdin({ stdin: () => undefined });
+    runBtn.disabled = false;
+    if (!failed && !stopped) {
+      global.Audio2 && global.Audio2.SFX.success();
+      document.dispatchEvent(new CustomEvent("pythonrun"));
+    }
+    setStatus("ready");
   }
 
   /* ---------- Статистика коду, час виконання, копіювання та експорт ---------- */
@@ -981,6 +1182,10 @@
     let idx = 0;
     let output = "";
     let error = null;
+    /* Навіть якщо майданчик стоїть на живій паузі, автоперевірка ніколи не питає
+       людину: дані приходять із тесту, тому інтерактив вимикаємо на час прогону. */
+    const wasLive = live.on;
+    live.on = false;
     // undefined після останнього рядка = EOF: Pyodide дає EOFError замість нескінченного порожнього вводу
     py.setStdin({ stdin: () => (idx < lines.length ? lines[idx++] + "\n" : undefined) });
     py.setStdout({ batched: (s) => { output += s + "\n"; } });
@@ -991,6 +1196,7 @@
       error = e && e.message ? e.message : String(e);
     } finally {
       await restoreBuiltins();
+      live.on = wasLive;
       py.setStdin({ stdin: () => undefined });
       py.setStdout({ batched: (s) => setOutput(s) });
       py.setStderr({ batched: (s) => setOutput(s, true, null, tracebackLine(s)) });
@@ -1156,8 +1362,23 @@
     return res && res.chosen === "stay" ? "stay" : "run";
   }
 
+  function printRunError(e, code) {
+    const msg = e && e.message ? e.message : String(e);
+    setOutput(msg, true, null, tracebackLine(msg));
+    const hits = unsupportedHint(code);
+    if (hits.length) {
+      setOutput("", true);
+      for (const m of hits) setOutput("💡 " + UNSUPPORTED_MODULES[m], true);
+    }
+    const hint = moduleHint(msg);
+    if (hint) setOutput("💡 " + hint, true);
+    global.Audio2 && global.Audio2.SFX.error();
+  }
+
   async function run() {
     out.innerHTML = "";
+    hideAsk();
+    live.on = false;
     if (global.PyGui) {
       try { global.PyGui.reset(); } catch (e) { console.warn("[PyGui] reset", e); }
     }
@@ -1191,6 +1412,22 @@
     setStatus("loading");
     await loadModulesFromCode(codeEl.value);
     setStatus("running");
+    if (interactiveWanted(codeEl.value)) {
+      try {
+        await ensureInputShim();
+        live.code = codeEl.value;
+        live.lines = [];
+        live.eof = false;
+        await runPass();
+        return;
+      } catch (e) {
+        // шим не стався — повертаємось на старий пакетний шлях, код усе одно запрацює
+        console.warn("[stdin-live]", e);
+        live.on = false;
+        live.shim = false;
+        out.innerHTML = "";
+      }
+    }
     py.setStdout({ batched: (s) => setOutput(s) });
     py.setStderr({ batched: (s) => setOutput(s, true, null, tracebackLine(s)) });
     py.setStdin(stdinProvider());
@@ -1200,15 +1437,7 @@
       global.Audio2 && global.Audio2.SFX.success();
       document.dispatchEvent(new CustomEvent("pythonrun"));
     } catch (e) {
-      setOutput(e.message, true, null, tracebackLine(e.message));
-      const hits = unsupportedHint(codeEl.value);
-      if (hits.length) {
-        setOutput("", true);
-        for (const m of hits) setOutput("💡 " + UNSUPPORTED_MODULES[m], true);
-      }
-      const hint = moduleHint(e.message);
-      if (hint) setOutput("💡 " + hint, true);
-      global.Audio2 && global.Audio2.SFX.error();
+      printRunError(e, codeEl.value);
     } finally {
       py.setStdin({ stdin: () => undefined });
       lastExecMs = performance.now() - t1;
@@ -1428,7 +1657,8 @@
     if (copyBtn) copyBtn.onclick = copyCode;
     if (saveBtn) saveBtn.onclick = savePyFile;
     $("#clearCode").onclick = () => { codeEl.value = ""; setOrigin(ORIGIN.OWN, null); updateLineNumbers(); global.Audio2 && global.Audio2.SFX.click(); };
-    $("#clearOut").onclick = () => { out.innerHTML = ""; };
+    $("#clearOut").onclick = () => { hideAsk(); out.innerHTML = ""; };
+    if (stdinEl) stdinEl.addEventListener("input", syncStdinBar);
     const fullBtn = $("#fullOut");
     if (fullBtn) fullBtn.onclick = toggleOutFull;
     document.addEventListener("keydown", (e) => {

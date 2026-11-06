@@ -1564,7 +1564,7 @@
 
   let progressEl, listEl, detailEl, chapterEl, titleEl, theoryEl, exampleEl;
   let exampleRunBtn, exampleCopyBtn, taskTextEl, codeEl, hintBtn, hintBoxEl;
-  let checkBtn, resetBtn, statusEl, resultsEl, doneEl, prevBtn, nextBtn, backBtn;
+  let checkBtn, resetBtn, runPracticeBtn, statusEl, resultsEl, doneEl, prevBtn, nextBtn, backBtn;
   let current = null;
   let busy = false;
   let gutter = null;
@@ -1854,6 +1854,18 @@
     sfx("pop");
   }
 
+  function runPractice() {
+    const editor = $("#code");
+    if (!editor || !codeEl) return;
+    editor.value = codeEl.value;
+    editor.dispatchEvent(new Event("input", { bubbles: true }));
+    if (global.App && global.App.route) global.App.route("python");
+    else location.hash = "#python";
+    toast(t("course.tryRunToast"));
+    sfx("pop");
+    setTimeout(() => { if (global.PythonPad && global.PythonPad.run) global.PythonPad.run(); }, 150);
+  }
+
   function copyExample() {
     if (!current) return;
     const text = current.example;
@@ -1891,6 +1903,7 @@
     hintBoxEl = $("#courseHintBox");
     checkBtn = $("#courseCheck");
     resetBtn = $("#courseReset");
+    runPracticeBtn = $("#courseRun");
     statusEl = $("#courseStatus");
     resultsEl = $("#courseResults");
     doneEl = $("#courseDone");
@@ -1899,6 +1912,7 @@
     backBtn = $("#courseBack");
 
     if (exampleRunBtn) exampleRunBtn.onclick = runExample;
+    if (runPracticeBtn) runPracticeBtn.onclick = runPractice;
     if (exampleCopyBtn) exampleCopyBtn.onclick = copyExample;
     if (checkBtn) checkBtn.onclick = check;
     if (hintBtn) hintBtn.onclick = showHint;

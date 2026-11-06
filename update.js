@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.99";
+  const VERSION = "26.10.100";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.100": {
+      uk: [
+        "Програма нарешті справді запитує. Коли код доходить до input(), він зупиняється просто в консолі: з'являється інлайн-поле, вводь відповідь і тисни Enter — код іде далі. Статус у цей момент каже «Програма чекає на твій ввід»",
+        "Кнопка «Стоп» працює як Ctrl+D у терміналі: наступний input() отримує EOFError, програма завершується чесно, а в консолі з'являється короткий напис замість довжелезного трейсбека. Enter на порожньому рядку — це порожня відповідь",
+        "Поле «Ввід для input()» лишилося резервом і має пріоритет: є там рядки — програма бере значення звідти пакетно, без зупинок. Поле порожнє — питатиме прямо в консолі; підказка під полем про це нагадує",
+        "У курсі з'явилася кнопка «Спробувати»: відкриває твій розв'язок у майданчику й одразу його запускає. Автоперевірка задач лишилася неінтерактивною, тож input() у перевірках працює рівно як раніше. Переклади uk/en/tr"
+      ],
+      en: [
+        "The program finally really asks. When your code reaches input() it stops right in the console: an inline field appears, type the answer and press Enter, and the code continues. The status bar reads 'The program is waiting for your input'",
+        "The Stop button works like Ctrl+D in a terminal: the next input() gets an EOFError, the program ends honestly and the console shows a short notice instead of a long traceback. Enter on an empty line is an empty answer",
+        "The 'Input for input()' field stays as a fallback and has priority: put lines there and the program consumes them in batch without pausing. Leave it empty and the program asks right in the console — the hint under the field reminds you",
+        "The course gained a 'Try it' button: it opens your solution in the playground and runs it straight away. Automatic task checking stays non-interactive, so input() in checks behaves exactly as before. uk/en/tr translations"
+      ],
+      tr: [
+        "Program artık gerçekten soruyor. Kod input() satırına geldiğinde konsolun içinde duruyor: satır içi bir alan açılıyor, yanıtı yazıp Enter'a basıyorsun ve kod devam ediyor. Durum çubuğu 'Program senin girişini bekliyor' diyor",
+        "Durdur düğmesi terminaldeki Ctrl+D gibi çalışıyor: sonraki input() bir EOFError alır, program düzgünce biter ve konsolda uzun bir izleme yerine kısa bir not görünür. Boş satırda Enter boş yanıt demektir",
+        "'input() için girdi' alanı yedek olarak kalıyor ve önceliğe sahip: içine satır yazarsan program onları durmadan toplu kullanır. Alan boşsa program doğrudan konsolda sorar — altındaki ipucu bunu hatırlatır",
+        "Kursa 'Dene' düğmesi eklendi: çözümünü alanda açıp hemen çalıştırıyor. Ödevlerin otomatik denetimi etkileşimsiz kaldığı için input() denetimlerde eskisiyle birebir aynı çalışıyor. uk/en/tr çevirileri"
+      ]
+    },
     "26.10.99": {
       uk: [
         "Основи й логіка завершують першу частину курсу. Далі — окремий розділ «Умовний оператор» із сімома уроками: if без else, блоки та відступи, else, elif, вкладені умови, and/or/not в умові та тернарний вираз",
