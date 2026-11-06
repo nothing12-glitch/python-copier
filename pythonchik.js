@@ -731,7 +731,7 @@
       inputEl = null, mascotEl = null,
       spotEl = null, petEl = null, pawEl = null, sayEl = null, lockEl = null,
       sayTextEl = null, sayCountEl = null,
-      sayPrevBtn = null, sayAutoBtn = null, sayNextBtn = null;
+      sayPrevBtn = null, sayAutoBtn = null, sayNextBtn = null, saySkipBtn = null;
   let ctx = { section: "home" };
   let thinkTimer = null;
 
@@ -1160,11 +1160,30 @@
     }
     return null;
   }
+  /* Підсвічуємо лише те, що справді видно. Раніше резервним варіантом міг
+     стати неактивний розділ (прямокутник 0x0) — і тоді рамка з бульбашкою
+     з'їжджали в лівий верхній кут екрана. */
+  function tutorNarrow(node) {
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const r = node.getBoundingClientRect();
+    if (r.width * r.height <= vw * vh * 0.5) return node;
+    const kids = node.querySelectorAll("h1, h2, h3, .section-head, .hero-badge, .btn");
+    for (let i = 0; i < kids.length; i++) {
+      const kr = kids[i].getBoundingClientRect();
+      if (kr.width > 10 && kr.height > 10 && kr.width * kr.height <= vw * vh * 0.3) return kids[i];
+    }
+    return node;
+  }
   function tutorSpotTarget(step) {
-    const direct = tutorTarget(step);
-    if (direct) return direct;
-    return document.querySelector("#view-" + step.route + " .section-head") ||
-      document.querySelector("#view-" + step.route);
+    const cands = [tutorTarget(step)];
+    if (step.route) {
+      cands.push(document.querySelector("#view-" + step.route + " .section-head"));
+      cands.push(document.querySelector("#view-" + step.route));
+    }
+    for (let i = 0; i < cands.length; i++) {
+      if (tutorVisible(cands[i])) return tutorNarrow(cands[i]);
+    }
+    return null;
   }
   function clearTutorTimers() {
     if (!tutor) return;
@@ -1175,6 +1194,27 @@
     return !document.body.classList.contains("reduce-motion");
   }
 
+  function rectBox(node) {
+    const r = node.getBoundingClientRect();
+    return { left: r.left, top: r.top, width: r.width, height: r.height, right: r.right, bottom: r.bottom };
+  }
+  function boxHit(a, b) {
+    return a.left < b.left + b.width && b.left < a.left + a.width &&
+      a.top < b.top + b.height && b.top < a.top + a.height;
+  }
+  /* Поле з відступом: щоб маскот не ледь чіпляв краї цілі чи репліки. */
+  function inflate(b, m) {
+    return { left: b.left - m, top: b.top - m, width: b.width + m * 2, height: b.height + m * 2 };
+  }
+  function clampBox(x, y, w, h, pad) {
+    return {
+      left: Math.min(Math.max(pad, x), window.innerWidth - w - pad),
+      top: Math.min(Math.max(pad, y), window.innerHeight - h - pad),
+      width: w,
+      height: h
+    };
+  }
+
   function moveSpot(r) {
     const pad = 8;
     spotEl.style.left = (r.left - pad) + "px";
@@ -1183,24 +1223,79 @@
     spotEl.style.height = (r.height + pad * 2) + "px";
     spotEl.classList.add("pychik-spot-on");
   }
-  /* Маскот стає поруч із підсвіченим елементом там, де є вільне місце. */
-  function movePet(r) {
-    const pw = petEl.offsetWidth || 104, ph = petEl.offsetHeight || 104, gap = 16;
-    const vw = window.innerWidth, vh = window.innerHeight;
-    let x, y;
-    if (r.right + gap + pw < vw - 6) { x = r.right + gap; y = r.top + r.height / 2 - ph / 2; }
-    else if (r.left - gap - pw > 6) { x = r.left - gap - pw; y = r.top + r.height / 2 - ph / 2; }
-    else if (r.bottom + gap + ph < vh - 6) { x = r.left + r.width / 2 - pw / 2; y = r.bottom + gap; }
-    else { x = r.left + r.width / 2 - pw / 2; y = Math.max(6, r.top - gap - ph); }
-    x = Math.min(Math.max(6, x), vw - pw - 6);
-    y = Math.min(Math.max(6, y), vh - ph - 6);
-    petEl.style.transform = "translate(" + Math.round(x) + "px," + Math.round(y) + "px)";
-    petEl.classList.add("pychik-pet-on");
-    placeSay(x, y, pw, ph);
-    return { x: x + pw / 2, y: y + ph / 2 };
+  function hideTourMarks() {
+    spotEl.classList.remove("pychik-spot-on");
+    petEl.classList.remove("pychik-pet-on");
+    pawEl.classList.remove("pychik-paw-on");
+  }
+  /* Кільце малюється на 8px ширше за ціль — з обох боків. */
+  const SPOT_PAD = 8;
+  /* Репліка стає у вільну смугу — над кільцем або під ним. На телефоні інакше
+     бульбашка наїжджає рівно на те, про що Пайтончик саме говорить. */
+  function sayBoxFor(r, w, gap, vh, h) {
+    const ring = inflate(r, SPOT_PAD);
+    const above = ring.top - gap - h;
+    const below = ring.bottom + gap;
+    const fitsAbove = above >= gap;
+    const fitsBelow = below + h + gap <= vh;
+    let top;
+    if (fitsAbove && fitsBelow) top = ring.top >= vh - ring.bottom ? above : below;
+    else if (fitsAbove) top = above;
+    else if (fitsBelow) top = below;
+    /* смуги немає ніде: притискаємо до того краю, де цілі більше місця */
+    else top = ring.top >= vh - ring.bottom ? above : vh - h - gap;
+    return clampBox(r.left + r.width / 2 - w / 2, top, w, h, gap);
+  }
+  function placeSay(r) {
+    const w = Math.min(340, window.innerWidth - 20);
+    const gap = 10, vh = window.innerHeight;
+    sayEl.style.width = w + "px";
+    let box = sayBoxFor(r, w, gap, vh, sayEl.offsetHeight || 140);
+    sayEl.style.left = box.left + "px";
+    sayEl.style.top = box.top + "px";
+    /* Висоту рахуємо до перебирання тексту — на телефоні вона росте на 1-2 рядки,
+       і бульбашка сідає на ціль. Переміряємо й поправимо. */
+    const real = sayEl.offsetHeight;
+    if (Math.abs(real - box.height) > 2) {
+      box = sayBoxFor(r, w, gap, vh, real);
+      sayEl.style.left = box.left + "px";
+      sayEl.style.top = box.top + "px";
+    }
+    return box;
+  }
+  /* Маскот шукає місце поруч із ціллю, що не перекриває ані ціль, ані репліку.
+     Не знайшов — краще вже сховатися, ніж лізти лапками просто в текст. */
+  function movePet(r, sayBox) {
+    const pr = petEl.getBoundingClientRect();
+    const pw = Math.round(pr.width) || petEl.offsetWidth || 104;
+    const ph = Math.round(pr.height) || petEl.offsetHeight || 104;
+    const gap = 14;
+    /* 18px: кільце малюється на 8px ширше за ціль, ще ~8px може додати анімація
+       й округлення вимірювань — з таким запасом маскот не зачіпає рамку навіть
+       на вузькому екрані, де він менший за 104px */
+    const clear = 18;
+    const rt = inflate(r, clear), st = sayBox ? inflate(sayBox, 8) : null;
+    const cands = [
+      [r.right + gap, r.top + r.height / 2 - ph / 2],
+      [r.left - gap - pw, r.top + r.height / 2 - ph / 2],
+      [r.left + r.width / 2 - pw / 2, r.bottom + gap],
+      [r.left + r.width / 2 - pw / 2, r.top - gap - ph]
+    ];
+    for (let i = 0; i < cands.length; i++) {
+      const box = clampBox(cands[i][0], cands[i][1], pw, ph, 6);
+      if (boxHit(box, rt)) continue;
+      if (st && boxHit(box, st)) continue;
+      petEl.style.transform = "translate(" + Math.round(box.left) + "px," + Math.round(box.top) + "px)";
+      petEl.classList.add("pychik-pet-on");
+      return { x: box.left + pw / 2, y: box.top + ph / 2 };
+    }
+    petEl.classList.remove("pychik-pet-on");
+    pawEl.classList.remove("pychik-paw-on");
+    return null;
   }
   /* Лапка тягнеться від маскота до центра елемента й повертається в його бік. */
   function aimPaw(from, r) {
+    if (!from) return;
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     const dx = cx - from.x, dy = cy - from.y;
     const len = Math.max(1, Math.sqrt(dx * dx + dy * dy));
@@ -1211,17 +1306,6 @@
     pawEl.style.transform = "translate(" + Math.round(px - 22) + "px," + Math.round(py - 22) +
       "px) rotate(" + Math.atan2(dy, dx).toFixed(3) + "rad)";
     pawEl.classList.add("pychik-paw-on");
-  }
-  function placeSay(px, py, pw, ph) {
-    const w = Math.min(340, window.innerWidth - 20);
-    const h = sayEl.offsetHeight || 150;
-    let top = py - h - 14;
-    if (top < 8) top = py + ph + 14;
-    top = Math.min(Math.max(8, top), window.innerHeight - h - 8);
-    const left = Math.min(Math.max(10, px + pw / 2 - w / 2), window.innerWidth - w - 10);
-    sayEl.style.width = w + "px";
-    sayEl.style.left = left + "px";
-    sayEl.style.top = top + "px";
   }
   function tapAt(r) {
     const tap = el("div", "pychik-tap");
@@ -1246,16 +1330,29 @@
   /* scroll=true — одразу після справжнього переходу: нова сторінка може зберегти
      старий зсув, і інакше підсвітка лізе за край екрана.
      При прокрутці самим користувачем чіпати зсув не можна — це брало б сторінку замість нього. */
+  /* Спотлайт, репліка й маскот розставляються одним викликом: на вузькому
+     екрані окремі кроки роз'їжджалися, і бульбашка сідала на ціль. */
+  function tourShow(r) {
+    moveSpot(r);
+    aimPaw(movePet(r, placeSay(r)), r);
+  }
   function tutorReposition(scroll) {
     if (!tutor) return;
+    if (holdForModal(tutor.steps[tutor.i])) return;
     const target = tutorSpotTarget(tutor.steps[tutor.i]);
-    if (!target) return;
+    if (!target) { tutorNowhere(); return; }
     if (scroll) {
       try { target.scrollIntoView({ block: "center", behavior: "auto" }); } catch (e) { /* старі браузери */ }
     }
-    const r = target.getBoundingClientRect();
-    moveSpot(r);
-    aimPaw(movePet(r), r);
+    tourShow(rectBox(target));
+  }
+  /* Цілі немає взагалі: краще вже чиста репліка внизу, ніж рамка в куті екрана. */
+  function tutorNowhere() {
+    hideTourMarks();
+    placeSay({
+      left: 0, top: 0, width: window.innerWidth, height: window.innerHeight,
+      right: window.innerWidth, bottom: window.innerHeight
+    });
   }
   /* ---------- Блокування сторінки й чекання на модулі ---------- */
   function setTourLock(on) {
@@ -1287,8 +1384,17 @@
       timer: setInterval(pollInstallWait, INSTALL_POLL_MS)
     };
   }
+  /* Готове вікно встановлення чекає на клік «Закрити» — під час туру його
+     замість користувача закриваємо самі, інакше воно лишалося під шаром. */
+  function closeInstallerModal() {
+    const b = document.querySelector("#installerModal .ip-actions button");
+    if (b && !b.disabled) b.click();
+  }
   function pollInstallWait() {
     if (!tutor || !installWait) return;
+    /* готовність перевіряємо першою: відкрите вікно «Готово!» раніше вічно
+       тримало тур на цьому кроці, бо кнопка в ньому нікому не потрібна */
+    if (installerReadyNow()) { closeInstallerModal(); releaseInstallWait(true); return; }
     if (installerBusyNow() || document.querySelector("#installerModal")) {
       installWait.started = true;
       installWait.waited = 0;
@@ -1303,7 +1409,6 @@
       }
       return;
     }
-    if (installerReadyNow()) { releaseInstallWait(true); return; }
     installWait.waited += INSTALL_POLL_MS;
     if (installWait.waited > (installWait.started ? INSTALL_MAX_MS : INSTALL_START_GRACE_MS)) {
       releaseInstallWait(false);
@@ -1330,6 +1435,71 @@
       step.act === "click" ? 6400 : 4600);
   }
 
+  /* ---------- Чекання на вікно, що відкрилося поверх сторінки ---------- */
+  /* Шар туру має z-index 1500 — він вищий за будь-яке вікно. Без паузи кільце
+     світило б крізь «З якого пристрою ви заходите?» у порожнечу за ним.
+     Шторку «Ще» не чекаємо: тур сам її відкриває на своїх кроках. */
+  const MODAL_HOLD_SELECTORS = [
+    ".wn-backdrop", ".ob-backdrop", ".device-ask", ".av-modal-backdrop",
+    ".gs-backdrop", ".ht-backdrop", ".vlt-backdrop"
+  ];
+  function tourModalUp() {
+    for (let i = 0; i < MODAL_HOLD_SELECTORS.length; i++) {
+      const nodes = document.querySelectorAll(MODAL_HOLD_SELECTORS[i]);
+      for (let j = 0; j < nodes.length; j++) {
+        const n = nodes[j];
+        if (n.hidden) continue;
+        const cs = getComputedStyle(n);
+        if (cs.display === "none" || cs.visibility === "hidden") continue;
+        if (Number(cs.opacity) < 0.05) continue;
+        const r = n.getBoundingClientRect();
+        if (r.width > 4 && r.height > 4) return true;
+      }
+    }
+    return false;
+  }
+  let modalHold = null;   /* крок, заморожений відкритим вікном */
+  let modalWatch = null;  /* стежимо весь час туру: вікно може з'явитися на рівному місці */
+  function stopModalHold() {
+    if (!modalHold) return;
+    modalHold = null;
+    if (tutor) tutor.waiting = false;
+  }
+  function startModalWatch() {
+    if (modalWatch) return;
+    modalWatch = setInterval(pollModalHold, INSTALL_POLL_MS);
+  }
+  function stopModalWatch() {
+    if (modalWatch) { clearInterval(modalWatch); modalWatch = null; }
+    stopModalHold();
+  }
+  function resumeAfterModal() {
+    const step = modalHold.step;
+    stopModalHold();
+    setTourLock(true);
+    mood("idle");
+    tutorSayTexts();
+    tutorPlace(step);
+    armAutoTimer();
+  }
+  function pollModalHold() {
+    if (!tutor || installWait) return;
+    if (modalHold) { if (!tourModalUp()) resumeAfterModal(); return; }
+    if (tourModalUp()) holdForModal(tutor.steps[tutor.i]);
+  }
+  function holdForModal(step) {
+    /* установщик має власний чекач — не плутати два одночасно */
+    if (!tutor || installWait || !tourModalUp()) return false;
+    modalHold = { step: step };
+    startModalWatch();
+    clearTutorTimers();
+    tutor.waiting = true;
+    setTourLock(false);
+    hideTourMarks();
+    tutorNowhere();
+    return true;
+  }
+
   /* «Натискання» елемента: кільце, звук і справжній клік. */
   function tutorPoke(node) {
     tapAt(node.getBoundingClientRect());
@@ -1337,14 +1507,14 @@
     node.click();
   }
   function tutorPlace(step) {
+    if (holdForModal(step)) return;
     const target = tutorSpotTarget(step);
-    if (!target) { spotEl.classList.remove("pychik-spot-on"); return; }
+    if (!target) { tutorNowhere(); return; }
     try { target.scrollIntoView({ block: "center", behavior: slowMotion() ? "smooth" : "auto" }); } catch (e) { /* старі браузери */ }
     setTimeout(() => {
       if (!tutor) return;
-      const r = target.getBoundingClientRect();
-      moveSpot(r);
-      aimPaw(movePet(r), r);
+      if (holdForModal(step)) return;
+      tourShow(rectBox(target));
       if (step.act !== "click") return;
       if (!step.nav) {
         /* крок без навігації тисне свою кнопку — і, якщо вона щось вантажить, чекаємо */
@@ -1380,6 +1550,7 @@
     if (!tutor) return;
     clearTutorTimers();
     stopInstallWait();
+    stopModalHold();
     setTourLock(true);
     tutor.i = Math.min(Math.max(0, i), tutor.steps.length - 1);
     tutor.done = false;
@@ -1389,8 +1560,10 @@
     tutorPlace(step);
     armAutoTimer();
   }
-  function tutorNext() {
-    if (!tutor || tutor.waiting) return;
+  /* user=true — це клік самої людини: вона має право піти далі навіть тоді,
+     коли автопілот ще чекає на завантаження модулів. */
+  function tutorNext(user) {
+    if (!tutor || (tutor.waiting && !user)) return;
     if (tutor.i >= tutor.steps.length - 1) { endTour(true); return; }
     tutorGo(tutor.i + 1);
   }
@@ -1406,6 +1579,7 @@
   function endTour(finished) {
     clearTutorTimers();
     stopInstallWait();
+    stopModalWatch();
     tutor = null;
     setTourLock(false);
     spotEl.classList.remove("pychik-spot-on");
@@ -1429,7 +1603,9 @@
     }
     if (panel && panel.classList.contains("pychik-open")) close();
     stopInstallWait();
+    stopModalWatch();
     tutor = { i: -1, auto: true, done: false, waiting: false, steps: steps, timer: null, tapTimer: null };
+    startModalWatch();
     setTourLock(true);
     sayEl.classList.add("pychik-say-open");
     mood("happy");
@@ -1493,16 +1669,17 @@
     sayCountEl = el("span", "pychik-say-count");
     sayNextBtn = el("button", "pychik-say-next", tx("tourNext"));
     sayNextBtn.type = "button";
-    sayNextBtn.addEventListener("click", () => { sfx("click"); tutorNext(); });
-    const sayClose = el("button", "pychik-say-ico pychik-say-close", "\u00D7");
-    sayClose.type = "button";
-    sayClose.setAttribute("aria-label", tx("tourSkip"));
-    sayClose.addEventListener("click", () => { sfx("click"); endTour(false); });
+    sayNextBtn.addEventListener("click", () => { sfx("click"); tutorNext(true); });
+    /* \u00AB\u041F\u0440\u043E\u043F\u0443\u0441\u0442\u0438\u0442\u0438\u00BB \u0441\u043B\u043E\u0432\u043E\u043C, \u0430 \u043D\u0435 \u0445\u0440\u0435\u0441\u0442\u0438\u043A\u043E\u043C: \u0433\u0430\u0439\u0434 \u043C\u0430\u0439\u0436\u0435 \u043D\u0456\u0445\u0442\u043E \u043D\u0435 \u0434\u043E\u0447\u0438\u0442\u0443\u0454, \u0456
+     \u043B\u044E\u0434\u0438 \u0445\u043E\u0447\u0443\u0442\u044C \u043E\u0434\u0440\u0430\u0437\u0443 \u043F\u043E\u0447\u0430\u0442\u0438 \u0440\u043E\u0431\u043E\u0442\u0443. */
+    saySkipBtn = el("button", "pychik-say-skip", tx("tourSkip"));
+    saySkipBtn.type = "button";
+    saySkipBtn.addEventListener("click", () => { sfx("click"); endTour(false); });
     sfoot.appendChild(sayPrevBtn);
     sfoot.appendChild(sayAutoBtn);
     sfoot.appendChild(sayCountEl);
+    sfoot.appendChild(saySkipBtn);
     sfoot.appendChild(sayNextBtn);
-    sfoot.appendChild(sayClose);
     sayEl.appendChild(sfoot);
 
     fab = el("button", "pychik-fab");
@@ -1581,6 +1758,11 @@
       }
     });
     window.addEventListener("resize", () => { if (tutor) tutorReposition(); });
+    /* Веб-шрифт добирається вже під час туру: репліка раптом росте на рядок і
+       сідає на ціль. Тому щойно шрифти завантажаться — переставляємо все заново. */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => { if (tutor) tutorReposition(); });
+    }
     let repositionQueued = false;
     window.addEventListener("scroll", () => {
       if (!tutor || repositionQueued) return;
@@ -1598,7 +1780,7 @@
       panel.querySelector(".pychik-close").setAttribute("aria-label", tx("close"));
       panel.querySelector(".pychik-send").textContent = tx("send");
       sayPrevBtn.setAttribute("aria-label", tx("tutPrevL"));
-      sayClose.setAttribute("aria-label", tx("tourSkip"));
+      saySkipBtn.textContent = tx("tourSkip");
       renderChips();
       if (tutor) tutorSayTexts();
     });

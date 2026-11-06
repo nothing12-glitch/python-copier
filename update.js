@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.100";
+  const VERSION = "26.10.101";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.101": {
+      uk: [
+        "Гайд на телефоні нарешті світить туди, куди треба. Кільце, лапки й хмарка з підказкою самі рахують, де вільно, і не сідають на ціль ні при якому розмірі екрана. Якщо сторінка зростає під час показу (веб-шрифт довантажився) — усе переставляється заново",
+        "Якщо поверх сторінки відкрилося будь-яке вікно — вибір пристрою, привітання, мова, «Що нового» — гайд стає на паузу, ховає кільце й не показує крізь нього. Вікно закрився — гайд продовжує з того ж кроку",
+        "На кожному кроці видно «Пропустити». Натиснув — гайд вимкнено й більше не чіпає тебе, одразу можна працювати",
+        "У вікні вибору пристрою з'явився третій варіант — «Проєктор / дошка». Для інтерактивної дошки в класі сайт визначає її сам; з ноутбука, під'єднаного до проєктора, кнопка теж стає рекомендованою. Режим робить інтерфейс удвічі більшим, щоб було видно з останньої парти, і запам'ятається наступного входу. Переклади uk/en/tr"
+      ],
+      en: [
+        "The phone tour finally points where it should. The ring, the paw and the hint bubble work out on their own where there is free room, so at no screen size do they land on the target. If the page grows while a step is showing (a web font just finished loading) everything is re-placed",
+        "When any window opens over the page — device choice, welcome, language, What's new — the tour pauses, hides its ring and never shines through it. Close the window and the tour continues from the same step",
+        "'Skip' is visible on every step. Tap it and the tour is off for good, so you can get straight to work",
+        "The device dialog gained a third option — 'Projector / board'. An interactive classroom board is detected automatically, and a laptop hooked up to a projector gets the option marked recommended too. The mode doubles the interface so the back row can read it, and is remembered for the next visit. uk/en/tr translations"
+      ],
+      tr: [
+        "Rehber artık telefonda doğru yeri gösteriyor. Halka, pati ve ipucu balonu boş alanı kendisi hesaplıyor; ekran boyutu ne olursa olsun hedefin üstüne binmiyor. Gösterim sırasında sayfa uzarsa (web yazı tipi geç yüklendi) her şey yeniden yerleşiyor",
+        "Sayfanın üstünde bir pencere açıldığında — cihaz seçimi, karşılama, dil, 'Yenilikler' — rehber duraklıyor, halkasını gizliyor ve pencerenin içinden ışık saçmıyor. Pencere kapanınca rehber aynı adımdan sürüyor",
+        "Her adımda 'Atla' görünür. Dokunursan rehber kalıcı olarak kapanır ve hemen işine başlayabilirsin",
+        "Cihaz penceresine üçüncü seçenek eklendi: 'Projeksiyon / tahta'. Sınıftaki etkileşimli tahta otomatik tanınır; projeksiyona bağlı dizüstünde de seçenek 'önerilen' olarak işaretlenir. Bu kiplik arayüzü iki kat büyütür ki en arka sıra görsün, ve bir sonraki girişte hatırlanır. uk/en/tr çevirileri"
+      ]
+    },
     "26.10.100": {
       uk: [
         "Програма нарешті справді запитує. Коли код доходить до input(), він зупиняється просто в консолі: з'являється інлайн-поле, вводь відповідь і тисни Enter — код іде далі. Статус у цей момент каже «Програма чекає на твій ввід»",

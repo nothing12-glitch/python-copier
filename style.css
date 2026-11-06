@@ -440,6 +440,7 @@ body.lang-fade .appbar,body.lang-fade .navrail,body.lang-fade main{opacity:0;tra
 .ob-langs{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:8px;max-height:44vh;overflow:auto;padding:2px;margin-bottom:8px}
 .ob-langs button{font-family:var(--md-font);font-size:15px;font-weight:500;padding:10px 12px;border-radius:14px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);color:var(--md-on-surface);cursor:pointer;transition:.15s;text-align:center}
 .ob-langs button:hover{background:var(--md-primary-container);color:var(--md-on-primary-container)}
+.ob-langs button.is-current{border-color:var(--md-primary);background:var(--md-primary-container);color:var(--md-on-primary-container);font-weight:600}
 .ob-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .ob-input{width:100%;font-family:var(--md-font);font-size:15px;color:var(--md-on-surface);background:var(--md-surface-dim);border:1px solid var(--md-outline-var);border-radius:10px;padding:12px 14px;outline:none;margin-bottom:16px;transition:border-color .2s;text-align:center}
 .ob-input:focus{border-color:var(--md-primary)}
@@ -606,3 +607,11 @@ body.focus-mode main{padding:16px!important;max-width:900px}
 @keyframes bloom{0%{transform:scale(0) rotate(-180deg);opacity:0}60%{transform:scale(1.15) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0)}}
 .confetti{position:absolute;width:8px;height:14px;top:-20px;opacity:.9;animation:fall 3s linear forwards;pointer-events:none;border-radius:2px}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* ===== Режим проєктора / інтерактивної дошки ===== */
+/* Вміст збільшуємо разом (zoom), щоб рядки коду й пояснення читалися з задньої
+   парти. Вікна й підказки лишаються у звичайній масштабі — вони й так великі. */
+body.projector-mode{--proj-zoom:1.2}
+body.projector-mode main,body.projector-mode .navrail{zoom:var(--proj-zoom)}
+body.projector-mode .footer{display:none}
+body.projector-mode .appbar-title{font-size:24px}

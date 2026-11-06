@@ -6,6 +6,7 @@
     style: "new", theme: "auto", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
     glass: false, reduceMotion: false, compact: false, fontSize: 14,
     navDesign: "pill",
+    deviceKind: "auto",
     navSize: "medium",
     navPos: "left",
     navLabels: true,
@@ -83,6 +84,7 @@
     b.classList.toggle("no-hints", !state.showHints);
     b.classList.toggle("no-highlight", !state.syntaxHighlight);
     b.dataset.nav = state.navDesign;
+    b.classList.toggle("projector-mode", state.deviceKind === "projector");
     b.dataset.navSize = state.navSize;
     b.dataset.navPos = state.navPos;
     b.classList.toggle("no-nav-labels", !state.navLabels);

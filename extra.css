@@ -100,8 +100,9 @@ html, body { overflow-x: hidden; overflow-x: clip; }
 .device-card h3 { margin: 0 0 6px; font-size: 20px; font-weight: 600; }
 .device-card p { margin: 0 0 18px; font-size: 14px; color: var(--md-on-surface-var); }
 .device-opts { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.device-proj-hint { margin: 14px 0 0; font-size: 12.5px; line-height: 1.45; text-align: left; }
 .device-opt {
-  flex: 1 1 150px;
+  flex: 1 1 126px;
   display: flex; flex-direction: column; align-items: center; gap: 10px;
   padding: 18px 12px;
   border: 1px solid var(--md-outline-var); border-radius: 18px;

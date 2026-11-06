@@ -76,13 +76,21 @@
     el: { langTitle: "Διάλεξε τη γλώσσα σου", langText: "Μπορείς να την αλλάξεις όποτε θέλεις στις ρυθμίσεις." }
   };
 
+  /* Браузер часто ставить наперед en-US, хоча рідна мова є наступною у списку
+     переваг — тому перебираємо весь navigator.languages, а не лише перший рядок. */
   function detectSysLang() {
-    const n = ((global.navigator && global.navigator.language) || "en").toLowerCase();
-    return n.split("-")[0];
+    const nav = global.navigator || {};
+    const list = (nav.languages && nav.languages.length ? nav.languages : [nav.language]).filter(Boolean);
+    const supported = SITE_LANGS();
+    for (let i = 0; i < list.length; i++) {
+      const code = String(list[i]).toLowerCase().split("-")[0];
+      if (supported.includes(code)) return code;
+    }
+    return String(list[0] || "en").toLowerCase().split("-")[0];
   }
 
   const S = () => L[global.I18n ? global.I18n.lang : "uk"] || L.en;
-  const langUi = () => LANG_UI[sysLang] || LANG_UI.en;
+  const langUi = () => LANG_UI[sysLang] || LANG_UI[(global.I18n && global.I18n.lang) || "uk"] || LANG_UI.en;
 
   function close() {
     if (backdrop) { backdrop.remove(); backdrop = null; }
@@ -141,9 +149,15 @@
     p.textContent = langUi().langText;
     const list = document.createElement("div");
     list.className = "ob-langs";
+    const cur = global.I18n ? global.I18n.lang : "uk";
     (global.I18n && global.I18n.langs ? global.I18n.langs : [["uk", "Українська"], ["en", "English"], ["tr", "Türkçe"]]).forEach(([code, name]) => {
       const b = document.createElement("button");
       b.textContent = name;
+      // позначаємо мову, яку вже визначено з телефону, щоб людина бачила вибір
+      if (code === cur) {
+        b.classList.add("is-current");
+        b.appendChild(document.createTextNode(" \u2713"));
+      }
       b.onclick = () => {
         if (global.I18n) global.I18n.setLang(code);
         renderNickname();
@@ -206,7 +220,12 @@
   function start() {
     sysLang = detectSysLang();
     // якщо мова системи підтримується сайтом — одразу ставимо її
-    if (SITE_LANGS().includes(sysLang) && global.I18n && global.I18n.lang !== sysLang) global.I18n.setLang(sysLang);
+    if (SITE_LANGS().includes(sysLang)) {
+      if (global.I18n && global.I18n.lang !== sysLang) global.I18n.setLang(sysLang);
+    } else {
+      // нерідну мову не навіюємо: лишаємо те, що вже стоїть у сайті
+      sysLang = global.I18n ? global.I18n.lang : "uk";
+    }
     renderLang();
   }
 
