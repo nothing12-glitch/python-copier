@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.96";
+  const VERSION = "26.10.97";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.97": {
+      uk: [
+        "Місток від основ до if: окремі уроки ==, != та нерівностей <, >, <=, >=. Пояснюємо різницю між присвоєнням = і порівнянням ==, логічний тип bool, відповіді True/False та рівність на межі",
+        "and, or і not тепер мають власні уроки зі зрозумілими прикладами про квиток на атракціон, олівці й фломастери та дощ. Усі приклади працюють без ще не вивченого if",
+        "Урок поєднання операторів перенесено перед if: гра надворі на вихідних або канікулах без дощу пояснює дужки та пріоритет not → and → or. Практика перевіряє всі вісім комбінацій вводу",
+        "Усі сім кроків містять практику з input() і переклади uk/en/tr. Урок if спирається на вже знайомі порівняння; у курсі тепер 47 уроків, із них 8 у розділі «Логіка»"
+      ],
+      en: [
+        "A bridge from basics to if: separate lessons for ==, != and inequalities <, >, <=, >=. Introduces assignment = versus comparison ==, the bool type, True/False answers and inclusive boundaries",
+        "and, or and not now have their own lessons with child-friendly examples about ride tickets, pencils and markers, and rain. All examples work without the not-yet-taught if statement",
+        "The combined-operators lesson now comes before if: playing outside on weekends or school holidays without rain explains parentheses and not → and → or precedence. Practice checks all eight input combinations",
+        "All seven steps include input()-based practice and uk/en/tr translations. The if lesson builds on familiar comparisons; the course now has 47 lessons, including 8 in Logic"
+      ],
+      tr: [
+        "Temellerden if'e köprü: ==, != ve <, >, <=, >= eşitsizlikleri için ayrı dersler. Atama = ile karşılaştırma == farkı, bool türü, True/False yanıtları ve sınırdaki eşitlik açıklanıyor",
+        "and, or ve not artık oyuncak bileti, kalemler ve keçeli kalemler ile yağmur üzerine çocuklara uygun örneklerle ayrı derslerde. Örnekler henüz öğretilmemiş if olmadan çalışıyor",
+        "Operatörleri birleştirme dersi if'ten önceye alındı: yağmursuz hafta sonu veya okul tatilinde dışarıda oynamak, parantezleri ve not → and → or önceliğini açıklıyor. Alıştırma sekiz girdi birleşiminin tamamını denetliyor",
+        "Yedi adımın tümünde input() alıştırmaları ve uk/en/tr çevirileri var. if dersi artık bilinen karşılaştırmalara dayanıyor; kursta 47 ders, Mantık bölümünde 8 ders var"
+      ]
+    },
     "26.10.96": {
       uk: [
         "Перед upper()/lower() тепер є пояснення поняття методу: це функція, пов'язана з об'єктом. Порівнюємо len(word) із word.upper() та розбираємо рядок, крапку, назву методу й дужки виклику",

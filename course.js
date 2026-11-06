@@ -882,12 +882,221 @@
       chapter: { uk: "Логіка", en: "Logic", tr: "Mantık" },
       lessons: [
         {
+          id: "cmp_equal",
+          title: { uk: "Чи однакові? Порівняння ==", en: "Are they equal? Comparing with ==", tr: "Eşit mi? == ile karşılaştırma" },
+          theory: {
+            uk: "Уяви дві коробки з олівцями. Чи порівну в них олівців? Python теж уміє відповідати на такі запитання. Оператор == порівнює два значення й повертає True (істина, «так») або False (хиба, «ні»). Це значення логічного типу bool. Пиши True і False з великої літери та без лапок: \"True\" — уже текст, а не логічне значення. print(3 == 3) виведе True, а print(3 == 5) — False.\n\nНе плутай = і ==! pencils = 5 — присвоєння: зберегти число 5 у змінній pencils. pencils == 5 — запитання: чи дорівнює її значення 5? Порівняння не змінює pencils. Відповідь можна зберегти: same = pencils == 5, а потім показати print(same). Тут один знак = зберігає результат перевірки, два знаки == виконують перевірку.\n\nРядки теж можна порівнювати: \"кіт\" == \"кіт\" дає True, а \"Кіт\" == \"кіт\" — False, бо регістр важливий. Число 5 і рядок \"5\" не рівні. input() повертає рядок, тому для порівняння цілих чисел читаємо їх через int(input()). Поки лише друкуємо відповіді True/False — умовний оператор вивчимо після порівнянь і логіки.",
+            en: "Imagine two boxes of pencils. Do they contain the same number? Python can answer questions like this. The == operator compares two values and returns True (yes) or False (no). These are values of the Boolean type bool. Write True and False with capital initials and without quotes: \"True\" is text, not a Boolean value. print(3 == 3) prints True, while print(3 == 5) prints False.\n\nDo not confuse = and ==! pencils = 5 is assignment: store the number 5 in pencils. pencils == 5 asks whether its value equals 5. Comparing does not change pencils. You can save the answer: same = pencils == 5, then display it with print(same). Here one = stores the result of the check; two signs == perform the check.\n\nStrings can be compared too: \"кіт\" == \"кіт\" gives True, but \"Кіт\" == \"кіт\" gives False because case matters. The number 5 and the string \"5\" are not equal. input() returns a string, so use int(input()) to read whole numbers for numeric comparisons. For now we only print True/False answers; choosing which commands to run comes after comparisons and logic.",
+            tr: "İki kutu kalem düşün. İçlerinde eşit sayıda kalem var mı? Python da böyle soruları yanıtlayabilir. == operatörü iki değeri karşılaştırır ve True (doğru, evet) veya False (yanlış, hayır) döndürür. Bunlar bool mantıksal türünün değerleridir. True ve False büyük harfle başlar ve tırnaksız yazılır: \"True\" mantıksal değer değil, metindir. print(3 == 3) True, print(3 == 5) ise False yazdırır.\n\n= ile == işaretlerini karıştırma! pencils = 5 bir atamadır: pencils değişkeninde 5 sayısını saklar. pencils == 5 ise değerinin 5'e eşit olup olmadığını sorar. Karşılaştırma pencils değerini değiştirmez. Yanıtı same = pencils == 5 ile saklayıp print(same) ile gösterebilirsin. Burada tek = denetimin sonucunu saklar; çift == denetimi yapar.\n\nDizeler de karşılaştırılabilir: \"кіт\" == \"кіт\" True, \"Кіт\" == \"кіт\" ise False verir; büyük ve küçük harfler farklıdır. 5 sayısı ile \"5\" dizesi eşit değildir. input() dize döndürür, bu yüzden sayısal karşılaştırma için tam sayıları int(input()) ile okuruz. Şimdilik yalnızca True/False yanıtlarını yazdırıyoruz; hangi komutun çalışacağını seçmeyi karşılaştırmalar ve mantıktan sonra öğreneceğiz."
+          },
+          example: "pencils = 5\nprint(pencils == 5)\nprint(pencils == 3)\nprint(pencils)\nsame = pencils == 5\nprint(same)\nprint(\"кіт\" == \"Кіт\")\nprint(5 == \"5\")\n",
+          task: {
+            text: {
+              uk: "У двох коробках a і b олівців. Прочитай два цілі невід'ємні числа, кожне з нового рядка. За допомогою == виведи True, якщо олівців порівну, або False, якщо ні. Друкуй результат порівняння, а не заготовлене слово.",
+              en: "Two boxes contain a and b pencils. Read two nonnegative integers, one per line. Use == to print True when the counts are equal, or False otherwise. Print the comparison result, not a fixed word.",
+              tr: "İki kutuda a ve b kalem var. Her satırdan bir tane olmak üzere negatif olmayan iki tam sayı oku. Sayılar eşitse True, değilse False yazdırmak için == kullan. Hazır bir sözcük değil, karşılaştırmanın sonucunu yazdır."
+            },
+            hint: {
+              uk: "Після двох int(input()) напиши print(a == b). Один знак = у рядках вводу зберігає числа, а == усередині print() порівнює їх.",
+              en: "After the two int(input()) calls, write print(a == b). A single = stores each input number; == inside print() compares them.",
+              tr: "İki int(input()) çağrısından sonra print(a == b) yaz. Girdi satırlarındaki tek = sayıları saklar; print() içindeki == onları karşılaştırır."
+            },
+            starter: "a = int(input())\nb = int(input())\n",
+            tests: [
+              { in: "5\n5\n", out: "True" },
+              { in: "3\n5\n", out: "False" },
+              { in: "0\n0\n", out: "True" },
+              { in: "12\n2\n", out: "False" }
+            ]
+          }
+        },
+        {
+          id: "cmp_not_equal",
+          title: { uk: "Чи відрізняються? Порівняння !=", en: "Are they different? Comparing with !=", tr: "Farklı mı? != ile karşılaştırma" },
+          theory: {
+            uk: "Двоє друзів обирають кольори для малюнка. Чи різні кольори вони взяли? Оператор != читається «не дорівнює»: він повертає True, коли значення різні, і False, коли однакові. print(4 != 7) дає True, а print(4 != 4) — False. Для тих самих двох значень != дає відповідь, протилежну ==. Знаки ! і = пишуться разом, без пробілу між ними.\n\nДля тексту важливі всі символи, зокрема регістр і пробіли: \"синій\" != \"Синій\" дає True. Якщо за правилами задачі регістр не важливий, можна спершу застосувати знайомий lower(). У цій практиці порівнюємо текст точно так, як його ввели, без перетворень. Порівняння лише відповідає на запитання, а не змінює кольори.",
+            en: "Two friends choose colors for a drawing. Did they pick different colors? The != operator means 'not equal': it returns True for different values and False for equal ones. print(4 != 7) gives True; print(4 != 4) gives False. For the same two values, != gives the opposite answer to ==. Write ! and = together with no space between them.\n\nEvery character matters in text, including case and spaces: \"синій\" != \"Синій\" gives True. If a task says to ignore case, you can first use the familiar lower() method. In this practice, compare the text exactly as entered, without changes. Comparing only answers a question; it does not change the colors.",
+            tr: "İki arkadaş resim için renk seçiyor. Farklı renkler mi seçtiler? != operatörü 'eşit değil' demektir: farklı değerler için True, eşit değerler için False döndürür. print(4 != 7) True, print(4 != 4) False verir. Aynı iki değer için !=, == ile zıt yanıt verir. ! ve = aralarında boşluk olmadan birlikte yazılır.\n\nMetindeki her karakter önemlidir; büyük-küçük harfler ve boşluklar da buna dahildir: \"синій\" != \"Синій\" True verir. Soruda harf büyüklüğünün önemsiz olduğu belirtilirse önce bildiğin lower() metodunu kullanabilirsin. Bu alıştırmada metni hiçbir değişiklik yapmadan, girildiği gibi karşılaştır. Karşılaştırma yalnızca soruyu yanıtlar, renkleri değiştirmez."
+          },
+          example: "first = \"синій\"\nsecond = \"жовтий\"\nprint(first != second)\nprint(first == second)\nprint(first != \"синій\")\nprint(\"синій\" != \"Синій\")\n",
+          task: {
+            text: {
+              uk: "Прочитай два рядки з назвами кольорів. За допомогою != виведи True, якщо рядки відрізняються, і False, якщо однакові. Великі й малі літери вважаються різними; lower() і strip() тут не застосовуй.",
+              en: "Read two lines containing color names. Use != to print True if the strings differ and False if they match. Uppercase and lowercase letters are different; do not use lower() or strip() here.",
+              tr: "Renk adları içeren iki satır oku. Dizeler farklıysa True, aynıysa False yazdırmak için != kullan. Büyük ve küçük harfler farklı sayılır; burada lower() veya strip() kullanma."
+            },
+            hint: {
+              uk: "Назви — це рядки, тому int() не потрібен. Після вводу напиши print(first != second).",
+              en: "The names are strings, so no int() is needed. After reading them, write print(first != second).",
+              tr: "Adlar dizedir, int() gerekmez. Girdiyi okuduktan sonra print(first != second) yaz."
+            },
+            starter: "first = input()\nsecond = input()\n",
+            tests: [
+              { in: "синій\nжовтий\n", out: "True" },
+              { in: "red\nred\n", out: "False" },
+              { in: "Blue\nblue\n", out: "True" },
+              { in: "зелений\nзелений\n", out: "False" },
+              { in: "red\nred \n", out: "True" }
+            ]
+          }
+        },
+        {
+          id: "cmp_order",
+          title: { uk: "Більше чи менше? Нерівності", en: "Greater or less? Inequalities", tr: "Büyük mü küçük mü? Eşitsizlikler" },
+          theory: {
+            uk: "Порівняй кількість наліпок у двох альбомах: < означає «менше», > — «більше», <= — «менше або дорівнює», >= — «більше або дорівнює». Гострий кінчик < чи > вказує на менше число: 3 < 5 і 5 > 3 дають True. Кожне порівняння знову повертає True або False.\n\nЗнак = біля нерівності дозволяє рівність. Якщо для атракціону потрібен зріст щонайменше 120 см, то height >= 120: рівно 120 підходить. height > 120 не пропустить значення 120. Саме на межі легко помилитися: 5 < 5 — False, а 5 <= 5 — True. Пиши <= і >=, а не =< чи =>, без пробілу між знаками.\n\nПорівнюємо числа, тому ввід перетворюємо через int(). Без цього Python порівнював би рядки: \"10\" < \"2\" дає True через порядок символів, хоча 10 < 2 дає False. Від'ємні числа теж порівнюються як на числовій прямій: -3 < -1 дає True.",
+            en: "Compare sticker counts in two albums: < means 'less than', > means 'greater than', <= means 'less than or equal to', and >= means 'greater than or equal to'. The pointed end of < or > faces the smaller number: 3 < 5 and 5 > 3 give True. Each comparison again returns True or False.\n\nAdding = allows equality. If a ride requires a height of at least 120 cm, use height >= 120: exactly 120 qualifies. height > 120 would reject 120. Boundaries are easy to get wrong: 5 < 5 is False, but 5 <= 5 is True. Write <= and >=, not =< or =>, with no space between the signs.\n\nWe compare numbers, so convert input with int(). Otherwise Python would compare strings: \"10\" < \"2\" gives True because of character order, whereas 10 < 2 gives False. Negative numbers follow the number line too: -3 < -1 gives True.",
+            tr: "İki albümdeki çıkartma sayılarını karşılaştır: < 'küçüktür', > 'büyüktür', <= 'küçük veya eşittir', >= 'büyük veya eşittir' demektir. < veya > işaretinin sivri ucu küçük sayıya bakar: 3 < 5 ve 5 > 3 True verir. Her karşılaştırma yine True veya False döndürür.\n\nEşitsizliğe = eklemek eşitliğe izin verir. Bir oyuncak için en az 120 cm boy gerekiyorsa height >= 120 kullanılır: tam 120 de uygundur. height > 120 ise 120'yi kabul etmez. Sınırda hata yapmak kolaydır: 5 < 5 False, 5 <= 5 True olur. =< veya => değil, <= ve >= yaz; işaretlerin arasında boşluk bırakma.\n\nSayıları karşılaştırıyoruz, bu yüzden girdiyi int() ile dönüştürürüz. Yoksa Python dizeleri karşılaştırır: karakter sırası nedeniyle \"10\" < \"2\" True verir, ama 10 < 2 False verir. Negatif sayılar da sayı doğrusuna göre karşılaştırılır: -3 < -1 True verir."
+          },
+          example: "height = 120\nprint(height > 120)\nprint(height >= 120)\nprint(3 < 5)\nprint(5 <= 5)\nprint(-3 < -1)\nprint(10 < 2)\nprint(\"10\" < \"2\")\n",
+          task: {
+            text: {
+              uk: "Прочитай два цілі числа a і b. Виведи чотири результати, кожен з нового рядка, саме в такому порядку: a < b, a > b, a <= b, a >= b. Числа можуть бути рівними або від'ємними.",
+              en: "Read two integers a and b. Print four results, one per line, in this exact order: a < b, a > b, a <= b, a >= b. The numbers may be equal or negative.",
+              tr: "a ve b adlı iki tam sayı oku. Sonuçları tam bu sırayla, ayrı satırlarda yazdır: a < b, a > b, a <= b, a >= b. Sayılar eşit veya negatif olabilir."
+            },
+            hint: {
+              uk: "Використай чотири print(): print(a < b), потім >, <= і >=. Для рівних чисел перші дві відповіді False, а останні дві True.",
+              en: "Use four print() calls: print(a < b), then >, <= and >=. For equal numbers the first two answers are False and the last two are True.",
+              tr: "Dört print() çağrısı kullan: print(a < b), ardından >, <= ve >=. Eşit sayılarda ilk iki yanıt False, son ikisi True olur."
+            },
+            starter: "a = int(input())\nb = int(input())\n",
+            tests: [
+              { in: "3\n5\n", out: "True\nFalse\nTrue\nFalse" },
+              { in: "5\n5\n", out: "False\nFalse\nTrue\nTrue" },
+              { in: "10\n2\n", out: "False\nTrue\nFalse\nTrue" },
+              { in: "-3\n-1\n", out: "True\nFalse\nTrue\nFalse" },
+              { in: "0\n0\n", out: "False\nFalse\nTrue\nTrue" }
+            ]
+          }
+        },
+        {
+          id: "logic_and",
+          title: { uk: "and: потрібні обидві умови", en: "and: both conditions are needed", tr: "and: iki koşul da gerekli" },
+          theory: {
+            uk: "На вигаданий атракціон пускають дітей від 8 років із квитком. Самого віку замало, самого квитка теж: потрібні і відповідний вік, і квиток. Оператор and означає «і». Для двох логічних значень результат True лише тоді, коли обидва True: True and True → True; True and False → False; False and True → False; False and False → False.\n\nЗапишемо правило: age >= 8 and ticket == 1. Перша перевірка запитує про вік, друга — про квиток. У нашому вводі 1 означає «є квиток», 0 — «немає». Порівняння ticket == 1 перетворює цю позначку на True/False. Кожну перевірку записуй повністю: age >= 8 and ticket == 1, а не age >= 8 and 1.\n\nРезультат можна зберегти в can_ride і надрукувати. Це поки лише відповідь «так/ні», без вибору команд. and пишеться маленькими англійськими літерами; слово «і» в Python його не замінює.",
+            en: "An imaginary ride admits children aged 8 or older who have a ticket. Age alone is not enough, and neither is a ticket: both are required. The and operator means both conditions must hold. For two Boolean values the result is True only when both are True: True and True → True; True and False → False; False and True → False; False and False → False.\n\nWrite the rule as age >= 8 and ticket == 1. The first check asks about age, the second about the ticket. Our input uses 1 for 'has a ticket' and 0 for 'no ticket'. Comparing ticket == 1 turns that marker into True/False. Write each check in full: age >= 8 and ticket == 1, not age >= 8 and 1.\n\nYou can save the result in can_ride and print it. For now this is only a yes/no answer, not a choice of commands. Write and in lowercase English letters.",
+            tr: "Hayalî bir oyuncağa 8 yaş ve üzerindeki biletli çocuklar binebilir. Yalnızca yaş yeterli değildir, yalnızca bilet de yetmez: ikisi de gerekir. and operatörü 've' demektir. İki mantıksal değer için sonuç yalnızca ikisi de True olduğunda True olur: True and True → True; True and False → False; False and True → False; False and False → False.\n\nKuralı age >= 8 and ticket == 1 olarak yazalım. İlk denetim yaşı, ikincisi bileti sorar. Girdimizde 1 'bilet var', 0 'bilet yok' demektir. ticket == 1 karşılaştırması bu işareti True/False değerine dönüştürür. Her denetimi tam yaz: age >= 8 and ticket == 1; age >= 8 and 1 değil.\n\nSonucu can_ride değişkeninde saklayıp yazdırabilirsin. Şimdilik bu yalnızca evet/hayır yanıtıdır, çalışacak komutları seçmez. and küçük İngilizce harflerle yazılır; Türkçe 've' onun yerine geçmez."
+          },
+          example: "age = 8\nticket = 1\ncan_ride = age >= 8 and ticket == 1\nprint(can_ride)\nprint(True and False)\nprint(False and True)\nprint(False and False)\n",
+          task: {
+            text: {
+              uk: "Прочитай вік age і позначку ticket (1 — є квиток, 0 — немає), кожне число з нового рядка. Виведи результат перевірки через and: True, якщо дитині щонайменше 8 років і є квиток; інакше False. Рівно 8 років підходить.",
+              en: "Read age and ticket (1 means a ticket is present, 0 means absent), one number per line. Use and to print True if the child is at least 8 and has a ticket, or False otherwise. Exactly 8 qualifies.",
+              tr: "age ve ticket değerlerini ayrı satırlardan oku (1: bilet var, 0: yok). Çocuk en az 8 yaşındaysa ve bileti varsa and kullanarak True, aksi halde False yazdır. Tam 8 yaş da uygundur."
+            },
+            hint: {
+              uk: "print(age >= 8 and ticket == 1). Перевірки мають бути істинними одночасно.",
+              en: "print(age >= 8 and ticket == 1). Both checks must be true together.",
+              tr: "print(age >= 8 and ticket == 1). İki denetim de aynı anda doğru olmalı."
+            },
+            starter: "age = int(input())\nticket = int(input())\n",
+            tests: [
+              { in: "8\n1\n", out: "True" },
+              { in: "8\n0\n", out: "False" },
+              { in: "7\n1\n", out: "False" },
+              { in: "7\n0\n", out: "False" },
+              { in: "12\n1\n", out: "True" },
+              { in: "12\n0\n", out: "False" }
+            ]
+          }
+        },
+        {
+          id: "logic_or",
+          title: { uk: "or: достатньо хоча б однієї умови", en: "or: at least one condition is enough", tr: "or: en az bir koşul yeterli" },
+          theory: {
+            uk: "Щоб намалювати листівку, достатньо мати олівці або фломастери. Є тільки олівці — можна малювати. Тільки фломастери — теж можна. Є і те, й інше — чудово, теж можна! Оператор or означає «або»: для двох логічних значень він дає True, коли хоча б одне True. Це НЕ правило «тільки щось одне».\n\nУсі варіанти: True or True → True; True or False → True; False or True → True; False or False → False. Отже, or дає False лише тоді, коли обидві перевірки хибні. На відміну від and, не вимагає виконання обох умов.\n\nЯкщо 1 означає «є», а 0 — «немає», правило має вигляд pencils == 1 or markers == 1. Записуй порівняння по обидва боки or повністю. Наприклад, для перевірки двох можливих чисел треба n == 1 or n == 2, а не n == 1 or 2.",
+            en: "To draw a card, having pencils or markers is enough. Only pencils? You can draw. Only markers? You can draw too. Both? Great, that also works! For two Boolean values, or gives True when at least one is True. It does NOT mean 'exactly one'.\n\nAll possibilities: True or True → True; True or False → True; False or True → True; False or False → False. So or gives False only when both checks are false. Unlike and, it does not require both conditions.\n\nIf 1 means 'present' and 0 means 'absent', the rule is pencils == 1 or markers == 1. Write the full comparison on each side of or. For example, checking two possible numbers needs n == 1 or n == 2, not n == 1 or 2.",
+            tr: "Bir kart çizmek için kalem veya keçeli kalem olması yeterlidir. Yalnızca kalem var mı? Çizebilirsin. Yalnızca keçeli kalem mi? Yine çizebilirsin. İkisi de mi var? Harika, bu da olur! or operatörü 'veya' demektir: iki mantıksal değerden en az biri True ise True verir. 'Yalnızca biri' anlamına GELMEZ.\n\nTüm olasılıklar: True or True → True; True or False → True; False or True → True; False or False → False. Yani or yalnızca iki denetim de yanlış olduğunda False verir. and operatörünün aksine ikisini birden gerektirmez.\n\n1 'var', 0 'yok' anlamındaysa kural pencils == 1 or markers == 1 olur. or işaretinin iki tarafındaki karşılaştırmaları tam yaz. Örneğin iki olası sayıyı denetlemek için n == 1 or n == 2 gerekir; n == 1 or 2 değil."
+          },
+          example: "pencils = 1\nmarkers = 0\ncan_draw = pencils == 1 or markers == 1\nprint(can_draw)\nprint(True or True)\nprint(False or True)\nprint(False or False)\n",
+          task: {
+            text: {
+              uk: "Прочитай дві позначки: pencils і markers, кожну з нового рядка (1 — є, 0 — немає). За допомогою or виведи True, якщо є хоча б олівці або фломастери. Якщо є обидва набори, відповідь теж True; якщо немає жодного — False.",
+              en: "Read pencils and markers, one per line (1 means present, 0 means absent). Use or to print True if at least one set is available. Both sets also give True; neither gives False.",
+              tr: "pencils ve markers değerlerini ayrı satırlardan oku (1: var, 0: yok). En az bir takım varsa or ile True yazdır. İkisi de varsa yine True; hiçbiri yoksa False olmalı."
+            },
+            hint: {
+              uk: "print(pencils == 1 or markers == 1). Випадок 1 і 1 також має дати True.",
+              en: "print(pencils == 1 or markers == 1). The 1 and 1 case must also give True.",
+              tr: "print(pencils == 1 or markers == 1). 1 ve 1 durumu da True vermeli."
+            },
+            starter: "pencils = int(input())\nmarkers = int(input())\n",
+            tests: [
+              { in: "1\n0\n", out: "True" },
+              { in: "0\n1\n", out: "True" },
+              { in: "1\n1\n", out: "True" },
+              { in: "0\n0\n", out: "False" }
+            ]
+          }
+        },
+        {
+          id: "logic_not",
+          title: { uk: "not: навпаки", en: "not: the opposite", tr: "not: tam tersi" },
+          theory: {
+            uk: "Запитання «Іде дощ?» і «Дощу немає?» мають протилежні відповіді. Оператор not означає «не» й перевертає логічне значення: not True → False, not False → True. На відміну від and та or, йому потрібне лише одне значення праворуч.\n\nНехай rain дорівнює 1, коли йде дощ, і 0, коли його немає. raining = rain == 1 зберігає відповідь на запитання «Іде дощ?». Тоді dry = not raining відповідає «Дощу немає?». Можна й одним виразом: not (rain == 1). Дужки чітко показують, яку перевірку заперечуємо.\n\nСам not не змінює змінну raining: результат треба надрукувати або зберегти. not raining заперечує готове логічне значення, а rain != 1 порівнює два значення на нерівність; у нашому прикладі відповіді збігаються. У Python пишемо not, а не окремий знак !.",
+            en: "'Is it raining?' and 'Is it not raining?' have opposite answers. The not operator flips a Boolean value: not True → False, not False → True. Unlike and and or, it needs only one value on its right.\n\nLet rain be 1 when it is raining and 0 otherwise. raining = rain == 1 saves the answer to 'Is it raining?'. Then dry = not raining answers 'Is it not raining?'. You can also write not (rain == 1). The parentheses clearly show which check is being negated.\n\nnot alone does not change raining: print or save its result. not raining negates a Boolean value, while rain != 1 compares two values for inequality; their answers match in this example. In Python write not, not a standalone !.",
+            tr: "'Yağmur yağıyor mu?' ve 'Yağmur yağmıyor mu?' sorularının yanıtları birbirinin tersidir. not operatörü 'değil' demektir ve mantıksal değeri tersine çevirir: not True → False, not False → True. and ve or operatörlerinden farklı olarak sağında yalnızca bir değer gerekir.\n\nYağmur yağarken rain 1, yağmıyorken 0 olsun. raining = rain == 1, 'Yağmur yağıyor mu?' yanıtını saklar. dry = not raining ise 'Yağmur yağmıyor mu?' sorusunu yanıtlar. Tek ifadeyle not (rain == 1) de yazabilirsin. Parantezler hangi denetimin tersinin alındığını açıkça gösterir.\n\nnot tek başına raining değişkenini değiştirmez: sonucu yazdırmak veya saklamak gerekir. not raining hazır bir mantıksal değeri tersine çevirir; rain != 1 ise iki değerin eşit olmadığını denetler. Bu örnekte yanıtları aynıdır. Python'da tek başına ! değil, not yazılır."
+          },
+          example: "rain = 0\nraining = rain == 1\ndry = not raining\nprint(raining)\nprint(dry)\nprint(not True)\nprint(not False)\n",
+          task: {
+            text: {
+              uk: "Прочитай rain: 1 означає, що дощ іде, 0 — що дощу немає. Використай not і виведи True, якщо дощу немає, або False, якщо він іде. Ввід завжди 0 або 1.",
+              en: "Read rain: 1 means it is raining, 0 means it is not. Use not to print True when it is not raining, or False when it is. Input is always 0 or 1.",
+              tr: "rain değerini oku: 1 yağmur yağıyor, 0 yağmıyor demektir. not kullanarak yağmur yoksa True, varsa False yazdır. Girdi her zaman 0 veya 1 olur."
+            },
+            hint: {
+              uk: "Спершу raining = rain == 1, потім print(not raining). Або одразу print(not (rain == 1)).",
+              en: "First write raining = rain == 1, then print(not raining). Or use print(not (rain == 1)) directly.",
+              tr: "Önce raining = rain == 1, sonra print(not raining) yaz. Ya da doğrudan print(not (rain == 1)) kullan."
+            },
+            starter: "rain = int(input())\n",
+            tests: [
+              { in: "0\n", out: "True" },
+              { in: "1\n", out: "False" }
+            ]
+          }
+        },
+        {
+          id: "logic_combo",
+          title: { uk: "Разом: and, or, not і дужки", en: "Together: and, or, not and parentheses", tr: "Birlikte: and, or, not ve parantezler" },
+          theory: {
+            uk: "Домовмося про гру надворі: граємо, коли сьогодні вихідний або канікули, і при цьому немає дощу. Тут одразу три знайомі оператори. Нехай weekend, holiday та rain — позначки 0 або 1. Вираз (weekend == 1 or holiday == 1) and not (rain == 1) спершу об'єднує два приводи для відпочинку, а потім вимагає відсутності дощу.\n\nДужки — як коробочки для окремих думок. Можна розкласти правило на кроки: free_day = weekend == 1 or holiday == 1; dry = not (rain == 1); can_play = free_day and dry. Напиши кожне присвоєння з нового рядка. На вихідних без дощу можна грати. Під час канікул без дощу теж можна. Якщо є дощ, наше правило не дозволяє гру навіть у вихідний.\n\nБез дужок пріоритет такий: порівняння, потім not, потім and, потім or. Тому True or False and False дає True, а (True or False) and False — False. Забуті дужки у правилі weekend == 1 or holiday == 1 and not (rain == 1) дозволили б гру в будь-який вихідний, навіть дощовий! Явно групуй умови. Тепер уміємо отримувати відповідь True/False; наступний урок покаже, як за нею обрати дію за допомогою if.",
+            en: "Let's agree on a rule for playing outside: it must be a weekend or a school holiday, and it must not be raining. This uses all three operators. Let weekend, holiday and rain be 0/1 markers. The expression (weekend == 1 or holiday == 1) and not (rain == 1) groups the two reasons for a free day, then requires no rain.\n\nParentheses are like boxes for separate thoughts. Split the rule into steps: free_day = weekend == 1 or holiday == 1; dry = not (rain == 1); can_play = free_day and dry. Write each assignment on a new line. A dry weekend allows play. A dry school holiday does too. When it rains, our rule rejects playing even on a weekend.\n\nWithout parentheses, precedence is: comparisons, then not, then and, then or. So True or False and False gives True, but (True or False) and False gives False. Missing parentheses in weekend == 1 or holiday == 1 and not (rain == 1) would allow any weekend, even a rainy one! Group conditions explicitly. Now we can produce a True/False answer; the next lesson shows how to choose an action with if.",
+            tr: "Dışarıda oynamak için bir kural koyalım: hafta sonu veya okul tatili olmalı ve yağmur yağmamalı. Burada üç operatörü de kullanıyoruz. weekend, holiday ve rain, 0/1 işaretleri olsun. (weekend == 1 or holiday == 1) and not (rain == 1) ifadesi önce boş günün iki nedenini gruplar, ardından yağmur olmamasını gerektirir.\n\nParantezler ayrı düşünceler için kutular gibidir. Kuralı adımlara ayırabilirsin: free_day = weekend == 1 or holiday == 1; dry = not (rain == 1); can_play = free_day and dry. Her atamayı yeni satıra yaz. Yağmursuz hafta sonunda oynanabilir. Yağmursuz okul tatilinde de oynanabilir. Yağmur varsa kuralımız hafta sonunda bile oynamaya izin vermez.\n\nParantez yoksa öncelik sırası şöyledir: karşılaştırmalar, sonra not, sonra and, sonra or. Bu yüzden True or False and False True verir, ama (True or False) and False False verir. weekend == 1 or holiday == 1 and not (rain == 1) kuralındaki eksik parantezler yağmurlu hafta sonunda bile oynamaya izin verirdi! Koşulları açıkça grupla. Artık True/False yanıtı üretebiliyoruz; sonraki ders if ile bu yanıta göre eylem seçmeyi gösterecek."
+          },
+          example: "weekend = 1\nholiday = 0\nrain = 1\nfree_day = weekend == 1 or holiday == 1\ndry = not (rain == 1)\ncan_play = free_day and dry\nprint(can_play)\nprint((weekend == 1 or holiday == 1) and not (rain == 1))\nprint(True or False and False)\nprint((True or False) and False)\n",
+          task: {
+            text: {
+              uk: "Прочитай weekend, holiday і rain — три числа, кожне з нового рядка: 1 означає «так», 0 — «ні». Виведи True, якщо сьогодні вихідний або канікули і водночас немає дощу; інакше False. Поєднай or, and та not. Дощ має забороняти гру в усіх випадках.",
+              en: "Read weekend, holiday and rain: three numbers, one per line, where 1 means yes and 0 means no. Print True if it is a weekend or a school holiday and there is no rain; otherwise False. Combine or, and and not. Rain must prevent playing in every case.",
+              tr: "weekend, holiday ve rain değerlerini ayrı satırlardan oku: 1 evet, 0 hayır demektir. Hafta sonu veya okul tatiliyse ve aynı zamanda yağmur yoksa True, aksi halde False yazdır. or, and ve not kullan. Yağmur her durumda oynamayı engellemeli."
+            },
+            hint: {
+              uk: "print((weekend == 1 or holiday == 1) and not (rain == 1)). Дужки навколо or потрібні, щоб вимога «немає дощу» стосувалася обох видів вільного дня.",
+              en: "print((weekend == 1 or holiday == 1) and not (rain == 1)). Parentheses around or make the no-rain requirement apply to both kinds of free day.",
+              tr: "print((weekend == 1 or holiday == 1) and not (rain == 1)). or çevresindeki parantezler yağmursuzluk şartının iki tür boş güne de uygulanmasını sağlar."
+            },
+            starter: "weekend = int(input())\nholiday = int(input())\nrain = int(input())\n",
+            tests: [
+              { in: "1\n0\n0\n", out: "True" },
+              { in: "0\n1\n0\n", out: "True" },
+              { in: "1\n1\n0\n", out: "True" },
+              { in: "0\n0\n0\n", out: "False" },
+              { in: "1\n0\n1\n", out: "False" },
+              { in: "0\n1\n1\n", out: "False" },
+              { in: "1\n1\n1\n", out: "False" },
+              { in: "0\n0\n1\n", out: "False" }
+            ]
+          }
+        },
+        {
           id: "if",
           title: { uk: "Умови (if / else)", en: "Conditions (if / else)", tr: "Koşullar (if / else)" },
           theory: {
-            uk: "if перевіряє умову: якщо вона істинна, виконується блок — рядки після двокрапки, зсунуті вправо. Це той самий відступ з уроку про відступи, але тут він обов'язковий: без нього Python не зрозуміє, що рядок належить умові. else задає інший блок. Порівняння: ==, !=, >, <, >=, <=.",
-            en: "if checks a condition: when it is true, the block runs — the lines after the colon, shifted to the right. This is the same indentation as in the indentation lesson, but here it is required: without it Python cannot tell that the line belongs to the condition. else provides another block. Comparisons: ==, !=, >, <, >=, <=.",
-            tr: "if bir koşulu denetler: koşul doğruysa blok çalışır — iki noktadan sonra sağa kaydırılmış satırlar. Bu, girinti dersindeki aynı girintidir, ama burada zorunludur: olmadan Python satırın koşula ait olduğunu anlayamaz. else başka bir blok verir. Karşılaştırmalar: ==, !=, >, <, >=, <=."
+            uk: "Ти вже вмієш отримувати True/False за допомогою порівнянь і поєднувати перевірки через and, or, not. Раніше ми друкували цю відповідь, а тепер за нею обиратимемо дію. if перевіряє умову: якщо вона істинна, виконується блок — рядки після двокрапки, зсунуті вправо на 4 пробіли. Якщо умова хибна, виконується блок else.\n\nЦе той самий відступ з уроку про відступи, але тут він потрібний: без нього Python не зрозуміє, що рядок належить блоку. if та else пишемо на одному рівні, а команди під ними — з відступом. У прикладі n > 0 — вже знайоме порівняння: нуль не більший за нуль, тому для нього спрацює else.",
+            en: "You already know how comparisons produce True/False and how and, or and not combine checks. Before, we printed that answer; now we use it to choose an action. if checks a condition: when it is true, its block runs — the lines after the colon, indented by 4 spaces. When it is false, the else block runs.\n\nThis is the same indentation as in the indentation lesson, but now it is needed: without it Python cannot tell which lines belong to a block. Align if and else, and indent their commands. In the example, n > 0 is a familiar comparison: zero is not greater than zero, so it takes the else branch.",
+            tr: "Karşılaştırmaların True/False ürettiğini ve and, or, not ile denetimleri birleştirmeyi artık biliyorsun. Önce yanıtı yazdırıyorduk; şimdi ona göre bir eylem seçeceğiz. if bir koşulu denetler: doğruysa iki noktadan sonraki, 4 boşluk girintili satırlardan oluşan blok çalışır. Koşul yanlışsa else bloğu çalışır.\n\nBu, girinti dersindeki aynı girintidir ama artık gereklidir: olmadan Python hangi satırın bloğa ait olduğunu anlayamaz. if ve else aynı hizada, altlarındaki komutlar ise girintili yazılır. Örnekteki n > 0 bildiğin bir karşılaştırmadır: sıfır, sıfırdan büyük değildir; bu nedenle else dalı çalışır."
           },
           example: "n = 5\nif n > 0:\n    print(\"додатне\")\nelse:\n    print(\"не додатне\")\n",
           task: {
@@ -906,34 +1115,6 @@
               { in: "5\n", out: "positive" },
               { in: "0\n", out: "nonpositive" },
               { in: "-2\n", out: "nonpositive" }
-            ]
-          }
-        },
-        {
-          id: "logic",
-          title: { uk: "Логічні оператори", en: "Logical operators", tr: "Mantıksal operatörler" },
-          theory: {
-            uk: "Умови можна поєднувати: and (і), or (або), not (не). Вираз після and істинний лише тоді, коли істинні обидві частини.",
-            en: "Conditions can be combined: and, or, not. An and expression is true only when both parts are true.",
-            tr: "Koşullar birleştirilebilir: and (ve), or (veya), not (değil). Bir and ifadesi yalnızca iki kısım da doğruysa doğrudur."
-          },
-          example: "age = 20\nticket = True\nif age >= 18 and ticket:\n    print(\"вхід дозволено\")\n",
-          task: {
-            text: {
-              uk: "Дано два цілих числа, кожне в окремому рядку. Виведи both, якщо обидва більші за 10, інакше виведи no.",
-              en: "Two integers are given, one per line. Print both if each is greater than 10, otherwise print no.",
-              tr: "Her biri ayrı satırda iki tam sayı veriliyor. İkisi de 10'dan büyükse both, değilse no yazdır."
-            },
-            hint: {
-              uk: "Поєднай дві перевірки: a > 10 and b > 10. Пам'ятай: 10 не більше за 10.",
-              en: "Combine two checks: a > 10 and b > 10. Remember: 10 is not greater than 10.",
-              tr: "İki denetimi birleştir: a > 10 and b > 10. Unutma: 10, 10'dan büyük değildir."
-            },
-            starter: "a = int(input())\nb = int(input())\n",
-            tests: [
-              { in: "11\n12\n", out: "both" },
-              { in: "5\n20\n", out: "no" },
-              { in: "10\n10\n", out: "no" }
             ]
           }
         }
