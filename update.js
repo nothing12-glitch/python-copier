@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.97";
+  const VERSION = "26.10.98";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.98": {
+      uk: [
+        "Одразу після == з'явився окремий урок «True, False і тип bool»: спочатку учні бачать результат порівняння, а потім дізнаються про два логічні значення. False — це відповідь «ні», а не помилка програми",
+        "Приклад про книжку в рюкзаку пояснює великі літери, запис без лапок, збереження відповіді у змінній і type(). Розрізняємо False та рядок \"False\": навіть такий ввід через input() залишається текстом",
+        "Практика порівнює назви книжок і перевіряє типи результату та введеного тексту; п'ять наборів вводу охоплюють різні відповіді, регістр і пробіли. Переклади uk/en/tr; тепер 48 уроків, із них 9 у «Логіці»"
+      ],
+      en: [
+        "A separate 'True, False and the bool type' lesson now follows == immediately: learners first see a comparison result, then discover the two Boolean values. False means 'no', not a program error",
+        "A book-in-a-backpack example explains capital initials, unquoted values, storing answers in variables and type(). False differs from the string \"False\": even this input() value remains text",
+        "Practice compares book titles and checks the types of the result and input text; five input sets cover different answers, case and spaces. Includes uk/en/tr translations; now 48 lessons, including 9 in Logic"
+      ],
+      tr: [
+        "== dersinin hemen ardından ayrı bir 'True, False ve bool türü' dersi geliyor: öğrenciler önce karşılaştırma sonucunu görüyor, sonra iki mantıksal değeri öğreniyor. False, program hatası değil, 'hayır' yanıtıdır",
+        "Çantadaki kitap örneği büyük harfleri, tırnaksız değerleri, yanıtı değişkende saklamayı ve type() kullanımını açıklıyor. False ile \"False\" dizesi farklıdır: input() ile böyle bir değer girilse bile metin olarak kalır",
+        "Alıştırmada kitap adları karşılaştırılıp sonucun ve girilen metnin türleri denetleniyor; beş girdi kümesi farklı yanıtları, harf büyüklüğünü ve boşlukları kapsıyor. uk/en/tr çevirileriyle artık 48 ders, Mantık bölümünde 9 ders var"
+      ]
+    },
     "26.10.97": {
       uk: [
         "Місток від основ до if: окремі уроки ==, != та нерівностей <, >, <=, >=. Пояснюємо різницю між присвоєнням = і порівнянням ==, логічний тип bool, відповіді True/False та рівність на межі",
