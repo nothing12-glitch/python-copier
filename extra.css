@@ -2944,7 +2944,7 @@ body[data-style="new"] .course-task-text,
 body[data-style="new"] .course-detail .task-hint { max-width: min(100%, 72ch); }
 body[data-style="new"] .course-example,
 body[data-style="new"] .course-code { max-width: min(100%, 680px); }
-body[data-style="new"] .course-theory { line-height: 1.72; }
+body[data-style="new"] .course-theory { line-height: 1.72; white-space: pre-line; }
 body[data-style="new"] .course-task-text { line-height: 1.65; }
 
 @media (max-width: 768px) {

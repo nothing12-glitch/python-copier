@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.95";
+  const VERSION = "26.10.96";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.96": {
+      uk: [
+        "Перед upper()/lower() тепер є пояснення поняття методу: це функція, пов'язана з об'єктом. Порівнюємо len(word) із word.upper() та розбираємо рядок, крапку, назву методу й дужки виклику",
+        "Приклад показує, як зберегти результат у loud і вивести через print(): виклик upper() сам нічого не друкує та не змінює початковий word. Окремо пояснено різницю між word.upper і word.upper()",
+        "Уточнено, що незмінність початкового тексту стосується розглянутих методів рядків, а не всіх методів узагалі. Пояснення оновлено українською, англійською та турецькою"
+      ],
+      en: [
+        "The upper()/lower() lesson now introduces a method as a function associated with an object. It compares len(word) with word.upper() and explains the string, dot, method name and calling parentheses",
+        "The example saves the result in loud and displays it with print(): upper() alone neither prints anything nor changes the original word. The difference between word.upper and word.upper() is also explained",
+        "Clarified that leaving the original text unchanged is a property of the string methods covered here, not all methods in general. Updated the explanations in Ukrainian, English and Turkish"
+      ],
+      tr: [
+        "upper()/lower() dersinde artık metot kavramı açıklanıyor: bir nesneyle ilişkili fonksiyon. len(word) ile word.upper() karşılaştırılıyor; dize, nokta, metot adı ve çağrı parantezleri tek tek anlatılıyor",
+        "Örnek, sonucu loud değişkeninde saklayıp print() ile gösteriyor: upper() tek başına hiçbir şey yazdırmaz ve özgün word değerini değiştirmez. word.upper ile word.upper() arasındaki fark da açıklanıyor",
+        "Özgün metnin değişmemesinin tüm metotların değil, burada ele alınan dize metotlarının özelliği olduğu netleştirildi. Açıklamalar Ukraynaca, İngilizce ve Türkçe güncellendi"
+      ]
+    },
     "26.10.95": {
       uk: [
       "У «Основах» почався блок про роботу з текстом. Перший урок — «Регістр літер: upper() і lower()»: метод пишеться через крапку після рядка, круглі дужки наприкінці обов'язкові навіть порожні, а сам рядок метод не переписує — w.upper() лише повертає новий",
