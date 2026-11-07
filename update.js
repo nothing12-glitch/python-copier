@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.101";
+  const VERSION = "26.10.102";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.102": {
+      uk: [
+        "Режим проєктора тепер масштабує шапку, панель і вміст однаково. Раніше шапка лишалась звичайної висоти, тому під нею виднілась порожня смуга, а зумлена панель наїжджала на текст — обидва прибрали",
+        "Збільшення більше не стало 1.2 навмання: воно рахується від ширини екрана. На Full HD інтерфейс росте приблизно в 1.4 раза, на дошці 1024×768 лишається 1.0 — там усе велике й так, а зайвий зум лише змусив би гортати посеред уроку",
+        "Читати з останньої парти стало легше: сірий дрібний текст освітлено, а світлові плями, промені й підсвітка курсора — вимкнено. Шрифт у редакторі коду росте разом з інтерфейсом (14 px → 20 px на Full HD), тож код на дошці не дрібніє за підписи",
+        "Панель ліворуч перестала обрізати підписи груп: через зум флекс-колонка стискала те, що не мало власної висоти. Тепер панель просто гортається",
+        "Дошка зазвичай сенсорна, тому кнопки виросли до 48–52 px, а палець має влучати в ціль без прицілювання"
+      ],
+      en: [
+        "Projector mode now scales the header, the side panel and the page together. The header used to stay at its normal height, which left an empty band under it and made the zoomed panel overlap the text — both are gone",
+        "The zoom is no longer a fixed 1.2: it is computed from screen width. Full HD grows the interface about 1.4x, a 1024x768 board stays at 1.0 — there everything is already large and extra zoom would only force scrolling mid-lesson",
+        "Reading from the back row got easier: dim grey text is brightened, and glow blobs, beams and the cursor light are switched off. The code editor font grows with the interface (14px to 20px on Full HD), so code stops being smaller than the labels",
+        "The left panel no longer slices group labels in half. Zoomed, the flex column used to crush whatever had no height of its own; now the panel simply scrolls",
+        "Boards are usually touch screens, so buttons grew to 48-52px and a finger hits the target without aiming"
+      ],
+      tr: [
+        "Projeksiyon kipi artık başlığı, yan paneli ve içeriği birlikte büyütüyor. Başlık eski yüksekliğinde kalınca altında boş şerit oluşuyor, yakınlaşmış panel de metnin üstüne biniyordu — ikisi de gitti",
+        "Yakınlaştırma sabit 1.2 değil, artık ekran genişliğinden hesaplanıyor. Full HD arayüzü ~1,4 kat büyütüyor; 1024x768 tahtada 1,0 kalıyor — orada her şey zaten büyük, gereksiz yakınlaştırma ders ortasında kaydırmaya zorlardı",
+        "Son sıradan okumak kolaylaştı: soluk gri metin aydınlatıldı, ışık lekeleri, huzmeler ve imleç ışığı kapatıldı. Kod editörü yazısı arayüzle birlikte büyüyor (Full HD'de 14px → 20px), böylece kod etiketlerden küçük kalmıyor",
+        "Sol panel grup etiketlerini artık ortadan kesmiyor. Yakınlaştırılmışta yüksekliği olmayan öğeyi flex sütun ezeryordu; artık panel basitçe kayıyor",
+        "Tahtalar çoğunlukla dokunmatik olduğundan düğmeler 48-52px'e büyüdü; parmak nişan almadan hedefi buluyor"
+      ]
+    },
     "26.10.101": {
       uk: [
         "Гайд на телефоні нарешті світить туди, куди треба. Кільце, лапки й хмарка з підказкою самі рахують, де вільно, і не сідають на ціль ні при якому розмірі екрана. Якщо сторінка зростає під час показу (веб-шрифт довантажився) — усе переставляється заново",

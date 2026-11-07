@@ -101,6 +101,32 @@
     global.Settings.set("navDesign", kind === "phone" ? "pill" : "classic");
   }
 
+  /* Масштаб проєктора рахуємо від ширини вікна, а не ставимо навмання:
+     1920 на дошці дає дрібний текст, а 1024×768 — і так великий, і там
+     зайвий зум лише забирає місце та змушує гортати посеред уроку. */
+  const PROJ_WORK_W = 1350;          // скільки CSS-пікселів лишаємо «в роботі»
+  const PROJ_MIN = 1, PROJ_MAX = 1.45;
+
+  function projScale() {
+    const z = (global.innerWidth || 1280) / PROJ_WORK_W;
+    return Math.round(Math.min(PROJ_MAX, Math.max(PROJ_MIN, z)) * 100) / 100;
+  }
+
+  function applyScale() {
+    const isProj = !!(global.Settings && global.Settings.get &&
+                      global.Settings.get("deviceKind") === "projector");
+    const z = isProj ? projScale() : 1;
+    document.documentElement.style.setProperty("--proj-scale", String(z));
+    if (!isProj) {
+      document.body.style.removeProperty("--editor-font");
+      return z;
+    }
+    /* код на дошці має рости разом з інтерфейсом, інакше рядки лишаються дрібними */
+    const base = (global.Settings.get("fontSize") || 14) * z;
+    document.body.style.setProperty("--editor-font", Math.round(base) + "px");
+    return z;
+  }
+
   function opt(icon, label, kind, detected, ctx) {
     // варіант дошки доступний завжди; решта — тільки якщо збігся з визначеним
     const free = kind === "projector" || kind === detected || detected === "projector";
@@ -198,12 +224,14 @@
     // режим дошки тримаємо до наступної відповіді: він не визначається на 100%
     const saved = global.Settings && global.Settings.get ? global.Settings.get("deviceKind") : null;
     applyDesign(saved === "projector" ? "projector" : detect());
+    applyScale();
+    global.addEventListener("resize", applyScale);
     // саме питання показуємо вже після екрана завантаження
     if (global.Splash) global.Splash.after(ask);
     else ask();
   }
 
-  global.Device = { detect: detect, ask: ask, apply: applyDesign, answered };
+  global.Device = { detect: detect, ask: ask, apply: applyDesign, scale: applyScale, projScale: projScale, answered };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();

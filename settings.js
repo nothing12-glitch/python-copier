@@ -85,6 +85,7 @@
     b.classList.toggle("no-highlight", !state.syntaxHighlight);
     b.dataset.nav = state.navDesign;
     b.classList.toggle("projector-mode", state.deviceKind === "projector");
+    if (global.Device && global.Device.scale) global.Device.scale();
     b.dataset.navSize = state.navSize;
     b.dataset.navPos = state.navPos;
     b.classList.toggle("no-nav-labels", !state.navLabels);

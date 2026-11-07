@@ -608,10 +608,45 @@ body.focus-mode main{padding:16px!important;max-width:900px}
 .confetti{position:absolute;width:8px;height:14px;top:-20px;opacity:.9;animation:fall 3s linear forwards;pointer-events:none;border-radius:2px}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
 
-/* ===== Режим проєктора / інтерактивної дошки ===== */
-/* Вміст збільшуємо разом (zoom), щоб рядки коду й пояснення читалися з задньої
-   парти. Вікна й підказки лишаються у звичайній масштабі — вони й так великі. */
-body.projector-mode{--proj-zoom:1.2}
-body.projector-mode main,body.projector-mode .navrail{zoom:var(--proj-zoom)}
+/* ===== Режим проєктора / інтерактивної дошки =====
+   Зумимо шапку, панель і вміст ОДНАКОВО: якщо лишити шапку поза масштабом,
+   панель («фіксована» від 64px) стає нижчою за неї, а її ширина перевищує
+   відступ контенту — звідси порожня смуга під шапкою й наїзд на текст.
+   Вікна й підказки Пайтончика не зумимо: вони рахують координати у звичайних
+   пікселях і в іншому разі почали б світити повз ціль.
+   Сам масштаб рахує device.js (--proj-scale): на дошці 1024×768 усе велике й
+   так, тому там він прямує до 1. */
+:root{--proj-scale:1.2}
+body.projector-mode .appbar,
+body.projector-mode .navrail,
+body.projector-mode main{zoom:var(--proj-scale)}
+body.projector-mode main{max-width:none}
+body[data-style="new"].projector-mode main{max-width:none}
 body.projector-mode .footer{display:none}
-body.projector-mode .appbar-title{font-size:24px}
+
+/* Світлові плями на проєкторі з'їдають контраст — залишаємо лише читабельність. */
+body.projector-mode .bg-glow,
+body.projector-mode .blob,
+body.projector-mode .nu-beam,
+body.projector-mode .cursor-glow{display:none!important}
+
+/* Сірий «підпис» з останньої парти не читається взагалі. */
+body[data-style="new"].projector-mode{
+  --nu-dim:#DED8EE;
+  --nu-faint:#C4BCD9;
+  --nu-line:rgba(255,255,255,.24);
+  --nu-line-soft:rgba(255,255,255,.17);
+  --nu-line-strong:rgba(255,255,255,.40);
+  --nu-surface:rgba(255,255,255,.075);
+}
+body.projector-mode{--editor-font:20px}
+
+/* Дошка часто сенсорна: палець має влучати без прицілювання. */
+body.projector-mode .btn{min-height:52px}
+body.projector-mode .icon-btn{width:48px;height:48px}
+body[data-style="new"].projector-mode .rail-btn{min-height:48px}
+
+/* Зумлена панель вища за свій вміст, а флекс стискає те, що не має min-height:
+   підпис групи схлопувався до нуля й зникав. Нехай краще панель гортається. */
+body.projector-mode .navrail>*{flex-shrink:0}
+body.projector-mode .nav-group-label{overflow:visible}
