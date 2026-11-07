@@ -3,10 +3,36 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.102";
+  const VERSION = "26.10.103";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.103": {
+      uk: [
+        "Проєктор тепер визначається сам, за кількома ознаками одразу: інший екран, вікно на другому моніторі, роздільна здатність 1024×768 чи 800×600, квадратні 4:3 і 5:4, дотик на великому екрані без миші, марка дошки в назві браузера. однієї ознаки мало — ноутбук, що дублює картинку, виглядає так само, як без проєктора, тому рішення ухвалює сума",
+        "У вікні вибору пристрою з'явилась кнопка «Перевірити, чи підʼєднано проєктор». Вона просить у браузера дозвіл на список екранів і, якщо знайде другий, сама вмикає великий інтерфейс",
+        "Якщо проєктор під'єднали вже посеред уроку, сайт помітить це за кілька секунд і запропонує переключитися — з кнопкою «Не зараз», якщо ти не вчитель",
+        "Старі ПК тепер не ламаються: прибрано можливості CSS, яких у Chrome 80–110 ще не було, тому кольори, скління та відступи малюються правильно і там. А зовсім старий движок, що не розуміє навіть мови програму, бачить тепер не чорну порожню сторінку, а підказку трьома мовами",
+        "Через Firefox на шкільних комп'ютерах зум мовчки не працював (там він з'явився лише у версії 126). Тепер такий інтерфейс масштабується іншим способом, і на екрані результат виглядає так само",
+        "Легкий режим для слабких машин: два ядра, 2 ГБ пам'яті чи вбудована графіка GMA/HD 4000 — і світлові плями, промені, розмиття скла та анімації вимикаються самі. Можна й вручну: Налаштування → Швидкодія"
+      ],
+      en: [
+        "The projector is now detected on its own, from several signs at once: a second screen, the window sitting on another monitor, a 1024x768 or 800x600 resolution, square 4:3 and 5:4 ratios, touch on a big screen without a mouse, a board brand in the browser name. One sign alone is not enough — a laptop mirroring its picture looks exactly like one with no projector — so the sum of them decides",
+        "The device dialog gained a 'Check whether a projector is connected' button. It asks the browser for permission to list screens and, if it finds a second one, turns the large interface on by itself",
+        "If the projector gets plugged in during a lesson, the site notices within seconds and offers to switch — with a 'Not now' button for anyone who is not the teacher",
+        "Old PCs no longer break: CSS features that Chrome 80-110 did not have were removed, so colours, glass and spacing render correctly there too. And an engine that cannot even parse the app now shows a hint in three languages instead of a blank black page",
+        "On school computers running Firefox the zoom used to fail silently (it only arrived in version 126). That interface is now scaled another way, and the screen looks the same",
+        "A light mode for weak machines: two cores, 2GB of memory or GMA/HD 4000 graphics and the glow blobs, beams, glass blur and animations turn themselves off. You can also set it by hand: Settings → Performance"
+      ],
+      tr: [
+        "Projeksiyon artık kendi kendine, birkaç belirtiden birden anlaşılıyor: ikinci ekran, pencerenin başka monitörde durması, 1024x768 ya da 800x600 çözünürlük, kare 4:3 ve 5:4 oranları, fare olmadan büyük ekranda dokunuş, tarayıcı adındaki tahta markası. Tek belirti yetmez — görüntüyü yansıtan dizüstü, projeksiyonsuzla birebir aynı görünür — karar toplamınki",
+        "Cihaz penceresine 'Projeksiyon bağlı mı, kontrol et' düğmesi eklendi. Tarayıcıdan ekran listesi iznini ister ve ikinci ekran bulursa büyük arayüzü kendisi açar",
+        "Ders ortasında projeksiyon bağlanırsa site bunu birkaç saniye içinde fark edip geçmeyi önerir — öğretmen olmayanlar için 'Şimdi değil' düğmesiyle",
+        "Eski bilgisayarlar artık bozulmuyor: Chrome 80-110'da bulunmayan CSS özellikleri kaldırıldı, renkleri, cam efekti ve boşlukları orada da doğru çiziliyor. Uygulamanın dilini hiç yorumlayamayacak kadar eski bir motor da artık boş siyah sayfa değil, üç dilde bir uyarı görüyor",
+        "Okul bilgisayarlarında Firefox'ta yakınlaştırma sessizce çalışmıyordu (yalnızca 126 sürümünde geldi). Arayüz artık başka bir yöntemle ölçekleniyor ve ekran aynı görünüyor",
+        "Zayıf makineler için hafif kip: iki çekirdek, 2GB bellek veya GMA/HD 4000 grafikse ışık lekeleri, huzmeler, cam bulanıklığı ve hareketler kendiliğinden kapanır. Elle de olur: Ayarlar → Performans"
+      ]
+    },
     "26.10.102": {
       uk: [
         "Режим проєктора тепер масштабує шапку, панель і вміст однаково. Раніше шапка лишалась звичайної висоти, тому під нею виднілась порожня смуга, а зумлена панель наїжджала на текст — обидва прибрали",

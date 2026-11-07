@@ -5,6 +5,7 @@
   const DEFAULTS = {
     style: "new", theme: "auto", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
     glass: false, reduceMotion: false, compact: false, fontSize: 14,
+    perf: "auto",
     navDesign: "pill",
     deviceKind: "auto",
     navSize: "medium",
@@ -86,6 +87,7 @@
     b.dataset.nav = state.navDesign;
     b.classList.toggle("projector-mode", state.deviceKind === "projector");
     if (global.Device && global.Device.scale) global.Device.scale();
+    if (global.Device && global.Device.perf) global.Device.perf();
     b.dataset.navSize = state.navSize;
     b.dataset.navPos = state.navPos;
     b.classList.toggle("no-nav-labels", !state.navLabels);
@@ -121,6 +123,8 @@
       { id: "bgAnimate", type: "switch", label: "set.bgAnimate" },
       { id: "glass", type: "switch", label: "set.glass" },
       { id: "reduceMotion", type: "switch", label: "set.reduceMotion" },
+      { id: "perf", type: "select", label: "set.perf", options: [
+        ["auto", "set.perfAuto"], ["full", "set.perfFull"], ["light", "set.perfLight"] ] },
       { id: "compact", type: "switch", label: "set.compact" },
       { id: "fontSize", type: "range", label: "set.fontSize", min: 12, max: 20, step: 1 },
       { id: "language", type: "select", label: "settings.language", fromLangs: true },

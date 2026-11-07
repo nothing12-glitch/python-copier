@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>python-copier</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=26.10.102">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=26.10.103">
   <link rel="apple-touch-icon" href="favicon.svg">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6750A4">
@@ -17,7 +17,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" media="print" onload="this.media='all'">
   <!-- УВАГА: при кожному новому деплої міняй ?v= на нову дату, щоб пробити кеш -->
   <style id="splashStyle">
-#splash{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;
+#splash{position:fixed;top:0;right:0;bottom:0;left:0;z-index:99999;display:flex;align-items:center;justify-content:center;
   background-color:#07050D;
   background-image:radial-gradient(120% 90% at 15% 0%,rgba(124,58,237,.45),transparent 60%),
                    radial-gradient(90% 80% at 90% 100%,rgba(34,211,238,.22),transparent 55%);
@@ -35,12 +35,72 @@
 @keyframes pc-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @media(prefers-reduced-motion:reduce){#splash .pc-logo{animation:none}}
   </style>
-  <link rel="stylesheet" href="style.css?v=26.10.102">
-  <link rel="stylesheet" href="newui.css?v=26.10.102">
-  <link rel="stylesheet" href="extra.css?v=26.10.102">
-  <link rel="stylesheet" href="mobile.css?v=26.10.102">
-  <link rel="stylesheet" href="pythonchik.css?v=26.10.102">
+  <link rel="stylesheet" href="style.css?v=26.10.103">
+  <link rel="stylesheet" href="newui.css?v=26.10.103">
+  <link rel="stylesheet" href="extra.css?v=26.10.103">
+  <link rel="stylesheet" href="mobile.css?v=26.10.103">
+  <link rel="stylesheet" href="pythonchik.css?v=26.10.103">
   <!-- Pyodide більше НЕ тут: його підключає python.js лише за потребою -->
+  <script>
+  /* Дуже старий движок (Chrome <80, Firefox <72, Windows XP) не розуміє мови,
+     якою написаний застосунок: скрипи падять із SyntaxError, і людина бачить
+     просто чорну порожню сторінку без жодної підказки. Цей рядок написаний
+     свідомо "старою" JS-синтаксичною формою, щоб виконатись і там. */
+  (function () {
+    function ok(src) { try { new Function(src); return true; } catch (e) { return false; } }
+    if (ok("a?.b") && ok("a??b") && ok("(async () => 1)") && ok("class A {}")) return;
+    var uk = /^uk|^ru/i.test(navigator.language || "");
+    var tr = /^tr/i.test(navigator.language || "");
+    var T = uk
+      ? ["Браузер застарів",
+         "Цей браузер не розуміє мови, якою написаний сайт, тому сторінка лишилась би порожньою.",
+         "Онови Chrome, Firefox чи Edge до свіжої версії. Якщо комп'ютер старий і оновити браузер не вдається — відкрий python-copier з телефона або з іншого браузера.",
+         "Відкрити з іншого пристрою"]
+      : tr
+      ? ["Tarayıcı çok eski",
+         "Bu tarayıcı sitenin yazıldığı dili desteklemiyor; sayfa boş kalırdı.",
+         "Chrome, Firefox veya Edge'i güncelleyin. Bilgisayar eskiyse python-copier'i telefondan ya da başka bir tarayıcıdan açın.",
+         "Başka cihazdan aç"]
+      : ["Your browser is too old",
+         "This browser cannot understand the language the site is written in, so the page would stay blank.",
+         "Update Chrome, Firefox or Edge. If the PC is old and the browser cannot be updated, open python-copier from a phone or another browser.",
+         "Open from another device"];
+    var css = "#oldBrowser{position:fixed;top:0;right:0;bottom:0;left:0;z-index:2147483647;" +
+      "background:#07050D;color:#fff;font-family:system-ui,'Segoe UI',sans-serif;" +
+      "display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}" +
+      "#oldBrowser div{max-width:460px}";
+    var st = document.createElement("style");
+    st.id = "oldBrowserStyle";
+    st.appendChild(document.createTextNode(css));
+    (document.head || document.documentElement).appendChild(st);
+    function show() {
+      if (document.getElementById("oldBrowser")) return;
+      var d = document.createElement("div");
+      d.id = "oldBrowser";
+      var box = document.createElement("div");
+      var h = document.createElement("h2");
+      h.style.cssText = "font-size:22px;margin:0 0 12px";
+      h.textContent = T[0];
+      var p1 = document.createElement("p");
+      p1.style.cssText = "font-size:15px;line-height:1.55;margin:0 0 12px;opacity:.85";
+      p1.textContent = T[1];
+      var p2 = document.createElement("p");
+      p2.style.cssText = "font-size:14px;line-height:1.55;margin:0 0 18px;opacity:.7";
+      p2.textContent = T[2];
+      var a = document.createElement("a");
+      a.href = location.href;
+      a.target = "_blank";
+      a.style.cssText = "display:inline-block;padding:10px 18px;border-radius:999px;" +
+        "background:#6750A4;color:#fff;text-decoration:none;font-size:14px";
+      a.textContent = T[3];
+      box.appendChild(h); box.appendChild(p1); box.appendChild(p2); box.appendChild(a);
+      d.appendChild(box);
+      document.body.appendChild(d);
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", show);
+    else show();
+  })();
+  </script>
 </head>
 <body>
   <!-- Екран завантаження: закриває момент, поки застосуються налаштування (див. splash.js) -->
@@ -638,37 +698,37 @@
   <footer class="footer"><span data-i18n="footer.made">Зроблено з ❤ для навчання</span></footer>
 
 
-  <script src="i18n.js?v=26.10.102"></script>
-  <script src="splash.js?v=26.10.102"></script>
-  <script src="audio.js?v=26.10.102"></script>
-  <script src="profile.js?v=26.10.102"></script>
-  <script src="avatar.js?v=26.10.102"></script>
-  <script src="achievements.js?v=26.10.102"></script>
-  <script src="settings.js?v=26.10.102"></script>
-  <script src="installer.js?v=26.10.102"></script>
-  <script src="pygui.js?v=26.10.102"></script>
-  <script src="python.js?v=26.10.102"></script>
-  <script src="tasks.js?v=26.10.102"></script>
-  <script src="contest.js?v=26.10.102"></script>
-  <script src="modules.js?v=26.10.102"></script>
-  <script src="course.js?v=26.10.102"></script>
-  <script src="games.js?v=26.10.102"></script>
-  <script src="gamerules.js?v=26.10.102"></script>
-  <script src="vault.js?v=26.10.102"></script>
-  <script src="tools.js?v=26.10.102"></script>
-  <script src="feedback.js?v=26.10.102"></script>
-  <script src="ui.js?v=26.10.102"></script>
-  <script src="shield.js?v=26.10.102"></script>
-  <script src="pychik-ai.js?v=26.10.102"></script>
-  <script src="pythonchik.js?v=26.10.102"></script>
-  <script src="app.js?v=26.10.102"></script>
-  <script src="onboarding.js?v=26.10.102"></script>
-  <script src="secret.js?v=26.10.102"></script>
-  <script src="teacher.js?v=26.10.102"></script>
-  <script src="fix.js?v=26.10.102"></script>
-  <script src="device.js?v=26.10.102"></script>
-  <script src="update.js?v=26.10.102"></script>
-  <script src="pwa.js?v=26.10.102"></script>
+  <script src="i18n.js?v=26.10.103"></script>
+  <script src="splash.js?v=26.10.103"></script>
+  <script src="audio.js?v=26.10.103"></script>
+  <script src="profile.js?v=26.10.103"></script>
+  <script src="avatar.js?v=26.10.103"></script>
+  <script src="achievements.js?v=26.10.103"></script>
+  <script src="settings.js?v=26.10.103"></script>
+  <script src="installer.js?v=26.10.103"></script>
+  <script src="pygui.js?v=26.10.103"></script>
+  <script src="python.js?v=26.10.103"></script>
+  <script src="tasks.js?v=26.10.103"></script>
+  <script src="contest.js?v=26.10.103"></script>
+  <script src="modules.js?v=26.10.103"></script>
+  <script src="course.js?v=26.10.103"></script>
+  <script src="games.js?v=26.10.103"></script>
+  <script src="gamerules.js?v=26.10.103"></script>
+  <script src="vault.js?v=26.10.103"></script>
+  <script src="tools.js?v=26.10.103"></script>
+  <script src="feedback.js?v=26.10.103"></script>
+  <script src="ui.js?v=26.10.103"></script>
+  <script src="shield.js?v=26.10.103"></script>
+  <script src="pychik-ai.js?v=26.10.103"></script>
+  <script src="pythonchik.js?v=26.10.103"></script>
+  <script src="app.js?v=26.10.103"></script>
+  <script src="onboarding.js?v=26.10.103"></script>
+  <script src="secret.js?v=26.10.103"></script>
+  <script src="teacher.js?v=26.10.103"></script>
+  <script src="fix.js?v=26.10.103"></script>
+  <script src="device.js?v=26.10.103"></script>
+  <script src="update.js?v=26.10.103"></script>
+  <script src="pwa.js?v=26.10.103"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {

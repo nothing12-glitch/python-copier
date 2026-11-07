@@ -53,8 +53,8 @@ body.focus-mode .pychik-fab { opacity: 0; pointer-events: none; }
   right: 24px;
   bottom: 92px;
   z-index: var(--pychik-z);
-  width: min(340px, calc(100vw - 28px));
-  max-height: min(70vh, 560px);
+  width: 340px;  width: min(340px, calc(100vw - 28px));
+  max-height: 70vh;  max-height: min(70vh, 560px);
   display: flex;
   flex-direction: column;
   background: var(--nu-surface-solid, var(--md-surface, #14101f));
@@ -80,7 +80,7 @@ body.focus-mode .pychik-fab { opacity: 0; pointer-events: none; }
     left: 10px;
     width: auto;
     bottom: calc(160px + var(--sat, 0px));
-    max-height: min(62vh, 480px);
+    max-height: 62vh;    max-height: min(62vh, 480px);
   }
 }
 
@@ -373,7 +373,7 @@ body:not(.dark) .pychik-pre { background: rgba(0, 0, 0, .05); color: #1d3a1d; }
 .pychik-lock {
   display: none;
   position: fixed;
-  inset: 0;
+  top:0;right:0;bottom:0;left:0;
   z-index: calc(var(--pychik-z) + 20);
   background: transparent;
   pointer-events: auto;
@@ -465,7 +465,7 @@ body:not(.dark) .pychik-pre { background: rgba(0, 0, 0, .05); color: #1d3a1d; }
   left: 16px;
   top: 16px;
   z-index: calc(var(--pychik-z) + 50);
-  width: min(340px, calc(100vw - 20px));
+  width: 340px;  width: min(340px, calc(100vw - 20px));
   padding: 14px 16px;
   border-radius: 18px;
   background: var(--nu-surface-solid, var(--md-surface, #14101f));
