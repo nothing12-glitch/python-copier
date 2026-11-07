@@ -533,6 +533,7 @@ body.glass-on .ob-card{box-shadow:0 12px 40px rgba(0,0,0,.25);border:1px solid v
   --mp-bottom: 16vh;  --mp-bottom: clamp(88px,16vh,190px);
   position:fixed;right:16px;bottom:var(--mp-bottom);z-index:55;
   width: 400px;  width: min(400px,calc(100vw - 32px));max-height:min(78vh,640px,calc(100vh - var(--mp-bottom) - 24px));
+  max-height:min(78dvh,640px,calc(100dvh - var(--mp-bottom) - 24px));
   display:none;flex-direction:column;
   background:var(--md-surface);border:1px solid var(--md-outline-var);border-radius:24px;
   box-shadow:var(--md-elev3);overflow:hidden;

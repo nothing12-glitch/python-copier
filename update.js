@@ -3,10 +3,39 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.103";
+  const VERSION = "26.10.104";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.104": {
+      uk: [
+        "Вікно вибору пристрою стало майстром із кількох кроків: спочатку «ПК / ноутбук» або «Телефон / планшет», а далі сайт питає одну деталь. Планшет тепер у групі телефона — раніше він числився комп'ютером",
+        "Для комп'ютера наступне питання — «З чого саме заходиш?»: стаціонарний ПК чи ноутбук. Ноутбук сповільнюється від батареї, тому його швидкодію сайт міряє щоразу, а стаціонарний — лише один раз",
+        "Потім — «Який у тебе комп'ютер?» Під кожним варіантом написано про комплектуючі: у слабкого 2 ядра, 2–4 ГБ пам'яті, вбудована графіка GMA чи HD 4000 та HDD; у потужного — 4 і більше ядер, 8 ГБ пам'яті й більше, SSD і окрема відеокарта. Є й «Не знаю» — тоді сайт виміряє швидкість сам",
+        "Телефон тепер має додаткове питання про систему: Android чи iOS. Кожна система отримує власну оптимізацію",
+        "iOS: фокус у полі більше не змушує Safari збільшувати всю сторінку — редактор не дрібніє за 16 px, а підкладка підсвітки коду лишається на своєму місці. «Гумовий» відкат і сині рамки подвійного тапу вимкнено. Додано viewport-fit=cover: відступи під «чубик» і смугу жестів нарешті працюють, а висота панелей рахується від видимої частини екрана",
+        "Android: вимкнено збільшення шрифту, яке Chromium навмання застосовує до тексту, прибрано смугу прокрутки в нижній панелі та «потягни — освіжи» над шапкою",
+        "Ручний вибір швидкодії більше не перезаписує торішній автоматичний вимір: повернеш «Авто» — і сайт міряє ще раз"
+      ],
+      en: [
+        "The device window is now a short wizard: first 'PC / laptop' or 'Phone / tablet', then the site asks one more detail. A tablet belongs to the phone group now — it used to count as a computer",
+        "For a computer the next question is which one you are on right now: a desktop or a laptop. A laptop slows down on battery, so its speed is measured on every visit; a desktop only once",
+        "Then 'How strong is your computer?' Under each answer the parts are spelled out: a weak machine has 2 cores, 2-4GB of memory, integrated GMA or HD 4000 graphics and a spinning HDD, a powerful one has 4+ cores, 8GB or more, an SSD and a separate graphics card. 'No idea' lets the site measure instead",
+        "A phone now gets a question about the system: Android or iOS, so each system gets its own optimization",
+        "iOS: focusing a field no longer makes Safari zoom the whole page — the editor never drops below 16px and the syntax layer stays aligned. The rubber-band scroll and the blue tap boxes are off. viewport-fit=cover finally makes the notch and home-bar padding work, and panel heights now count from the visible part of the screen",
+        "Android: the random font inflation that Chromium applies to text is switched off, together with the scrollbar in the bottom bar and the pull-to-refresh glow",
+        "Setting the performance by hand no longer overwrites the previous automatic measurement: go back to 'Auto' and the site measures again"
+      ],
+      tr: [
+        "Cihaz penceresi artık kısa bir sihirbaz: önce 'PC / dizüstü' ya da 'Telefon / tablet', sonra site bir ayrıntı daha soruyor. Tablet artık bilgisayar grubunda değil, telefon grubunda",
+        "Bilgisayarda sonraki soru şu an hangisini kullandığınız: masaüstü mü dizüstü mü. Dizüstü pilde yavaşladığı için hızı her girişte ölçülür, masaüstünde ise yalnızca bir kez",
+        "Ardından 'Bilgisayarın ne kadar güçlü?' Her cevabın altında parçaların dökümü var: zayıf makinede iki çekirdek, 2-4GB bellek, tümleşik GMA veya HD 4000 grafik ve sabit disk; güçlüde 4+ çekirdek, 8GB ve üzeri, SSD ve ayrı ekran kartı. 'Bilmiyorum' seçerseniz site kendisi ölçer",
+        "Telefonlara sistem sorusu eklendi: Android ya da iOS. Böylece her sistem kendi optimizasyonunu alıyor",
+        "iOS: bir alana dokununca Safari artık tüm sayfayı yakınlaştırmıyor; editör 16px'nin altına inmiyor, kod vurgusu kaymıyor. Kauçuk kaydırma ve mavi dokunma kutuları kapalı. viewport-fit=cover ile çentik ve alt boşluklar sonunda çalışıyor, panel yükseklikleri görünen alana göre hesaplanıyor",
+        "Android: Chromium'un metne rastgele uyguladığı yazı büyütmeyi kapattık; alt bardaki kaydırma çubuğu ve 'aşağı çek, yenile' parlaması kaldırıldı",
+        "Performansı elle seçmek önceki otomatik ölçümü artık ezmiyor: 'Otomatik'e dönerseniz site yeniden ölçer.'"
+      ]
+    },
     "26.10.103": {
       uk: [
         "Проєктор тепер визначається сам, за кількома ознаками одразу: інший екран, вікно на другому моніторі, роздільна здатність 1024×768 чи 800×600, квадратні 4:3 і 5:4, дотик на великому екрані без миші, марка дошки в назві браузера. однієї ознаки мало — ноутбук, що дублює картинку, виглядає так само, як без проєктора, тому рішення ухвалює сума",

@@ -6,6 +6,8 @@
     style: "new", theme: "auto", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
     glass: false, reduceMotion: false, compact: false, fontSize: 14,
     perf: "auto",
+    deviceForm: "auto",
+    mobileOs: "auto",
     navDesign: "pill",
     deviceKind: "auto",
     navSize: "medium",
@@ -86,6 +88,7 @@
     b.classList.toggle("no-highlight", !state.syntaxHighlight);
     b.dataset.nav = state.navDesign;
     b.classList.toggle("projector-mode", state.deviceKind === "projector");
+    if (global.Device && global.Device.os) global.Device.os();
     if (global.Device && global.Device.scale) global.Device.scale();
     if (global.Device && global.Device.perf) global.Device.perf();
     b.dataset.navSize = state.navSize;
@@ -125,6 +128,10 @@
       { id: "reduceMotion", type: "switch", label: "set.reduceMotion" },
       { id: "perf", type: "select", label: "set.perf", options: [
         ["auto", "set.perfAuto"], ["full", "set.perfFull"], ["light", "set.perfLight"] ] },
+      { id: "deviceForm", type: "select", label: "set.deviceForm", options: [
+        ["auto", "set.formAuto"], ["desktop", "set.formDesktop"], ["laptop", "set.formLaptop"] ] },
+      { id: "mobileOs", type: "select", label: "set.mobileOs", options: [
+        ["auto", "set.osAuto"], ["android", "set.osAndroid"], ["ios", "set.osIos"] ] },
       { id: "compact", type: "switch", label: "set.compact" },
       { id: "fontSize", type: "range", label: "set.fontSize", min: 12, max: 20, step: 1 },
       { id: "language", type: "select", label: "settings.language", fromLangs: true },

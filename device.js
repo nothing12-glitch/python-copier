@@ -8,17 +8,37 @@
 (function (global) {
   let markAnswered;
   const answered = new Promise((r) => { markAnswered = r; });
-  let detectedHere = false;      // getScreenDetails показав другий екран
 
   const STR = {
     uk: {
       q: "З якого пристрою ви заходите?",
       hint: "Сайт уже визначив твій пристрій — обери позначений варіант.",
-      pc: "ПК / планшет",
-      phone: "Телефон",
+      pc: "ПК / ноутбук",
+      phone: "Телефон / планшет",
       proj: "Проєктор / дошка",
       projHint: "Проєктор або інтерактивна дошка в класі — інтерфейс стане великим, щоб було видно з останньої парти.",
       rec: "рекомендовано",
+      back: "Назад",
+      formQ: "З чого саме заходиш?",
+      formHint: "Ноутбук і стаціонарний ПК працюють по-різному: ноутбук сповільнюється від батареї й частіше дублює екран на дошку.",
+      desktop: "Стаціонарний ПК",
+      desktopHint: "Монітор, клавіатура, живлення від розетки. Швидкодію перевіримо один раз.",
+      laptop: "Ноутбук",
+      laptopHint: "Може працювати від батареї — стежимо за швидкістю уважніше. Саме до нього під'єднують проєктор.",
+      powerQ: "Який у тебе комп'ютер?",
+      powerHint: "Орієнтуйся на комплектуючі — далі сайт сам вирішить, що вимкнути, щоб не гальмувало.",
+      strong: "Потужний",
+      strongHint: "Сучасні комплектуючі: 4 і більше ядер, 8 ГБ пам'яті й більше, SSD, окрема відеокарта.",
+      weak: "Слабкий",
+      weakHint: "Старі комплектуючі: 2 ядра, 2–4 ГБ пам'яті, вбудована графіка GMA чи HD 4000, HDD-диск.",
+      unknown: "Не знаю",
+      unknownHint: "Сайт виміряє швидкість сам і спростить інтерфейс, якщо залізо не тягне.",
+      osQ: "Яка на ньому система?",
+      osHint: "Відповідь підлаштує відступи під «чубик», панель адреси та масштаб тексту.",
+      android: "Android",
+      androidHint: "Samsung, Xiaomi, Redmi, Nokia… — Chrome чи Samsung Internet.",
+      ios: "iOS",
+      iosHint: "iPhone, iPad — Safari: своя панель адреси, свій чубик і своє зумлення полів.",
       probe: "Перевірити, чи підʼєднано проєктор",
       probeBusy: "Перевіряю…",
       probeFound: "Знайшов другий екран — увімкнув великий інтерфейс",
@@ -35,11 +55,32 @@
     en: {
       q: "Which device are you using?",
       hint: "The site already detected your device — pick the marked option.",
-      pc: "PC / tablet",
-      phone: "Phone",
+      pc: "PC / laptop",
+      phone: "Phone / tablet",
       proj: "Projector / board",
       projHint: "A projector or interactive whiteboard in class — the interface grows so the last desk can read it.",
       rec: "recommended",
+      back: "Back",
+      formQ: "Which one are you on right now?",
+      formHint: "A laptop and a desktop behave differently: a laptop slows down on battery and more often mirrors its screen to a board.",
+      desktop: "Desktop PC",
+      desktopHint: "Monitor, keyboard, plugged into the wall. We check the speed once.",
+      laptop: "Laptop",
+      laptopHint: "May run on battery, so we watch the speed more closely. This is what gets connected to a projector.",
+      powerQ: "How strong is your computer?",
+      powerHint: "Go by the parts — the site decides on its own what to switch off so nothing lags.",
+      strong: "Powerful",
+      strongHint: "Modern parts: 4+ cores, 8GB of memory or more, SSD, separate graphics card.",
+      weak: "Weak",
+      weakHint: "Old parts: 2 cores, 2-4GB of memory, integrated GMA or HD 4000 graphics, spinning HDD.",
+      unknown: "No idea",
+      unknownHint: "The site measures its own speed and simplifies the interface if the machine can't cope.",
+      osQ: "Which system does it run?",
+      osHint: "The answer adjusts the notch padding, the address bar and the text scaling.",
+      android: "Android",
+      androidHint: "Samsung, Xiaomi, Redmi, Nokia... — Chrome or Samsung Internet.",
+      ios: "iOS",
+      iosHint: "iPhone, iPad — Safari: its own address bar, its own notch and its own field zooming.",
       probe: "Check whether a projector is connected",
       probeBusy: "Checking…",
       probeFound: "Found a second screen — switched to the large interface",
@@ -56,11 +97,32 @@
     tr: {
       q: "Hangi cihazdan giriyorsunuz?",
       hint: "Site cihazını zaten algıladı — işaretli seçeneği seç.",
-      pc: "PC / tablet",
-      phone: "Telefon",
+      pc: "PC / dizüstü",
+      phone: "Telefon / tablet",
       proj: "Projeksiyon / tahta",
       projHint: "Sınıfta projeksiyon veya akıllı tahta varsa seç — arayüz büyür, son sıradan da okunur.",
       rec: "önerilen",
+      back: "Geri",
+      formQ: "Şu anda hangisini kullanıyorsun?",
+      formHint: "Dizüstü ile masaüstü farklı çalışır: dizüstü pilde yavaşlar ve ekranını tahtaya yansıtma ihtimali daha yüksek.",
+      desktop: "Masaüstü PC",
+      desktopHint: "Monitör, klavye, prizden güç alıyor. Hızı bir kez ölçeriz.",
+      laptop: "Dizüstü",
+      laptopHint: "Pilden çalışabilir, o yüzden hizi daha yakından izleriz. Projeksiyonu da buna bağlarlar.",
+      powerQ: "Bilgisayarın ne kadar güçlü?",
+      powerHint: "Parçalarına göre seç — gerisini site kendisi kararlaştırır, ne kapanacak.",
+      strong: "Güçlü",
+      strongHint: "Yeni parçalar: 4+ çekirdek, 8GB ve üzeri bellek, SSD, ayrı ekran kartı.",
+      weak: "Zayıf",
+      weakHint: "Eski parçalar: 2 çekirdek, 2-4GB bellek, tümleşik GMA veya HD 4000 grafik, sabit disk.",
+      unknown: "Bilmiyorum",
+      unknownHint: "Site kendi hızını ölçer; bilgisayar yetişemiyorsa arayüzü sadeleştirir.",
+      osQ: "Üzerinde hangi sistem var?",
+      osHint: "Cevap çentik boşluğunu, adres çubuğunu ve yazı ölçeğini ayarlar.",
+      android: "Android",
+      androidHint: "Samsung, Xiaomi, Redmi, Nokia... — Chrome veya Samsung Internet.",
+      ios: "iOS",
+      iosHint: "iPhone, iPad — Safari: kendi adres çubuğu, kendi çentiği, kendi alan yakınlaştırması.",
       probe: "Projeksiyon bağlı mı, kontrol et",
       probeBusy: "Kontrol ediliyor…",
       probeFound: "İkinci ekran bulundu — arayüz büyütüldü",
@@ -215,19 +277,43 @@
     return !!d.style.zoom;
   }
 
+  /* Android чи iOS: відповідь з діалогу має пріоритет, бо на iPhone Safari
+     прикидається Macintosh і сам по собі не впізнається надійно. */
+  function resolveOs(choice) {
+    if (choice === "android" || choice === "ios") return choice;
+    const nav = global.navigator || {};
+    const ua = nav.userAgent || "";
+    if (/iPhone|iPad|iPod|iPadOS/i.test(ua)) return "ios";
+    if (/Macintosh/i.test(ua) && (nav.maxTouchPoints || 0) > 1) return "ios";
+    if (/Android/i.test(ua)) return "android";
+    return "auto";
+  }
+
+  function applyOs() {
+    if (!document.body) return "auto";
+    const chosen = global.Settings && global.Settings.get ? global.Settings.get("mobileOs") : "auto";
+    const os = resolveOs(chosen);
+    document.body.dataset.mos = os;
+    return os;
+  }
+
   function applyScale() {
     const isProj = !!(global.Settings && global.Settings.get &&
                       global.Settings.get("deviceKind") === "projector");
     const z = isProj ? projScale() : 1;
     document.documentElement.style.setProperty("--proj-scale", String(z));
     if (document.body) document.body.classList.toggle("no-zoom", !hasZoom());
+    const want = (global.Settings && global.Settings.get("fontSize")) || 14;
+    /* На iOS Safari при фокусі в поле з шрифтом меншим за 16 px зумлює всю
+       сторінку і людина втрачає екран. Тому редактор на iOS не дрібніший. */
+    const floor = resolveOs(global.Settings.get("mobileOs")) === "ios" ? 16 : 0;
     if (!isProj) {
-      document.body.style.removeProperty("--editor-font");
+      if (floor > want) document.body.style.setProperty("--editor-font", floor + "px");
+      else document.body.style.removeProperty("--editor-font");
       return z;
     }
     /* код на дошці має рости разом з інтерфейсом, інакше рядки лишаються дрібними */
-    const base = (global.Settings.get("fontSize") || 14) * z;
-    document.body.style.setProperty("--editor-font", Math.round(base) + "px");
+    document.body.style.setProperty("--editor-font", Math.round(Math.max(want, floor) * z) + "px");
     return z;
   }
 
@@ -278,25 +364,27 @@
     global.requestAnimationFrame(step);
   }
 
-  function setLowPower(on, why) {
+  function setLowPower(on, why, keep) {
     if (!document.body) return;
     document.body.classList.toggle("low-power", !!on);
-    try { global.localStorage.setItem(PERF_KEY, on ? "light" : "full"); } catch (e) {}
+    /* Ручний вибір не має залишати слід в пам'яті: повернеш «авто» —
+       програма виміряє ще раз, а не повторить торішню відповідь. */
+    if (keep !== false) {
+      try { global.localStorage.setItem(PERF_KEY, on ? "light" : "full"); } catch (e) {}
+    }
     if (on && global.console) console.info("[device] легкий режим:", (why || []).join(", "));
   }
 
   let perfPending = false;
   function applyPerf() {
     const mode = global.Settings && global.Settings.get ? global.Settings.get("perf") : "auto";
-    if (mode === "full" || mode === "light") {
-      /* ручний вибір скасовує попередній авто-вердикт: повернеш «авто» —
-         програма виміряє ще раз, а не повторить стару відповідь */
-      try { global.localStorage.removeItem(PERF_KEY); } catch (e) {}
-    }
-    if (mode === "full") { setLowPower(false); return; }
-    if (mode === "light") { setLowPower(true, ["вручну"]); return; }
+    if (mode === "full") { setLowPower(false, [], false); return; }
+    if (mode === "light") { setLowPower(true, ["вручну"], false); return; }
+    /* Ноутбук на батареї сповільнюється, тому його торішній вердикт не вічний:
+       при кожному вході міряємо ще раз. Стаціонарний ПК — раз і назавжди. */
+    const form = global.Settings && global.Settings.get ? global.Settings.get("deviceForm") : "auto";
     let saved = null;
-    try { saved = global.localStorage.getItem(PERF_KEY); } catch (e) {}
+    if (form !== "laptop") { try { saved = global.localStorage.getItem(PERF_KEY); } catch (e) {} }
     if (saved === "light") { setLowPower(true, ["раніше виміряно"]); return; }
     if (saved === "full") { setLowPower(false); return; }
     const h = weakHints();
@@ -306,41 +394,40 @@
     frameTime((ms) => { perfPending = false; setLowPower(ms >= 34, ["кадр " + Math.round(ms) + "ms"]); });
   }
 
-  function opt(icon, label, kind, detected, ctx) {
-    // варіант дошки доступний завжди; решта — тільки якщо збігся з визначеним
-    const free = kind === "projector" || kind === detected || detected === "projector";
-    /* Ознаки кажуть «проєктор»? Тоді позначку «рекомендовано» переносимо на
-       дошку: з неї так само можна лічити, але саме там шукатиме вчитель.
-       У телефона позначку не забираємо — там проєктор позначають інші ознаки. */
-    const rec = detected !== "phone" && detected !== "projector" && projLikely() ? "projector" : detected;
+  /* Кнопка відповіді: іконка, назва і маленький рядок пояснення всередині. */
+  function optBtn(o) {
     const b = document.createElement("button");
     b.type = "button";
-    b.className = "device-opt" + (kind === rec ? " is-rec" : (free ? "" : " is-locked"));
+    b.className = "device-opt" + (o.rec ? " is-rec" : (o.locked ? " is-locked" : ""));
     const i = document.createElement("span");
     i.className = "material-icons";
-    i.textContent = free ? icon : "lock";
+    i.textContent = o.locked ? "lock" : o.icon;
     const t = document.createElement("span");
-    t.textContent = label;
+    t.textContent = o.label;
     b.append(i, t);
-    if (kind === rec) {
+    if (o.hint) {
+      const h = document.createElement("span");
+      h.className = "device-opt-hint";
+      h.textContent = o.hint;
+      b.appendChild(h);
+    }
+    if (o.rec) {
       const badge = document.createElement("span");
       badge.className = "device-rec";
       badge.textContent = L().rec;
       b.appendChild(badge);
     }
-    b.onclick = () => {
-      if (free) {
-        applyDesign(kind);
-        if (global.Audio2 && global.Audio2.SFX) global.Audio2.SFX.pop();
-        ctx.close();
-        return;
-      }
-      if (global.Audio2 && global.Audio2.SFX) global.Audio2.SFX.error();
-      ctx.deny();
-    };
+    b.onclick = o.onclick;
     return b;
   }
 
+  function set(key, val) {
+    if (global.Settings && global.Settings.set) global.Settings.set(key, val);
+  }
+
+  /* Майстер з 4 кроків: пристрій → (форма ПК → потужність) або (ОС телефона).
+     Кожна відповідь одразу застосовується, щоб напівпройдений майстер не
+     лишив інтерфейс у стані «ні наше, ні ваше». */
   function ask() {
     if (document.getElementById("deviceAsk")) { markAnswered(); return; }
     const s = L();
@@ -355,79 +442,161 @@
     const card = document.createElement("div");
     card.className = "device-card";
 
-    const h = document.createElement("h3");
-    h.textContent = s.q;
-    const p = document.createElement("p");
-    p.textContent = s.hint;
-
-    const opts = document.createElement("div");
-    opts.className = "device-opts";
-
     const note = document.createElement("div");
     note.className = "device-denied hidden";
-
-    const ctx = {
-      close: () => { wrap.remove(); markAnswered(); },
-      deny: () => {
-        note.innerHTML = "";
-        const b = document.createElement("b");
-        b.textContent = s.denied;
-        const txt = document.createElement("span");
-        txt.textContent = detected === "pc" ? s.deniedPc : s.deniedPhone;
-        note.append(b, txt);
-        note.classList.remove("hidden");
-        card.classList.remove("shake");
-        void card.offsetWidth;
-        card.classList.add("shake");
-      }
-    };
-
-    opts.append(
-      opt("desktop_windows", s.pc, "pc", detected, ctx),
-      opt("smartphone", s.phone, "phone", detected, ctx),
-      opt("slideshow", s.proj, "projector", detected, ctx)
-    );
-
-    const ph = document.createElement("p");
-    ph.className = "device-proj-hint";
-    ph.textContent = s.projHint;
-
-    /* Кнопка перевірки екранів: у режимі дублювання браузер нічого не бачить,
-       тож єдиний спосіб упевнитись — запитати дозвіл на список екранів. */
-    const row = document.createElement("div");
-    row.className = "device-probe-row";
-    const pb = document.createElement("button");
-    pb.type = "button";
-    pb.className = "device-probe";
-    pb.textContent = s.probe;
-    const pr = document.createElement("span");
-    pr.className = "device-probe-res";
-    pb.onclick = () => {
-      pb.disabled = true;
-      pb.textContent = s.probeBusy;
-      probeScreens((res) => {
-        pb.disabled = false;
-        pb.textContent = s.probe;
-        if (res === "found") {
-          pr.textContent = s.probeFound;
-          detectedHere = true;
-          refresh();
-          return;
-        }
-        pr.textContent = res === "none" ? s.probeNone : res === "denied" ? s.probeDenied : s.probeNoapi;
-      });
-    };
-    row.append(pb, pr);
-
-    card.append(h, p, opts, ph, row, note);
     wrap.appendChild(card);
-    document.body.appendChild(wrap);
 
-    function refresh() {
-      wrap.remove();
-      if (detectedHere) { applyDesign("projector"); markAnswered(); return; }
-      ask();
+    let step = "kind";
+    const trail = [];
+
+    function sfx(name) {
+      if (global.Audio2 && global.Audio2.SFX) global.Audio2.SFX[name]();
     }
+    function close() { wrap.remove(); markAnswered(); }
+    function deny() {
+      note.textContent = "";
+      const b = document.createElement("b");
+      b.textContent = s.denied;
+      const txt = document.createElement("span");
+      txt.textContent = detected === "pc" ? s.deniedPc : s.deniedPhone;
+      note.append(b, txt);
+      note.classList.remove("hidden");
+      card.classList.remove("shake");
+      void card.offsetWidth;
+      card.classList.add("shake");
+    }
+    function go(name) { trail.push(step); step = name; render(); }
+    function back() { step = trail.pop() || "kind"; render(); }
+
+    function kindStep(opts) {
+      /* Ознаки кажуть «проєктор»? Тоді позначку «рекомендовано» переносимо на
+         дошку: з неї так само можна лічити, але саме там шукатиме вчитель.
+         У телефона позначку не забираємо — там проєктор позначають інші ознаки. */
+      const rec = detected !== "phone" && detected !== "projector" && projLikely() ? "projector" : detected;
+      const pick = (kind) => {
+        const free = kind === "projector" || kind === detected || detected === "projector";
+        if (!free) { sfx("error"); deny(); return; }
+        sfx("pop");
+        applyDesign(kind);
+        if (kind === "pc") go("form");
+        else if (kind === "phone") go("os");
+        else close();
+      };
+      const mk = (kind, icon, label) => optBtn({
+        icon, label, rec: kind === rec,
+        locked: !(kind === "projector" || kind === detected || detected === "projector"),
+        onclick: () => pick(kind)
+      });
+      opts.append(
+        mk("pc", "desktop_windows", s.pc),
+        mk("phone", "smartphone", s.phone),
+        mk("projector", "slideshow", s.proj)
+      );
+    }
+
+    function formStep(opts) {
+      const pick = (v) => { sfx("pop"); set("deviceForm", v); go("power"); };
+      opts.append(
+        optBtn({ icon: "desktop_windows", label: s.desktop, hint: s.desktopHint, onclick: () => pick("desktop") }),
+        optBtn({ icon: "laptop", label: s.laptop, hint: s.laptopHint, onclick: () => pick("laptop") }),
+        optBtn({ icon: "help", label: s.unknown, hint: s.unknownHint, onclick: () => pick("auto") })
+      );
+    }
+
+    function powerStep(opts) {
+      const pick = (v) => { sfx("pop"); set("perf", v); close(); };
+      opts.append(
+        optBtn({ icon: "bolt", label: s.strong, hint: s.strongHint, onclick: () => pick("full") }),
+        optBtn({ icon: "speed", label: s.weak, hint: s.weakHint, onclick: () => pick("light") }),
+        optBtn({ icon: "help", label: s.unknown, hint: s.unknownHint, onclick: () => pick("auto") })
+      );
+    }
+
+    function osStep(opts) {
+      const pick = (v) => { sfx("pop"); set("mobileOs", v); close(); };
+      opts.append(
+        optBtn({ icon: "android", label: s.android, hint: s.androidHint, onclick: () => pick("android") }),
+        optBtn({ icon: "phone_iphone", label: s.ios, hint: s.iosHint, onclick: () => pick("ios") }),
+        optBtn({ icon: "help", label: s.unknown, hint: s.unknownHint, onclick: () => pick("auto") })
+      );
+    }
+
+    /* Рядок перевірки екранів: у режимі дублювання браузер нічого не бачить,
+       тож єдиний спосіб упевнитись — запитати дозвіл на список екранів. */
+    function probeRow() {
+      const row = document.createElement("div");
+      row.className = "device-probe-row";
+      const pb = document.createElement("button");
+      pb.type = "button";
+      pb.className = "device-probe";
+      pb.textContent = s.probe;
+      const pr = document.createElement("span");
+      pr.className = "device-probe-res";
+      pb.onclick = () => {
+        pb.disabled = true;
+        pb.textContent = s.probeBusy;
+        probeScreens((res) => {
+          pb.disabled = false;
+          pb.textContent = s.probe;
+          if (res === "found") {
+            pr.textContent = s.probeFound;
+            applyDesign("projector");
+            setTimeout(close, 900);
+            return;
+          }
+          pr.textContent = res === "none" ? s.probeNone : res === "denied" ? s.probeDenied : s.probeNoapi;
+        });
+      };
+      row.append(pb, pr);
+      return row;
+    }
+
+    function render() {
+      const titles = {
+        kind: [s.q, s.hint],
+        form: [s.formQ, s.formHint],
+        power: [s.powerQ, s.powerHint],
+        os: [s.osQ, s.osHint]
+      }[step];
+      card.textContent = "";
+      const h = document.createElement("h3");
+      h.textContent = titles[0];
+      const p = document.createElement("p");
+      p.textContent = titles[1];
+      const opts = document.createElement("div");
+      opts.className = "device-opts";
+      card.append(h, p, opts);
+
+      if (step === "kind") {
+        kindStep(opts);
+        const ph = document.createElement("p");
+        ph.className = "device-proj-hint";
+        ph.textContent = s.projHint;
+        card.append(ph, probeRow(), note);
+        return;
+      }
+      if (step === "form") formStep(opts);
+      else if (step === "power") powerStep(opts);
+      else osStep(opts);
+
+      const nav = document.createElement("div");
+      nav.className = "device-nav";
+      const bb = document.createElement("button");
+      bb.type = "button";
+      bb.className = "device-back";
+      const bi = document.createElement("span");
+      bi.className = "material-icons";
+      bi.textContent = "arrow_back";
+      const bt = document.createElement("span");
+      bt.textContent = s.back;
+      bb.append(bi, bt);
+      bb.onclick = back;
+      nav.appendChild(bb);
+      card.appendChild(nav);
+    }
+
+    render();
+    document.body.appendChild(wrap);
   }
 
   /* Пропозиція ввімкнути великий інтерфейс, коли проєктор під'єднали вже
@@ -483,6 +652,7 @@
     // режим дошки тримаємо до наступної відповіді: він не визначається на 100%
     const saved = global.Settings && global.Settings.get ? global.Settings.get("deviceKind") : null;
     applyDesign(saved === "projector" ? "projector" : detect());
+    applyOs();
     applyScale();
     applyPerf();
     global.addEventListener("resize", applyScale);
@@ -499,7 +669,8 @@
   global.Device = {
     detect: detect, ask: ask, apply: applyDesign, scale: applyScale,
     projScale: projScale, signals: signals, projLikely: projLikely, projSure: projSure,
-    hasZoom: hasZoom, perf: applyPerf, weakHints: weakHints, answered
+    hasZoom: hasZoom, perf: applyPerf, weakHints: weakHints, os: applyOs, resolveOs: resolveOs,
+    answered
   };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

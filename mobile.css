@@ -1,15 +1,16 @@
 /* mobile.css — мобільна адаптація для Capacitor */
 
+/* Safe area для notch/home indicator. Окремо від медіа-запиту: iPhone у
+   landscape ширший за 768px, а виїмка анікуди не зникає. */
+:root {
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+}
+
 /* ========== Базові мобільні стилі ========== */
 @media (max-width: 768px) {
-  /* Safe area для notch/home indicator */
-  :root {
-    --sat: env(safe-area-inset-top);
-    --sar: env(safe-area-inset-right);
-    --sab: env(safe-area-inset-bottom);
-    --sal: env(safe-area-inset-left);
-  }
-
   body {
     padding-top: var(--sat);
     padding-bottom: var(--sab);
@@ -111,7 +112,9 @@
   }
 
   #code {
-    font-size: 14px !important;
+    /* var, а не тверді 14px: на iOS редактор не повинен дрібніти за 16px,
+       інакше Safari зумить сторінку, а підкладка підсвітки роз'їжджається */
+    font-size: var(--editor-font, 14px) !important;
     min-height: 200px !important;
   }
 
@@ -303,4 +306,71 @@
   .hero h2 {
     font-size: 1.25rem !important;
   }
+}
+
+/* ========== iOS (Safari / WebKit) ==========
+   Працює лише після viewport-fit=cover — без нього env(safe-area-*) завжди 0. */
+body[data-mos="ios"] {
+  /* Safari надуває текст при повороті екрана */
+  -webkit-text-size-adjust: 100%;
+  /* «гумовий» відкат сторінки відкриває білу смугу під контентом */
+  overscroll-behavior-y: none;
+}
+
+/* Safari зумить усю сторінку, якщо сфокусоване поле менше за 16px.
+   16px — підлога, а не стеля: більший шрифт редактора лишається своїм. */
+body[data-mos="ios"] input,
+body[data-mos="ios"] select,
+body[data-mos="ios"] textarea {
+  font-size: 16px;
+  font-size: max(16px, var(--editor-font, 16px));
+}
+
+/* Синій прямокутник та затримка подвійного тапу на кнопках */
+body[data-mos="ios"] button,
+body[data-mos="ios"] .rail-btn,
+body[data-mos="ios"] .icon-btn,
+body[data-mos="ios"] .btn,
+body[data-mos="ios"] .device-opt {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Довгий тап по картинці не викликає меню «Зберегти фото» */
+body[data-mos="ios"] img {
+  -webkit-touch-callout: none;
+}
+
+/* ========== Android (Chrome / WebView) ========== */
+body[data-mos="android"] {
+  /* Font boosting на Android навмання збільшує довільні абзаци */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Прибирає «потягни-освіжи» та білий відкат поверх теми */
+  overscroll-behavior-y: none;
+}
+
+body[data-mos="android"] button,
+body[data-mos="android"] .rail-btn,
+body[data-mos="android"] .icon-btn,
+body[data-mos="android"] .btn,
+body[data-mos="android"] .device-opt {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Смуга прокрутки знизу «з’їдає» висоту рейла на малих екранах */
+body[data-mos="android"] .navrail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+body[data-mos="android"] .navrail::-webkit-scrollbar {
+  display: none;
+}
+
+/* Клавіатура Android не повинна розтягувати текстове поле всередині діалогу */
+body[data-mos="android"] textarea {
+  resize: vertical;
 }
