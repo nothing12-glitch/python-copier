@@ -134,12 +134,14 @@
   };
 
   function lang() {
-    const L = global.I18n ? global.I18n.lang : "uk";
-    return TXT[L] ? L : "uk";
+    return global.I18n ? global.I18n.lang : "uk";
   }
+  /* Рядки є лише uk/en/tr → решту мов беремо з контентного паку за українським оригіналом. */
   function tx(key, vars) {
     const L = lang();
-    let s = TXT[L][key] || TXT.en[key] || TXT.uk[key] || key;
+    const own = TXT[L] && TXT[L][key];
+    let s = own || TXT.en[key] || TXT.uk[key] || key;
+    if (!own && L !== "en" && L !== "tr" && TXT.uk[key]) s = pick({ uk: TXT.uk[key] }) || s;
     if (vars) {
       Object.keys(vars).forEach((k) => {
         s = s.split("{" + k + "}").join(String(vars[k]));
@@ -149,8 +151,9 @@
   }
   /* Багатомовне поле запису: pick(obj) обирає рядок поточною мовою. */
   function pick(obj) {
-    const L = lang();
-    return obj[L] || obj.en || obj.uk || "";
+    if (!obj) return "";
+    if (global.I18n) return global.I18n.localize(obj);
+    return obj.en || obj.uk || "";
   }
 
   /* ---------- База знань ---------- */
@@ -766,8 +769,9 @@
     const L = lang();
     const key = (CHIPS[ctx.section] ? ctx.section : "home");
     const ukSet = CHIPS[key];
-    const enSet = CHIPS[key + "En"];
-    return L === "uk" ? ukSet : L === "tr" ? enSet : enSet;
+    if (L === "uk") return ukSet;
+    if (L === "en" || L === "tr") return CHIPS[key + "En"];
+    return ukSet.map((q) => pick({ uk: q }) || q);
   }
 
   function renderChips() {
@@ -877,7 +881,11 @@
   }
 
   function statsLine() {
-    const S = STATS_TXT[lang()] || STATS_TXT.en;
+    const raw = STATS_TXT[lang()];
+    const S = {};
+    Object.keys(STATS_TXT.uk).forEach((k) => {
+      S[k] = (raw && raw[k]) || pick({ uk: STATS_TXT.uk[k] }) || STATS_TXT.en[k];
+    });
     const parts = [];
     try {
       const C = global.Course;

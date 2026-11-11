@@ -25,8 +25,8 @@
   // тексти, яких немає в i18n.js: той самий формат {uk,en,tr}, що в modules.js
   function pick(obj) {
     if (!obj) return "";
-    const l = global.I18n ? global.I18n.lang : "uk";
-    return obj[l] || obj.uk || "";
+    if (global.I18n) return global.I18n.localize(obj);
+    return obj.uk || "";
   }
 
   const TXT = {
@@ -70,11 +70,13 @@
     return null;
   }
 
+  function unit(s) { return global.I18n ? global.I18n.tr(s) : s; }
+
   function bytes(n) {
-    if (!n || n < 0) return "0 Б";
-    if (n < 1024) return n + " Б";
-    if (n < 1048576) return (n / 1024).toFixed(0) + " КБ";
-    return (n / 1048576).toFixed(1) + " МБ";
+    if (!n || n < 0) return "0 " + unit("Б");
+    if (n < 1024) return n + " " + unit("Б");
+    if (n < 1048576) return (n / 1024).toFixed(0) + " " + unit("КБ");
+    return (n / 1048576).toFixed(1) + " " + unit("МБ");
   }
 
   function seconds(s) {
@@ -396,7 +398,7 @@
         modal.weight.textContent = bytes(done) + " / " + bytes(total);
         const left = total > 0 && rate > 0 ? (total - done) / rate : 0;
         modal.eta.textContent = total > 0 ? (left > 0.5 ? t("installer.left", { time: seconds(left) }) : t("installer.almost")) : "";
-        modal.speed.textContent = rate > 0 ? bytes(rate) + "/с" : "";
+        modal.speed.textContent = rate > 0 ? bytes(rate) + unit("/с") : "";
       };
 
       const markItem = (name, cls, icon) => {

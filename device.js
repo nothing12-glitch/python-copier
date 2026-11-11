@@ -137,7 +137,7 @@
       deniedPhone: "Telefondan giriyorsun — PC sürümü burada kullanılamaz."
     }
   };
-  const L = () => STR[global.I18n ? global.I18n.lang : "uk"] || STR.uk;
+  const L = () => (global.I18n ? global.I18n.langMap(STR) : STR.uk);
 
   function mq(q) {
     try { return !!(global.matchMedia && global.matchMedia(q).matches); }
@@ -664,6 +664,12 @@
     // саме питання показуємо вже після екрана завантаження
     if (global.Splash) global.Splash.after(ask);
     else ask();
+    document.addEventListener("langchange", () => {
+      const dlg = document.getElementById("deviceAsk");
+      if (dlg) { dlg.remove(); ask(); }
+      const off = document.getElementById("projOffer");
+      if (off) { off.remove(); showOffer(); }
+    });
   }
 
   global.Device = {

@@ -324,7 +324,7 @@
     tr: { label: "Kendi programlarım", tip: "Kendinin yazıp kaydettiği programlar. Hazır örnekler ve örnek kodu çalıştırmalar sayılmaz. Çalıştırmalar ise her çalıştırmayı sayar." }
   };
   const OWN_STATS_KEYS = ["own_programs", "_ownIds"];
-  const ownT = (o) => o[((global.I18n && global.I18n.lang) || "uk")] || o.uk;
+  const ownT = (o) => (global.I18n ? global.I18n.langMap(o) : o.uk);
   function isOwnStatsKey(k) {
     if (OWN_STATS_KEYS.indexOf(k) >= 0 || String(k).charAt(0) === "_") return true;
     return !!(global.Profile && global.Profile.isOwnRecordKey && global.Profile.isOwnRecordKey(k));
@@ -390,7 +390,7 @@
             renderProfile();
           });
         } else {
-          const n = prompt("Нік:", global.Profile.getNickname() || "");
+          const n = prompt(global.I18n ? global.I18n.tr("Нік:") : "Нік:", global.Profile.getNickname() || "");
           if (n !== null && n.trim()) { global.Profile.rename(n.trim()); renderProfile(); }
         }
       };
@@ -406,7 +406,7 @@
         } else {
           const emojis = ["\u{1F9D1}", "\u{1F469}", "\u{1F468}", "\u{1F9D2}", "\u{1F47B}", "\u{1F916}", "\u{1F431}", "\u{1F436}", "\u{1F981}", "\u{1F43C}", "\u{1F984}", "\u{1F430}"];
           const cur = global.Profile.getAvatar() || "\u{1F9D1}";
-          const choice = prompt("Аватар (emoji): " + emojis.join(" "), cur);
+          const choice = prompt((global.I18n ? global.I18n.tr("Аватар (emoji):") : "Аватар (emoji):") + " " + emojis.join(" "), cur);
           if (choice !== null && choice.trim()) { global.Profile.setAvatar(choice.trim()); renderProfile(); }
         }
       };
@@ -474,8 +474,7 @@
   function renderLearn() {
     const host = $("#learnSection");
     if (!host) return;
-    const lang = global.I18n ? global.I18n.lang : "uk";
-    const items = LEARN[lang] || LEARN.uk;
+    const items = global.I18n ? global.I18n.langMap(LEARN) : LEARN.uk;
     host.innerHTML = "";
     items.forEach((it) => {
       const c = document.createElement("article");
@@ -501,8 +500,8 @@
 
   function loc(obj) {
     if (!obj) return "";
-    const l = global.I18n ? global.I18n.lang : "uk";
-    return obj[l] || obj.uk || "";
+    if (global.I18n) return global.I18n.localize(obj);
+    return obj.uk || "";
   }
 
   function decorateSections() {

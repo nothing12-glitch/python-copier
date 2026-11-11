@@ -27,8 +27,8 @@
   function pick(o) {
     if (typeof o === "string") return o;
     if (!o) return "";
-    const l = L();
-    return o[l] || o.en || o.uk || "";
+    if (global.I18n) return global.I18n.localize(o);
+    return o.en || o.uk || "";
   }
   /* однаковий намір двічі підряд не звучить однаково */
   function vary(id, arr) {

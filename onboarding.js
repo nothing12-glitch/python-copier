@@ -73,7 +73,10 @@
     nl: { langTitle: "Kies je taal", langText: "Je kunt dit altijd wijzigen in de instellingen." },
     hu: { langTitle: "Válaszd ki a nyelved", langText: "Bármikor megváltoztathatod a beállításokban." },
     id: { langTitle: "Pilih bahasamu", langText: "Kamu bisa mengubahnya kapan saja di pengaturan." },
-    el: { langTitle: "Διάλεξε τη γλώσσα σου", langText: "Μπορείς να την αλλάξεις όποτε θέλεις στις ρυθμίσεις." }
+    el: { langTitle: "Διάλεξε τη γλώσσα σου", langText: "Μπορείς να την αλλάξεις όποτε θέλεις στις ρυθμίσεις." },
+    he: { langTitle: "בחר את השפה שלך", langText: "אפשר לשנות אותה בכל עת בהגדרות." },
+    vi: { langTitle: "Chọn ngôn ngữ của bạn", langText: "Bạn có thể thay đổi bất cứ lúc nào trong Cài đặt." },
+    th: { langTitle: "เลือกภาษาของคุณ", langText: "คุณสามารถเปลี่ยนได้ทุกเมื่อในการตั้งค่า" }
   };
 
   /* Браузер часто ставить наперед en-US, хоча рідна мова є наступною у списку
@@ -89,7 +92,7 @@
     return String(list[0] || "en").toLowerCase().split("-")[0];
   }
 
-  const S = () => L[global.I18n ? global.I18n.lang : "uk"] || L.en;
+  const S = () => (global.I18n ? global.I18n.langMap(L) : L.en);
   const langUi = () => LANG_UI[sysLang] || LANG_UI[(global.I18n && global.I18n.lang) || "uk"] || LANG_UI.en;
 
   function close() {
@@ -218,13 +221,13 @@
   }
 
   function start() {
-    sysLang = detectSysLang();
-    // якщо мова системи підтримується сайтом — одразу ставимо її
-    if (SITE_LANGS().includes(sysLang)) {
-      if (global.I18n && global.I18n.lang !== sysLang) global.I18n.setLang(sysLang);
+    /* Вже обрана користувачем мова важливіша за мову системи — інакше онбординг щовідкриття скидає вибір. */
+    if (localStorage.getItem("lang") && global.I18n) {
+      sysLang = global.I18n.lang;
     } else {
-      // нерідну мову не навіюємо: лишаємо те, що вже стоїть у сайті
-      sysLang = global.I18n ? global.I18n.lang : "uk";
+      sysLang = detectSysLang();
+      if (!SITE_LANGS().includes(sysLang)) sysLang = global.I18n ? global.I18n.lang : "uk";
+      else if (global.I18n && global.I18n.lang !== sysLang) global.I18n.setLang(sysLang);
     }
     renderLang();
   }

@@ -862,8 +862,8 @@
 
   function pick(obj) {
     if (!obj) return "";
-    const l = global.I18n ? global.I18n.lang : "uk";
-    return obj[l] || obj.uk || "";
+    if (global.I18n) return global.I18n.localize(obj);
+    return obj.uk || "";
   }
 
   function toast(msg) { if (global.App && global.App.toast) global.App.toast(msg); }

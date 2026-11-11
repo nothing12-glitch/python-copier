@@ -258,10 +258,10 @@
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
-  const L = () => UI[lang()] || UI.uk;
+  const L = () => (global.I18n ? global.I18n.langMap(UI) : UI.uk);
   const sfx = () => (global.Audio2 && global.Audio2.SFX) || null;
   const nameOf = (id) => (global.I18n && NAMES[id] ? global.I18n.t(NAMES[id]) : id);
-  const lines = (id) => R[id][lang()] || R[id].uk;
+  const lines = (id) => (global.I18n ? global.I18n.langMap(R[id]) : R[id].uk);
 
   /* ---------- модальне вікно ---------- */
   let modal = null, titleEl = null, listEl = null, openId = null;

@@ -1572,8 +1572,8 @@
   function t(k, v) { return global.I18n ? global.I18n.t(k, v) : k; }
   function pick(obj) {
     if (!obj) return "";
-    const l = global.I18n ? global.I18n.lang : "uk";
-    return obj[l] || obj.uk || "";
+    if (global.I18n) return global.I18n.localize(obj);
+    return obj.uk || "";
   }
   function toast(msg) { if (global.App && global.App.toast) global.App.toast(msg); }
   function sfx(name) { global.Audio2 && global.Audio2.SFX && global.Audio2.SFX[name] && global.Audio2.SFX[name](); }

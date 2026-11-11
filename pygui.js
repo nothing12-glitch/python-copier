@@ -1288,7 +1288,7 @@
     const mod = req[0], op = req[1], h = req[2], a = req[3] || [], kw = req[4] || {};
     if (mod === "turtle") return turtOp(op, h, a, kw);
     if (mod === "tk") return tkOp(op, h, a, kw);
-    return { e: "PyGui: невідома операція " + mod };
+    return { e: (global.I18n ? global.I18n.tr("PyGui: невідома операція") : "PyGui: невідома операція") + " " + mod };
   }
 
   const api = {
@@ -1297,7 +1297,7 @@
       try {
         req = JSON.parse(String(txt));
       } catch (e) {
-        return JSON.stringify({ e: "PyGui: пошкоджений запит" });
+        return JSON.stringify({ e: global.I18n ? global.I18n.tr("PyGui: пошкоджений запит") : "PyGui: пошкоджений запит" });
       }
       try {
         return JSON.stringify(dispatch(req) || {});

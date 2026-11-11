@@ -49,7 +49,7 @@
       langBtn: "Form dili"
     }
   };
-  const S = () => FL[global.I18n ? global.I18n.lang : "uk"] || FL.uk;
+  const S = () => (global.I18n ? global.I18n.langMap(FL) : FL.uk);
 
   const available = () => LANGS.filter(([c]) => (FORM_URLS[c] || "").trim());
   const availCodes = () => available().map(([c]) => c);

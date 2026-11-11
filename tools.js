@@ -31,7 +31,7 @@
       pwd: "Parola oluşturucu", pwdLen: "Uzunluk", pwdGen: "Oluştur", pwdCopy: "Kopyala", pwdCopied: "Kopyalandı!"
     }
   };
-  const S = () => TL[global.I18n ? global.I18n.lang : "uk"] || TL.uk;
+  const S = () => (global.I18n ? global.I18n.langMap(TL) : TL.uk);
 
   /* ---------- Calculator ---------- */
   let expr = "";

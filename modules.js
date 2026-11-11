@@ -470,8 +470,8 @@
 
   function pick(obj) {
     if (!obj) return "";
-    const l = global.I18n ? global.I18n.lang : "uk";
-    return obj[l] || obj.uk || "";
+    if (global.I18n) return global.I18n.localize(obj);
+    return obj.uk || "";
   }
 
   /* Нові тексти цього файлу тримаємо тут: ключі i18n.js ми не роздуваємо,
@@ -1157,9 +1157,14 @@
     if (!iso) return "";
     const d = new Date(/Z|[+-]\d\d:\d\d$/.test(iso) ? iso : iso + "Z");
     if (isNaN(d.getTime())) return "";
-    const loc = global.I18n && global.I18n.lang === "tr" ? "tr-TR"
-      : global.I18n && global.I18n.lang === "en" ? "en-GB" : "uk-UA";
-    return d.toLocaleDateString(loc, { day: "2-digit", month: "long", year: "numeric" });
+    const loc = (global.I18n && global.I18n.lang === "tr" ? "tr-TR"
+      : global.I18n && global.I18n.lang === "en" ? "en-GB"
+      : global.I18n && global.I18n.lang !== "uk" ? global.I18n.lang : "uk-UA");
+    try {
+      return d.toLocaleDateString(loc, { day: "2-digit", month: "long", year: "numeric" });
+    } catch (e) {
+      return d.toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
+    }
   }
 
   function mdRow(label) {

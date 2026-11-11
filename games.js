@@ -202,8 +202,7 @@
   };
 
   function gtxt(k) {
-    const lang = global.I18n ? global.I18n.lang : "uk";
-    const d = UI_TXT[lang] || UI_TXT.uk;
+    const d = global.I18n ? global.I18n.langMap(UI_TXT) : UI_TXT.uk;
     return d[k] || UI_TXT.uk[k] || k;
   }
 
@@ -1238,7 +1237,6 @@
   function renderHub() {
     const hub=$("#gamesHub"); if(!hub) return;
     hub.innerHTML="";
-    const lang = global.I18n ? global.I18n.lang : "uk";
     GAMES.forEach(g=>{
       const best=global.Profile.getRecord(g.id);
       const card=document.createElement("div"); card.className="game-card";
@@ -1284,8 +1282,7 @@
   }
 
   function showHowToPlay(gameId) {
-    const lang = global.I18n ? global.I18n.lang : "uk";
-    const howTo = HOW_TO_PLAY[lang]?.[gameId] || HOW_TO_PLAY.uk[gameId];
+    const howTo = global.I18n ? global.I18n.langMap(HOW_TO_PLAY)[gameId] : HOW_TO_PLAY.uk[gameId];
     if (!howTo) return;
 
     const old = document.getElementById("howToModal");

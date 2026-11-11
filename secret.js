@@ -81,7 +81,7 @@
       close: "Kapat"
     }
   };
-  const T = () => SL[global.I18n ? global.I18n.lang : "uk"] || SL.uk;
+  const T = () => (global.I18n ? global.I18n.langMap(SL) : SL.uk);
   const clicks = () => Number(localStorage.getItem(KEY_CLICKS) || 0);
   const found = () => localStorage.getItem(KEY_FOUND) === "1";
   const toast = (m) => { if (global.App) global.App.toast(m); };

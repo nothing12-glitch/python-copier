@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.104";
+  const VERSION = "26.10.106";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.106": {
+      uk: [
+        "Сайт тепер повністю перекладений 24 мовами: інтерфейс, уроки, задачі, підказки, правила ігор, профіль і вікно «Що нового»",
+        "Додано чотири нові мови: Arabic, Hebrew, Tiếng Việt і ไทย. Для арабської та івриту інтерфейс дзеркалиться справа наліво, код і консоль лишаються ліворуч",
+        "Переклад вмикається миттєво: тексти підвантажуються окремим файлом лише для вибраної мови, тому сайт лишається легким",
+        "Виправлено дрібниці: одиниці ваги пакетів, назви фонів аватара, підказки про непідтримувані модулі та вікно технічних робіт тепер теж говорять твоєю мовою"
+      ],
+      en: [
+        "The whole site now speaks 24 languages: interface, lessons, tasks, hints, game rules, your profile and the What's new window",
+        "Four languages added: Arabic, Hebrew, Tiếng Việt and Thai. Arabic and Hebrew mirror the layout right-to-left while code and the console stay left-to-right",
+        "Switching is instant: texts load as one small file for the language you picked, so the site stays light",
+        "Small fixes: package size units, avatar background names, hints about unsupported modules and the maintenance screen now use your language too"
+      ],
+      tr: [
+        "Site artık tamamıyla 24 dilde: arayüz, dersler, görevler, ipuçları, oyun kuralları, profil ve Yenilikler penceresi",
+        "Dört yeni dil eklendi: Arapça, İbranice, Tiếng Việt ve Thai. Arapça ve İbranice'de arayüz sağdan sola aynalanır, kod ve konsol soldan sağa kalır",
+        "Dil değişimi anında: metinler yalnızca seçtiğin dil için küçük bir dosyayla yüklenir, site hafif kalır",
+        "Küçük düzeltmeler: paket boyutu birimleri, arka plan adları, desteklenmeyen modül ipuçları ve bakım ekranı da artık senin dilinde"
+      ]
+    },
     "26.10.104": {
       uk: [
         "Вікно вибору пристрою стало майстром із кількох кроків: спочатку «ПК / ноутбук» або «Телефон / планшет», а далі сайт питає одну деталь. Планшет тепер у групі телефона — раніше він числився комп'ютером",
@@ -1771,7 +1791,7 @@
     collapseAll: { uk: "Згорнути все", en: "Collapse all", tr: "Tümünü kapat" }
   };
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
-  const pick = (o) => o[lang()] || o.en || o.uk;
+  const pick = (o) => (global.I18n ? global.I18n.langMap(o) : (o.uk || o.en));
 
   function showWhatsNew(v) {
     const entry = LOG[v];
@@ -1907,7 +1927,7 @@
   function linesOf(v) {
     const e = LOG[v];
     if (!e) return [];
-    return e[lang()] || e.en || e.uk || [];
+    return global.I18n ? global.I18n.langMap(e) : (e.uk || e.en || []);
   }
 
   let helpOpenAll = false;

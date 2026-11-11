@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>python-copier</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=26.10.104">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=26.10.106">
   <link rel="apple-touch-icon" href="favicon.svg">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6750A4">
@@ -35,11 +35,12 @@
 @keyframes pc-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @media(prefers-reduced-motion:reduce){#splash .pc-logo{animation:none}}
   </style>
-  <link rel="stylesheet" href="style.css?v=26.10.104">
-  <link rel="stylesheet" href="newui.css?v=26.10.104">
-  <link rel="stylesheet" href="extra.css?v=26.10.104">
-  <link rel="stylesheet" href="mobile.css?v=26.10.104">
-  <link rel="stylesheet" href="pythonchik.css?v=26.10.104">
+  <link rel="stylesheet" href="style.css?v=26.10.106">
+  <link rel="stylesheet" href="newui.css?v=26.10.106">
+  <link rel="stylesheet" href="extra.css?v=26.10.106">
+  <link rel="stylesheet" href="mobile.css?v=26.10.106">
+  <link rel="stylesheet" href="rtl.css?v=26.10.106">
+  <link rel="stylesheet" href="pythonchik.css?v=26.10.106">
   <!-- Pyodide більше НЕ тут: його підключає python.js лише за потребою -->
   <script>
   /* Дуже старий движок (Chrome <80, Firefox <72, Windows XP) не розуміє мови,
@@ -108,7 +109,7 @@
     <div class="pc-in">
       <img class="pc-logo" src="favicon.svg" alt="">
       <div class="pc-name">python-copier</div>
-      <div class="pc-tag" id="splashTag">Вчись, грай, кодуй — усе в браузері</div>
+      <div class="pc-tag" id="splashTag" data-i18n-static>Вчись, грай, кодуй — усе в браузері</div>
       <div class="pc-bar"><span id="splashBarFill"></span></div>
     </div>
   </div>
@@ -133,12 +134,12 @@
       <span class="material-icons search-ico">search</span>
       <input id="globalSearch" type="search" autocomplete="off" spellcheck="false"
              data-i18n-ph="search.placeholder" placeholder="Пошук модулів, задач, ігор…"
-             aria-label="Пошук">
+             aria-label="Пошук" data-i18n-static="aria-label">
       <div class="search-pop" id="searchPop" hidden></div>
     </div>
     <div class="appbar-spacer"></div>
 
-    <button id="mobileSearchBtn" class="icon-btn" aria-label="Пошук"><span class="material-icons">search</span></button>
+    <button id="mobileSearchBtn" class="icon-btn" aria-label="Пошук" data-i18n-static="aria-label"><span class="material-icons">search</span></button>
     <button id="sfxToggle" class="icon-btn" title="Sound" aria-pressed="true"><span class="material-icons">volume_up</span></button>
     <button id="musicToggle" class="icon-btn" title="Music" aria-pressed="false"><span class="material-icons">music_note</span></button>
     <button id="profileBtn" class="chip-btn">
@@ -180,11 +181,11 @@
     </button>
     <button class="rail-btn" data-route="tools">
       <span class="rail-ico"><span class="material-icons">construction</span></span>
-      <span class="rail-label" id="toolsNavLabel">Інструменти</span>
+      <span class="rail-label" id="toolsNavLabel" data-i18n-static>Інструменти</span>
     </button>
     <button class="rail-btn" data-route="feedback">
       <span class="rail-ico"><span class="material-icons">rate_review</span></span>
-      <span class="rail-label" id="feedbackNavLabel">Відгуки</span>
+      <span class="rail-label" id="feedbackNavLabel" data-i18n-static>Відгуки</span>
     </button>
     <div class="nav-group-label" data-i18n="nav.groupAccount">Акаунт</div>
     <button class="rail-btn" data-route="profile">
@@ -216,7 +217,7 @@
 
   <div class="more-sheet" id="moreSheet" hidden>
     <div class="more-sheet-backdrop" data-more-close></div>
-    <div class="more-sheet-panel" role="dialog" aria-modal="true" aria-label="Ще">
+    <div class="more-sheet-panel" role="dialog" aria-modal="true" aria-label="Ще" data-i18n-static="aria-label">
       <div class="more-sheet-head">
         <span data-i18n="nav.more">Ще</span>
         <button class="icon-btn" type="button" data-more-close aria-label="Close"><span class="material-icons">close</span></button>
@@ -289,7 +290,7 @@
     <section class="view" id="view-python">
       <div class="section-head">
         <h2 data-i18n="python.title" title="nyam">Python-майданчик</h2>
-        <span id="pyStatus" class="md-chip loading">Завантаження Python…</span>
+        <span id="pyStatus" class="md-chip loading" data-i18n-static>Завантаження Python…</span>
       </div>
       <div class="py-layout">
         <div class="card elev1 py-editor">
@@ -533,7 +534,7 @@
 
     <!-- TOOLS -->
     <section class="view" id="view-tools">
-      <div class="section-head"><h2 id="toolsTitle" title="200">Інструменти</h2></div>
+      <div class="section-head"><h2 id="toolsTitle" title="200" data-i18n-static>Інструменти</h2></div>
       <div class="card elev1 focus-card">
         <div class="focus-pick">
           <span class="material-icons fp-ico">center_focus_strong</span>
@@ -549,19 +550,19 @@
       </div>
       <div class="tools-grid">
         <div class="card elev1 tool-card">
-          <span class="bar-title"><span class="material-icons">calculate</span><span id="calcTitle">Калькулятор</span></span>
+          <span class="bar-title"><span class="material-icons">calculate</span><span id="calcTitle" data-i18n-static>Калькулятор</span></span>
           <div id="calcBox" class="calc"></div>
         </div>
         <div class="card elev1 tool-card">
-          <span class="bar-title"><span class="material-icons">straighten</span><span id="convTitle">Конвертер величин</span></span>
+          <span class="bar-title"><span class="material-icons">straighten</span><span id="convTitle" data-i18n-static>Конвертер величин</span></span>
           <div id="convBox" class="conv"></div>
         </div>
         <div class="card elev1 tool-card">
-          <span class="bar-title"><span class="material-icons">casino</span><span id="randTitle">Випадкове</span></span>
+          <span class="bar-title"><span class="material-icons">casino</span><span id="randTitle" data-i18n-static>Випадкове</span></span>
           <div id="randBox" class="rand"></div>
         </div>
         <div class="card elev1 tool-card">
-          <span class="bar-title"><span class="material-icons">password</span><span id="pwdTitle">Генератор паролів</span></span>
+          <span class="bar-title"><span class="material-icons">password</span><span id="pwdTitle" data-i18n-static>Генератор паролів</span></span>
           <div id="pwdBox" class="pwd"></div>
         </div>
         <div class="card elev1 tool-card">
@@ -573,10 +574,10 @@
 
     <!-- FEEDBACK -->
     <section class="view" id="view-feedback">
-      <div class="section-head"><h2 id="feedbackTitle">Відгуки</h2></div>
+      <div class="section-head"><h2 id="feedbackTitle" data-i18n-static>Відгуки</h2></div>
       <div class="card elev1 feedback-card">
         <div class="card-bar">
-          <span class="bar-title"><span class="material-icons">rate_review</span><span id="feedbackBarTitle">Відгуки</span></span>
+          <span class="bar-title"><span class="material-icons">rate_review</span><span id="feedbackBarTitle" data-i18n-static>Відгуки</span></span>
           <div class="bar-center">
             <button id="feedbackOpen" class="btn outlined hidden"><span class="material-icons">open_in_new</span><span></span></button>
           </div>
@@ -637,12 +638,12 @@
         <p class="about-text"><span class="material-icons">info</span><span data-i18n="settings.aboutText">Python у браузері через Pyodide — без встановлення.</span></p>
         <p class="about-text">
           <span class="material-icons">email</span>
-          <span>Зв'язатися: </span>
+          <span data-i18n-static>Зв'язатися: </span>
           <a href="mailto:workingnothing12.github@gmail.com" class="about-link">workingnothing12.github@gmail.com</a>
         </p>
         <p class="about-text">
           <span class="material-icons">rocket_launch</span>
-          <span>Інші проєкти: </span>
+          <span data-i18n-static>Інші проєкти: </span>
           <a href="https://nothing12-dev.netlify.app/" target="_blank" rel="noopener" class="about-link">nothing12-dev.netlify.app</a>
         </p>
       </div>
@@ -698,37 +699,59 @@
   <footer class="footer"><span data-i18n="footer.made">Зроблено з ❤ для навчання</span></footer>
 
 
-  <script src="i18n.js?v=26.10.104"></script>
-  <script src="splash.js?v=26.10.104"></script>
-  <script src="audio.js?v=26.10.104"></script>
-  <script src="profile.js?v=26.10.104"></script>
-  <script src="avatar.js?v=26.10.104"></script>
-  <script src="achievements.js?v=26.10.104"></script>
-  <script src="settings.js?v=26.10.104"></script>
-  <script src="installer.js?v=26.10.104"></script>
-  <script src="pygui.js?v=26.10.104"></script>
-  <script src="python.js?v=26.10.104"></script>
-  <script src="tasks.js?v=26.10.104"></script>
-  <script src="contest.js?v=26.10.104"></script>
-  <script src="modules.js?v=26.10.104"></script>
-  <script src="course.js?v=26.10.104"></script>
-  <script src="games.js?v=26.10.104"></script>
-  <script src="gamerules.js?v=26.10.104"></script>
-  <script src="vault.js?v=26.10.104"></script>
-  <script src="tools.js?v=26.10.104"></script>
-  <script src="feedback.js?v=26.10.104"></script>
-  <script src="ui.js?v=26.10.104"></script>
-  <script src="shield.js?v=26.10.104"></script>
-  <script src="pychik-ai.js?v=26.10.104"></script>
-  <script src="pythonchik.js?v=26.10.104"></script>
-  <script src="app.js?v=26.10.104"></script>
-  <script src="onboarding.js?v=26.10.104"></script>
-  <script src="secret.js?v=26.10.104"></script>
-  <script src="teacher.js?v=26.10.104"></script>
-  <script src="fix.js?v=26.10.104"></script>
-  <script src="device.js?v=26.10.104"></script>
-  <script src="update.js?v=26.10.104"></script>
-  <script src="pwa.js?v=26.10.104"></script>
+  <script src="i18n.js?v=26.10.106"></script>
+  <script src="lang/tr.js?v=26.10.106"></script>
+  <script src="lang/de.js?v=26.10.106"></script>
+  <script src="lang/pl.js?v=26.10.106"></script>
+  <script src="lang/es.js?v=26.10.106"></script>
+  <script src="lang/fr.js?v=26.10.106"></script>
+  <script src="lang/it.js?v=26.10.106"></script>
+  <script src="lang/pt.js?v=26.10.106"></script>
+  <script src="lang/nl.js?v=26.10.106"></script>
+  <script src="lang/sv.js?v=26.10.106"></script>
+  <script src="lang/cs.js?v=26.10.106"></script>
+  <script src="lang/hu.js?v=26.10.106"></script>
+  <script src="lang/ro.js?v=26.10.106"></script>
+  <script src="lang/el.js?v=26.10.106"></script>
+  <script src="lang/id.js?v=26.10.106"></script>
+  <script src="lang/hi.js?v=26.10.106"></script>
+  <script src="lang/zh.js?v=26.10.106"></script>
+  <script src="lang/ja.js?v=26.10.106"></script>
+  <script src="lang/ko.js?v=26.10.106"></script>
+  <script src="lang/ar.js?v=26.10.106"></script>
+  <script src="lang/he.js?v=26.10.106"></script>
+  <script src="lang/vi.js?v=26.10.106"></script>
+  <script src="lang/th.js?v=26.10.106"></script>
+  <script src="splash.js?v=26.10.106"></script>
+  <script src="audio.js?v=26.10.106"></script>
+  <script src="profile.js?v=26.10.106"></script>
+  <script src="avatar.js?v=26.10.106"></script>
+  <script src="achievements.js?v=26.10.106"></script>
+  <script src="settings.js?v=26.10.106"></script>
+  <script src="installer.js?v=26.10.106"></script>
+  <script src="pygui.js?v=26.10.106"></script>
+  <script src="python.js?v=26.10.106"></script>
+  <script src="tasks.js?v=26.10.106"></script>
+  <script src="contest.js?v=26.10.106"></script>
+  <script src="modules.js?v=26.10.106"></script>
+  <script src="course.js?v=26.10.106"></script>
+  <script src="games.js?v=26.10.106"></script>
+  <script src="gamerules.js?v=26.10.106"></script>
+  <script src="vault.js?v=26.10.106"></script>
+  <script src="tools.js?v=26.10.106"></script>
+  <script src="feedback.js?v=26.10.106"></script>
+  <script src="ui.js?v=26.10.106"></script>
+  <script src="shield.js?v=26.10.106"></script>
+  <script src="pychik-ai.js?v=26.10.106"></script>
+  <script src="pythonchik.js?v=26.10.106"></script>
+  <script src="app.js?v=26.10.106"></script>
+  <script src="onboarding.js?v=26.10.106"></script>
+  <script src="secret.js?v=26.10.106"></script>
+  <script src="teacher.js?v=26.10.106"></script>
+  <script src="fix.js?v=26.10.106"></script>
+  <script src="device.js?v=26.10.106"></script>
+  <script src="update.js?v=26.10.106"></script>
+  <script src="pwa.js?v=26.10.106"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {

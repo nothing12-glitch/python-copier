@@ -73,7 +73,7 @@
     fr: { playlist: "Playlist", author: "Artiste", off: "Couper musique", close: "Fermer", like: "Favori", shuffle: "Aléatoire", repeat: "Boucle", volume: "Volume", expand: "Dérouler la liste", collapse: "Replier la liste", drag: "Fais glisser l'en-tête pour déplacer le lecteur ; double-clic le remet en place" },
     ja: { playlist: "プレイリスト", author: "アーティスト", off: "音楽オフ", close: "閉じる", like: "お気に入り", shuffle: "シャッフル", repeat: "ループ", volume: "音量", expand: "リストを開く", collapse: "リストを閉じる", drag: "ヘッダーをドラッグで移動、ダブルクリックで元の位置に戻ります" }
   };
-  const T = () => AL[global.I18n ? global.I18n.lang : "uk"] || AL.uk;
+  const T = () => (global.I18n ? global.I18n.langMap(AL) : AL.uk);
 
   let audio = null, cur = 0, panel = null, progressRAF = null, collapsed = false;
   const LIKES_KEY = "app.music.likes";

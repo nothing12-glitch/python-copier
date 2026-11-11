@@ -108,7 +108,7 @@
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
-  const pick = (o) => o[lang()] || o.uk || o.en;
+  const pick = (o) => (global.I18n ? global.I18n.localize(o) : (o.uk || o.en));
 
   function isDarkTheme() {
     return document.body.classList.contains("dark");
@@ -350,7 +350,8 @@
     bgList.forEach((bg) => {
       const btn = document.createElement("button");
       btn.className = "av-bg-btn" + (bg.css === selectedBg ? " selected" : "");
-      btn.innerHTML = '<span class="av-bg-swatch" style="background:' + bg.css + '"></span><span class="av-bg-name">' + bg.name + "</span>";
+      btn.innerHTML = '<span class="av-bg-swatch" style="background:' + bg.css + '"></span><span class="av-bg-name"></span>';
+      btn.querySelector(".av-bg-name").textContent = global.I18n ? global.I18n.tr(bg.name) : bg.name;
       btn.onclick = () => {
         grid.querySelectorAll(".av-bg-btn").forEach((b) => b.classList.remove("selected"));
         btn.classList.add("selected");

@@ -158,7 +158,7 @@
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
-  const L = () => SL[lang()] || SL.uk;
+  const L = () => (global.I18n ? global.I18n.langMap(SL) : SL.uk);
   const sfx = () => (global.Audio2 && global.Audio2.SFX) || null;
   const fmt = (s, vars) => { for (const k in vars) s = s.replace(new RegExp("{" + k + "}", "g"), vars[k]); return s; };
   const store = global.localStorage;

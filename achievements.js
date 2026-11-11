@@ -168,7 +168,7 @@
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
-  const pick = (o) => o[lang()] || o.uk || o.en;
+  const pick = (o) => (global.I18n ? global.I18n.localize(o) : (o.uk || o.en));
 
   /* ---------- Статистика ---------- */
   function getStats() {

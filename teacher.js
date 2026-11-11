@@ -15,7 +15,7 @@
     en: { soon: "{n} clicks to go…", empty: "there is nothing here (yet…)", close: "Close" },
     tr: { soon: "{n} tıklama kaldı…", empty: "burada hiçbir şey yok (şimdilik…)", close: "Kapat" }
   };
-  const T = () => SL[global.I18n ? global.I18n.lang : "uk"] || SL.uk;
+  const T = () => (global.I18n ? global.I18n.langMap(SL) : SL.uk);
 
   /* ---------- 1) Секретний екран «тут нічого немає» ---------- */
   function ensureRoom() {

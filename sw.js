@@ -1,6 +1,6 @@
 /* sw.js — Service Worker для офлайн-доступу.
    При зміні версії сайту піднімай CACHE_VERSION, щоб очистити старий кеш. */
-const CACHE_VERSION = "pc-v82";
+const CACHE_VERSION = "pc-v85";
 
 const STATIC_ASSETS = [
   "/",
@@ -9,9 +9,34 @@ const STATIC_ASSETS = [
   "/newui.css",
   "/extra.css",
   "/mobile.css",
+  "/rtl.css",
   "/pythonchik.css",
   "/pychik-ai.js",
   "/i18n.js",
+  "/lang/tr.js",
+  "/lang/de.js",
+  "/lang/pl.js",
+  "/lang/es.js",
+  "/lang/fr.js",
+  "/lang/it.js",
+  "/lang/pt.js",
+  "/lang/nl.js",
+  "/lang/sv.js",
+  "/lang/cs.js",
+  "/lang/hu.js",
+  "/lang/ro.js",
+  "/lang/el.js",
+  "/lang/id.js",
+  "/lang/hi.js",
+  "/lang/zh.js",
+  "/lang/ja.js",
+  "/lang/ko.js",
+  "/lang/ar.js",
+  "/lang/he.js",
+  "/lang/vi.js",
+  "/lang/th.js",
+  "/lang/content-en.json",
+  "/lang/content-tr.json",
   "/splash.js",
   "/audio.js",
   "/profile.js",

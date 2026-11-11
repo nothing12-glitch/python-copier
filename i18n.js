@@ -1,4 +1,4 @@
-/* Багатомовність: uk / en / tr / de / pl / es / fr / ja */
+/* Багатомовність: 24 мови; uk — основна, решта підвантажуються з lang/*.js */
 (function (global) {
   const dict = {
     uk: {
@@ -3102,11 +3102,96 @@
     ["pl", "Polski"], ["es", "Español"], ["fr", "Français"], ["it", "Italiano"],
     ["pt", "Português"], ["nl", "Nederlands"], ["sv", "Svenska"], ["cs", "Čeština"],
     ["hu", "Magyar"], ["ro", "Română"], ["el", "Ελληνικά"], ["id", "Bahasa Indonesia"],
-    ["hi", "हिन्दी"], ["zh", "中文"], ["ja", "日本語"], ["ko", "한국어"]
+    ["hi", "हिन्दी"], ["zh", "中文"], ["ja", "日本語"], ["ko", "한국어"],
+    ["ar", "العربية"], ["he", "עברית"], ["vi", "Tiếng Việt"], ["th", "ไทย"]
   ];
+  const RTL = { ar: 1, he: 1 };
 
+  const isKnown = (l) => LANGS.some((e) => e[0] === l);
   let lang = localStorage.getItem("lang") || "uk";
-  if (!dict[lang]) lang = "uk";
+  if (!isKnown(lang)) lang = "uk";
+
+  const content = {};
+  function addContent(l, map) {
+    if (!l || !map) return;
+    content[l] = Object.assign(content[l] || {}, map);
+  }
+  function loadContentSync(l) {
+    if (l === "uk") return;
+    try {
+      const x = new XMLHttpRequest();
+      x.open("GET", "lang/content-" + l + ".json", false);
+      x.send(null);
+      if (x.status === 200 || x.status === 0) addContent(l, JSON.parse(x.responseText));
+    } catch (e) { /* пак відсутній — лишаємось на uk */ }
+  }
+  function ensureContent(l) {
+    if (l === "uk" || content[l]) return Promise.resolve();
+    return fetch("lang/content-" + l + ".json")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((o) => { if (o) addContent(l, o); })
+      .catch(() => {});
+  }
+  loadContentSync(lang);
+
+  let ukRev = null;
+  function ukReverse() {
+    if (ukRev) return ukRev;
+    ukRev = {};
+    const u = dict.uk || {};
+    for (const k in u) { const v = u[k]; if (typeof v === "string" && !(v in ukRev)) ukRev[v] = k; }
+    return ukRev;
+  }
+
+  function localize(obj) {
+    if (obj == null) return "";
+    if (typeof obj === "string") return obj;
+    if (obj[lang]) return obj[lang];
+    const base = obj.uk || obj.en;
+    if (base && lang !== "uk") {
+      const key = ukReverse()[base];
+      const v = key != null && dict[lang] ? dict[lang][key] : null;
+      if (v) return v;
+    }
+    const pack = content[lang];
+    if (base && pack && pack[base]) return pack[base];
+    return obj.en || obj.uk || "";
+  }
+
+  function deepLocalize(v) {
+    if (typeof v === "string") return localize({ uk: v });
+    if (Array.isArray(v)) return v.map(deepLocalize);
+    if (v && typeof v === "object") {
+      const o = {};
+      for (const k in v) o[k] = deepLocalize(v[k]);
+      return o;
+    }
+    return v;
+  }
+
+  function langMap(map) {
+    if (!map || typeof map !== "object") return map;
+    if (map[lang]) return map[lang];
+    if (map.uk == null) return map;
+    if (typeof map.uk === "string") return localize(map);
+    return deepLocalize(map.uk);
+  }
+
+  function tr(text) { return localize({ uk: String(text) }); }
+
+  function trText(s) {
+    s = String(s);
+    const trimmed = s.trim();
+    if (!trimmed) return s;
+    const out = localize({ uk: trimmed });
+    if (out === trimmed) return s;
+    return (s.match(/^\s*/)[0] || "") + out + (s.match(/\s*$/)[0] || "");
+  }
+
+  function extend(l, obj) {
+    if (!l || !obj) return;
+    dict[l] = Object.assign(dict[l] || {}, obj);
+  }
 
   function t(key, vars) {
     const d = dict[lang];
@@ -3122,19 +3207,29 @@
     (root || document).querySelectorAll("[data-i18n-ph]").forEach((el) => {
       el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph")));
     });
+    (root || document).querySelectorAll("[data-i18n-static]").forEach((el) => {
+      const what = el.getAttribute("data-i18n-static") || "text";
+      const cur = what === "text" ? el.textContent : (el.getAttribute(what) || "");
+      const next = trText(cur);
+      if (next === cur) return;
+      if (what === "text") el.textContent = next;
+      else el.setAttribute(what, next);
+    });
     document.documentElement.lang = lang;
+    document.documentElement.dir = RTL[lang] ? "rtl" : "ltr";
   }
 
   function setLang(l) {
-    if (!dict[l] || l === lang) return;
+    if (!LANGS.some((x) => x[0] === l) || l === lang) return;
     lang = l;
     localStorage.setItem("lang", l);
     document.body.classList.add("lang-fade");
-    setTimeout(() => {
+    const swap = () => setTimeout(() => {
       apply();
       document.body.classList.remove("lang-fade");
       document.dispatchEvent(new CustomEvent("langchange", { detail: { lang } }));
     }, 180);
+    ensureContent(l).then(swap);
   }
 
   function nativeName(l) {
@@ -3142,5 +3237,8 @@
     return hit ? hit[1] : String(l).toUpperCase();
   }
 
-  global.I18n = { get lang() { return lang; }, t, apply, setLang, langs: LANGS, nativeName };
+  global.I18n = {
+    get lang() { return lang; }, t, apply, setLang, extend, langs: LANGS, rtl: RTL, nativeName,
+    addContent, ensureContent, localize, langMap, tr, trText
+  };
 })(window);

@@ -13,8 +13,8 @@
     tr: { title: "Teknik bakım sürüyor", text: "Site güncelleniyor: onarıyor, iyileştiriyor ve yenilikler ekliyoruz. Bu sırada bazı özellikler kararsız çalışabilir. Çalışmalar 10–15 gün sürecek.", period: "Dönem:", left: "Kalan gün:", ok: "Anladım, siteye geç", badge: "🛠 Bakım", sorry: "Sabrınız için teşekkürler! 💙💛" }
   };
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
-  const t = () => L[lang()] || L.uk;
-  const fmt = (d) => d.toLocaleDateString(lang() === "uk" ? "uk-UA" : lang() === "tr" ? "tr-TR" : "en-GB", { day: "2-digit", month: "2-digit", year: "numeric" });
+  const t = () => (global.I18n ? global.I18n.langMap(L) : L.uk);
+  const fmt = (d) => d.toLocaleDateString(lang(), { day: "2-digit", month: "2-digit", year: "numeric" });
   const daysLeft = () => Math.max(0, Math.ceil((END - Date.now()) / 86400000));
   const progress = () => Math.min(100, Math.max(0, Math.round(((Date.now() - START) / (END - START)) * 100)));
 

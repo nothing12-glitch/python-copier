@@ -14,7 +14,7 @@
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
-  const pick = (o) => o[lang()] || o.uk || o.en;
+  const pick = (o) => (global.I18n ? global.I18n.langMap(o) : (o.uk || o.en));
 
   function toast(msg) {
     if (global.App && global.App.toast) {

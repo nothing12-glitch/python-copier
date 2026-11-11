@@ -187,7 +187,7 @@
     en: "The program is waiting for your input",
     tr: "Program senin girdini bekliyor"
   };
-  const L = (obj) => obj[global.I18n ? global.I18n.lang : "uk"] || obj.uk;
+  const L = (obj) => (global.I18n ? global.I18n.langMap(obj) : (obj.uk || ""));
   const toast = (m) => { if (global.App && global.App.toast) global.App.toast(m); };
 
   let py = null;
@@ -669,7 +669,6 @@
   function buildExamples(loadDefaultCode) {
     const prev = loadDefaultCode ? "hello" : exSel.value;
     exSel.innerHTML = "";
-    const lang = global.I18n.lang;
 
     // —— «Особисті»: збережені програми користувача (порожні, доки нічого не збережено) ——
     const mine = loadSnippets();
@@ -694,7 +693,7 @@
     Object.keys(EXAMPLES).forEach((k) => {
       const o = document.createElement("option");
       o.value = k;
-      o.textContent = EXAMPLES[k].label[lang] || EXAMPLES[k].label.uk;
+      o.textContent = L(EXAMPLES[k].label);
       exSel.appendChild(o);
     });
     restoreExampleSelection(prev, mine);
@@ -1056,7 +1055,7 @@
     try {
       await py.loadPackagesFromImports(code);
     } catch (e) {
-      setOutput("Попередження: не вдалось довантажити деякі модулі: " + e.message, true);
+      setOutput((global.I18n ? global.I18n.tr("Попередження: не вдалось довантажити деякі модулі:") : "Попередження: не вдалось довантажити деякі модулі:") + " " + e.message, true);
     }
     await loadPypiFromCode(code);
   }
@@ -1368,7 +1367,7 @@
     const hits = unsupportedHint(code);
     if (hits.length) {
       setOutput("", true);
-      for (const m of hits) setOutput("💡 " + UNSUPPORTED_MODULES[m], true);
+      for (const m of hits) setOutput("💡 " + (global.I18n ? global.I18n.tr(UNSUPPORTED_MODULES[m]) : UNSUPPORTED_MODULES[m]), true);
     }
     const hint = moduleHint(msg);
     if (hint) setOutput("💡 " + hint, true);
