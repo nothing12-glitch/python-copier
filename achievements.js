@@ -5,7 +5,7 @@
   const STATS_KEY = "app.achStats";
 
   const ALL_GAMES = ["ttt", "snake", "memory", "g2048", "rps", "react", "simon", "mines", "guess"];
-  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "games", "tools", "feedback", "profile", "settings", "achievements"];
+  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "daily", "games", "tools", "feedback", "profile", "settings", "achievements"];
   const tasksTotal = () => (global.Tasks && global.Tasks.count) || 12;
   const courseTotal = () => (global.Course && global.Course.count) || 12;
 
@@ -59,7 +59,11 @@
     { id: "night_owl",    ico: "nightlight",    cat: "explore",  tier: "bronze",   check: () => { const h = new Date().getHours(); return h >= 0 && h < 5; }, progress: () => { const h = new Date().getHours(); return (h >= 0 && h < 5) ? 1 : 0; } },
 
     { id: "visit_3",      ico: "calendar_today",cat: "streak",   tier: "silver",   check: (s) => s.visitDays >= 3,                    progress: (s) => Math.min(s.visitDays / 3, 1) },
-    { id: "visit_7",      ico: "date_range",    cat: "streak",   tier: "gold",     check: (s) => s.visitDays >= 7,                    progress: (s) => Math.min(s.visitDays / 7, 1) }
+    { id: "visit_7",      ico: "date_range",    cat: "streak",   tier: "gold",     check: (s) => s.visitDays >= 7,                    progress: (s) => Math.min(s.visitDays / 7, 1) },
+
+    { id: "daily_first",  ico: "bolt",                   cat: "daily", tier: "bronze", check: (s) => (s.dailyTotal || 0) >= 1,  progress: (s) => Math.min(s.dailyTotal || 0, 1) },
+    { id: "daily_7",      ico: "local_fire_department",  cat: "daily", tier: "silver", check: (s) => (s.dailyBest || 0) >= 7,   progress: (s) => Math.min((s.dailyBest || 0) / 7, 1) },
+    { id: "daily_30",     ico: "whatshot",               cat: "daily", tier: "gold",   check: (s) => (s.dailyBest || 0) >= 30,  progress: (s) => Math.min((s.dailyBest || 0) / 30, 1) }
   ];
 
   const TIER_COLORS = { bronze: "#CD7F32", silver: "#C0C0C0", gold: "#FFD700" };
@@ -80,7 +84,8 @@
     course:   { uk: "Курс",       en: "Course",    tr: "Kurs" },
     profile:  { uk: "Профіль",  en: "Profile",   tr: "Profil" },
     explore:  { uk: "Дослідник",en: "Explorer",  tr: "Kaşif" },
-    streak:   { uk: "Серії",    en: "Streaks",   tr: "Seriler" }
+    streak:   { uk: "Серії",    en: "Streaks",   tr: "Seriler" },
+    daily:    { uk: "Щоденний виклик", en: "Daily challenge", tr: "Günlük görev" }
   };
 
   const ACH_NAMES = {
@@ -122,7 +127,10 @@
     all_routes:     { uk: "Допитливий",          en: "Curious Mind",       tr: "Meraklı" },
     night_owl:      { uk: "Нічна сова",          en: "Night Owl",          tr: "Gece Kuşu" },
     visit_3:        { uk: "Стабільний",          en: "Consistent",         tr: "Tutarlı" },
-    visit_7:        { uk: "Тижневик",            en: "Week Warrior",       tr: "Hafta Savaşçısı" }
+    visit_7:        { uk: "Тижневик",            en: "Week Warrior",       tr: "Hafta Savaşçısı" },
+    daily_first:    { uk: "Перший виклик",       en: "First Challenge",    tr: "İlk Görev" },
+    daily_7:        { uk: "Тиждень поспіль",     en: "Week Streak",        tr: "Haftalık Seri" },
+    daily_30:       { uk: "Місяць вогню",        en: "Month of Fire",      tr: "Ateş Ayı" }
   };
 
   const ACH_DESC = {
@@ -164,7 +172,10 @@
     all_routes:     { uk: "Відвідай усі розділи сайту",            en: "Visit all site sections",             tr: "Tüm site bölümlerini ziyaret et" },
     night_owl:      { uk: "Зайди на сайт після опівночі",          en: "Visit the site after midnight",       tr: "Gece yarısından sonra siteyi ziyaret et" },
     visit_3:        { uk: "Заходь 3 дні поспіль",                  en: "Visit 3 days in a row",               tr: "3 gün üst üste ziyaret et" },
-    visit_7:        { uk: "Заходь 7 днів поспіль",                 en: "Visit 7 days in a row",               tr: "7 gün üst üste ziyaret et" }
+    visit_7:        { uk: "Заходь 7 днів поспіль",                 en: "Visit 7 days in a row",               tr: "7 gün üst üste ziyaret et" },
+    daily_first:    { uk: "Розв'яжи щоденний виклик",              en: "Solve a daily challenge",             tr: "Günlük görevi çöz" },
+    daily_7:        { uk: "Серія з 7 щоденних викликів",           en: "Keep a streak of 7 daily challenges", tr: "7 günlük görev serisi yap" },
+    daily_30:       { uk: "Серія з 30 щоденних викликів",          en: "Keep a streak of 30 daily challenges",tr: "30 günlük görev serisi yap" }
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
@@ -177,7 +188,7 @@
   }
 
   function defaultStats() {
-    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [], toolsUsed: [], tasksSolved: [], contestsRun: 0, contestPerfect: 0, contestBest: 0, packagesInstalled: 0, lessonsDone: 0 };
+    return { pyRuns: 0, snippets: 0, gamesPlayed: [], records: {}, recordGames: [], routesVisited: [], visitDates: [], toolsUsed: [], tasksSolved: [], contestsRun: 0, contestPerfect: 0, contestBest: 0, packagesInstalled: 0, lessonsDone: 0, dailyTotal: 0, dailyBest: 0 };
   }
 
   function saveStats(s) { localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
@@ -211,6 +222,10 @@
     }
     else if (key === "package") s.packagesInstalled = (s.packagesInstalled || 0) + 1;
     else if (key === "lesson" && value) s.lessonsDone = Math.max(s.lessonsDone || 0, value.done || 0);
+    else if (key === "daily" && value) {
+      s.dailyTotal = Math.max(s.dailyTotal || 0, value.total || 0);
+      s.dailyBest = Math.max(s.dailyBest || 0, value.best || 0);
+    }
     saveStats(s);
     return s;
   }
@@ -296,7 +311,7 @@
       '</h3><span class="ach-counter">' + count + ' / ' + total + '</span>';
     container.appendChild(header);
 
-    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "course", "profile", "explore", "streak"];
+    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "course", "profile", "explore", "streak", "daily"];
     cats.forEach((cat) => {
       const catAchs = ACHIEVEMENTS.filter((a) => a.cat === cat);
       if (catAchs.length === 0) return;
@@ -465,6 +480,14 @@
     document.addEventListener("contestdone", (e) => {
       if (e.detail) {
         bumpStat("contest", e.detail);
+        checkAll();
+        rerenderIfActive();
+      }
+    });
+
+    document.addEventListener("dailydone", (e) => {
+      if (e.detail) {
+        bumpStat("daily", e.detail);
         checkAll();
         rerenderIfActive();
       }

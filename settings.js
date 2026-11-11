@@ -57,7 +57,17 @@
   function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
 
   function get(k) { return state[k]; }
+  /* Пайтончик на дорозробці: його групу позначено devLock, тому будь-який запис
+     ігнорується — навіть якщо хтось викличе Settings.set напряму. */
+  function isDevLocked(k) {
+    for (const g of SCHEMA) {
+      if (!g.devLock) continue;
+      for (const it of g.items) if (it.id === k) return true;
+    }
+    return false;
+  }
   function set(k, v) {
+    if (isDevLocked(k)) return;
     state[k] = v; save(); apply();
     document.dispatchEvent(new CustomEvent("settingschange", { detail: { key: k, value: v } }));
   }
@@ -163,7 +173,7 @@
       { id: "sfxVolume", type: "range", label: "set.sfxVolume", min: 0, max: 1, step: 0.05 },
       { id: "musicVolume", type: "range", label: "set.musicVolume", min: 0, max: 1, step: 0.05 }
     ]},
-    { group: "set.pychik", items: [
+    { group: "set.pychik", devLock: true, items: [
       { id: "pyNoCode", type: "switch", label: "set.pyNoCode" },
       { id: "pyAiKey", type: "text", label: "set.pyAiKey", secret: true, placeholder: "sk-..." },
       { id: "pyAiModel", type: "text", label: "set.pyAiModel", placeholder: "gpt-4o-mini" },
@@ -191,7 +201,7 @@
     return t("settings.language") + " (" + global.I18n.nativeName(cur) + ")";
   }
 
-  function row(item) {
+  function row(item, locked) {
     const wrap = document.createElement("div");
     wrap.className = "setting-row";
     const name = document.createElement("span");
@@ -251,9 +261,27 @@
       btn.onclick = () => document.dispatchEvent(new CustomEvent("settings-action", { detail: { id: item.id } }));
       wrap.appendChild(btn);
     }
+    if (locked) {
+      wrap.classList.add("setting-locked");
+      const ctrl = wrap.querySelector("input, select, button");
+      if (ctrl) ctrl.disabled = true;
+    }
     return wrap;
   }
   function fmt(v) { return (typeof v === "number" && v < 1 && v > 0) ? v.toFixed(2) : String(v); }
+
+  function devNotice() {
+    const box = document.createElement("div");
+    box.className = "setting-dev";
+    const stamp = document.createElement("span");
+    stamp.className = "setting-dev-stamp";
+    stamp.textContent = t("pychik.devStamp");
+    const note = document.createElement("span");
+    note.className = "setting-dev-note";
+    note.textContent = t("pychik.devNote");
+    box.append(stamp, note);
+    return box;
+  }
 
   function render(container) {
     if (!container) return;
@@ -261,7 +289,8 @@
     SCHEMA.forEach((g) => {
       const h = document.createElement("h4"); h.className = "settings-group"; h.textContent = t(g.group);
       container.appendChild(h);
-      g.items.forEach((it) => container.appendChild(row(it)));
+      if (g.devLock) container.appendChild(devNotice());
+      g.items.forEach((it) => container.appendChild(row(it, !!g.devLock)));
     });
   }
 

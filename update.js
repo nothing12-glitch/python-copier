@@ -3,10 +3,56 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.106";
+  const VERSION = "26.10.108";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.10.108": {
+      uk: [
+        "Нова сторінка «Щоденний виклик»: одна задача на день, однакова для всіх, і серія днів поспіль із зворотним відліком до опівночі",
+        "Шістнадцять шаблонів для виклику дня — від суми трьох чисел до найбільшого спільного дільника, простих чисел і впорядковування низки",
+        "Три нові досягнення: «Перший виклик», «Тиждень поспіль» і «Місяць вогню» — тепер їх 42",
+        "Банк задач виріс до 54: дванадцять нових задач другого та третього рівнів",
+        "Новий розділ курсу «Словники та множини» — вісім уроків від пар «ключ — значення» до частоти слів у тексті",
+        "Усі нові тексти, інтерфейс і сторінки перекладені всіма 24 мовами"
+      ],
+      en: [
+        "New «Daily challenge» page: one task per day, the same for everyone, with a day streak and a countdown to midnight",
+        "Sixteen templates power the daily task — from the sum of three numbers to greatest common divisor, primes and sorting a row",
+        "Three new achievements: \"First Challenge\", \"Week Streak\" and \"Month of Fire\" — now there are 42 of them",
+        "The task bank grew to 54: twelve new level 2 and level 3 problems",
+        "A new course chapter, \"Dictionaries and Sets\" — eight lessons from key-value pairs to word frequency in a text",
+        "All new texts, interface strings and pages are translated into all 24 languages"
+      ],
+      tr: [
+        "Yeni «Günlük görev» sayfası: günde tek görev, herkes için aynı, gün serisi ve gece yarısına geri sayımla",
+        "Günlük göreve on altı şablon yön veriyor — üç sayının toplamından ebob'a, asal sayılardan bir diziyi sıralamaya",
+        "Üç yeni başarım: «İlk Görev», «Haftalık Seri» ve «Ateş Ayı» — artık toplam 42",
+        "Görev havuzu 54'e çıktı: ikinci ve üçüncü seviyeden on iki yeni görev",
+        "Yeni kurs bölümü «Sozlukler ve Kumeler» — anahtar-değer çiftlerinden kelime sıklığına sekiz ders",
+        "Tüm yeni metinler, arayüz ifadeleri ve sayfalar 24 dilin tamamına çevrildi"
+      ]
+    },
+    "26.10.107": {
+      uk: [
+        "Пайтончик офіційно на дорозробці: через усю вікно-панель асистента тепер лежить велика печатка «НА РОЗРОБЦІ», а в шапці — короткий бейдж тією ж мовою",
+        "Налаштування Пайтончика закриті: перемикач «Не давати готовий код» і поля API-ключ, модель та ендпоінт позначено як недоступні, а будь-яка спроба їх зберегти ігнорується",
+        "Замість них — пунктирний попереджувальний блок з поясненням, що асистент ще доопрацьовується",
+        "Печатка й пояснення перекладені всіма 24 мовами, для арабської та івриту — дзеркально"
+      ],
+      en: [
+        "Pythonchik is officially work-in-progress: a big «UNDER DEVELOPMENT» stamp now lies across the whole assistant panel, with a short badge in the header",
+        "The assistant's settings are closed: the \"never hand out ready-made code\" switch and the API key, model and endpoint fields are marked unavailable, and any attempt to save them is ignored",
+        "In their place there is a warning block explaining that the assistant is still being polished",
+        "The stamp and the note speak all 24 languages, mirrored for Arabic and Hebrew"
+      ],
+      tr: [
+        "Pythonchik resmen geliştirme aşamasında: asistan panelinin üzerinden büyük bir «GELİŞTİRİLİYOR» damgası geçiyor, başlıkta da aynı dilde kısa bir etiket var",
+        "Pythonchik ayarları kapalı: «hazır kod verme» anahtarı ile API anahtarı, model ve uç nokta alanları erişilemez olarak işaretlendi, kaydetme denemeleri yok sayılıyor",
+        "Yerlerine asistanın hâlâ geliştirildiğini açıklayan uyarı bloğu geldi",
+        "Damga ve açıklama 24 dilin tamamında; Arapça ve İbranice'de ayna yerleşimle"
+      ]
+    },
     "26.10.106": {
       uk: [
         "Сайт тепер повністю перекладений 24 мовами: інтерфейс, уроки, задачі, підказки, правила ігор, профіль і вікно «Що нового»",

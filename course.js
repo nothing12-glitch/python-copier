@@ -1463,6 +1463,231 @@
       ]
     },
     {
+      chapter: { uk: "Словники та множини", en: "Dictionaries and Sets", tr: "Sozlukler ve Kumeler" },
+      lessons: [
+        {
+          id: "dict_basics",
+          title: { uk: "Навіщо потрібен словник", en: "Why you need a dictionary", tr: "Sözlüğe neden ihtiyaç var" },
+          theory: {
+            uk: "Словник (dict) зберігає пари «ключ — значення»: person = {\"name\": \"Oksana\", \"age\": 31}. Ключі ніколи не повторюються, і замість перебору всього списку ти просто питаєш потрібне: person[\"name\"]. Порожній словник пишеться як {}, а ще один спосіб створення — dict(name=\"Oksana\", age=31). Кількість пар рахує звичний len(d).",
+            en: "A dictionary (dict) stores key-value pairs: person = {\"name\": \"Oksana\", \"age\": 31}. Keys never repeat, so instead of scanning a whole list you simply ask for what you need: person[\"name\"]. An empty dict is written as {}, and another way to build one is dict(name=\"Oksana\", age=31). The usual len(d) counts the pairs.",
+            tr: "Sozluk (dict) anahtar-deger ciftleri tutar: kisi = {\"ad\": \"Oksana\", \"yas\": 31}. Anahtarlar asla tekrarlanmaz; tum listeyi taramak yerine ihtiyacini dogrudan sorarsin: kisi[\"ad\"]. Bos sozluk {} seklinde yazilir, bir diger kurma yolu da dict(ad=\"Oksana\", yas=31). len(d) ciftleri sayar."
+          },
+          example: "person = {\"name\": \"Oksana\", \"age\": 31}\nprint(person[\"name\"])\nprint(person[\"age\"])\nprint(len(person))\nprint(type({}))\n",
+          task: {
+            text: {
+              uk: "Склади словник book із трьома парами саме в такому порядку: title — \"Python\", pages — 300, year — 2024. Виведи три рядки: спершу кількість пар (len), потім значення ключа title і значення ключа pages.",
+              en: "Build a dict book with three pairs in exactly this order: title — \"Python\", pages — 300, year — 2024. Print three lines: first the number of pairs (len), then the value of the title key and the value of the pages key.",
+              tr: "title — \"Python\", pages — 300, year — 2024 ciftlerini tam bu sirayla bir book sozlugunde topla. Uc satir yazdir: once cift sayisi (len), sonra title anahtarinin degeri ve pages anahtarinin degeri."
+            },
+            hint: {
+              uk: "Запиши словник одним рядком: book = {\"title\": \"Python\", \"pages\": 300, \"year\": 2024}, а далі print(len(book)), print(book[\"title\"]), print(book[\"pages\"]).",
+              en: "Write it on one line: book = {\"title\": \"Python\", \"pages\": 300, \"year\": 2024}, then print(len(book)), print(book[\"title\"]) and print(book[\"pages\"]).",
+              tr: "Tek satirda yaz: book = {\"title\": \"Python\", \"pages\": 300, \"year\": 2024}, ardindan print(len(book)), print(book[\"title\"]) ve print(book[\"pages\"])."
+            },
+            starter: "",
+            tests: [
+              { in: "", out: "3\nPython\n300" }
+            ]
+          }
+        },
+        {
+          id: "dict_get",
+          title: { uk: "Звернення за ключем: KeyError і get()", en: "Access by key: KeyError and get()", tr: "Anahtarla erisim: KeyError ve get()" },
+          theory: {
+            uk: "Звернення d[\"kiwi\"] за ключем, якого немає, припиняє програму помилкою KeyError. Метод d.get(\"kiwi\") у такій ситуації просто повертає None, а d.get(\"kiwi\", 0) повертає значення за замовчуванням — 0. Перевірити наявність ключа можна через if \"kiwi\" in d. На практиці лічильники та таблички цін майже завжди читають саме через get().",
+            en: "Writing d[\"kiwi\"] for a missing key stops the program with a KeyError. In that case d.get(\"kiwi\") just returns None, and d.get(\"kiwi\", 0) returns the default value 0 instead. You can test membership with if \"kiwi\" in d. In real code, counters and lookup tables are mostly read through get().",
+            tr: "Olmayan bir anahtar icin d[\"kiwi\"] yazmak programi KeyError ile durdurur. Bu durumda d.get(\"kiwi\") sadece None dondurur, d.get(\"kiwi\", 0) ise varsayilan deger olan 0'i dondurur. Varligi if \"kiwi\" in d ile kontrol edebilirsin. Sayaclar ve sozlukler pratikte cogunlukla get() ile okunur."
+          },
+          example: "prices = {\"apple\": 10, \"pear\": 15}\nprint(prices.get(\"apple\"))\nprint(prices.get(\"kiwi\"))\nprint(prices.get(\"kiwi\", 0))\nprint(\"pear\" in prices)\n",
+          task: {
+            text: {
+              uk: "У стартері дано словник stock з цінами напоїв. Прочитай рядок — назву напою. Виведи його ціну, а якщо такого напою в словнику немає — виведи 0.",
+              en: "The starter gives a dict stock with drink prices. Read one line — the name of a drink. Print its price, or print 0 if that drink is not in the dict.",
+              tr: "Baslangicda icecek fiyatlarini tutan bir stock sozlugu veriliyor. Bir satir oku — icecegin adi. Fiyatini yazdir; sozlukte yoksa 0 yazdir."
+            },
+            hint: {
+              uk: "Скористайся другим аргументом: print(stock.get(key, 0)). Звернення stock[key] за неіснуючим ключем впало б із KeyError.",
+              en: "Use the second argument: print(stock.get(key, 0)). Plain stock[key] on a missing key would crash with KeyError.",
+              tr: "Ikinci argumani kullan: print(stock.get(key, 0)). Olmayan anahtar icin stock[key] KeyError ile cokerd."
+            },
+            starter: "stock = {\"tea\": 40, \"coffee\": 25}\nkey = input().strip()\n",
+            tests: [
+              { in: "tea\n", out: "40" },
+              { in: "juice\n", out: "0" }
+            ]
+          }
+        },
+        {
+          id: "dict_modify",
+          title: { uk: "Додавання, змінення та видалення", en: "Adding, changing and removing", tr: "Ekleme, degistirme ve silme" },
+          theory: {
+            uk: "Присвоєння за новим ключем додає пару: d[\"b\"] = 2, а той самий запис за наявним ключем змінює значення: d[\"a\"] = 10. Видалити можна командою del d[\"b\"] або методом d.pop(\"b\"), який ще й повертає видалене значення. d.pop(\"z\", None) не впаде, якщо ключа немає. Порядок ключів у словнику при цьому зберігається: новий ключ стає в кінець, а оновлений залишається на своєму місці.",
+            en: "Assigning to a new key adds a pair: d[\"b\"] = 2, while the same statement on an existing key changes its value: d[\"a\"] = 10. You can remove with the del d[\"b\"] statement or with d.pop(\"b\"), which also returns the removed value. d.pop(\"z\", None) will not crash when the key is missing. Keys keep their order: a new key goes to the end, an updated one stays where it was.",
+            tr: "Yeni bir anahtara atama cift ekler: d[\"b\"] = 2; ayni satir var olan anahtar icin degeri degistirir: d[\"a\"] = 10. del d[\"b\"] komutuyla veya silinen degeri de döndüren d.pop(\"b\") ile silebilirsin. d.pop(\"z\", None) anahtar yoksa cokmez. Anahtar sirasi korunur: yeni anahtar sona eklenir, guncellenen eski yerinde kalir."
+          },
+          example: "d = {\"a\": 1}\nd[\"b\"] = 2\nd[\"a\"] = 10\nprint(d)\ndel d[\"b\"]\nprint(d.pop(\"a\"))\nprint(d)\n",
+          task: {
+            text: {
+              uk: "У першому рядку — ціле число n. Далі йдуть n рядків, у кожному слово та ціле число через пробіл. Заповнюй словник так, щоб значення, прочитане пізніше для вже наявного слова, перезаписувало старе. Виведи два рядки: кількість ключів len(d) і сам словник print(d).",
+              en: "The first line holds an integer n. Then n lines follow, each with a word and an integer separated by a space. Fill a dict so that a value read later for an already present word overwrites the old one. Print two lines: the number of keys len(d) and the dict itself print(d).",
+              tr: "Ilk satirda bir n tam sayisi var. Ardindan n satir gelir; her birinde boslukla ayrilmis bir kelime ve bir tam sayi bulunur. Sozlugu, daha sonra okunan degerin mevcut kelimenin eskisini ezmesi seklinde doldur. Iki satir yazdir: anahtar sayisi len(d) ve sozlugun kendisi print(d)."
+            },
+            hint: {
+              uk: "У циклі for i in range(n): parts = input().split(); d[parts[0]] = int(parts[1]). Просте присвоєння саме робить і додавання, і перезапис. Потім print(len(d)) та print(d).",
+              en: "In a loop: for i in range(n): parts = input().split(); d[parts[0]] = int(parts[1]). Plain assignment does both the adding and the overwriting. Then print(len(d)) and print(d).",
+              tr: "Dongude: for i in range(n): parts = input().split(); d[parts[0]] = int(parts[1]). Sade atama hem ekler hem ustune yazar. Sonra print(len(d)) ve print(d)."
+            },
+            starter: "n = int(input())\nd = {}\n",
+            tests: [
+              { in: "4\na 1\nb 2\na 3\nc 4\n", out: "3\n{'a': 3, 'b': 2, 'c': 4}" },
+              { in: "3\nx 5\ny 10\nx 7\n", out: "2\n{'x': 7, 'y': 10}" }
+            ]
+          }
+        },
+        {
+          id: "dict_iterate",
+          title: { uk: "Перебір: keys(), values(), items()", en: "Iterating: keys(), values(), items()", tr: "Dolasma: keys(), values(), items()" },
+          theory: {
+            uk: "Звичний for k in d перебирає ключі словника, тому значення беруть як d[k]. Явні методи d.keys() та d.values() дають той самий результат, лише d.values() ще й можна підсумувати: sum(d.values()). Для пар потрібен d.items(): for name, value in d.items(): — це розпакування кортежа. Порядок завжди збігається з порядком вставлення ключів.",
+            en: "A plain for k in d iterates the keys, so values come from d[k]. The explicit d.keys() and d.values() do the same, only d.values() can also be summed: sum(d.values()). For pairs you need d.items(): for name, value in d.items(): unpacks a tuple. The order always matches the insertion order of the keys.",
+            tr: "Duz bir for k in d sozlugun anahtarlarini dolasir, degerler d[k] ile alinir. Açar sekli olan d.keys() ve d.values() ayni isi yapar; yalnizca d.values() toplamaya da yarar: sum(d.values()). Ciftler icin d.items() gerekir: for name, value in d.items(): bir tuple'i acar. Sira her zaman anahtarlarin eklenme sirasiyla aynidir."
+          },
+          example: "scores = {\"ann\": 5, \"bob\": 3}\nfor name in scores:\n    print(name, scores[name])\nprint(sum(scores.values()))\nfor name, value in scores.items():\n    print(name, value)\n",
+          task: {
+            text: {
+              uk: "Прочитай один рядок, у якому записи формату name:score розділені пробілом (наприклад, ann:5 bob:3). Збери їх у словник, а потім виведи два рядки: ім'я запису з найбільшою оцінкою (якщо таких кілька — перший доданий) і кількість записів.",
+              en: "Read one line with entries in the name:score format separated by spaces (for example ann:5 bob:3). Collect them into a dict, then print two lines: the name of the entry with the largest score (the first one added if several tie) and the number of entries.",
+              tr: "Boslukla ayrilmis name:score bicimindeki kayitlari tek satirda oku (ornegin ann:5 bob:3). Bunlari bir sozluge topla, sonra iki satir yazdir: en buyuk puana sahip kaydin adi (esitlik varsa ilk eklenen) ve kayit sayisi."
+            },
+            hint: {
+              uk: "Спершу для part in line.split(): pair = part.split(\":\"); d[pair[0]] = int(pair[1]). Далі пройдись по d.items() і тримай найкраще, замінюючи лише коли оцінка строго більша (>).",
+              en: "First for part in line.split(): pair = part.split(\":\"); d[pair[0]] = int(pair[1]). Then loop over d.items() keeping the best, replacing only when the score is strictly greater (>).",
+              tr: "Once for part in line.split(): pair = part.split(\":\"); d[pair[0]] = int(pair[1]). Sonra d.items() uzerinde dolasip en iyiyi tut; yalnizca puan kati olarak buyukse degistir (>)."
+            },
+            starter: "line = input()\nd = {}\n",
+            tests: [
+              { in: "ann:5 bob:3 cat:5\n", out: "ann\n3" },
+              { in: "x:1 y:9 z:2\n", out: "y\n3" },
+              { in: "solo:4\n", out: "solo\n1" }
+            ]
+          }
+        },
+        {
+          id: "dict_comprehension",
+          title: { uk: "Генератор словника", en: "Dictionary comprehension", tr: "Sozluk ic ifadesi" },
+          theory: {
+            uk: "Генератор словника будує словник одним виразом: squares = {n: n * n for n in nums} — перед двокрапкою ключ, після нього значення. Можна додати умову в кінці: {w: len(w) for w in words if len(w) > 2}. Це скорочений запис циклу з присвоєнням, тому порядок ключів такий самий, як в оригіналі. Значення можна обчислювати будь-яким виразом, не лише len().",
+            en: "A dict comprehension builds a dict with one expression: squares = {n: n * n for n in nums} — the key goes before the colon, the value after it. You can append a condition at the end: {w: len(w) for w in words if len(w) > 2}. It is a shortened loop with an assignment, so the key order stays the same as in the source. The value may be any expression, not only len().",
+            tr: "Sozluk ic ifadesi sozlugi tek satirla kurar: kare = {n: n * n for n in sayilar} — ikidan önce anahtar, sonra deger yazilir. Sona bir kosul ekleyebilirsin: {w: len(w) for w in kelimeler if len(w) > 2}. Bu, atamali dongunun kisa yazimidir; bu yuzden anahtar sirasi kaynaktakiyle ayni kalir. Deger yalnizca len() degil, herhangi bir ifade olabilir."
+          },
+          example: "nums = [1, 2, 3, 4]\nsquares = {n: n * n for n in nums}\nprint(squares)\nwords = [\"cat\", \"dog\", \"ox\"]\nshort = {w: len(w) for w in words if len(w) == 3}\nprint(short)\n",
+          task: {
+            text: {
+              uk: "Прочитай один рядок слів через пробіл. Створи генератором словника, де ключ — слово, а значення — його довжина, і виведи для кожного ключа рядок «слово довжина» через пробіл у порядку появи слів у рядку.",
+              en: "Read one line of words separated by spaces. With a comprehension build a dict where the key is the word and the value is its length, then print one line per key as «word length» in the order the words first appear.",
+              tr: "Boslukla ayrilmis kelimeleri tek satirda oku. Ic ifadesiyle, anahtari kelime ve degeri uzunlugu olan bir sozluk olustur; sonra her anahtar icin kelime uzunluk biciminde bir satiri, kelimelerin ilk gorulme sirasiyla yazdir."
+            },
+            hint: {
+              uk: "lens = {w: len(w) for w in words} — повторювані слова самі зливаються в один ключ. Далі for w, n in lens.items(): print(w, n).",
+              en: "lens = {w: len(w) for w in words} — repeated words merge into a single key by themselves. Then for w, n in lens.items(): print(w, n).",
+              tr: "lens = {w: len(w) for w in words} — tekrarlanan kelimeler kendiliginden tek anahtarda birlesir. Sonra for w, n in lens.items(): print(w, n)."
+            },
+            starter: "words = input().split()\n",
+            tests: [
+              { in: "cat dog ox\n", out: "cat 3\ndog 3\nox 2" },
+              { in: "a bb ccc\n", out: "a 1\nbb 2\nccc 3" },
+              { in: "go go stop\n", out: "go 2\nstop 4" }
+            ]
+          }
+        },
+        {
+          id: "set_basics",
+          title: { uk: "Множини: лише унікальні значення", en: "Sets: only unique values", tr: "Kumeler: yalnizca benzersiz degerler" },
+          theory: {
+            uk: "Множина (set) зберігає лише різні значення без порядку: tags = {\"python\", \"code\"}. Порожню множину створюють лише через set(), бо {} — це порожній словник. Додають елемент методом add(), а видаляють discard() (він мовчки ігнорує відсутній елемент, на відміну від remove()). set(nums) прибирає дублікати зі списку, len() рахує різні елементи, а in перевіряє належність. Оскільки порядок у множині невизначений, для виводу її сортують: sorted(s).",
+            en: "A set keeps only distinct values with no order: tags = {\"python\", \"code\"}. An empty set is created only with set(), because {} is an empty dict. Add elements with add() and remove them with discard() — unlike remove(), it silently ignores a missing element. set(nums) drops duplicates from a list, len() counts the distinct items and in tests membership. Because the order inside a set is undefined, sort it when printing: sorted(s).",
+            tr: "Kume (set) yalnizca tekrarsiz degerleri siralamadan tutar: etiketler = {\"python\", \"code\"}. Bos kume yalnizca set() ile kurulur, cunku {} bos sozluktur. Eleman add() ile eklenir, discard() ile silinir; remove()nin aksine olmayan elemani sessizce yok sayar. set(sayilar) listedeki tekrarlarini siler, len() farkli elemanlari sayar, in ise aidiyeti kontrol eder. Kume icinde sira belirsiz oldugundan yazdirirken sorted(s) kullan."
+          },
+          example: "tags = {\"python\", \"code\"}\ntags.add(\"python\")\ntags.add(\"learn\")\nprint(len(tags))\nprint(\"code\" in tags)\nnums = [1, 1, 2, 3, 3]\nprint(sorted(set(nums)))\n",
+          task: {
+            text: {
+              uk: "Прочитай один рядок слів через пробіл. Виведи два рядки: скільки різних слів у рядку та самі ці різні слова, відсортовані в алфавітному порядку та розділені одним пробілом.",
+              en: "Read one line of words separated by spaces. Print two lines: how many distinct words the line has, and those distinct words sorted alphabetically and joined by single spaces.",
+              tr: "Boslukla ayrilmis kelimeleri tek satirda oku. Iki satir yazdir: satirdaki farkli kelime sayisi ve bu farkli kelimelerin alfabetik siralanmisi, tek boslukla birlestirilmis hali."
+            },
+            hint: {
+              uk: "uniq = set(words) — дублікати зникають самі. Перший рядок: print(len(uniq)). Другий рядок: print(\" \".join(sorted(uniq))).",
+              en: "uniq = set(words) — the duplicates disappear on their own. First line: print(len(uniq)). Second line: print(\" \".join(sorted(uniq))).",
+              tr: "uniq = set(words) — tekrarlar kendiliginden kaybolur. Ilk satir: print(len(uniq)). Ikinci satir: print(\" \".join(sorted(uniq)))."
+            },
+            starter: "words = input().split()\n",
+            tests: [
+              { in: "red green blue red\n", out: "3\nblue green red" },
+              { in: "a a a\n", out: "1\na" },
+              { in: "z m b m\n", out: "3\nb m z" }
+            ]
+          }
+        },
+        {
+          id: "set_operations",
+          title: { uk: "Об'єднання, перетин і різниця", en: "Union, intersection and difference", tr: "Birlesim, kesisim ve fark" },
+          theory: {
+            uk: "Над множинами працюють чотири оператори: a | b дає всі елементи обох (об'єднання), a & b — тільки спільні (перетин), a - b — елементи a без того, що є в b (різниця), a ^ b — те, що трапляється лише в одній із них. Результатом завжди є нова множина, вихідні не змінюються. Одинакові результати дають і методи a.union(b), a.intersection(b), a.difference(b). Виводити множину напряму невигідно — порядок невизначений, тому вживай sorted().",
+            en: "Four operators work on sets: a | b gives every element of both (union), a & b only the shared ones (intersection), a - b the elements of a that are not in b (difference), and a ^ b what appears in just one of them. The result is always a new set and the originals stay untouched. The methods a.union(b), a.intersection(b) and a.difference(b) give the same results. Printing a set directly is a bad idea — its order is undefined, so use sorted().",
+            tr: "Kumeler uzerinde dort islec calisir: a | b ikisinin tum elemanlarini (birlesim), a & b yalnizca ortak olanlari (kesisim), a - b de b'de olmayan a elemanlarini (fark), a ^ b ise yalnizca birinde bulunanlari verir. Sonuc her zaman yeni bir kumedir, eskiler degismez. a.union(b), a.intersection(b), a.difference(b) metotlari ayni sonucu verir. Kumeyi dogrudan yazdirmak risklidir - sirasi belirsizdir, bu yuzden sorted() kullan."
+          },
+          example: "a = {1, 2, 3}\nb = {3, 4}\nprint(sorted(a | b))\nprint(sorted(a & b))\nprint(sorted(a - b))\nprint(sorted(b - a))\n",
+          task: {
+            text: {
+              uk: "У першому рядку — слова множини A, у другому рядку — слова множини B (через пробіл). Виведи три рядки: об'єднання A | B, перетин A & B і різницю A - B; у кожному рядку слова в алфавітному порядку через пробіл.",
+              en: "The first line has the words of set A, the second line the words of set B, separated by spaces. Print three lines: the union A | B, the intersection A & B and the difference A - B; in each line the words alphabetically, separated by spaces.",
+              tr: "Ilk satirda A kumesinin kelimeleri, ikinci satirda B kumesinin kelimeleri var (boslukla ayrilmis). Uc satir yazdir: birlesim A | B, kesisim A & B ve fark A - B; her satirda kelimeler alfabetik sirada, boslukla ayrilmis."
+            },
+            hint: {
+              uk: "Вже в стартері a і b — множини. Пиши print(\" \".join(sorted(a | b))), а далі те саме з & та -.",
+              en: "In the starter a and b are already sets. Write print(\" \".join(sorted(a | b))), then the same with & and -.",
+              tr: "Baslangicta a ve b zaten kume. print(\" \".join(sorted(a | b))) yaz, sonrasinda aynisini & ve - ile yap."
+            },
+            starter: "a = set(input().split())\nb = set(input().split())\n",
+            tests: [
+              { in: "red green blue\nblue yellow\n", out: "blue green red yellow\nblue\ngreen red" },
+              { in: "one two three\ntwo three four\n", out: "four one three two\nthree two\none" },
+              { in: "x y\ny z\n", out: "x y z\ny\nx" }
+            ]
+          }
+        },
+        {
+          id: "word_frequency",
+          title: { uk: "Практика: частоти слів у реченні", en: "Practice: word frequencies in a sentence", tr: "Alistirma: cumlede kelime sikliklari" },
+          theory: {
+            uk: "Класична задача на словнику — порахувати, скільки разів зустрічається кожне слово. Спершу words = sentence.split() дістає список слів, потім у циклі for word in words: counts[word] = counts.get(word, 0) + 1 піднімає лічильник: нове слово отримує 0 і стає 1, а вже наявне збільшується. Ключі у словнику укладуться в порядку першої появи слова, тож перше серед рівних частот — саме раніше зустрічене. Кількість записів дорівнює len(counts).",
+            en: "The classic dict exercise is counting how many times each word appears. First words = sentence.split() gives the list of words, then a loop for word in words: counts[word] = counts.get(word, 0) + 1 raises the counter: a new word starts from 0 and becomes 1, an existing one just grows. The keys end up in the order of each word's first appearance, so among equal frequencies the first one seen stays first. The number of entries equals len(counts).",
+            tr: "Klasik sozluk alistirmasi, her kelimenin kac kez gectigini saymaktir. Once words = sentence.split() kelime listesini verir, sonra dongude counts[word] = counts.get(word, 0) + 1 sayaci yukseltir: yeni kelime 0'dan baslayip 1 olur, var olan sadece buyur. Anahtarlar her kelimenin ilk gorulme sirasiyla dizilir; bu yuzden esit sikliklarda en once gecen kelime birinci kalir. Kayit sayisi len(counts)'a esittir."
+          },
+          example: "sentence = \"the cat and the hat\"\ncounts = {}\nfor word in sentence.split():\n    counts[word] = counts.get(word, 0) + 1\nprint(counts)\nprint(counts[\"the\"])\n",
+          task: {
+            text: {
+              uk: "Прочитай один рядок, у якому слова розділені пробілом. Порахуй словником частоту кожного слова і виведи три рядки: 1) скільки різних слів у реченні; 2) найчастіше слово (якщо таких кілька — те, що зустрічається в тексті першим); 3) скільки разів воно трапилося.",
+              en: "Read one line whose words are separated by spaces. Count each word's frequency in a dict and print three lines: 1) how many distinct words the sentence has; 2) the most frequent word (if several tie, the one appearing first in the text); 3) how many times it occurred.",
+              tr: "Boslukla ayrilmis kelimeleri iceren bir satir oku. Her kelimenin sikligini bir sozlukte say ve uc satir yazdir: 1) cumledeki farkli kelime sayisi; 2) en sik geçen kelime (esitlik varsa metinde ilk gecen); 3) kac kez gectigi."
+            },
+            hint: {
+              uk: "Частоти: counts[word] = counts.get(word, 0) + 1. Найкраще слово тримай у двох змінних (best, best_count) і замінюй, лише коли counts[word] строго більше за best_count — тоді перше серед рівних і залишиться.",
+              en: "Frequencies: counts[word] = counts.get(word, 0) + 1. Keep the best word in two variables (best, best_count) and replace them only when counts[word] is strictly greater than best_count — that way the first of the tied words survives.",
+              tr: "Sikliklar: counts[word] = counts.get(word, 0) + 1. En iyi kelimeyi iki degiskanda tut (best, best_count) ve yalnizca counts[word] degeri best_count'tan kati olarak buyukse degistir — boylece esitler arasinda ilk gecen kelime kalir."
+            },
+            starter: "sentence = input()\ncounts = {}\n",
+            tests: [
+              { in: "apple banana apple cherry banana apple\n", out: "3\napple\n3" },
+              { in: "a b c\n", out: "3\na\n1" },
+              { in: "red blue red blue green\n", out: "3\nred\n2" }
+            ]
+          }
+        }
+      ]
+    },
+    {
       chapter: { uk: "Функції та інше", en: "Functions and beyond", tr: "Fonksiyonlar ve ötesi" },
       lessons: [
         {

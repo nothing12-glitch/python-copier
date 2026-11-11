@@ -7,5 +7,7 @@
     "set.pyNoCode": "Hiçbir zaman hazır kodu dağıtmayın",
     "set.pyAiKey": "Bulut beyin API anahtarı",
     "set.pychik": "Pythonchik",
+    "pychik.devStamp": "GELİŞTİRME AŞAMASINDA",
+    "pychik.devNote": "Asistan hâlâ geliştirilme aşamasındadır; bu ayarlar mevcut değildir.",
   });
 })();

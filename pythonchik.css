@@ -561,3 +561,49 @@ body.reduce-motion .pychik-tap {
   transition: none !important;
   animation: none !important;
 }
+
+/* ---------- Пайтончик на дорозробці: велика печатка на панелі ---------- */
+.pychik-dev {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 46px;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.pychik-dev-text {
+  max-width: 88%;
+  padding: 10px 16px;
+  border: 4px dashed rgba(255, 92, 92, .32);
+  border-radius: 14px;
+  color: rgba(255, 92, 92, .26);
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  transform: rotate(-14deg);
+  user-select: none;
+}
+.pychik-dev-tag {
+  max-width: 44%;
+  margin-inline-start: 6px;
+  padding: 2px 7px;
+  border: 1px solid rgba(255, 107, 107, .6);
+  border-radius: 999px;
+  color: #ff6b6b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 420px) {
+  .pychik-dev-tag { display: none; }
+  .pychik-dev-text { font-size: 22px; letter-spacing: 2px; }
+}

@@ -849,6 +849,246 @@
         { in: "5\n-2 3 -4 1 5\n", out: "-5" }
       ]
     },
+    {
+      id: "uppercount", level: 2,
+      title: { uk: "Скільки великих літер", en: "Counting uppercase letters", tr: "Büyük harf sayısı" },
+      text: {
+        uk: "Дано один рядок тексту, що складається з латинських літер та пробілів. Виведи, скільки великих літер у ньому міститься.",
+        en: "A single line of text made of Latin letters and spaces is given. Print how many uppercase letters it contains.",
+        tr: "Latin harfleri ve boşluklardan oluşan bir satır veriliyor. İçindeki büyük harf sayısını yazdır."
+      },
+      hint: {
+        uk: "Для кожного символа перевір умову c.isupper() у циклі for і збільшуй лічильник.",
+        en: "For each character check the condition c.isupper() inside a for loop and increase a counter.",
+        tr: "Her karakter için döngüde c.isupper() koşulunu sına ve sayacı artır."
+      },
+      starter: "s = input()\ncount = 0\n",
+      tests: [
+        { in: "Hello World\n", out: "2" },
+        { in: "python\n", out: "0" },
+        { in: "QODER AI\n", out: "7" }
+      ]
+    },
+    {
+      id: "vowels", level: 2,
+      title: { uk: "Голосні літери", en: "Counting vowels", tr: "Ünlü harflar" },
+      text: {
+        uk: "Дано один рядок із малих латинських літер та пробілів. Виведи, скільки голосних (a, e, i, o, u) у ньому міститься.",
+        en: "A line of lowercase Latin letters and spaces is given. Print how many vowels (a, e, i, o, u) it contains.",
+        tr: "Küçük Latin harfleri ve boşluklardan oluşan bir satır veriliyor. İçindeki ünlü (a, e, i, o, u) sayısını yazdır."
+      },
+      hint: {
+        uk: "Скористайся перевіркою приналежності: if c in \"aeiou\":",
+        en: "Use a membership test: if c in \"aeiou\":",
+        tr: "Küme testi kullan: if c in \"aeiou\":"
+      },
+      starter: "s = input()\ncount = 0\n",
+      tests: [
+        { in: "hello world\n", out: "3" },
+        { in: "xyz\n", out: "0" },
+        { in: "aeiou uoeia\n", out: "10" }
+      ]
+    },
+    {
+      id: "squareslist", level: 2,
+      title: { uk: "Список квадратів", en: "The list of squares", tr: "Karelerin listesi" },
+      text: {
+        uk: "Дано ціле число n (1 ≤ n ≤ 20). Створи список квадратів чисел від 1 до n і виведи його цілком через print().",
+        en: "An integer n is given (1 ≤ n ≤ 20). Build the list of squares of the numbers from 1 to n and print the whole list with print().",
+        tr: "Bir n tam sayısı veriliyor (1 ≤ n ≤ 20). 1'den n'ye kadar sayıların karelerinden bir liste oluştur ve print() ile tüm listeyi yazdır."
+      },
+      hint: {
+        uk: "print(list) виводить список у форматі [1, 4, 9] — з комами та пробілами. Додавай елементи методом append().",
+        en: "print(list) shows a list as [1, 4, 9] — with commas and spaces. Add elements with the append() method.",
+        tr: "print(list) listeyi [1, 4, 9] biçiminde, virgül ve boşluklu gösterir. Elemanları append() yöntemiyle ekle."
+      },
+      starter: "n = int(input())\nsquares = []\n",
+      tests: [
+        { in: "4\n", out: "[1, 4, 9, 16]" },
+        { in: "1\n", out: "[1]" },
+        { in: "6\n", out: "[1, 4, 9, 16, 25, 36]" }
+      ]
+    },
+    {
+      id: "tempconv", level: 2,
+      title: { uk: "Градуси за Фаренгейтом", en: "Degrees in Fahrenheit", tr: "Fahrenhayt derece" },
+      text: {
+        uk: "Дано температуру в градусах Цельсія — дійсне число. Виведи її значення за Фаренгейтом, округлене до одного знака після коми: F = C · 9 / 5 + 32.",
+        en: "A temperature in degrees Celsius, a real number, is given. Print its Fahrenheit value rounded to one digit after the decimal point: F = C * 9 / 5 + 32.",
+        tr: "Santigrat cinsinden bir sıcaklık, ondalıklı sayı, veriliyor. Fahrenheit değerini virgülden sonra bir basamağa yuvarlayarak yazdır: F = C * 9 / 5 + 32."
+      },
+      hint: {
+        uk: "Форматуй вивід так: print(f\"{c * 9 / 5 + 32:.1f}\").",
+        en: "Format the output like this: print(f\"{c * 9 / 5 + 32:.1f}\").",
+        tr: "Çıktıyı şöyle biçimlendir: print(f\"{c * 9 / 5 + 32:.1f}\")."
+      },
+      starter: "c = float(input())\n",
+      tests: [
+        { in: "0\n", out: "32.0" },
+        { in: "100\n", out: "212.0" },
+        { in: "37\n", out: "98.6" }
+      ]
+    },
+    {
+      id: "findfirst", level: 2,
+      title: { uk: "Перше входження літери", en: "First occurrence", tr: "İlk geçiş" },
+      text: {
+        uk: "У першому рядку дано текст із малих латинських літер та пробілів, у другому — одну малу латинську літеру. Виведи номер позиції (відлік від нуля), на якій ця літера зустрічається вперше. Якщо літери в тексті немає, виведи -1.",
+        en: "The first line holds a text of lowercase Latin letters and spaces; the second line holds one lowercase letter. Print the index (counting from zero) of the first occurrence of the letter, or -1 if it does not occur.",
+        tr: "İlk satırda küçük Latin harfleri ve boşluklardan oluşan bir metin, ikinci satırda bir küçük harf veriliyor. Harfin ilk geçtiği konumu (sıfırdan başlayarak), yoksa -1 yazdır."
+      },
+      hint: {
+        uk: "Метод s.find(c) повертає індекс першого входження або -1, якщо символ не знайдено.",
+        en: "The method s.find(c) returns the index of the first occurrence, or -1 if the character is not found.",
+        tr: "s.find(c) yöntemi ilk geçişin indeksini, harf yoksa -1 döndürür."
+      },
+      starter: "s = input()\nc = input()\n",
+      tests: [
+        { in: "banana\na\n", out: "1" },
+        { in: "hello world\nl\n", out: "2" },
+        { in: "python\nz\n", out: "-1" }
+      ]
+    },
+    {
+      id: "leapyear", level: 2,
+      title: { uk: "Високосний рік", en: "Leap year", tr: "Artık yıl" },
+      text: {
+        uk: "Дано номер року — ціле додатне число. Виведи yes, якщо рік високосний, інакше виведи no. Рік високосний, якщо він ділиться на 4, але не на 100, або ділиться на 400.",
+        en: "A year number, a positive integer, is given. Print yes if the year is a leap year, otherwise print no. A year is leap if it is divisible by 4 but not by 100, or is divisible by 400.",
+        tr: "Yıl numarası, pozitif bir tam sayı, veriliyor. Yıl artık yıl ise yes, değilse no yazdır. Yıl 4'e bölünüp 100'e bölünmüyorsa ya da 400'e bölünüyorsa artık yıldır."
+      },
+      hint: {
+        uk: "Об'єднай умови через and та or: (year % 4 == 0 and year % 100 != 0) or year % 400 == 0.",
+        en: "Combine the conditions with and and or: (year % 4 == 0 and year % 100 != 0) or year % 400 == 0.",
+        tr: "Koşulları and ve or ile birleştir: (year % 4 == 0 and year % 100 != 0) or year % 400 == 0."
+      },
+      starter: "year = int(input())\n",
+      tests: [
+        { in: "2024\n", out: "yes" },
+        { in: "1900\n", out: "no" },
+        { in: "2000\n", out: "yes" }
+      ]
+    },
+    {
+      id: "mostword", level: 3,
+      title: { uk: "Найчастіше слово", en: "The most frequent word", tr: "En sık geçen sözcük" },
+      text: {
+        uk: "У першому рядку дано кількість слів n (1 ≤ n ≤ 50), у другому — n слів із малих латинських літер через пробіл. Виведи через пробіл найчастіше слово та кількість його появ. Якщо таких слів кілька, виведи найменше за алфавітом.",
+        en: "The first line gives the number of words n (1 ≤ n ≤ 50), the second line gives n lowercase Latin words separated by spaces. Print the most frequent word and its count separated by a space. If several words tie, print the alphabetically smallest one.",
+        tr: "İlk satırda sözcük sayısı n (1 ≤ n ≤ 50), ikinci satırda boşlukla ayrılmış n küçük Latin sözcük veriliyor. En sık geçen sözcüğü ve sayısını boşlukla yazdır; beraberlikte alfabetik olarak en küçük olanı yazdır."
+      },
+      hint: {
+        uk: "Порахуй слова в словнику через d[w] = d.get(w, 0) + 1, знайди максимальну кількість і пройди по sorted(d), вивівши перше слово з такою кількістю.",
+        en: "Count the words in a dictionary with d.get(w, 0) + 1, find the maximum count, then walk over sorted(d) and print the first word reaching it.",
+        tr: "Sözcükleri sözlükte d.get(w, 0) + 1 ile say, en büyük değeri bul, sorted(d) üzerinde dolaşıp bu değere ulaşan ilk sözcüğü yazdır."
+      },
+      starter: "n = int(input())\nwords = input().split()\n",
+      tests: [
+        { in: "4\ncat dog cat bird\n", out: "cat 2" },
+        { in: "6\nbb a a bb cc cc\n", out: "a 2" },
+        { in: "3\nzebra tiger zebra\n", out: "zebra 2" }
+      ]
+    },
+    {
+      id: "maxscore", level: 3,
+      title: { uk: "Лідер за балами", en: "The top scorer", tr: "En yüksek puan" },
+      text: {
+        uk: "У першому рядку дано кількість записів n (1 ≤ n ≤ 30). Кожен з наступних n рядків має формат «ім'я: бали» — літери, двокрапка, пробіл і ціле число. Виведи через пробіл ім'я та бали учасника з найбільшою кількістю балів. Якщо лідерів кілька, виведи того, чиї дані зустрілися раніше.",
+        en: "The first line gives the number of records n (1 ≤ n ≤ 30). Each of the next n lines has the form \"name: points\" — letters, a colon, a space and an integer. Print the name and points of the participant with the maximum score, separated by a space. If several tie, print the one whose record appeared first.",
+        tr: "İlk satırda kayıt sayısı n (1 ≤ n ≤ 30). Sonraki n satırın her biri \"ad: puan\" biçiminde — harfler, iki nokta, boşluk ve bir tam sayı. En yüksek puanlı katılımcının adını ve puanını boşlukla yazdır; beraberlikte önce geleni yazdır."
+      },
+      hint: {
+        uk: "Розбий рядок методом line.split(\": \") — вийдуть ім'я та число як рядок; друге перетвори через int(). Перебирай запис і порівнюй строго більше (>), щоб зберегти першого лідера.",
+        en: "Split each line with line.split(\": \") to get the name and a numeric string; convert the second part with int(). Iterate the records comparing with strict > so the first leader is kept.",
+        tr: "Her satırı line.split(\": \") ile ad ve sayıya ayır; ikinci parçayı int() ile çevir. Kayıtları dolaşırken kesin > ile karşılaştır, böylece ilk lider kalır."
+      },
+      starter: "n = int(input())\n",
+      tests: [
+        { in: "2\nanna: 10\nivan: 7\n", out: "anna 10" },
+        { in: "3\nx: 1\ny: 5\nz: 5\n", out: "y 5" },
+        { in: "1\nsolo: -3\n", out: "solo -3" }
+      ]
+    },
+    {
+      id: "shifttext", level: 3,
+      title: { uk: "Шифр зміщення", en: "Shift cipher", tr: "Kaydırma şifresi" },
+      text: {
+        uk: "У першому рядку дано текст із малих латинських літер та пробілів, у другому — ціле число k (0 ≤ k ≤ 25). Виведи текст, у якому кожна літера замінена літерою, що стоїть на k позицій праворуч у алфавіті; після z знову йде a. Пробіли не змінюй.",
+        en: "The first line holds a text of lowercase Latin letters and spaces, the second line an integer k (0 ≤ k ≤ 25). Print the text where each letter is shifted k positions to the right in the alphabet, wrapping from z back to a. Keep the spaces unchanged.",
+        tr: "İlk satırda küçük Latin harfleri ve boşluklardan oluşan bir metin, ikinci satırda bir k tam sayısı veriliyor (0 ≤ k ≤ 25). Her harfi alfabede k konum sağa kaydır (z'den sonra a gelir), boşlukları değiştirme."
+      },
+      hint: {
+        uk: "Для літери c обчислюй нову позицію як (ord(c) - 97 + k) % 26 і перетворюй її назад через chr(позиція + 97).",
+        en: "For a letter c compute the new position as (ord(c) - 97 + k) % 26 and convert it back with chr(position + 97).",
+        tr: "Bir c harfi için yeni konumu (ord(c) - 97 + k) % 26 olarak hesapla, chr(konum + 97) ile geri çevir."
+      },
+      starter: "s = input()\nk = int(input())\n",
+      tests: [
+        { in: "abc\n1\n", out: "bcd" },
+        { in: "xyz\n3\n", out: "abc" },
+        { in: "hello world\n2\n", out: "jgnnq yqtnf" }
+      ]
+    },
+    {
+      id: "rlecode", level: 3,
+      title: { uk: "Кодування повторень", en: "Run-length encoding", tr: "Tekrar kodlaması" },
+      text: {
+        uk: "Дано один рядок із малих латинських літер. Виведи його стисле представлення: для кожної групи однакових підряд літер виведи саму літеру й розмір групи, а групи йдуть у порядку появи в рядку. Наприклад, aaabcc перетворюється на a3b1c2.",
+        en: "A line of lowercase Latin letters is given. Print its compressed form: for each maximal group of equal consecutive letters print the letter followed by the group size, with groups in order of appearance. For example, aaabcc becomes a3b1c2.",
+        tr: "Küçük Latin harflerinden oluşan bir satır veriliyor. Sıkıştırılmış biçimini yazdır: eşit ardışık harf grupları için harfi ve grup boyutunu yazdır, gruplar oluş sırasıyla gelsin. Örneğin aaabcc → a3b1c2."
+      },
+      hint: {
+        uk: "Пам'ятай попередній символ і лічильник поточної групи; коли літера змінилась — дописуй у відповідь групу через str(count) і починай нову. Не забудь дописати останню групу після циклу.",
+        en: "Remember the previous character and a counter for the current group; when the letter changes, append the finished group with str(count) and start a new one. Do not forget to append the last group after the loop.",
+        tr: "Önceki karakteri ve güncel grup sayacını tut; harf değişince grubu str(count) ile ekle ve yenisini başlat. Döngüden sonra son grubu eklemeyi unutma."
+      },
+      starter: "s = input()\n",
+      tests: [
+        { in: "aaabcc\n", out: "a3b1c2" },
+        { in: "abc\n", out: "a1b1c1" },
+        { in: "zzzz\n", out: "z4" }
+      ]
+    },
+    {
+      id: "uniqsorted", level: 3,
+      title: { uk: "Різні слова за алфавітом", en: "Distinct words in order", tr: "Farklı sözcükler sıralı" },
+      text: {
+        uk: "Дано один рядок, що складається зі слів із малих латинських літер, розділених пробілами. У першому рядку виведи кількість різних слів, а потім — самі різні слова за алфавітом, по одному в рядку.",
+        en: "A line of lowercase Latin words separated by spaces is given. On the first line print the number of distinct words, then print the distinct words themselves in alphabetical order, one per line.",
+        tr: "Boşlukla ayrılmış küçük Latin sözcüklerden oluşan bir satır veriliyor. İlk satırda farklı sözcük sayısını yazdır, ardından farklı sözcükleri alfabetik sırada, satır başına bir tane yazdır."
+      },
+      hint: {
+        uk: "Перетвори список слів на множину через set(words), щоб прибрати повторення, а відсортований порядок дасть sorted(...).",
+        en: "Convert the list of words into a set with set(words) to drop duplicates; sorted(...) gives the alphabetical order.",
+        tr: "Tekrarları kaldırmak için sözcük listesini set(words) ile kümeye çevir; alfabetik sırayı sorted(...) verir."
+      },
+      starter: "words = input().split()\n",
+      tests: [
+        { in: "one two one\n", out: "2\none\ntwo" },
+        { in: "zz zz zz\n", out: "1\nzz" },
+        { in: "b a c a\n", out: "3\na\nb\nc" }
+      ]
+    },
+    {
+      id: "phonebook", level: 3,
+      title: { uk: "Телефонний довідник", en: "Phone book", tr: "Telefon rehberi" },
+      text: {
+        uk: "У першому рядку дано кількість контактів n (1 ≤ n ≤ 30). Наступні n рядків мають формат «ім'я: номер» — літери, двокрапка, пробіл і цифри. Після них у рядку дано кількість запитів m (1 ≤ m ≤ 30), а далі йдуть m рядків з іменами. Для кожного запиту виведи номер відповідного контакту в окремому рядку або not found, якщо такого імені в довіднику немає.",
+        en: "The first line gives the number of contacts n (1 ≤ n ≤ 30); the next n lines have the form \"name: number\" — letters, a colon, a space and digits. Then comes the number of queries m (1 ≤ m ≤ 30), followed by m lines with names. For each query print the corresponding number on its own line, or not found if the name is absent.",
+        tr: "İlk satırda kişi sayısı n (1 ≤ n ≤ 30); sonraki n satır \"ad: numara\" biçiminde — harfler, iki nokta, boşluk ve rakamlar. Ardından sorgu sayısı m (1 ≤ m ≤ 30) ve m satır ad veriliyor. Her sorgu için ilgili numarayı ayrı satırda, yoksa not found yazdır."
+      },
+      hint: {
+        uk: "Збережи контакти у словник: іменем буде частина рядка до двокрапки (не забудь .strip()). Для кожного запиту перевір if name in book і виведи book[name] або not found.",
+        en: "Store the contacts in a dictionary keyed by the part of the line before the colon (use .strip()). For each query check if name in book and print book[name] or not found.",
+        tr: "Kişileri, satırın iki noktadan önceki kısmını (.strip() ile) anahtar yapan bir sözlükte sakla; her sorguda if name in book ile denetle ve book[name] ya da not found yazdır."
+      },
+      starter: "n = int(input())\nbook = {}\n",
+      tests: [
+        { in: "2\nanna: 555\nivan: 321\n2\nanna\npetro\n", out: "555\nnot found" },
+        { in: "1\nx: 1\n1\nx\n", out: "1" },
+        { in: "3\na: 11\nb: 22\nc: 33\n3\nc\na\nb\n", out: "33\n11\n22" }
+      ]
+    },
   ];
 
   let listEl, detailEl, codeEl, titleEl, textEl, exampleEl, resultsEl, statusEl;

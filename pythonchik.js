@@ -136,6 +136,10 @@
   function lang() {
     return global.I18n ? global.I18n.lang : "uk";
   }
+  /* Загальні ключі інтерфейсу живуть у словнику I18n, а не в TXT асистента. */
+  function ui(key) {
+    return global.I18n ? global.I18n.t(key) : key;
+  }
   /* Рядки є лише uk/en/tr → решту мов беремо з контентного паку за українським оригіналом. */
   function tx(key, vars) {
     const L = lang();
@@ -734,7 +738,8 @@
       inputEl = null, mascotEl = null,
       spotEl = null, petEl = null, pawEl = null, sayEl = null, lockEl = null,
       sayTextEl = null, sayCountEl = null,
-      sayPrevBtn = null, sayAutoBtn = null, sayNextBtn = null, saySkipBtn = null;
+      sayPrevBtn = null, sayAutoBtn = null, sayNextBtn = null, saySkipBtn = null,
+      devStampEl = null, devTagEl = null;
   let ctx = { section: "home" };
   let thinkTimer = null;
 
@@ -1705,6 +1710,8 @@
     mascotEl = mascotSVG("pychik-svg pychik-svg-head");
     head.appendChild(mascotEl);
     head.appendChild(el("span", "pychik-title", tx("name")));
+    devTagEl = el("span", "pychik-dev-tag", ui("pychik.devStamp"));
+    head.appendChild(devTagEl);
     const tourBtn = el("button", "pychik-head-btn");
     tourBtn.type = "button";
     tourBtn.innerHTML = '<span class="material-icons">explore</span>';
@@ -1738,6 +1745,13 @@
     row.appendChild(inputEl);
     row.appendChild(sendBtn);
     panel.appendChild(row);
+
+    /* Асистент на дорозробці: велика печатка через усю панель, щоб жодну
+       відповідь не сприйняли як остаточну. Клікам не заважає. */
+    devStampEl = el("div", "pychik-dev");
+    devStampEl.setAttribute("aria-hidden", "true");
+    devStampEl.appendChild(el("span", "pychik-dev-text", ui("pychik.devStamp")));
+    panel.appendChild(devStampEl);
 
     /* Коліщатко над панеллю гортає лише розмову: без цього скролилася б ще й сторінка.
        Жест із дельтою по X не чіпаємо — ним гортають довгі рядки коду. */
@@ -1787,6 +1801,8 @@
       panel.querySelector(".pychik-title").textContent = tx("name");
       panel.querySelector(".pychik-close").setAttribute("aria-label", tx("close"));
       panel.querySelector(".pychik-send").textContent = tx("send");
+      if (devStampEl) devStampEl.querySelector(".pychik-dev-text").textContent = ui("pychik.devStamp");
+      if (devTagEl) devTagEl.textContent = ui("pychik.devStamp");
       sayPrevBtn.setAttribute("aria-label", tx("tutPrevL"));
       saySkipBtn.textContent = tx("tourSkip");
       renderChips();
