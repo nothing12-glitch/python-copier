@@ -183,6 +183,11 @@
       { id: "google", type: "button", label: "set.google", icon: "login", variant: "contained" },
       { id: "github", type: "button", label: "set.github", icon: "login", variant: "outlined" }
     ]},
+    { group: "set.backupGroup", items: [
+      { id: "backupExport", type: "button", label: "set.backupExport", icon: "cloud_download", variant: "outlined" },
+      { id: "backupImport", type: "button", label: "set.backupImport", icon: "cloud_upload", variant: "contained" },
+      { id: "backupStats", type: "button", label: "set.backupStats", icon: "data_usage", variant: "text" }
+    ]},
     { group: "settings.data", items: [
       { id: "export", type: "button", label: "set.export", icon: "download", variant: "outlined" },
       { id: "resetRecords", type: "button", label: "settings.resetRecords", icon: "restart_alt", variant: "outlined danger" },
