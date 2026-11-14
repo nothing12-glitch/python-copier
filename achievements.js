@@ -5,11 +5,13 @@
   const STATS_KEY = "app.achStats";
 
   const ALL_GAMES = ["ttt", "snake", "memory", "g2048", "rps", "react", "simon", "mines", "guess"];
-  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "exam", "games", "tools", "feedback", "profile", "settings", "achievements"];
+  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "exam", "turtle", "constructor", "season", "games", "tools", "feedback", "profile", "settings", "achievements"];
   const tasksTotal = () => (global.Tasks && global.Tasks.count) || 12;
   const courseTotal = () => (global.Course && global.Course.count) || 12;
   const glossTotal = () => (global.Glossary && global.Glossary.count) || 41;
   const examDraw = () => (global.Exam && global.Exam.draw) || 12;
+  const turtleLessonsTotal = () => (global.TurtleLab && global.TurtleLab.LESSONS && global.TurtleLab.LESSONS.length) || 10;
+  const turtleTasksTotal = () => (global.TurtleLab && global.TurtleLab.TASKS && global.TurtleLab.TASKS.length) || 10;
 
   /* Нові розділи зберігають прогрес у себе, тому значки читають його напряму —
      так вони відкриваються і для тих, хто все зробив ще до появи значків. */
@@ -38,6 +40,21 @@
 
   function examState() {
     try { return (global.Exam && global.Exam.stats()) || {}; }
+    catch (e) { return {}; }
+  }
+
+  function turtleState() {
+    try { return (global.TurtleLab && global.TurtleLab.stats()) || {}; }
+    catch (e) { return {}; }
+  }
+
+  function makerState() {
+    try { return (global.Constructor && global.Constructor.stats()) || {}; }
+    catch (e) { return {}; }
+  }
+
+  function seasonState() {
+    try { return (global.Season && global.Season.stats()) || {}; }
     catch (e) { return {}; }
   }
 
@@ -102,7 +119,19 @@
     { id: "gloss_all",    ico: "book",            cat: "glossary", tier: "silver", check: () => glossRead() >= glossTotal(),               progress: () => Math.min(glossRead() / glossTotal(), 1) },
     { id: "exam_pass",    ico: "fact_check",      cat: "exam",     tier: "silver", check: () => (examState().passed || 0) >= 1,            progress: () => Math.min((examState().passed || 0) / 1, 1) },
     { id: "exam_perfect", ico: "grade",           cat: "exam",     tier: "gold",   check: () => (examState().best || 0) >= examDraw(),     progress: () => Math.min((examState().best || 0) / examDraw(), 1) },
-    { id: "backup_first", ico: "cloud_upload",    cat: "profile",  tier: "bronze", check: () => !!localStorage.getItem("app.backupLast"),  progress: () => (localStorage.getItem("app.backupLast") ? 1 : 0) }
+    { id: "backup_first", ico: "cloud_upload",    cat: "profile",  tier: "bronze", check: () => !!localStorage.getItem("app.backupLast"),  progress: () => (localStorage.getItem("app.backupLast") ? 1 : 0) },
+
+    { id: "turtle_first",  ico: "pets",      cat: "turtle", tier: "bronze", check: () => turtleState().lessonsRun >= 1,                       progress: () => Math.min((turtleState().lessonsRun || 0) / 1, 1) },
+    { id: "turtle_school", ico: "palette",   cat: "turtle", tier: "silver", check: () => turtleLessonsTotal() > 0 && turtleState().lessonsRun >= turtleLessonsTotal(), progress: () => Math.min((turtleState().lessonsRun || 0) / turtleLessonsTotal(), 1) },
+    { id: "turtle_art",    ico: "auto_awesome", cat: "turtle", tier: "gold", check: () => turtleTasksTotal() > 0 && turtleState().solved >= turtleTasksTotal(), progress: () => Math.min((turtleState().solved || 0) / turtleTasksTotal(), 1) },
+
+    { id: "maker_first",   ico: "build",     cat: "maker",  tier: "bronze", check: () => makerState().own >= 1,                               progress: () => Math.min((makerState().own || 0) / 1, 1) },
+    { id: "maker_five",    ico: "construction", cat: "maker", tier: "silver", check: () => (makerState().own || 0) >= 5,                     progress: () => Math.min((makerState().own || 0) / 5, 1) },
+    { id: "maker_import",  ico: "hub",       cat: "maker",  tier: "bronze", check: () => (makerState().yard || 0) >= 1,                       progress: () => Math.min((makerState().yard || 0) / 1, 1) },
+
+    { id: "season_first",  ico: "trophy",    cat: "season", tier: "bronze", check: () => (seasonState().xp || 0) >= 100,                     progress: () => Math.min((seasonState().xp || 0) / 100, 1) },
+    { id: "season_league", ico: "military_tech", cat: "season", tier: "silver", check: () => (seasonState().promotions || 0) >= 1,            progress: () => Math.min((seasonState().promotions || 0) / 1, 1) },
+    { id: "season_streak", ico: "local_fire_department", cat: "season", tier: "gold", check: () => (seasonState().days || 0) >= 21,            progress: () => Math.min((seasonState().days || 0) / 21, 1) }
   ];
 
   const TIER_COLORS = { bronze: "#CD7F32", silver: "#C0C0C0", gold: "#FFD700" };
@@ -127,7 +156,10 @@
     daily:    { uk: "Щоденний виклик", en: "Daily challenge", tr: "Günlük görev" },
     projects: { uk: "Проєкти",  en: "Projects",  tr: "Projeler" },
     glossary: { uk: "Словник",  en: "Glossary",  tr: "Sözlük" },
-    exam:     { uk: "Іспит",    en: "Exam",      tr: "Sınav" }
+    exam:     { uk: "Іспит",    en: "Exam",      tr: "Sınav" },
+    turtle:   { uk: "Черепашка", en: "Turtle",   tr: "Kaplumbağa" },
+    maker:    { uk: "Конструктор", en: "Constructor", tr: "Kurucu" },
+    season:   { uk: "Сезон",    en: "Season",    tr: "Sezon" }
   };
 
   const ACH_NAMES = {
@@ -178,7 +210,16 @@
     gloss_all:      { uk: "Лексикограф",         en: "Lexicographer",      tr: "Sözlük Ustası" },
     exam_pass:      { uk: "Іспит складено",      en: "Exam Passed",        tr: "Sınav Geçildi" },
     exam_perfect:   { uk: "Ідеальний іспит",     en: "Perfect Exam",       tr: "Kusursuz Sınav" },
-    backup_first:   { uk: "Резервна копія",      en: "Backup Created",     tr: "Yedek Alındı" }
+    backup_first:   { uk: "Резервна копія",      en: "Backup Created",     tr: "Yedek Alındı" },
+    turtle_first:   { uk: "Перша лінія",         en: "First Line",         tr: "İlk Çizgi" },
+    turtle_school:  { uk: "Художник",            en: "Turtle Artist",      tr: "Kaplumbağa Sanatçısı" },
+    turtle_art:     { uk: "Мальовник",           en: "Pattern Maker",      tr: "Desen Ustası" },
+    maker_first:    { uk: "Перша цеглина",       en: "First Block",        tr: "İlk Tuğla" },
+    maker_five:     { uk: "Конструктор",         en: "Task Builder",       tr: "Görev Kurucusu" },
+    maker_import:   { uk: "Гість із двору",      en: "Yard Guest",         tr: "Bahçe Misafiri" },
+    season_first:   { uk: "Перші очки",          en: "First Points",       tr: "İlk Puanlar" },
+    season_league:  { uk: "Виліт у лігу",        en: "League Promotion",   tr: "Lige Yükselme" },
+    season_streak:  { uk: "Три тижні в грі",     en: "Three Weeks In",     tr: "Üç Haftadır Oyunda" }
   };
 
   const ACH_DESC = {
@@ -229,7 +270,16 @@
     gloss_all:      { uk: "Перечитай увесь словник Python",        en: "Read every card of the Python glossary", tr: "Python sözlüğündeki her kartı oku" },
     exam_pass:      { uk: "Склади іспит на 70% і більше",          en: "Pass the exam with 70% or better", tr: "Sınavı %70 veya üzerinde geç" },
     exam_perfect:   { uk: "Склади іспит без жодної помилки",       en: "Pass the exam without a single mistake", tr: "Sınavı tek hatasız geç" },
-    backup_first:   { uk: "Вивантаж резервну копію прогресу",      en: "Export a backup of your progress", tr: "İlerlemeni yedek olarak dışa aktar" }
+    backup_first:   { uk: "Вивантаж резервну копію прогресу",      en: "Export a backup of your progress", tr: "İlerlemeni yedek olarak dışa aktar" },
+    turtle_first:   { uk: "Пройди перший урок черепашки",          en: "Finish your first turtle lesson", tr: "İlk kaplumbağa dersini tamamla" },
+    turtle_school:  { uk: "Пройди всі уроки черепашки",            en: "Finish every turtle lesson", tr: "Tüm kaplumbağa derslerini bitir" },
+    turtle_art:     { uk: "Розв'яжи всі завдання черепашки",       en: "Solve every turtle task", tr: "Tüm kaplumbağa görevlerini çöz" },
+    maker_first:    { uk: "Створи першу власну задачу",            en: "Create your first own task", tr: "İlk kendi görevini oluştur" },
+    maker_five:     { uk: "Створи п'ять власних задач",            en: "Create five own tasks", tr: "Beş kendi görevi oluştur" },
+    maker_import:   { uk: "Додай у двір задачу за кодом друга",    en: "Add a friend's task to the yard by invite code", tr: "Arkadaşının görevini davet koduyla bahçeye ekle" },
+    season_first:   { uk: "Набери 100 XP у поточному сезоні",      en: "Earn 100 XP in the current season", tr: "Bu sezonda 100 XP topla" },
+    season_league:  { uk: "Підвищся хоча б в одну лігу",           en: "Get promoted to at least one league", tr: "En az bir lige yüksel" },
+    season_streak:  { uk: "Май 21 день із сезонним бонусом",       en: "Reach 21 bonus days in a season", tr: "Bir sezonda 21 bonus güne ulaş" }
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
@@ -365,7 +415,7 @@
       '</h3><span class="ach-counter">' + count + ' / ' + total + '</span>';
     container.appendChild(header);
 
-    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "course", "projects", "glossary", "exam", "profile", "explore", "streak", "daily"];
+    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "course", "projects", "glossary", "exam", "turtle", "maker", "season", "profile", "explore", "streak", "daily"];
     cats.forEach((cat) => {
       const catAchs = ACHIEVEMENTS.filter((a) => a.cat === cat);
       if (catAchs.length === 0) return;
