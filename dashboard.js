@@ -33,7 +33,7 @@
     { id: "contest", ico: "timer", route: "tools", key: "c", name: { uk: "Змаг", en: "Contest", tr: "Yarışma" } },
     { id: "turtle", ico: "pets", route: "turtle", key: "u", name: { uk: "Черепашка", en: "Turtle", tr: "Kaplumbağa" } },
     { id: "maker", ico: "construction", route: "constructor", key: "k", name: { uk: "Конструктор", en: "Constructor", tr: "Kurucu" } },
-    { id: "season", ico: "trophy", route: "season", key: "z", name: { uk: "Сезон", en: "Season", tr: "Sezon" } }
+    { id: "season", ico: "military_tech", route: "season", key: "z", name: { uk: "Сезон", en: "Season", tr: "Sezon" } }
   ];
 
   const I = () => global.I18n;
@@ -290,7 +290,7 @@
         "</div>" +
         '<div class="dash-sparks">' +
           '<span><span class="material-icons">local_fire_department</span>' + escapeHtml(t("dash.streak", { n: streak.current })) + "</span>" +
-          '<span><span class="material-icons">trophy</span>' + escapeHtml(t("dash.bestStreak", { n: streak.best })) + "</span>" +
+          '<span><span class="material-icons">military_tech</span>' + escapeHtml(t("dash.bestStreak", { n: streak.best })) + "</span>" +
           '<span><span class="material-icons">calendar_month</span>' + escapeHtml(t("dash.activeDays", { n: allDays.filter((d) => d.p > 0).length })) + "</span>" +
           '<span><span class="material-icons">trending_up</span>' + escapeHtml(t("dash.week", { p: weekPoints })) + "</span>" +
           '<span><span class="material-icons">play_circle</span>' + escapeHtml(t("dash.runs", { n: data.runs })) + "</span>" +

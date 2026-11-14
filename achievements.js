@@ -66,7 +66,7 @@
     { id: "py_snippet",   ico: "save",          cat: "python",   tier: "bronze",   check: (s) => s.snippets >= 1,                     progress: (s) => Math.min(s.snippets / 1, 1) },
 
     { id: "game_first",   ico: "sports_esports",cat: "games",    tier: "bronze",   check: (s) => s.gamesPlayed.length >= 1,           progress: (s) => Math.min(s.gamesPlayed.length / 1, 1) },
-    { id: "game_5",       ico: "stadia_controller", cat: "games", tier: "silver",  check: (s) => s.gamesPlayed.length >= 5,           progress: (s) => Math.min(s.gamesPlayed.length / 5, 1) },
+    { id: "game_5",       ico: "sports_esports", cat: "games", tier: "silver",  check: (s) => s.gamesPlayed.length >= 5,           progress: (s) => Math.min(s.gamesPlayed.length / 5, 1) },
     { id: "game_all",     ico: "emoji_events",  cat: "games",    tier: "gold",     check: (s) => s.gamesPlayed.length >= 9,           progress: (s) => Math.min(s.gamesPlayed.length / 9, 1) },
     { id: "game_record",  ico: "track_changes", cat: "games",    tier: "bronze",   check: (s) => s.recordGames.length >= 1,           progress: (s) => Math.min(s.recordGames.length / 1, 1) },
     { id: "game_5rec",    ico: "military_tech", cat: "games",    tier: "silver",   check: (s) => s.recordGames.length >= 5,           progress: (s) => Math.min(s.recordGames.length / 5, 1) },
@@ -93,7 +93,7 @@
     { id: "contest_perfect", ico: "stars", cat: "contest", tier: "gold",   check: (s) => (s.contestPerfect || 0) >= 1, progress: (s) => Math.min(s.contestPerfect || 0, 1) },
 
     { id: "pkg_first",     ico: "inventory_2", cat: "modules", tier: "bronze", check: (s) => (s.packagesInstalled || 0) >= 1, progress: (s) => Math.min((s.packagesInstalled || 0) / 1, 1) },
-    { id: "pkg_10",        ico: "deployed_code", cat: "modules", tier: "silver", check: (s) => (s.packagesInstalled || 0) >= 10, progress: (s) => Math.min((s.packagesInstalled || 0) / 10, 1) },
+    { id: "pkg_10",        ico: "widgets", cat: "modules", tier: "silver", check: (s) => (s.packagesInstalled || 0) >= 10, progress: (s) => Math.min((s.packagesInstalled || 0) / 10, 1) },
 
     { id: "course_first",  ico: "menu_book",    cat: "course", tier: "bronze", check: (s) => (s.lessonsDone || 0) >= 1, progress: (s) => Math.min((s.lessonsDone || 0) / 1, 1) },
     { id: "course_5",      ico: "auto_stories", cat: "course", tier: "silver", check: (s) => (s.lessonsDone || 0) >= 5, progress: (s) => Math.min((s.lessonsDone || 0) / 5, 1) },
@@ -129,7 +129,7 @@
     { id: "maker_five",    ico: "construction", cat: "maker", tier: "silver", check: () => (makerState().own || 0) >= 5,                     progress: () => Math.min((makerState().own || 0) / 5, 1) },
     { id: "maker_import",  ico: "hub",       cat: "maker",  tier: "bronze", check: () => (makerState().yard || 0) >= 1,                       progress: () => Math.min((makerState().yard || 0) / 1, 1) },
 
-    { id: "season_first",  ico: "trophy",    cat: "season", tier: "bronze", check: () => (seasonState().xp || 0) >= 100,                     progress: () => Math.min((seasonState().xp || 0) / 100, 1) },
+    { id: "season_first",  ico: "military_tech",    cat: "season", tier: "bronze", check: () => (seasonState().xp || 0) >= 100,                     progress: () => Math.min((seasonState().xp || 0) / 100, 1) },
     { id: "season_league", ico: "military_tech", cat: "season", tier: "silver", check: () => (seasonState().promotions || 0) >= 1,            progress: () => Math.min((seasonState().promotions || 0) / 1, 1) },
     { id: "season_streak", ico: "local_fire_department", cat: "season", tier: "gold", check: () => (seasonState().days || 0) >= 21,            progress: () => Math.min((seasonState().days || 0) / 21, 1) }
   ];

@@ -10,14 +10,14 @@
     exam: 40, contest: 15, game: 5, turtle: 15, maker: 18
   };
   const LEAGUES = [
-    { id: 0, ico: "ecg_heart", name: { uk: "Дерево", en: "Wood", tr: "Tahta" } },
-    { id: 1, ico: "stone", name: { uk: "Камінь", en: "Stone", tr: "Taş" } },
+    { id: 0, ico: "forest", name: { uk: "Дерево", en: "Wood", tr: "Tahta" } },
+    { id: 1, ico: "landscape", name: { uk: "Камінь", en: "Stone", tr: "Taş" } },
     { id: 2, ico: "bolt", name: { uk: "Блискавка", en: "Spark", tr: "Kıvılcım" } },
     { id: 3, ico: "water_drop", name: { uk: "Хвиля", en: "Wave", tr: "Dalga" } },
     { id: 4, ico: "local_fire_department", name: { uk: "Полум'я", en: "Flame", tr: "Alev" } },
     { id: 5, ico: "star", name: { uk: "Зоря", en: "Star", tr: "Yıldız" } },
     { id: 6, ico: "diamond", name: { uk: "Алмаз", en: "Diamond", tr: "Elmas" } },
-    { id: 7, ico: "crown", name: { uk: "Корона", en: "Crown", tr: "Taç" } }
+    { id: 7, ico: "castle", name: { uk: "Корона", en: "Crown", tr: "Taç" } }
   ];
   const LEAGUE_STEP = 250;
   const RIVALS = 30;
@@ -260,7 +260,7 @@
     const icons = {
       task: "assignment", lesson: "school", daily: "local_fire_department", project: "architecture",
       glossary: "menu_book", exam: "workspace_premium", contest: "military_tech", game: "sports_esports",
-      turtle: "turtle", maker: "build"
+      turtle: "pets", maker: "build"
     };
     const pts = s.bySource[source] || 0;
     const row = el("div", "season-src" + (pts ? "" : " zero"));

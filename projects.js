@@ -302,7 +302,7 @@ k = int(input())
       ]
     },
     {
-      id: "textstats", level: 3, ico: "text_analysis",
+      id: "textstats", level: 3, ico: "text_fields",
       title: { uk: "Аналіз тексту", en: "Text analysis", tr: "Metin analizi" },
       desc: {
         uk: "Один рядок тексту — і три задачі на множини, рядки та словники лічильників: скільки слів, яке найдовше й як часто повторюється кожне.",
