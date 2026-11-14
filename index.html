@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>python-copier</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=26.11.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=26.12.0">
   <link rel="apple-touch-icon" href="favicon.svg">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6750A4">
@@ -35,12 +35,12 @@
 @keyframes pc-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @media(prefers-reduced-motion:reduce){#splash .pc-logo{animation:none}}
   </style>
-  <link rel="stylesheet" href="style.css?v=26.11.0">
-  <link rel="stylesheet" href="newui.css?v=26.11.0">
-  <link rel="stylesheet" href="extra.css?v=26.11.0">
-  <link rel="stylesheet" href="mobile.css?v=26.11.0">
-  <link rel="stylesheet" href="rtl.css?v=26.11.0">
-  <link rel="stylesheet" href="pythonchik.css?v=26.11.0">
+  <link rel="stylesheet" href="style.css?v=26.12.0">
+  <link rel="stylesheet" href="newui.css?v=26.12.0">
+  <link rel="stylesheet" href="extra.css?v=26.12.0">
+  <link rel="stylesheet" href="mobile.css?v=26.12.0">
+  <link rel="stylesheet" href="rtl.css?v=26.12.0">
+  <link rel="stylesheet" href="pythonchik.css?v=26.12.0">
   <!-- Pyodide більше НЕ тут: його підключає python.js лише за потребою -->
   <script>
   /* Дуже старий движок (Chrome <80, Firefox <72, Windows XP) не розуміє мови,
@@ -191,6 +191,18 @@
       <span class="rail-ico"><span class="material-icons">workspace_premium</span></span>
       <span class="rail-label" data-i18n="nav.exam">Іспит</span>
     </button>
+    <button class="rail-btn" data-route="turtle">
+      <span class="rail-ico"><span class="material-icons">turtle</span></span>
+      <span class="rail-label" data-i18n="nav.turtle">Черепашка</span>
+    </button>
+    <button class="rail-btn" data-route="constructor">
+      <span class="rail-ico"><span class="material-icons">build_circle</span></span>
+      <span class="rail-label" data-i18n="nav.constructor">Конструктор</span>
+    </button>
+    <button class="rail-btn" data-route="season">
+      <span class="rail-ico"><span class="material-icons">trophy</span></span>
+      <span class="rail-label" data-i18n="nav.season">Сезон</span>
+    </button>
     <button class="rail-btn" data-route="games">
       <span class="rail-ico"><span class="material-icons">sports_esports</span></span>
       <span class="rail-label" data-i18n="nav.games">Ігри</span>
@@ -306,6 +318,21 @@
           <span class="material-icons card-ico">workspace_premium</span>
           <h3 data-i18n="home.cardExam">Іспит</h3>
           <p data-i18n="home.cardExamText">Дванадцять випадкових питань з усього курсу: покажи, що ти вже вмієш.</p>
+        </article>
+        <article class="card elev1" data-goto="turtle">
+          <span class="material-icons card-ico">pets</span>
+          <h3 data-i18n="home.cardTurtle">Черепашка</h3>
+          <p data-i18n="home.cardTurtleText">Візерунки кодом: уроки, завдання з автоперевіркою та галерея.</p>
+        </article>
+        <article class="card elev1" data-goto="constructor">
+          <span class="material-icons card-ico">build_circle</span>
+          <h3 data-i18n="home.cardConstructor">Конструктор</h3>
+          <p data-i18n="home.cardConstructorText">Придумуй власні задачі, перевіряй їх тестами й ділись кодом запрошення.</p>
+        </article>
+        <article class="card elev1" data-goto="season">
+          <span class="material-icons card-ico">trophy</span>
+          <h3 data-i18n="home.cardSeason">Сезон</h3>
+          <p data-i18n="home.cardSeasonText">XP, вісім ліг і щомісячна таблиця — рахується все, що ти робиш.</p>
         </article>
         <article class="card elev1" data-goto="games">
           <span class="material-icons card-ico">sports_esports</span>
@@ -612,6 +639,163 @@
       </div>
     </section>
 
+    <!-- TURTLE -->
+    <section class="view" id="view-turtle">
+      <div class="section-head"><h2 data-i18n="nav.turtle">Черепашка</h2></div>
+      <div class="card elev2 turtle-hero">
+        <p class="turtle-intro muted" id="turtleIntro"></p>
+        <div class="turtle-stats">
+          <span class="turtle-stat" id="turtleLessonsDone"></span>
+          <span class="turtle-stat" id="turtleTasksDone"></span>
+        </div>
+      </div>
+      <div class="turtle-tabs" id="turtleTabs">
+        <button class="turtle-tab active" type="button" data-tab="lessons"><span class="material-icons">school</span><span data-i18n="turtle.tabLessons">Уроки</span></button>
+        <button class="turtle-tab" type="button" data-tab="tasks"><span class="material-icons">check_circle</span><span data-i18n="turtle.tabTasks">Завдання</span></button>
+        <button class="turtle-tab" type="button" data-tab="gallery"><span class="material-icons">image</span><span data-i18n="turtle.tabGallery">Галерея</span></button>
+      </div>
+      <div class="card elev2 task-detail turtle-stage hidden" id="turtleStage">
+        <div class="task-head">
+          <button class="btn text" id="turtleBack" type="button"><span class="material-icons">arrow_back</span><span data-i18n="turtle.back">До списку</span></button>
+        </div>
+        <h3 id="turtleTitle" class="task-title"></h3>
+        <p id="turtleText" class="task-text"></p>
+        <p id="turtleTip" class="turtle-tip muted"></p>
+        <div class="turtle-split">
+          <div class="turtle-editor task-editor">
+            <textarea id="turtleCode" rows="12" spellcheck="false" autocomplete="off"></textarea>
+          </div>
+          <div class="turtle-canvas-wrap">
+            <div id="turtleCanvas" class="turtle-canvas"></div>
+            <pre id="turtleOut" class="turtle-out" aria-live="polite"></pre>
+          </div>
+        </div>
+        <div id="turtleHintBox" class="task-hint hidden"></div>
+        <div class="task-actions">
+          <button class="btn contained" id="turtleCheck" type="button"><span class="material-icons">play_arrow</span><span data-i18n="turtle.check">Перевірити</span></button>
+          <button class="btn outlined" id="turtleRun" type="button"><span class="material-icons">palette</span><span data-i18n="turtle.run">Малювати</span></button>
+          <button class="btn outlined" id="turtleHint" type="button"><span class="material-icons">lightbulb</span><span data-i18n="tasks.hint">Підказка</span></button>
+          <button class="btn text" id="turtleReset" type="button"><span class="material-icons">restart_alt</span><span data-i18n="tasks.reset">Скинути код</span></button>
+        </div>
+        <div id="turtleStatus" class="task-status-line turtle-status"></div>
+      </div>
+      <div id="turtleList" class="turtle-list"></div>
+    </section>
+
+    <!-- CONSTRUCTOR -->
+    <section class="view" id="view-constructor">
+      <div class="section-head"><h2 data-i18n="nav.constructor">Конструктор</h2></div>
+      <div class="card elev2 mk-hero">
+        <p class="mk-intro muted" id="mkIntro"></p>
+        <div class="mk-stats">
+          <span class="mk-stat"><b id="mkOwnCount">0</b><span data-i18n="mk.mine">Мої задачі</span></span>
+          <span class="mk-stat"><b id="mkYardCount">0</b><span data-i18n="mk.yard">Загальний двір</span></span>
+        </div>
+        <div class="mk-actions">
+          <button class="btn contained" id="mkNew" type="button"><span class="material-icons">add</span><span data-i18n="mk.new">Створити задачу</span></button>
+        </div>
+      </div>
+      <div class="card elev2 mk-form hidden" id="mkForm">
+        <h3 data-i18n="mk.formTitle">Нова задача</h3>
+        <label class="mk-field"><span data-i18n="mk.fieldTitle">Назва</span>
+          <input id="mkTitle" type="text" maxlength="90" autocomplete="off">
+        </label>
+        <label class="mk-field"><span data-i18n="mk.fieldText">Умова</span>
+          <textarea id="mkText" rows="4"></textarea>
+        </label>
+        <label class="mk-field"><span data-i18n="mk.fieldHint">Підказка (необов'язково)</span>
+          <textarea id="mkHintInput" rows="2"></textarea>
+        </label>
+        <label class="mk-field"><span data-i18n="mk.fieldStarter">Код-заготовка</span>
+          <textarea id="mkStarter" rows="4" spellcheck="false" autocomplete="off"></textarea>
+        </label>
+        <label class="mk-field"><span data-i18n="mk.fieldLevel">Рівень</span>
+          <select id="mkLevel" class="md-select">
+            <option value="1" data-i18n="tasks.level1">Легка</option>
+            <option value="2" data-i18n="tasks.level2">Середня</option>
+            <option value="3" data-i18n="tasks.level3">Складна</option>
+          </select>
+        </label>
+        <div class="mk-fieldset">
+          <span class="mk-fieldsetLabel" data-i18n="mk.fieldTests">Тести</span>
+          <div id="mkTests" class="mk-tests"></div>
+        </div>
+        <div class="task-actions">
+          <button class="btn contained" id="mkFormSave" type="button"><span class="material-icons">save</span><span data-i18n="mk.save">Зберегти задачу</span></button>
+          <button class="btn text" id="mkFormCancel" type="button"><span class="material-icons">close</span><span data-i18n="mk.cancel">Скасувати</span></button>
+        </div>
+        <div id="mkFormStatus" class="mk-status"></div>
+        <div class="mk-templates-label" data-i18n="mk.templatesLabel">Або почни з шаблону:</div>
+        <div id="mkTemplates" class="mk-templates"></div>
+      </div>
+      <div class="card elev2 task-detail mk-stage hidden" id="mkStage">
+        <div class="task-head">
+          <button class="btn text" id="mkBack" type="button"><span class="material-icons">arrow_back</span><span data-i18n="mk.back">До списку</span></button>
+        </div>
+        <h3 id="mkStageTitle" class="task-title"></h3>
+        <div id="mkStageMeta" class="mk-meta muted"></div>
+        <p id="mkStageText" class="task-text"></p>
+        <div class="task-editor">
+          <textarea id="mkCode" rows="10" spellcheck="false" autocomplete="off"></textarea>
+        </div>
+        <pre id="mkPreviewOut" class="mk-preview" aria-live="polite"></pre>
+        <div id="mkStageHintBox" class="task-hint hidden"></div>
+        <div class="task-actions">
+          <button class="btn contained" id="mkTest" type="button"><span class="material-icons">play_arrow</span><span data-i18n="mk.test">Перевірити розв'язок</span></button>
+          <button class="btn outlined" id="mkStageHint" type="button"><span class="material-icons">lightbulb</span><span data-i18n="tasks.hint">Підказка</span></button>
+          <button class="btn outlined" id="mkCopy" type="button"><span class="material-icons">share</span><span data-i18n="mk.share">Поділитись кодом</span></button>
+          <button class="btn text" id="mkEdit" type="button"><span class="material-icons">edit</span><span data-i18n="mk.edit">Змінити</span></button>
+          <button class="btn text" id="mkDel" type="button"><span class="material-icons">delete</span><span data-i18n="mk.delete">Видалити</span></button>
+        </div>
+        <div id="mkShareRow" class="mk-share-row hidden">
+          <textarea id="mkShareCode" rows="3" readonly spellcheck="false"></textarea>
+        </div>
+        <div id="mkPreviewStatus" class="mk-status"></div>
+      </div>
+      <div class="card elev2 mk-import">
+        <h3 data-i18n="mk.importTitle">Вклічити чужу задачу</h3>
+        <p class="muted" data-i18n="mk.importText">Скопіюй код запрошення від друга і встав сюди — задача з'явиться в «Загальному дворі».</p>
+        <textarea id="mkImportBox" rows="3" spellcheck="false" autocomplete="off" data-i18n-ph="mk.importPh" placeholder="PC1:..."></textarea>
+        <div class="task-actions">
+          <button class="btn contained" id="mkImport" type="button"><span class="material-icons">download</span><span data-i18n="mk.import">Додати задачу</span></button>
+        </div>
+        <div id="mkImportStatus" class="mk-status"></div>
+      </div>
+      <div id="mkList" class="mk-list"></div>
+      <p id="mkEmpty" class="mk-empty muted hidden" data-i18n="mk.empty">Тут поки порожньо. Створи першу задачу — або попроси в друга код запрошення.</p>
+    </section>
+
+    <!-- SEASON -->
+    <section class="view" id="view-season">
+      <div class="section-head"><h2 data-i18n="nav.season">Сезон</h2></div>
+      <div class="card elev2 season-hero" id="seasonStage">
+        <div class="season-top">
+          <div class="season-league" id="seasonLeague"></div>
+          <div class="season-xp"><b id="seasonXp">0</b><span>XP</span></div>
+          <div class="season-mult" id="seasonMult">x1</div>
+        </div>
+        <p class="season-intro muted" id="seasonIntro"></p>
+        <div class="season-bar"><i id="seasonBarFill"></i><span class="season-barlabel" id="seasonBarLabel"></span></div>
+        <div class="season-facts">
+          <span id="seasonName" class="season-name"></span>
+          <span id="seasonRank" class="season-rank"></span>
+          <span id="seasonDays" class="season-days"></span>
+        </div>
+      </div>
+      <div class="season-grid">
+        <div class="card elev2 season-board-card">
+          <h3 data-i18n="season.board">Таблиця ліги</h3>
+          <ol id="seasonBoard" class="season-board"></ol>
+        </div>
+        <div class="card elev2 season-side">
+          <h3 data-i18n="season.sources">Звідки досвід</h3>
+          <div id="seasonSources" class="season-sources"></div>
+          <h3 data-i18n="season.archive">Минулі сезони</h3>
+          <div id="seasonArchive" class="season-archive"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- MODULES -->
     <section class="view" id="view-modules">
       <div class="section-head"><h2 data-i18n="modules.title">Модулі Python</h2></div>
@@ -866,65 +1050,68 @@
   <footer class="footer"><span data-i18n="footer.made">Зроблено з ❤ для навчання</span></footer>
 
 
-  <script src="i18n.js?v=26.11.0"></script>
-  <script src="lang/tr.js?v=26.11.0"></script>
-  <script src="lang/de.js?v=26.11.0"></script>
-  <script src="lang/pl.js?v=26.11.0"></script>
-  <script src="lang/es.js?v=26.11.0"></script>
-  <script src="lang/fr.js?v=26.11.0"></script>
-  <script src="lang/it.js?v=26.11.0"></script>
-  <script src="lang/pt.js?v=26.11.0"></script>
-  <script src="lang/nl.js?v=26.11.0"></script>
-  <script src="lang/sv.js?v=26.11.0"></script>
-  <script src="lang/cs.js?v=26.11.0"></script>
-  <script src="lang/hu.js?v=26.11.0"></script>
-  <script src="lang/ro.js?v=26.11.0"></script>
-  <script src="lang/el.js?v=26.11.0"></script>
-  <script src="lang/id.js?v=26.11.0"></script>
-  <script src="lang/hi.js?v=26.11.0"></script>
-  <script src="lang/zh.js?v=26.11.0"></script>
-  <script src="lang/ja.js?v=26.11.0"></script>
-  <script src="lang/ko.js?v=26.11.0"></script>
-  <script src="lang/ar.js?v=26.11.0"></script>
-  <script src="lang/he.js?v=26.11.0"></script>
-  <script src="lang/vi.js?v=26.11.0"></script>
-  <script src="lang/th.js?v=26.11.0"></script>
-  <script src="splash.js?v=26.11.0"></script>
-  <script src="audio.js?v=26.11.0"></script>
-  <script src="profile.js?v=26.11.0"></script>
-  <script src="avatar.js?v=26.11.0"></script>
-  <script src="achievements.js?v=26.11.0"></script>
-  <script src="settings.js?v=26.11.0"></script>
-  <script src="installer.js?v=26.11.0"></script>
-  <script src="pygui.js?v=26.11.0"></script>
-  <script src="python.js?v=26.11.0"></script>
-  <script src="tasks.js?v=26.11.0"></script>
-  <script src="contest.js?v=26.11.0"></script>
-  <script src="daily.js?v=26.11.0"></script>
-  <script src="projects.js?v=26.11.0"></script>
-  <script src="glossary.js?v=26.11.0"></script>
-  <script src="exam.js?v=26.11.0"></script>
-  <script src="dashboard.js?v=26.11.0"></script>
-  <script src="backup.js?v=26.11.0"></script>
-  <script src="modules.js?v=26.11.0"></script>
-  <script src="course.js?v=26.11.0"></script>
-  <script src="games.js?v=26.11.0"></script>
-  <script src="gamerules.js?v=26.11.0"></script>
-  <script src="vault.js?v=26.11.0"></script>
-  <script src="tools.js?v=26.11.0"></script>
-  <script src="feedback.js?v=26.11.0"></script>
-  <script src="ui.js?v=26.11.0"></script>
-  <script src="shield.js?v=26.11.0"></script>
-  <script src="pychik-ai.js?v=26.11.0"></script>
-  <script src="pythonchik.js?v=26.11.0"></script>
-  <script src="app.js?v=26.11.0"></script>
-  <script src="onboarding.js?v=26.11.0"></script>
-  <script src="secret.js?v=26.11.0"></script>
-  <script src="teacher.js?v=26.11.0"></script>
-  <script src="fix.js?v=26.11.0"></script>
-  <script src="device.js?v=26.11.0"></script>
-  <script src="update.js?v=26.11.0"></script>
-  <script src="pwa.js?v=26.11.0"></script>
+  <script src="i18n.js?v=26.12.0"></script>
+  <script src="lang/tr.js?v=26.12.0"></script>
+  <script src="lang/de.js?v=26.12.0"></script>
+  <script src="lang/pl.js?v=26.12.0"></script>
+  <script src="lang/es.js?v=26.12.0"></script>
+  <script src="lang/fr.js?v=26.12.0"></script>
+  <script src="lang/it.js?v=26.12.0"></script>
+  <script src="lang/pt.js?v=26.12.0"></script>
+  <script src="lang/nl.js?v=26.12.0"></script>
+  <script src="lang/sv.js?v=26.12.0"></script>
+  <script src="lang/cs.js?v=26.12.0"></script>
+  <script src="lang/hu.js?v=26.12.0"></script>
+  <script src="lang/ro.js?v=26.12.0"></script>
+  <script src="lang/el.js?v=26.12.0"></script>
+  <script src="lang/id.js?v=26.12.0"></script>
+  <script src="lang/hi.js?v=26.12.0"></script>
+  <script src="lang/zh.js?v=26.12.0"></script>
+  <script src="lang/ja.js?v=26.12.0"></script>
+  <script src="lang/ko.js?v=26.12.0"></script>
+  <script src="lang/ar.js?v=26.12.0"></script>
+  <script src="lang/he.js?v=26.12.0"></script>
+  <script src="lang/vi.js?v=26.12.0"></script>
+  <script src="lang/th.js?v=26.12.0"></script>
+  <script src="splash.js?v=26.12.0"></script>
+  <script src="audio.js?v=26.12.0"></script>
+  <script src="profile.js?v=26.12.0"></script>
+  <script src="avatar.js?v=26.12.0"></script>
+  <script src="achievements.js?v=26.12.0"></script>
+  <script src="settings.js?v=26.12.0"></script>
+  <script src="installer.js?v=26.12.0"></script>
+  <script src="pygui.js?v=26.12.0"></script>
+  <script src="python.js?v=26.12.0"></script>
+  <script src="tasks.js?v=26.12.0"></script>
+  <script src="contest.js?v=26.12.0"></script>
+  <script src="daily.js?v=26.12.0"></script>
+  <script src="projects.js?v=26.12.0"></script>
+  <script src="glossary.js?v=26.12.0"></script>
+  <script src="exam.js?v=26.12.0"></script>
+  <script src="turtle.js?v=26.12.0"></script>
+  <script src="constructor.js?v=26.12.0"></script>
+  <script src="season.js?v=26.12.0"></script>
+  <script src="dashboard.js?v=26.12.0"></script>
+  <script src="backup.js?v=26.12.0"></script>
+  <script src="modules.js?v=26.12.0"></script>
+  <script src="course.js?v=26.12.0"></script>
+  <script src="games.js?v=26.12.0"></script>
+  <script src="gamerules.js?v=26.12.0"></script>
+  <script src="vault.js?v=26.12.0"></script>
+  <script src="tools.js?v=26.12.0"></script>
+  <script src="feedback.js?v=26.12.0"></script>
+  <script src="ui.js?v=26.12.0"></script>
+  <script src="shield.js?v=26.12.0"></script>
+  <script src="pychik-ai.js?v=26.12.0"></script>
+  <script src="pythonchik.js?v=26.12.0"></script>
+  <script src="app.js?v=26.12.0"></script>
+  <script src="onboarding.js?v=26.12.0"></script>
+  <script src="secret.js?v=26.12.0"></script>
+  <script src="teacher.js?v=26.12.0"></script>
+  <script src="fix.js?v=26.12.0"></script>
+  <script src="device.js?v=26.12.0"></script>
+  <script src="update.js?v=26.12.0"></script>
+  <script src="pwa.js?v=26.12.0"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {

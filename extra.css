@@ -3319,8 +3319,155 @@ body:not([data-style="new"]) .py-ask { background: rgba(148, 226, 213, .05); }
 .bk-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
 @media (max-width:640px){.bk-row{font-size:12px;padding:7px 10px}.bk-actions .btn{flex:1 1 auto;justify-content:center}}
 
-/* У темній темі --md-success світлий, тож білий текст на ньому зникає. */
-body.dark .proj-card-badge.done,body.dark .exam-opt.right .exam-opt-mark,body.dark .daily-cell.solved .daily-cell-dot{color:#0B2E17}
+/* ============================================================
+   v26.12.0 · МАСШТАБНЕ ОНОВЛЕННЯ
+   Черепашка · Конструктор задач · Сезон і ліги
+   Логічні властивості (inline-start/end) — дзеркало для ar та he.
+   ============================================================ */
+
+/* ---------- Черепашка ---------- */
+.turtle-hero{display:flex;flex-direction:column;gap:12px;padding:18px 20px;margin-bottom:14px}
+.turtle-intro{margin:0;font-size:14px;line-height:1.6}
+.turtle-stats{display:flex;gap:8px;flex-wrap:wrap}
+.turtle-stat{font-family:var(--md-mono);font-size:12.5px;padding:6px 12px;border-radius:999px;background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
+.turtle-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.turtle-tab{display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:13.5px;padding:9px 15px;border-radius:999px;border:1px solid var(--md-outline-var);background:transparent;color:var(--md-on-surface-var);cursor:pointer;transition:.15s}
+.turtle-tab .material-icons{font-size:18px}
+.turtle-tab:hover{border-color:var(--md-primary)}
+.turtle-tab.active{border-color:var(--md-primary);background:var(--md-primary-container);color:var(--md-on-primary-container);font-weight:600}
+.turtle-stage{margin-bottom:16px}
+.turtle-tip{margin:0 0 12px;font-size:13px;line-height:1.55}
+.turtle-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.turtle-editor{display:flex;flex-direction:column;gap:6px}
+.turtle-editor textarea{min-height:220px}
+.turtle-canvas-wrap{display:flex;flex-direction:column;gap:8px;min-width:0}
+.turtle-canvas{display:grid;place-items:center;min-height:240px;padding:8px;border-radius:12px;border:1px dashed var(--md-outline-var);background:var(--md-surface-dim);overflow:hidden}
+.turtle-canvas:not(:empty){border-style:solid;background:#fff}
+.turtle-live{border-color:var(--md-primary)}
+.turtle-out{margin:0;padding:10px 12px;border-radius:10px;background:#181825;color:#CDD6F4;font-family:var(--md-mono);font-size:12.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;max-height:180px;overflow:auto}
+.turtle-out:empty{display:none}
+.turtle-status{margin-top:10px;font-size:13px;line-height:1.5}
+.turtle-status.good{color:var(--md-success)}
+.turtle-status.bad,.turtle-status.error{color:var(--md-error)}
+.turtle-status.loading{color:var(--md-on-surface-var)}
+.turtle-list{display:grid;gap:10px}
+.turtle-item{display:flex;align-items:flex-start;gap:12px;width:100%;font:inherit;text-align:start;padding:13px 16px;border-radius:var(--md-radius);border:1px solid var(--md-outline-var);background:var(--md-surface);color:var(--md-on-surface);cursor:pointer;transition:.15s}
+.turtle-item:hover{border-color:var(--md-primary);box-shadow:var(--md-elev2)}
+.turtle-item.done{border-inline-start:4px solid var(--md-success)}
+.turtle-item>.material-icons{font-size:21px;flex:0 0 auto;color:var(--md-primary);margin-top:1px}
+.turtle-itemtext{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.turtle-itemtitle{font-size:14.5px;font-weight:600}
+.turtle-itemmeta{font-size:12px;color:var(--md-on-surface-var)}
+.turtle-tick{color:var(--md-success);font-size:21px;flex:0 0 auto}
+.turtle-empty{padding:22px;text-align:center;font-size:14px}
+@media (max-width:640px){.turtle-hero{padding:14px}.turtle-tabs{gap:6px}.turtle-tab{flex:1 1 auto;justify-content:center;padding:8px 12px;font-size:12.5px}.turtle-split{grid-template-columns:1fr}.turtle-editor textarea{min-height:170px}.turtle-canvas{min-height:200px}.turtle-item{padding:12px}.turtle-actions .btn{flex:1 1 auto;justify-content:center}}
+
+/* ---------- Конструктор задач ---------- */
+.mk-hero{display:flex;flex-direction:column;gap:12px;padding:18px 20px;margin-bottom:14px}
+.mk-intro{margin:0;font-size:14px;line-height:1.6}
+.mk-stats{display:flex;gap:8px;flex-wrap:wrap}
+.mk-stat{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;padding:6px 12px;border-radius:999px;background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
+.mk-stat b{font-family:var(--md-mono);font-size:14px}
+.mk-actions{display:flex;gap:8px;flex-wrap:wrap}
+.mk-form{display:flex;flex-direction:column;gap:12px;padding:18px 20px;margin-bottom:14px}
+.mk-form h3{margin:0;font-size:18px;font-weight:600}
+.mk-field{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--md-on-surface-var)}
+.mk-field input,.mk-field textarea,.mk-field select{font:inherit;font-size:14px;padding:10px 12px;border-radius:10px;border:1px solid var(--md-outline-var);background:var(--md-surface);color:var(--md-on-surface)}
+.mk-field textarea{line-height:1.5;resize:vertical}
+.mk-field input:focus,.mk-field textarea:focus{outline:none;border-color:var(--md-primary)}
+.mk-fieldset{display:flex;flex-direction:column;gap:8px}
+.mk-fieldsetLabel{font-size:12.5px;color:var(--md-on-surface-var)}
+.mk-tests{display:flex;flex-direction:column;gap:10px}
+.mk-testrow{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr) auto;gap:8px;align-items:start;padding:10px;border-radius:12px;background:var(--md-surface-dim)}
+.mk-testno{font-family:var(--md-mono);font-size:11.5px;color:var(--md-on-surface-var);padding-top:8px}
+.mk-testin,.mk-testout{font-family:var(--md-mono);font-size:12.5px;line-height:1.45;padding:8px 10px;border-radius:9px;border:1px solid var(--md-outline-var);background:var(--md-surface);color:var(--md-on-surface);resize:vertical}
+.mk-testdel{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--md-on-surface-var);cursor:pointer}
+.mk-testdel:hover{border-color:var(--md-error);color:var(--md-error)}
+.mk-testdel .material-icons{font-size:17px}
+.mk-testadd{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;padding:7px 12px;border-radius:999px;border:1px dashed var(--md-outline-var);background:transparent;color:var(--md-on-surface-var);cursor:pointer}
+.mk-testadd:hover{border-color:var(--md-primary);color:var(--md-primary)}
+.mk-testadd .material-icons{font-size:17px}
+.mk-status{min-height:18px;font-size:12.5px;line-height:1.5;color:var(--md-on-surface-var)}
+.mk-status.good{color:var(--md-success)}
+.mk-status.bad{color:var(--md-error)}
+.mk-templates-label{font-size:12.5px;color:var(--md-on-surface-var)}
+.mk-templates{display:flex;gap:8px;flex-wrap:wrap}
+.mk-tpl{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;padding:7px 12px;border-radius:999px;border:1px solid var(--md-outline-var);background:transparent;color:var(--md-on-surface);cursor:pointer;transition:.15s}
+.mk-tpl .material-icons{font-size:16px;color:var(--md-primary)}
+.mk-tpl:hover{border-color:var(--md-primary);background:rgba(var(--md-primary-rgb),.08)}
+.mk-stage{margin-bottom:16px}
+.mk-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;margin-bottom:6px}
+.mk-preview{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:#181825;color:#CDD6F4;font-family:var(--md-mono);font-size:12.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto}
+.mk-preview:empty{display:none}
+.mk-share-row{margin-top:10px}
+.mk-share-row textarea{width:100%;font-family:var(--md-mono);font-size:11.5px;padding:10px 12px;border-radius:10px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);color:var(--md-on-surface-var);resize:vertical}
+.mk-import{display:flex;flex-direction:column;gap:10px;padding:18px 20px;margin-bottom:14px}
+.mk-import h3{margin:0;font-size:17px;font-weight:600}
+.mk-import textarea{width:100%;font-family:var(--md-mono);font-size:12.5px;padding:10px 12px;border-radius:10px;border:1px solid var(--md-outline-var);background:var(--md-surface);color:var(--md-on-surface);resize:vertical}
+.mk-list{display:grid;gap:10px;margin-bottom:14px}
+.mk-group{margin:8px 0 2px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--md-on-surface-var)}
+.mk-item{display:flex;align-items:flex-start;gap:12px;width:100%;font:inherit;text-align:start;padding:13px 16px;border-radius:var(--md-radius);border:1px solid var(--md-outline-var);background:var(--md-surface);color:var(--md-on-surface);cursor:pointer;transition:.15s}
+.mk-item:hover{border-color:var(--md-primary);box-shadow:var(--md-elev2)}
+.mk-item.done{border-inline-start:4px solid var(--md-success)}
+.mk-item.foreign>.material-icons{color:var(--md-secondary)}
+.mk-item>.material-icons{font-size:21px;flex:0 0 auto;color:var(--md-primary);margin-top:1px}
+.mk-itemtext{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.mk-itemtitle{font-size:14.5px;font-weight:600;overflow-wrap:anywhere}
+.mk-itemmeta{font-size:12px;color:var(--md-on-surface-var)}
+.mk-tick{color:var(--md-success);font-size:21px;flex:0 0 auto}
+.mk-empty{padding:22px;text-align:center;font-size:14px}
+@media (max-width:640px){.mk-hero,.mk-form,.mk-import{padding:14px}.mk-testrow{grid-template-columns:minmax(0,1fr) auto;gap:6px}.mk-testno{grid-column:1/2}.mk-testin,.mk-testout{grid-column:1/3}.mk-testdel{grid-column:2/3;grid-row:1}.mk-item{padding:12px}.mk-actions .btn,.mk-import .btn{flex:1 1 auto;justify-content:center}}
+
+/* ---------- Сезон і ліги ---------- */
+.season-hero{display:flex;flex-direction:column;gap:12px;padding:18px 20px;margin-bottom:14px}
+.season-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.season-league{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:8px 14px;border-radius:999px;background:var(--md-primary-container);color:var(--md-on-primary-container)}
+.season-league .material-icons{font-size:20px}
+.season-top .season-xp{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:92px;padding:8px 14px;border-radius:14px;background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
+.season-top .season-xp b{font-family:var(--md-mono);font-size:24px;font-weight:800;line-height:1}
+.season-top .season-xp span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.season-mult{font-family:var(--md-mono);font-size:13px;font-weight:700;padding:7px 12px;border-radius:999px;border:1px solid var(--md-outline-var);color:var(--md-primary)}
+.season-intro{margin:0;font-size:13.5px;line-height:1.6}
+.season-bar{position:relative;height:10px;border-radius:999px;background:var(--md-surface-dim);overflow:hidden}
+.season-bar>i{position:absolute;top:0;bottom:0;inset-inline-start:0;height:100%;width:0;background:linear-gradient(100deg,var(--md-primary),#F9A825);border-radius:999px;transition:width .35s}
+.season-barlabel{position:absolute;inset-inline-end:10px;top:50%;transform:translateY(-50%);font-family:var(--md-mono);font-size:10.5px;color:var(--md-on-surface);mix-blend-mode:plain}
+.season-facts{display:flex;gap:8px;flex-wrap:wrap}
+.season-facts>span{font-family:var(--md-mono);font-size:12px;padding:5px 11px;border-radius:999px;background:var(--md-surface-dim);color:var(--md-on-surface-var)}
+.season-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:14px;align-items:start}
+.season-board-card,.season-side{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.season-board-card h3,.season-side h3{margin:0;font-size:16px;font-weight:600}
+.season-board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.season-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;font-size:13px;color:var(--md-on-surface)}
+.season-row:nth-child(odd){background:var(--md-surface-dim)}
+.season-row.me{border:1px solid var(--md-primary);background:rgba(var(--md-primary-rgb),.12);font-weight:600}
+.season-row.gap{color:var(--md-on-surface-var);font-style:italic}
+.season-pos{font-family:var(--md-mono);font-size:12.5px;font-weight:700;color:var(--md-on-surface-var);text-align:center}
+.season-row:nth-child(1) .season-pos,.season-row:nth-child(2) .season-pos,.season-row:nth-child(3) .season-pos{color:#F9A825}
+.season-row .season-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.season-row .season-xp{font-family:var(--md-mono);font-size:12.5px;text-align:end;color:var(--md-on-surface-var)}
+.season-row.me .season-xp{color:var(--md-primary);font-weight:700}
+.season-sources{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.season-src{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:8px 10px;border-radius:10px;background:var(--md-surface-dim)}
+.season-src>.material-icons{font-size:18px;color:var(--md-primary)}
+.season-srcname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.season-srcnum{font-family:var(--md-mono);font-size:12px;font-weight:700;color:var(--md-on-surface)}
+.season-src.zero{opacity:.5}
+.season-old{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;font-size:12.5px;padding:8px 10px;border-radius:10px;background:var(--md-surface-dim)}
+.season-old>.material-icons{font-size:19px;color:var(--md-outline)}
+.season-oldtext{display:flex;flex-direction:column;gap:2px;min-width:0}
+.season-oldseason{font-family:var(--md-mono);font-size:12px;font-weight:700;color:var(--md-on-surface)}
+.season-oldmeta{font-size:11.5px;color:var(--md-on-surface-var)}
+.season-empty{margin:0;font-size:13px;color:var(--md-on-surface-var)}
+@media (max-width:900px){.season-grid{grid-template-columns:1fr}}
+@media (max-width:640px){.season-hero{padding:14px}.season-top{gap:8px}.season-top .season-xp{min-width:0;flex:1}.season-barlabel{position:static;display:block;text-align:end;margin-top:4px;transform:none}.season-sources{grid-template-columns:1fr}.season-row{grid-template-columns:26px minmax(0,1fr) auto;gap:8px;font-size:12.5px}}
+
+/* У темній темі --md-success світлий, тож білий текст на ньому зникає.
+   Панелі айді-кодів (консоль черепашки й перегляд конструктора) лишаються
+   темними й у світлій темі — як у майданчику Python. */
+body.dark .proj-card-badge.done,body.dark .exam-opt.right .exam-opt-mark,body.dark .daily-cell.solved .daily-cell-dot,
+body.dark .turtle-tick,body.dark .mk-tick{color:#0B2E17}
+body:not(.dark) .turtle-status.good,body:not(.dark) .mk-status.good{color:#146C2E}
+body:not(.dark) .season-top .season-xp b{color:var(--md-on-secondary-container)}
 
 /* Іконка лупи стоїть у потоці .material-icons, яким rtl.css примусово вертає
    direction:ltr — тому логічний offset тут не дзеркалиться, правимо фізично. */
@@ -3330,7 +3477,10 @@ html[dir="rtl"] .gloss-search-ico{left:auto;right:12px}
    розділів ідуть один за одним — повертаємо їм повітря лише тут. */
 @media (max-width:768px){
   body[data-style="new"] .dash-block,body[data-style="new"] .proj-hero,body[data-style="new"] .proj-stage,
-  body[data-style="new"] .gloss-toolbar,body[data-style="new"] .exam-intro,body[data-style="new"] .exam-stage{
+  body[data-style="new"] .gloss-toolbar,body[data-style="new"] .exam-intro,body[data-style="new"] .exam-stage,
+  body[data-style="new"] .turtle-hero,body[data-style="new"] .turtle-stage,body[data-style="new"] .mk-hero,
+  body[data-style="new"] .mk-form,body[data-style="new"] .mk-import,body[data-style="new"] .mk-stage,
+  body[data-style="new"] .season-hero,body[data-style="new"] .season-board-card,body[data-style="new"] .season-side{
     margin-bottom:14px!important
   }
 }
@@ -3343,5 +3493,6 @@ html[dir="rtl"] .gloss-search-ico{left:auto;right:12px}
 @media (prefers-reduced-motion:reduce){.wn-major{animation:none}}
 
 @media (prefers-reduced-motion:reduce){
-  .proj-bar-fill,.gloss-bar i,.exam-progress i,.dash-rank-bar i,.dash-cell,.gloss-card,.proj-card,.exam-opt{transition:none}
+  .proj-bar-fill,.gloss-bar i,.exam-progress i,.dash-rank-bar i,.dash-cell,.gloss-card,.proj-card,.exam-opt,
+  .season-bar>i,.turtle-tab,.mk-item,.turtle-item,.mk-testdel,.mk-testadd,.mk-tpl,.season-src{transition:none}
 }

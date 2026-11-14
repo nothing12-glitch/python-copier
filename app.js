@@ -51,6 +51,15 @@
     if (name === "exam" && global.Exam) {
       try { global.Exam.render(); } catch (e) { console.warn(e); }
     }
+    if (name === "turtle" && global.TurtleLab) {
+      try { global.TurtleLab.render(); } catch (e) { console.warn(e); }
+    }
+    if (name === "constructor" && global.Constructor) {
+      try { global.Constructor.render(); } catch (e) { console.warn(e); }
+    }
+    if (name === "season" && global.Season) {
+      try { global.Season.render(); } catch (e) { console.warn(e); }
+    }
     if ((name === "home" || name === "profile") && global.Dashboard) {
       try { global.Dashboard.render(); } catch (e) { console.warn(e); }
     }
@@ -511,7 +520,8 @@
     python: "home.cardPythonText", modules: "home.cardModulesText", course: "home.cardCourseText",
     tasks: "home.cardTasksText", games: "home.cardGamesText", profile: "home.cardProfileText",
     tools: "tools.sub", feedback: "feedback.sub", achievements: "ach.sub", settings: "settings.sub",
-    projects: "home.cardProjectsText", glossary: "home.cardGlossaryText", exam: "home.cardExamText"
+    projects: "home.cardProjectsText", glossary: "home.cardGlossaryText", exam: "home.cardExamText",
+    turtle: "turtle.sub", constructor: "mk.sub", season: "season.sub"
   };
 
   function loc(obj) {
@@ -773,6 +783,9 @@
     try { if (global.Projects) global.Projects.init(); } catch (e) { console.warn("Projects", e); }
     try { if (global.Glossary) global.Glossary.init(); } catch (e) { console.warn("Glossary", e); }
     try { if (global.Exam) global.Exam.init(); } catch (e) { console.warn("Exam", e); }
+    try { if (global.TurtleLab) global.TurtleLab.init(); } catch (e) { console.warn("TurtleLab", e); }
+    try { if (global.Constructor) global.Constructor.init(); } catch (e) { console.warn("Constructor", e); }
+    try { if (global.Season) global.Season.install(); } catch (e) { console.warn("Season", e); }
     try { if (global.Dashboard) global.Dashboard.init(); } catch (e) { console.warn("Dashboard", e); }
     try { if (global.Backup) global.Backup.init(); } catch (e) { console.warn("Backup", e); }
     try { if (global.Games) global.Games.init(); } catch (e) { console.warn("Games", e); }
@@ -789,7 +802,7 @@
     // початковий маршрут
     try {
       const hash = (location.hash || "#home").slice(1);
-      route(["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "exam", "games", "tools", "feedback", "profile", "achievements", "settings", "help"].includes(hash) ? hash : "home");
+      route(["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "exam", "turtle", "constructor", "season", "games", "tools", "feedback", "profile", "achievements", "settings", "help"].includes(hash) ? hash : "home");
     } catch (e) { console.warn("initial route", e); }
 
     if (global.I18n && global.I18n.apply) { try { global.I18n.apply(); } catch (e) {} }

@@ -9,7 +9,7 @@
   const FEED_DAYS = 6;
 
   /* Скільки балів приносить одна подія. Там, де модуль сам знає ціну, беремо з detail.points. */
-  const AW = { task: 10, lesson: 8, daily: 20, project: 15, glossary: 2, exam: 30, contest: 12, game: 4 };
+  const AW = { task: 10, lesson: 8, daily: 20, project: 15, glossary: 2, exam: 30, contest: 12, game: 4, turtle: 15, maker: 18 };
 
   const RANKS = [
     { at: 0, name: { uk: "Новачок", en: "Rookie", tr: "Acemi" } },
@@ -30,7 +30,10 @@
     { id: "glossary", ico: "menu_book", route: "glossary", key: "g", name: { uk: "Словник", en: "Glossary", tr: "Sözlük" } },
     { id: "exam", ico: "workspace_premium", route: "exam", key: "x", name: { uk: "Іспит", en: "Exam", tr: "Sınav" } },
     { id: "games", ico: "sports_esports", route: "games", key: "m", name: { uk: "Ігри", en: "Games", tr: "Oyunlar" } },
-    { id: "contest", ico: "timer", route: "tools", key: "c", name: { uk: "Змаг", en: "Contest", tr: "Yarışma" } }
+    { id: "contest", ico: "timer", route: "tools", key: "c", name: { uk: "Змаг", en: "Contest", tr: "Yarışma" } },
+    { id: "turtle", ico: "pets", route: "turtle", key: "u", name: { uk: "Черепашка", en: "Turtle", tr: "Kaplumbağa" } },
+    { id: "maker", ico: "construction", route: "constructor", key: "k", name: { uk: "Конструктор", en: "Constructor", tr: "Kurucu" } },
+    { id: "season", ico: "trophy", route: "season", key: "z", name: { uk: "Сезон", en: "Season", tr: "Sezon" } }
   ];
 
   const I = () => global.I18n;
@@ -75,7 +78,7 @@
 
   function dayOf(s, key) {
     let d = s.days[key];
-    if (!d) { d = { p: 0, t: 0, l: 0, d: 0, j: 0, g: 0, x: 0, c: 0, m: 0 }; s.days[key] = d; }
+    if (!d) { d = { p: 0, t: 0, l: 0, d: 0, j: 0, g: 0, x: 0, c: 0, m: 0, u: 0, k: 0 }; s.days[key] = d; }
     return d;
   }
 
@@ -153,6 +156,10 @@
     const dl = D && D.stats ? D.stats() : { days: {} };
     const gl = G && G.stats ? G.stats() : { read: 0, total: 0 };
     const ex = X && X.stats ? X.stats() : { attempts: 0, best: 0, passed: 0 };
+    const tu = global.TurtleLab && global.TurtleLab.stats ? global.TurtleLab.stats() : {};
+    const mk = global.Constructor && global.Constructor.stats ? global.Constructor.stats() : {};
+    const sn = global.Season && global.Season.stats ? global.Season.stats() : {};
+    const leagueCount = (global.Season && global.Season.LEAGUES ? global.Season.LEAGUES.length : 8);
     let projPoints = 0;
     if (P && P.step) Object.keys(dj.steps || {}).forEach((id) => {
       const st = P.step(id);
@@ -167,6 +174,9 @@
       exam: { attempts: ex.attempts, best: ex.best, passed: ex.passed, size: X ? X.draw : 12 },
       games: { done: (stats.gamesPlayed || []).length, total: 9 },
       contest: { runs: stats.contestsRun || 0, best: stats.contestBest || 0, perfect: stats.contestPerfect || 0 },
+      turtle: { done: (tu.lessonsRun || 0) + (tu.solved || 0), total: (tu.lessonsTotal || 10) + (tu.total || 10), lessons: tu.lessonsRun || 0, lessonsTotal: tu.lessonsTotal || 10, tasks: tu.solved || 0, tasksTotal: tu.total || 10 },
+      maker: { done: mk.solved || 0, total: (mk.own || 0) + (mk.yard || 0), own: mk.own || 0, yard: mk.yard || 0 },
+      season: { done: (sn.league || 0) + 1, total: leagueCount, xp: sn.xp || 0, days: sn.days || 0, rank: sn.rank || 0 },
       runs: stats.pyRuns || 0
     };
   }
@@ -233,6 +243,9 @@
     else if (sec.id === "daily") note = t("dash.streakNow", { n: data.streak, best: data.best });
     else if (sec.id === "exam") note = t("dash.examNote", { a: data.attempts, best: data.best, total: data.size });
     else if (sec.id === "contest") note = t("dash.contestNote", { r: data.runs, best: data.best });
+    else if (sec.id === "turtle") note = t("dash.turtleNote", { l: data.lessons, lt: data.lessonsTotal, s: data.tasks, st: data.tasksTotal });
+    else if (sec.id === "maker") note = t("dash.makerNote", { own: data.own, yard: data.yard });
+    else if (sec.id === "season") note = t("dash.seasonNote", { xp: data.xp, rank: data.rank });
     else if (data.total) note = t("dash.of", { done: data.done, total: data.total });
     return '<button class="dash-cell" type="button" data-route="' + sec.route + '">' +
       '<span class="material-icons">' + sec.ico + "</span>" +
@@ -304,6 +317,8 @@
       if (rec.x) bits.push(t("dash.fExam", { n: rec.x }));
       if (rec.c) bits.push(t("dash.fContest", { n: rec.c }));
       if (rec.m) bits.push(t("dash.fGame", { n: rec.m }));
+      if (rec.u) bits.push(t("dash.fTurtle", { n: rec.u }));
+      if (rec.k) bits.push(t("dash.fMaker", { n: rec.k }));
       return '<li><b>' + d.p + "</b><span>" + escapeHtml(parseKey(d.key).toLocaleDateString()) + "</span>" +
         "<em>" + escapeHtml(bits.join(" · ")) + "</em></li>";
     }).join("");
@@ -365,6 +380,16 @@
       const d = e.detail || {};
       if (!d.id) return;
       award("m", "m:" + d.id, AW.game);
+    });
+    document.addEventListener("turtledone", (e) => {
+      const d = e.detail || {};
+      if (!d.id) return;
+      award("u", "u:" + d.id, d.points || AW.turtle);
+    });
+    document.addEventListener("makertaskdone", (e) => {
+      const d = e.detail || {};
+      if (!d.id) return;
+      award("k", "k:" + d.id, d.points || AW.maker);
     });
     document.addEventListener("langchange", () => { try { render(); } catch (e) { console.warn("dashboard langchange", e); } });
     document.addEventListener("routechange", () => { try { render(); } catch (e) { /* не критично */ } });
