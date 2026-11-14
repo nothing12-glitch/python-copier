@@ -15,7 +15,11 @@
     return node;
   }
 
-  const hostNode = () => document.getElementById("out") || document.body;
+  /* Розділ «Черепашка» просить малювати у власному контейнері: поки GUI_HOST
+     заданий, полотно та вікна tkinter створюються там, а не у консолі майданчика. */
+  let GUI_HOST = null;
+  const hostNode = () => (GUI_HOST && document.body.contains(GUI_HOST) ? GUI_HOST
+    : document.getElementById("out") || document.body);
 
   const tr = (key, dflt) => {
     try {
@@ -2379,6 +2383,14 @@
     return true;
   }
 
+  /* Малюємо у контейнері розділу «Черепашка», а коли людина іде у майданчик —
+     повертаємо те саме полотно назад. То саме полотно = той самий стан черепашок. */
+  function adopt(node) {
+    GUI_HOST = node && node.nodeType === 1 ? node : null;
+    const host = hostNode();
+    if (Turt.scr && Turt.scr.wrap && Turt.scr.wrap.parentNode !== host) host.appendChild(Turt.scr.wrap);
+  }
+
   function reset() {
     if (Turt.scr) cancelAnimationFrame(Turt.scr.raf);
     (Turt.scr ? Turt.scr.timers : []).forEach(clearTimeout);
@@ -2411,6 +2423,7 @@
   global.PyGui = {
     install,
     reset,
+    adopt,
     native: () => ["tkinter", "turtle"],
     get ready() { return installedFor != null; }
   };
