@@ -3,10 +3,40 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.11.0";
+  const VERSION = "26.12.0";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.0": {
+      major: true,
+      uk: [
+        "Новий розділ «Черепашка»: 10 уроків, 10 завдань з автоперевіркою та галерея з 6 візерунків — черепашка малює прямо в браузері твоїм Python-кодом",
+        "Новий розділ «Конструктор»: винаходь власні задачі з тестами, розв'язуй чужі в «Загальному дворі» й пересилай їх кодом запрошення «PC1:…»",
+        "Новий розділ «Сезон»: досвід XP за кожну подію, вісім ліг, щомісячна таблиця суперників і множник за серію днів — аж до x2",
+        "Дев'ять нових значків: три за черепашку, три за конструктор і три за сезон — разом їх уже 57",
+        "Панель «Статистика» тепер показує всі одинадцять розділів, а графік балів рахує й малюнки черепашки, й авторські задачі",
+        "Резервні копії підхоплюють три нових розділи самі — весь прогрес так само виходить одним файлом і так само повертається",
+        "Усі нові тексти, сторінки й інтерфейс перекладені всіма 24 мовами; для арабської та івриту інтерфейс дзеркалиться"
+      ],
+      en: [
+        "A new «Turtle» section: 10 lessons, 10 auto-checked tasks and a gallery of 6 patterns — the turtle draws your Python right in the browser",
+        "A new «Constructor» section: invent your own tasks with tests, solve other people's in the Shared yard and pass them around as a «PC1:…» invite code",
+        "A new «Season» section: XP for every event, eight leagues, a monthly rival table and a day-streak multiplier that climbs all the way to x2",
+        "Nine new badges: three for the turtle, three for the constructor and three for the season — 57 badges in all",
+        "The «Statistics» panel now covers all eleven sections, and the point chart counts both turtle drawings and tasks you authored",
+        "Backups pick up the three new sections on their own — your whole progress still leaves as one file and comes back the same way",
+        "Every new text, page and interface string is translated into all 24 languages; Arabic and Hebrew get a mirrored layout"
+      ],
+      tr: [
+        "Yeni «Kaplumbağa» bölümü: 10 ders, 10 otomatik denetlenen görev ve 6 desenlik galeri — kaplumbağa Python kodunu doğrudan tarayıcıda çiziyor",
+        "Yeni «Kurucu» bölümü: testlerle kendi görevlerini uydur, Ortak bahçedekileri çöz ve «PC1:…» davet koduyla arkadaşlarına gönder",
+        "Yeni «Sezon» bölümü: her olay için XP, sekiz lig, aylık rakip tablosu ve x2'ye kadar çıkan gün serisi çarpanı",
+        "Dokuz yeni rozet: üçü kaplumbağaya, üçü kurucuya, üçü sezona — toplamda artık 57 rozet",
+        "«İstatistik» paneli artık on bir bölümün tamamını gösteriyor; puan grafiği hem kaplumbağa çizimlerini hem kendi yazdığın görevleri sayıyor",
+        "Yedekler üç yeni bölümü kendiliğinden kapsıyor — tüm ilerlemen yine tek dosya olarak dışarı çıkıyor ve aynı şekilde geri geliyor",
+        "Bütün yeni metinler, sayfalar ve arayüz ifadeleri 24 dilin tamamına çevrildi; Arapça ve İbranice'de arayüz aynalanıyor"
+      ]
+    },
     "26.11.0": {
       major: true,
       uk: [

@@ -1,6 +1,6 @@
 /* sw.js — Service Worker для офлайн-доступу.
    При зміні версії сайту піднімай CACHE_VERSION, щоб очистити старий кеш. */
-const CACHE_VERSION = "pc-v89";
+const CACHE_VERSION = "pc-v91";
 
 const STATIC_ASSETS = [
   "/",
@@ -52,6 +52,9 @@ const STATIC_ASSETS = [
   "/projects.js",
   "/glossary.js",
   "/exam.js",
+  "/turtle.js",
+  "/constructor.js",
+  "/season.js",
   "/dashboard.js",
   "/backup.js",
   "/modules.js",
