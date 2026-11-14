@@ -5,9 +5,41 @@
   const STATS_KEY = "app.achStats";
 
   const ALL_GAMES = ["ttt", "snake", "memory", "g2048", "rps", "react", "simon", "mines", "guess"];
-  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "daily", "games", "tools", "feedback", "profile", "settings", "achievements"];
+  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "exam", "games", "tools", "feedback", "profile", "settings", "achievements"];
   const tasksTotal = () => (global.Tasks && global.Tasks.count) || 12;
   const courseTotal = () => (global.Course && global.Course.count) || 12;
+  const glossTotal = () => (global.Glossary && global.Glossary.count) || 41;
+  const examDraw = () => (global.Exam && global.Exam.draw) || 12;
+
+  /* Нові розділи зберігають прогрес у себе, тому значки читають його напряму —
+     так вони відкриваються і для тих, хто все зробив ще до появи значків. */
+  function projSteps() {
+    try { return Object.keys(((global.Projects && global.Projects.stats()) || {}).steps || {}).length; }
+    catch (e) { return 0; }
+  }
+
+  function projFinished() {
+    try {
+      const steps = ((global.Projects && global.Projects.stats()) || {}).steps || {};
+      const list = (global.Projects && global.Projects.list()) || [];
+      return list.filter((p) => p.steps.every((_, i) => steps[p.id + "-" + (i + 1)])).length;
+    } catch (e) { return 0; }
+  }
+
+  function projProjects() {
+    try { return ((global.Projects && global.Projects.list()) || []).length || 5; }
+    catch (e) { return 5; }
+  }
+
+  function glossRead() {
+    try { return ((global.Glossary && global.Glossary.stats()) || {}).read || 0; }
+    catch (e) { return 0; }
+  }
+
+  function examState() {
+    try { return (global.Exam && global.Exam.stats()) || {}; }
+    catch (e) { return {}; }
+  }
 
   /* ---------- Визначення досягнень ---------- */
   const ACHIEVEMENTS = [
@@ -63,7 +95,14 @@
 
     { id: "daily_first",  ico: "bolt",                   cat: "daily", tier: "bronze", check: (s) => (s.dailyTotal || 0) >= 1,  progress: (s) => Math.min(s.dailyTotal || 0, 1) },
     { id: "daily_7",      ico: "local_fire_department",  cat: "daily", tier: "silver", check: (s) => (s.dailyBest || 0) >= 7,   progress: (s) => Math.min((s.dailyBest || 0) / 7, 1) },
-    { id: "daily_30",     ico: "whatshot",               cat: "daily", tier: "gold",   check: (s) => (s.dailyBest || 0) >= 30,  progress: (s) => Math.min((s.dailyBest || 0) / 30, 1) }
+    { id: "daily_30",     ico: "whatshot",               cat: "daily", tier: "gold",   check: (s) => (s.dailyBest || 0) >= 30,  progress: (s) => Math.min((s.dailyBest || 0) / 30, 1) },
+
+    { id: "proj_first",   ico: "design_services", cat: "projects", tier: "bronze", check: () => projSteps() >= 1,                          progress: () => Math.min(projSteps() / 1, 1) },
+    { id: "proj_all",     ico: "architecture",    cat: "projects", tier: "gold",   check: () => projFinished() >= projProjects(),          progress: () => Math.min(projFinished() / projProjects(), 1) },
+    { id: "gloss_all",    ico: "book",            cat: "glossary", tier: "silver", check: () => glossRead() >= glossTotal(),               progress: () => Math.min(glossRead() / glossTotal(), 1) },
+    { id: "exam_pass",    ico: "fact_check",      cat: "exam",     tier: "silver", check: () => (examState().passed || 0) >= 1,            progress: () => Math.min((examState().passed || 0) / 1, 1) },
+    { id: "exam_perfect", ico: "grade",           cat: "exam",     tier: "gold",   check: () => (examState().best || 0) >= examDraw(),     progress: () => Math.min((examState().best || 0) / examDraw(), 1) },
+    { id: "backup_first", ico: "cloud_upload",    cat: "profile",  tier: "bronze", check: () => !!localStorage.getItem("app.backupLast"),  progress: () => (localStorage.getItem("app.backupLast") ? 1 : 0) }
   ];
 
   const TIER_COLORS = { bronze: "#CD7F32", silver: "#C0C0C0", gold: "#FFD700" };
@@ -85,7 +124,10 @@
     profile:  { uk: "Профіль",  en: "Profile",   tr: "Profil" },
     explore:  { uk: "Дослідник",en: "Explorer",  tr: "Kaşif" },
     streak:   { uk: "Серії",    en: "Streaks",   tr: "Seriler" },
-    daily:    { uk: "Щоденний виклик", en: "Daily challenge", tr: "Günlük görev" }
+    daily:    { uk: "Щоденний виклик", en: "Daily challenge", tr: "Günlük görev" },
+    projects: { uk: "Проєкти",  en: "Projects",  tr: "Projeler" },
+    glossary: { uk: "Словник",  en: "Glossary",  tr: "Sözlük" },
+    exam:     { uk: "Іспит",    en: "Exam",      tr: "Sınav" }
   };
 
   const ACH_NAMES = {
@@ -130,7 +172,13 @@
     visit_7:        { uk: "Тижневик",            en: "Week Warrior",       tr: "Hafta Savaşçısı" },
     daily_first:    { uk: "Перший виклик",       en: "First Challenge",    tr: "İlk Görev" },
     daily_7:        { uk: "Тиждень поспіль",     en: "Week Streak",        tr: "Haftalık Seri" },
-    daily_30:       { uk: "Місяць вогню",        en: "Month of Fire",      tr: "Ateş Ayı" }
+    daily_30:       { uk: "Місяць вогню",        en: "Month of Fire",      tr: "Ateş Ayı" },
+    proj_first:     { uk: "Перший проєкт",       en: "First Project",      tr: "İlk Proje" },
+    proj_all:       { uk: "Архітектор",          en: "Architect",          tr: "Mimar" },
+    gloss_all:      { uk: "Лексикограф",         en: "Lexicographer",      tr: "Sözlük Ustası" },
+    exam_pass:      { uk: "Іспит складено",      en: "Exam Passed",        tr: "Sınav Geçildi" },
+    exam_perfect:   { uk: "Ідеальний іспит",     en: "Perfect Exam",       tr: "Kusursuz Sınav" },
+    backup_first:   { uk: "Резервна копія",      en: "Backup Created",     tr: "Yedek Alındı" }
   };
 
   const ACH_DESC = {
@@ -175,7 +223,13 @@
     visit_7:        { uk: "Заходь 7 днів поспіль",                 en: "Visit 7 days in a row",               tr: "7 gün üst üste ziyaret et" },
     daily_first:    { uk: "Розв'яжи щоденний виклик",              en: "Solve a daily challenge",             tr: "Günlük görevi çöz" },
     daily_7:        { uk: "Серія з 7 щоденних викликів",           en: "Keep a streak of 7 daily challenges", tr: "7 günlük görev serisi yap" },
-    daily_30:       { uk: "Серія з 30 щоденних викликів",          en: "Keep a streak of 30 daily challenges",tr: "30 günlük görev serisi yap" }
+    daily_30:       { uk: "Серія з 30 щоденних викликів",          en: "Keep a streak of 30 daily challenges",tr: "30 günlük görev serisi yap" },
+    proj_first:     { uk: "Виконай перший крок будь-якого проєкту", en: "Complete the first step of any project", tr: "Herhangi bir projenin ilk adımını tamamla" },
+    proj_all:       { uk: "Доведи до кінця всі проєкти",           en: "Finish every project to the last step", tr: "Tüm projeleri son adıma kadar bitir" },
+    gloss_all:      { uk: "Перечитай увесь словник Python",        en: "Read every card of the Python glossary", tr: "Python sözlüğündeki her kartı oku" },
+    exam_pass:      { uk: "Склади іспит на 70% і більше",          en: "Pass the exam with 70% or better", tr: "Sınavı %70 veya üzerinde geç" },
+    exam_perfect:   { uk: "Склади іспит без жодної помилки",       en: "Pass the exam without a single mistake", tr: "Sınavı tek hatasız geç" },
+    backup_first:   { uk: "Вивантаж резервну копію прогресу",      en: "Export a backup of your progress", tr: "İlerlemeni yedek olarak dışa aktar" }
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
@@ -311,7 +365,7 @@
       '</h3><span class="ach-counter">' + count + ' / ' + total + '</span>';
     container.appendChild(header);
 
-    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "course", "profile", "explore", "streak", "daily"];
+    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "course", "projects", "glossary", "exam", "profile", "explore", "streak", "daily"];
     cats.forEach((cat) => {
       const catAchs = ACHIEVEMENTS.filter((a) => a.cat === cat);
       if (catAchs.length === 0) return;
@@ -505,6 +559,15 @@
         checkAll();
         rerenderIfActive();
       }
+    });
+
+    /* Проєкти, словник й іспит тримають свій прогрес у власних ключах —
+       тут достатньо лише перерахувати значки. */
+    ["projectdone", "glossaryread", "examdone"].forEach((ev) => {
+      document.addEventListener(ev, () => {
+        checkAll();
+        rerenderIfActive();
+      });
     });
 
     document.addEventListener("langchange", () => {
