@@ -42,6 +42,18 @@
     if (name === "course" && global.Course) {
       try { global.Course.render(); } catch (e) { console.warn(e); }
     }
+    if (name === "projects" && global.Projects) {
+      try { global.Projects.render(); } catch (e) { console.warn(e); }
+    }
+    if (name === "glossary" && global.Glossary) {
+      try { global.Glossary.render(); } catch (e) { console.warn(e); }
+    }
+    if (name === "exam" && global.Exam) {
+      try { global.Exam.render(); } catch (e) { console.warn(e); }
+    }
+    if ((name === "home" || name === "profile") && global.Dashboard) {
+      try { global.Dashboard.render(); } catch (e) { console.warn(e); }
+    }
     if (name === "profile") {
       try { renderProfile(); } catch (e) { console.warn(e); }
     }
@@ -498,7 +510,8 @@
   const SUB_KEYS = {
     python: "home.cardPythonText", modules: "home.cardModulesText", course: "home.cardCourseText",
     tasks: "home.cardTasksText", games: "home.cardGamesText", profile: "home.cardProfileText",
-    tools: "tools.sub", feedback: "feedback.sub", achievements: "ach.sub", settings: "settings.sub"
+    tools: "tools.sub", feedback: "feedback.sub", achievements: "ach.sub", settings: "settings.sub",
+    projects: "home.cardProjectsText", glossary: "home.cardGlossaryText", exam: "home.cardExamText"
   };
 
   function loc(obj) {
@@ -563,6 +576,16 @@
         run: () => { route("course"); global.Course.open(x.id); }
       }));
     } catch (e) { console.warn("search course", e); }
+    try {
+      if (global.Glossary) global.Glossary.terms.forEach((x) => out.push({
+        kind: "term", label: t("search.kindTerm"), name: x.term, icon: "menu_book",
+        run: () => {
+          route("glossary");
+          const input = $("#glossSearch");
+          if (input) { input.value = x.term; input.dispatchEvent(new Event("input", { bubbles: true })); }
+        }
+      }));
+    } catch (e) { console.warn("search glossary", e); }
     try {
       if (global.Games) global.Games.list().forEach((g) => out.push({
         kind: "game", label: t("search.kindGame"), name: t(g.name), icon: "sports_esports",
@@ -747,6 +770,11 @@
     try { if (global.Contest) global.Contest.init(); } catch (e) { console.warn("Contest", e); }
     try { if (global.Daily) global.Daily.init(); } catch (e) { console.warn("Daily", e); }
     try { if (global.Course) global.Course.init(); } catch (e) { console.warn("Course", e); }
+    try { if (global.Projects) global.Projects.init(); } catch (e) { console.warn("Projects", e); }
+    try { if (global.Glossary) global.Glossary.init(); } catch (e) { console.warn("Glossary", e); }
+    try { if (global.Exam) global.Exam.init(); } catch (e) { console.warn("Exam", e); }
+    try { if (global.Dashboard) global.Dashboard.init(); } catch (e) { console.warn("Dashboard", e); }
+    try { if (global.Backup) global.Backup.init(); } catch (e) { console.warn("Backup", e); }
     try { if (global.Games) global.Games.init(); } catch (e) { console.warn("Games", e); }
     try { if (global.Tools) global.Tools.init(); } catch (e) { console.warn("Tools", e); }
     try { renderLearn(); } catch (e) { console.warn("renderLearn", e); }
@@ -761,7 +789,7 @@
     // початковий маршрут
     try {
       const hash = (location.hash || "#home").slice(1);
-      route(["home", "python", "modules", "course", "tasks", "daily", "games", "tools", "feedback", "profile", "achievements", "settings", "help"].includes(hash) ? hash : "home");
+      route(["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "exam", "games", "tools", "feedback", "profile", "achievements", "settings", "help"].includes(hash) ? hash : "home");
     } catch (e) { console.warn("initial route", e); }
 
     if (global.I18n && global.I18n.apply) { try { global.I18n.apply(); } catch (e) {} }
