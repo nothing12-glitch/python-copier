@@ -3,10 +3,40 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.10.108";
+  const VERSION = "26.11.0";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.11.0": {
+      major: true,
+      uk: [
+        "Новий розділ «Проєкти»: п'ять напрямків по три кроки — 15 маленьких збірок коду, за які нараховують до 240 балів",
+        "Новий розділ «Словник Python»: 41 термін у 8 категоріях, кожен із прикладом коду, прикладом виводу та позначкою «прочитано»",
+        "Новий розділ «Іспит»: 12 випадкових питань з банку на 33, для складання треба 70%, рахується час і лишається повний розбір кожної відповіді",
+        "Панель «Статистика» на головній і в профілі: графік балів за 14 днів, вісім розділів прогресу, ранг із восьми щаблів, серія днів і журнал останніх шести днів",
+        "Резервні копії в налаштуваннях: одним файлом вивантажити весь свій прогрес і повернути його на іншому пристрої — з попереднім переглядом і вибором, дописати чи замінити",
+        "Шість нових значків: за перший проєкт, усі проєкти, весь словник, складений іспит, ідеальний іспит і першу резервну копію — разом їх уже 48",
+        "Усі нові тексти, сторінки й інтерфейс перекладені всіма 24 мовами; для арабської та івриту інтерфейс дзеркалиться"
+      ],
+      en: [
+        "A new «Projects» section: five tracks of three steps each — 15 small pieces of code to build, worth up to 240 points",
+        "A new «Python glossary» section: 41 terms in 8 categories, each with a code sample, a sample output and a read mark",
+        "A new «Exam» section: 12 random questions pulled from a bank of 33, 70% to pass, the clock runs and you keep a full review of every answer",
+        "A «Statistics» panel on the home page and in your profile: a 14-day point chart, eight progress areas, a rank on eight levels, your day streak and a log of the last six days",
+        "Backups in Settings: save your entire progress to one file and restore it on another device, with a preview and a choice of merging or replacing",
+        "Six new badges: first project, all projects, the whole glossary, a passed exam, a perfect exam and your first backup — 48 badges in all",
+        "Every new text, page and interface string is translated into all 24 languages; Arabic and Hebrew get a mirrored layout"
+      ],
+      tr: [
+        "Yeni «Projeler» bölümü: beş yönden üçer adım — karşılığında 240 puara kadar kazandıran 15 küçük kod parçası",
+        "Yeni «Python sözlüğü» bölümü: 8 kategoride 41 terim, her biri kod örneği, çıktı örneği ve okundu işaretiyle",
+        "Yeni «Sınav» bölümü: 33 soruluk havuzdan 12 rastgele soru, geçmek için %70, süre işlemeye başlıyor ve her cevabın tam çözümlemesi kalıyor",
+        "Ana sayfada ve profilde «İstatistik» paneli: 14 günlük puan grafiği, sekiz ilerleme alanı, sekiz basamaklı rütbe, gün serisi ve son altı günün günlüğü",
+        "Ayarlar'da yedekler: tüm ilerlemeni tek dosyaya kaydet, başka cihazda geri yükle — ön izleme ve ekle ya da değiştir seçimiyle",
+        "Altı yeni rozet: ilk proje, tüm projeler, sözlüğün tamamı, geçilen sınav, kusursuz sınav ve ilk yedek — toplamda artık 48 rozet",
+        "Bütün yeni metinler, sayfalar ve arayüz ifadeleri 24 dilin tamamına çevrildi; Arapça ve İbranice'de arayüz aynalanıyor"
+      ]
+    },
     "26.10.108": {
       uk: [
         "Нова сторінка «Щоденний виклик»: одна задача на день, однакова для всіх, і серія днів поспіль із зворотним відліком до опівночі",
@@ -1833,6 +1863,7 @@
     show:  { uk: "Показати що нового", en: "Show what's new", tr: "Yenilikleri göster" },
     allLog: { uk: "Уся історія оновлень", en: "Full update history", tr: "Tüm güncelleme geçmişi" },
     latest: { uk: "поточна", en: "latest", tr: "güncel" },
+    major: { uk: "МАСШТАБНЕ ОНОВЛЕННЯ!", en: "MAJOR UPDATE!", tr: "BÜYÜK GÜNCELLEME!" },
     expandAll: { uk: "Розгорнути все", en: "Expand all", tr: "Tümünü aç" },
     collapseAll: { uk: "Згорнути все", en: "Collapse all", tr: "Tümünü kapat" }
   };
@@ -1881,6 +1912,15 @@
 
     head.append(emoji, headText, chip);
 
+    /* Великі релізи отримують окрему стрічку під шапкою */
+    let ribbon = null;
+    if (entry.major) {
+      ribbon = document.createElement("div");
+      ribbon.className = "wn-major";
+      ribbon.innerHTML = '<span class="material-icons" aria-hidden="true">rocket_launch</span>' +
+        "<span>" + pick(T.major) + "</span>";
+    }
+
     /* Окрема віконце-панель зі списком змін */
     const panel = document.createElement("div");
     panel.className = "wn-panel";
@@ -1917,6 +1957,7 @@
     row.appendChild(ok);
 
     card.append(head, panel, row);
+    if (ribbon) card.insertBefore(ribbon, panel);
     bd.appendChild(card);
     bd.onclick = (e) => { if (e.target === bd) close(); };
     document.body.appendChild(bd);
@@ -1934,23 +1975,40 @@
   function addVersionToSettings() {
     const about = document.querySelector(".about-card .about-text");
     if (!about) return;
+    /* Вміст переписуємо щоразу: могила може змінитися, а рядок створюється один раз. */
     if (!document.getElementById("appVersionRow")) {
       const p = document.createElement("p");
       p.id = "appVersionRow";
       p.className = "about-text";
       p.style.marginTop = "4px";
-      p.innerHTML = '<span class="material-icons">new_releases</span><span>' + pick(T.ver) + ": " + VERSION + "</span>";
+      p.innerHTML = '<span class="material-icons">new_releases</span><span class="wn-ver"></span>';
       about.parentElement.appendChild(p);
+    }
+    const ver = document.querySelector("#appVersionRow .wn-ver");
+    if (ver) {
+      ver.textContent = pick(T.ver) + ": " + VERSION;
+      if (LOG[VERSION] && LOG[VERSION].major) {
+        let tag = ver.querySelector(".help-tag.major");
+        if (!tag) {
+          tag = document.createElement("span");
+          tag.className = "help-tag major";
+          ver.appendChild(document.createTextNode(" "));
+          ver.appendChild(tag);
+        }
+        tag.textContent = pick(T.major);
+      }
     }
     if (!document.getElementById("whatsNewBtn")) {
       const b = document.createElement("button");
       b.id = "whatsNewBtn";
       b.className = "btn outlined";
       b.style.marginTop = "10px";
-      b.innerHTML = '<span class="material-icons">celebration</span><span>' + pick(T.show) + "</span>";
+      b.innerHTML = '<span class="material-icons">celebration</span><span class="wn-show"></span>';
       b.onclick = () => showWhatsNew(VERSION);
       about.parentElement.appendChild(b);
     }
+    const show = document.querySelector("#whatsNewBtn .wn-show");
+    if (show) show.textContent = pick(T.show);
   }
 
   /* ---------- Повна історія оновлень у розділі «Допомога» ----------
@@ -2023,6 +2081,12 @@
         const tag = document.createElement("span");
         tag.className = "help-tag";
         tag.textContent = pick(T.latest);
+        head.appendChild(tag);
+      }
+      if (LOG[v].major) {
+        const tag = document.createElement("span");
+        tag.className = "help-tag major";
+        tag.textContent = pick(T.major);
         head.appendChild(tag);
       }
 
