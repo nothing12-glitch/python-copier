@@ -1762,6 +1762,17 @@ body.focus-mode .focus-exit { display: inline-flex; animation: qmIn .2s ease-out
 @keyframes icoTrophy { 0%,100%{transform:none;filter:none} 30%{transform:rotate(-13deg) scale(1.1)} 55%{transform:rotate(11deg) scale(1.1)} 75%{transform:rotate(-4deg)} }
 @keyframes icoMenu   { 0%,100%{transform:none} 50%{transform:scaleX(1.14) translateY(-1px)} }
 @keyframes icoFloat  { 0%,100%{transform:none} 50%{transform:translateY(-3px)} }
+@keyframes icoHop    { 0%,100%{transform:none} 18%{transform:translateY(-7px)} 36%{transform:translateY(0)} 52%{transform:translateY(-4px)} 70%{transform:translateY(0)} 85%{transform:translateY(-2px)} }
+@keyframes icoFlame  { 0%,100%{transform:none} 30%{transform:scale(1.14) rotate(-5deg)} 55%{transform:scale(.95) rotate(5deg)} 78%{transform:scale(1.06)} }
+@keyframes icoRocket { 0%,100%{transform:none} 35%{transform:translate(2px,-6px) rotate(-7deg)} 65%{transform:translate(-1px,-2px) rotate(3deg)} }
+@keyframes icoFlip   { 0%{transform:none} 40%{transform:perspective(220px) rotateY(-58deg)} 72%{transform:perspective(220px) rotateY(12deg)} 100%{transform:none} }
+@keyframes icoStamp  { 0%,100%{transform:none} 35%{transform:scale(1.3) rotate(-12deg)} 60%{transform:scale(.9) rotate(6deg)} 82%{transform:scale(1.05)} }
+@keyframes icoScrew  { 0%,100%{transform:none} 25%{transform:rotate(26deg) scale(1.06)} 55%{transform:rotate(-16deg)} 80%{transform:rotate(7deg)} }
+@keyframes icoSwing  { 0%,100%{transform:none} 20%{transform:rotate(15deg)} 45%{transform:rotate(-11deg)} 70%{transform:rotate(6deg)} 88%{transform:rotate(-2deg)} }
+@keyframes icoBreath { 0%,100%{transform:none} 50%{transform:translateY(-2px)} }
+
+/* активний пункт «дихає», а при переході ще й підстрибує */
+.rail-btn.active .rail-ico .material-icons { animation: icoHop .6s ease, icoBreath 3.4s ease-in-out .6s infinite; }
 
 .rail-btn[data-route="home"]:hover         .rail-ico .material-icons { animation: icoHome   .55s ease; }
 .rail-btn[data-route="python"]:hover       .rail-ico .material-icons { animation: icoCode    .6s cubic-bezier(.4,0,.2,1); }
@@ -1774,6 +1785,13 @@ body.focus-mode .focus-exit { display: inline-flex; animation: qmIn .2s ease-out
 .rail-btn[data-route="profile"]:hover      .rail-ico .material-icons { animation: icoPerson  .45s ease; }
 .rail-btn[data-route="achievements"]:hover .rail-ico .material-icons { animation: icoTrophy   .7s ease; }
 .rail-btn[data-route="settings"]:hover     .rail-ico .material-icons { animation: spin360    .9s cubic-bezier(.4,0,.2,1); }
+.rail-btn[data-route="daily"]:hover        .rail-ico .material-icons { animation: icoFlame   .6s ease; }
+.rail-btn[data-route="projects"]:hover     .rail-ico .material-icons { animation: icoRocket  .55s cubic-bezier(.34,1.4,.44,1); }
+.rail-btn[data-route="glossary"]:hover     .rail-ico .material-icons { animation: icoFlip    .65s ease; }
+.rail-btn[data-route="exam"]:hover         .rail-ico .material-icons { animation: icoStamp   .5s cubic-bezier(.34,1.4,.44,1); }
+.rail-btn[data-route="turtle"]:hover       .rail-ico .material-icons { animation: icoHop     .6s ease; }
+.rail-btn[data-route="constructor"]:hover  .rail-ico .material-icons { animation: icoScrew   .7s cubic-bezier(.4,0,.2,1); }
+.rail-btn[data-route="season"]:hover       .rail-ico .material-icons { animation: icoSwing   .7s ease; }
 .rail-btn.nav-more-btn:hover              .rail-ico .material-icons { animation: icoMenu     .45s ease; }
 
 /* кістяк пункту теж трохи рухається — меню не виглядає мертвим */
