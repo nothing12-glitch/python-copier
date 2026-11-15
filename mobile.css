@@ -78,6 +78,14 @@
     height: calc(56px + var(--sat)) !important;
   }
 
+  /* У «новому інтерфейсі» на телефоні розпірку шапки вимкнули, тому лупа й
+     аватар липнуть до назви сайту, а весь правий край лишається порожнім.
+     Назва займе вільне місце — кнопки стануть на свій край, як у класичній
+     темі. */
+  body[data-style="new"] .appbar-title { flex: 1 1 auto; }
+  body[data-style="new"] .chip-btn { width: 44px; height: 44px; }
+  body[data-style="new"] .chip-btn .avatar { width: 28px; height: 28px; font-size: 16px; }
+
   /* ========== Main content ========== */
   main#app {
     padding-bottom: 80px !important;
