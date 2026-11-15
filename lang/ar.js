@@ -342,6 +342,7 @@
     "home.ctaGames": "إلى الألعاب",
     "tasks.solvedBadge": "تم الحل",
     "profile.errLogin": "اسم مستخدم أو كلمة مرور خاطئة",
+    "profile.errSlow": "محاولات كثيرة متتالية. أعد المحاولة بعد 15 دقيقة", "profile.errHandle": "الاسم غير صالح: أحرف إنجليزية وأرقام ونقطة وشرطة فقط — من 3 إلى 24", "profile.errOffline": "الخادم لم يرد وهذا الحساب موجود على الخادم. تحقق من الإنترنت",
     "set.accent": "لون مميز",
     "course.test": "اختبار {n}",
     "profile.okRegister": "تم إنشاء الحساب!",

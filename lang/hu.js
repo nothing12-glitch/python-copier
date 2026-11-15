@@ -277,6 +277,7 @@
     "home.ctaGames": "A játékokhoz",
     "tasks.solvedBadge": "Megoldva",
     "profile.errLogin": "Hibás felhasználónév vagy jelszó",
+    "profile.errSlow": "Túl sok próbálkozás egymás után. Próbáld újra 15 perc múlva", "profile.errHandle": "A név nem megfelelő: csak angol betűk, számok, pont, kötőjel — 3-tól 24-ig", "profile.errOffline": "A szerver nem válaszolt, ez a fiók viszont a szerveren van. Ellenőrizd az internetet",
     "course.test": "Teszt {n}",
     "profile.okRegister": "Fiók létrehozva!",
     "set.perfAuto": "Automatikus: egyszerűsítés, ha a számítógép nem tud megbirkózni",

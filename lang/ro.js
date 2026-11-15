@@ -277,6 +277,7 @@
     "home.ctaGames": "La jocuri",
     "tasks.solvedBadge": "Rezolvat",
     "profile.errLogin": "Nume de utilizator sau parolă greșite",
+    "profile.errSlow": "Prea multe încercări la rând. Încearcă din nou peste 15 minute", "profile.errHandle": "Numele nu se potrivește: doar litere englezești, cifre, punct, cratimă — de la 3 la 24", "profile.errOffline": "Serverul nu a răspuns și acest cont trăiește pe server. Verifică internetul",
     "course.test": "Test {n}",
     "profile.okRegister": "Cont creat!",
     "set.perfAuto": "Auto: simplificați atunci când computerul nu poate face față",

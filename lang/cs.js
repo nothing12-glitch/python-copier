@@ -277,6 +277,7 @@
     "home.ctaGames": "Na hry",
     "tasks.solvedBadge": "Vyřešeno",
     "profile.errLogin": "Nesprávné uživatelské jméno nebo heslo",
+    "profile.errSlow": "Příliš mnoho pokusů za sebou. Zkuste to znovu za 15 minut", "profile.errHandle": "Jméno se nehodí: jen anglická písmena, číslice, tečka, pomlčka — 3 až 24 znaků", "profile.errOffline": "Server neodpověděl a tento účet žije na serveru. Zkontrolujte internet",
     "course.test": "Test {n}",
     "profile.okRegister": "Účet vytvořen!",
     "set.perfAuto": "Auto: zjednodušení, když si počítač nemůže poradit",

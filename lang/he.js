@@ -342,6 +342,7 @@
     "home.ctaGames": "למשחקים",
     "tasks.solvedBadge": "נפתר",
     "profile.errLogin": "שם משתמש או סיסמה שגויים",
+    "profile.errSlow": "יותר מדי ניסיונות ברציפות. נסו שוב בעוד 15 דקות", "profile.errHandle": "השם לא מתאים: אותיות לטיניות, ספרות, נקודה ומקף בלבד — מ-3 עד 24", "profile.errOffline": "השרת לא ענה והחשבון הזה נמצא על השרת. בדקו את האינטרנט",
     "set.accent": "צבע מבטא",
     "course.test": "בדיקה {n}",
     "profile.okRegister": "חשבון נוצר!",

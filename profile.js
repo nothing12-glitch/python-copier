@@ -99,12 +99,22 @@
     if (global.Net) {
       const r = await global.Net.login(key, password);
       if (r.net) {
-        if (!r.ok) return { ok: false, code: r.code };
-        await rememberLocal(r.handle, r.name);
-        openSession(r.handle, r.name, true);
-        /* Головний крок «іншого пристрою»: зайшли — і тяжемо свій прогрес із хмари. */
-        global.Net.pull(false);
-        return { ok: true, name: r.name, cloud: true };
+        if (r.ok) {
+          await rememberLocal(r.handle, r.name);
+          openSession(r.handle, r.name, true);
+          /* Головний крок «іншого пристрою»: зайшли — і тяжемо свій прогрес із хмари. */
+          global.Net.pull(false);
+          return { ok: true, name: r.name, cloud: true };
+        }
+        /* «Немає такої пари» ще не привід відмовляти: локальний демо-акаунт із
+           тим самим іменем живе в цьому браузері, а не на сервері. Решта кодів
+           (slow, badhandle) — справжні, їх і показуємо одразу. */
+        if (r.code !== "bad") return { ok: false, code: r.code };
+      } else {
+        const known = loadUsers()[key];
+        /* Хмарний акаунт, а сервер не відповів: сказати «невірне ім'я або
+           пароль» — означає послати людину мучити пароль замість інтернету. */
+        if (known && known.cloud) return { ok: false, code: "offline" };
       }
     }
     const users = loadUsers();

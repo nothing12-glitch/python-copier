@@ -277,6 +277,7 @@
     "home.ctaGames": "a juegos",
     "tasks.solvedBadge": "Resuelto",
     "profile.errLogin": "Nombre de usuario o contraseña incorrectos",
+    "profile.errSlow": "Demasiados intentos seguidos. Inténtalo de nuevo en 15 minutos", "profile.errHandle": "El nombre no vale: solo letras inglesas, dígitos, punto y guion — de 3 a 24", "profile.errOffline": "El servidor no respondió y esta cuenta vive en el servidor. Revisa tu internet",
     "course.test": "Prueba {n}",
     "profile.okRegister": "¡Cuenta creada!",
     "set.perfAuto": "Auto: simplifica cuando el PC no da abasto",

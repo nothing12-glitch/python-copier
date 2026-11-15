@@ -14,6 +14,17 @@
     clearTimeout(el._t);
     el._t = setTimeout(() => el.classList.remove("show"), 2200);
   }
+
+  /* Код помилки входу → свій рядок. Один текст на всі випадки змушує людину
+     перебирати пароль, коли справа в ліміті спроб або в тому, що сервер мовчить. */
+  function authErrorText(res) {
+    const code = res && res.code;
+    if (code === "exists") return t("profile.errExists");
+    if (code === "slow") return t("profile.errSlow");
+    if (code === "badhandle") return t("profile.errHandle");
+    if (code === "offline") return t("profile.errOffline");
+    return t("profile.errLogin");
+  }
   global.App = { toast };
 
   /* ---------- Маршрутизатор ---------- */
@@ -243,10 +254,10 @@
             if (msg) { msg.className = "auth-msg ok"; msg.textContent = t("profile.okLogin"); }
             toast(t("profile.okLogin"));
             renderProfile();
-          } else if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errLogin"); }
+          } else if (msg) { msg.className = "auth-msg err"; msg.textContent = authErrorText(res); }
         } catch (err) {
           console.warn("login", err);
-          if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errLogin"); }
+          if (msg) { msg.className = "auth-msg err"; msg.textContent = t("net.failed"); }
         }
       };
     }
@@ -265,11 +276,11 @@
             renderProfile();
           } else if (msg) {
             msg.className = "auth-msg err";
-            msg.textContent = t(res && res.code === "exists" ? "profile.errExists" : "profile.errLogin");
+            msg.textContent = authErrorText(res);
           }
         } catch (err) {
           console.warn("register", err);
-          if (msg) { msg.className = "auth-msg err"; msg.textContent = t("profile.errLogin"); }
+          if (msg) { msg.className = "auth-msg err"; msg.textContent = t("net.failed"); }
         }
       };
     }

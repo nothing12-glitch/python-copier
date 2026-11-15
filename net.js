@@ -82,18 +82,26 @@
     return String(raw || "").trim().toLowerCase().replace(/\s+/g, "");
   }
 
+  /* Код помилки входу: «забагато спроб» і «ім'я не те» — окремі, бо людина
+     інакше перебирає пароль, коли проблема зовсім в іншому. */
+  function authCode(code) {
+    if (code === "slow") return "slow";
+    if (code === "badhandle") return "badhandle";
+    return "bad";
+  }
+
   async function login(handle, password) {
     const r = await post("/api/login", { handle: cleanHandle(handle), password: password });
     if (!r.net) return { net: false };
     if (r.status === 200 && r.data.ok) return { net: true, ok: true, handle: r.data.handle, name: r.data.name };
-    return { net: true, ok: false, code: r.data.code === "slow" ? "slow" : "bad" };
+    return { net: true, ok: false, code: authCode(r.data.code) };
   }
 
   async function signup(handle, name, password) {
     const r = await post("/api/signup", { handle: cleanHandle(handle), name: name || handle, password: password });
     if (!r.net) return { net: false };
     if (r.status === 200 && r.data.ok) return { net: true, ok: true, handle: r.data.handle, name: r.data.name };
-    return { net: true, ok: false, code: r.data.code === "exists" ? "exists" : (r.data.code === "badhandle" ? "badhandle" : "bad") };
+    return { net: true, ok: false, code: r.data.code === "exists" ? "exists" : authCode(r.data.code) };
   }
 
   async function logout() {

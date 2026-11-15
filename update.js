@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.1";
+  const VERSION = "26.12.2";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.2": {
+      uk: [
+        "Помилка входу тепер говорить правду: «невірне ім'я або пароль», «забагато спроб поспіль», «ім'я не підходить» і «сервер не відповідає» — чотири різні повідомлення замість одного",
+        "Локальний акаунт, створений без сервера, знову заходить навіть тоді, коли сервер каже «такого імені немає»",
+        "Хмарний акаунт без інтернету більше не звинувачує пароль: «сервер не відповідає, а цей акаунт живе на сервері»",
+        "Усі нові тексти перекладені всіма 24 мовами"
+      ],
+      en: [
+        "Sign-in errors now tell the truth: «wrong username or password», «too many attempts», «name doesn't fit» and «the server didn't answer» are four separate messages instead of one",
+        "An account created on this device without a server signs in again even when the server says there is no such name",
+        "A cloud account with no internet stops blaming the password: «the server didn't answer, and this account lives on the server»",
+        "Every new string is translated into all 24 languages"
+      ],
+      tr: [
+        "Giriş hataları artık doğruyu söylüyor: «hatalı ad veya şifre», «çok fazla deneme», «ad uygun değil» ve «sunucu yanıt vermedi» — tek mesaj yerine dört ayrı mesaj",
+        "Sunucusuz bu cihazda oluşturulan hesap, sunucu « böyle ad yok » dese bile tekrar giriş yapabiliyor",
+        "İnternetsiz bulut hesabı artık şifreyi suçlamıyor: «sunucu yanıt vermedi ve bu hesap sunucuda»",
+        "Tüm yeni metinler 24 dilin tamamına çevrildi"
+      ]
+    },
     "26.12.1": {
       uk: [
         "Вхід з іншого пристрою: зайди у свій акаунт на будь-якому пристрої — і прогрес приходить з хмари. Без мережі все лишається локально, як і раніше",

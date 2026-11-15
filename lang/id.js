@@ -277,6 +277,7 @@
     "home.ctaGames": "Untuk permainan",
     "tasks.solvedBadge": "Terpecahkan",
     "profile.errLogin": "Nama pengguna atau kata sandi salah",
+    "profile.errSlow": "Terlalu banyak percobaan berturut-turut. Coba lagi dalam 15 menit", "profile.errHandle": "Nama tidak cocok: hanya huruf Inggris, angka, titik, tanda hubung — 3 sampai 24", "profile.errOffline": "Server tidak merespons dan akun ini ada di server. Periksa internet Anda",
     "course.test": "Uji {n}",
     "profile.okRegister": "Akun dibuat!",
     "set.perfAuto": "Otomatis: menyederhanakan ketika PC tidak mampu mengatasinya",
