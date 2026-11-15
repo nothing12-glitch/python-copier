@@ -278,6 +278,7 @@
     "tasks.solvedBadge": "Gelöst",
     "profile.errLogin": "Falscher Benutzername oder Passwort",
     "profile.errSlow": "Zu viele Versuche hintereinander. Versuchen Sie es in 15 Minuten erneut", "profile.errHandle": "Name passt nicht: nur englische Buchstaben, Ziffern, Punkt, Bindestrich — 3 bis 24 Zeichen", "profile.errOffline": "Der Server hat nicht geantwortet, und dieses Konto lebt auf dem Server. Prüfen Sie Ihr Internet",
+    "profile.ghCancel": "Anmeldung über GitHub abgebrochen", "profile.ghFailed": "GitHub hat die Anmeldung nicht bestätigt. Versuchen Sie es erneut",
     "course.test": "Test {n}",
     "profile.okRegister": "Konto erstellt!",
     "set.perfAuto": "Auto: Vereinfachen, wenn der PC nicht zurechtkommt",

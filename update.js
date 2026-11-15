@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.2";
+  const VERSION = "26.12.3";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.3": {
+      uk: [
+        "Кнопка «Увійти через GitHub» тепер справжня: браузер відкриває GitHub, а назад повертає вже з твоїм акаунтом і прогресом з хмари — пароль придумувати не треба",
+        "Один GitHub дає один акаунт: зайшов на телефоні, зайшов на ноутбуку — той самий прогрес",
+        "Якщо GitHub відмовив чи вхід скасовано, сайт чесно це каже й лишає форму з паролем",
+        "Усі нові тексти перекладені всіма 24 мовами"
+      ],
+      en: [
+        "The «Sign in with GitHub» button is real now: the browser opens GitHub and comes back already signed in to your account with your progress from the cloud — no password to invent",
+        "One GitHub means one account: sign in on the phone, sign in on the laptop — the same progress",
+        "If GitHub refuses or you cancel, the site says so plainly and leaves the password form in place",
+        "Every new string is translated into all 24 languages"
+      ],
+      tr: [
+        "«GitHub ile giriş» düğmesi artık gerçek: tarayıcı GitHub'ı açar ve buluttaki ilerlemenle hesabına girmiş olarak geri döner — parola uydurmaya gerek yok",
+        "Tek GitHub = tek hesap: telefonda gir, bilgisayarda gir, ilerleme aynı",
+        "GitHub reddederse ya da giriş iptal edilirse site bunu açıkça söyler ve parola formu yerinde kalır",
+        "Tüm yeni metinler 24 dilin tamamına çevrildi"
+      ]
+    },
     "26.12.2": {
       uk: [
         "Помилка входу тепер говорить правду: «невірне ім'я або пароль», «забагато спроб поспіль», «ім'я не підходить» і «сервер не відповідає» — чотири різні повідомлення замість одного",

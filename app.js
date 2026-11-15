@@ -484,7 +484,11 @@
       } else if (id === "resetSettings") {
         if (global.Settings) global.Settings.resetAll();
         toast(t("set.settingsReset"));
-      } else if (id === "google" || id === "github") {
+      } else if (id === "github") {
+        /* Справжній OAuth: браузер іде на GitHub і повертається вже з кукою. */
+        if (global.Net && global.Net.oauthStart) global.Net.oauthStart("github");
+        else toast(t("net.failed"));
+      } else if (id === "google") {
         toast(t("set.socialDemo"));
       } else if (id === "replayTour") {
         if (global.Pythonchik) global.Pythonchik.tour();
@@ -822,6 +826,7 @@
     try { syncNavTitles(); } catch (e) { console.warn("syncNavTitles", e); }
     document.addEventListener("langchange", () => { try { syncNavTitles(); } catch (e) {} });
     try { mirrorNote(); } catch (e) { console.warn("mirrorNote", e); }
+    try { githubReturn(); } catch (e) { console.warn("githubReturn", e); }
     document.addEventListener("langchange", () => { try { mirrorNote(); } catch (e) {} });
     console.info("[app.js] init done");
   }
@@ -854,6 +859,24 @@
     link.textContent = m.label;
     box.hidden = false;
     if (global.I18n && global.I18n.apply) global.I18n.apply(box);
+  }
+
+  /* Повернення з GitHub: ?gh=ok означає, що сервер уже видав свою куку —
+     з неї й відкриваємо сейшн. Рядок прибираємо з адреси, щоб перезавантаження
+     сторінки не влаштовувало вхід заново. */
+  async function githubReturn() {
+    const q = new URLSearchParams(location.search);
+    const flag = q.get("gh");
+    if (!flag) return;
+    q.delete("gh");
+    history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q.toString() : "") + (location.hash || "#profile"));
+    if (flag !== "ok") {
+      toast(t(flag === "cancel" ? "profile.ghCancel" : "profile.ghFailed"));
+      return;
+    }
+    const ok = !!(global.Profile && global.Profile.adoptCloud && await global.Profile.adoptCloud());
+    toast(t(ok ? "profile.okLogin" : "profile.ghFailed"));
+    renderProfile();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

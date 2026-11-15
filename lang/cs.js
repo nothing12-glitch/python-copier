@@ -278,6 +278,7 @@
     "tasks.solvedBadge": "Vyřešeno",
     "profile.errLogin": "Nesprávné uživatelské jméno nebo heslo",
     "profile.errSlow": "Příliš mnoho pokusů za sebou. Zkuste to znovu za 15 minut", "profile.errHandle": "Jméno se nehodí: jen anglická písmena, číslice, tečka, pomlčka — 3 až 24 znaků", "profile.errOffline": "Server neodpověděl a tento účet žije na serveru. Zkontrolujte internet",
+    "profile.ghCancel": "Přihlášení přes GitHub bylo zrušeno", "profile.ghFailed": "GitHub přihlášení nepotvrdil. Zkuste to znovu",
     "course.test": "Test {n}",
     "profile.okRegister": "Účet vytvořen!",
     "set.perfAuto": "Auto: zjednodušení, když si počítač nemůže poradit",

@@ -160,6 +160,85 @@ function cleanName(raw, fallback) {
   return n || fallback;
 }
 
+/* ---------- вхід через GitHub ---------- */
+
+const GH_PROVIDER = "github";
+const GH_SCOPE = "read:user user:email";
+
+const ghCallbackUrl = (url) => `${url.origin}/api/oauth/${GH_PROVIDER}/callback`;
+
+/* Ст тримається підписом, а не в пам'яті: людина починає вхід в одному
+   ізоляті, а повертається з GitHub у інший, таблиці сесій у нас немає. */
+async function makeState(env, base, nonce) {
+  const body = `${base}.${nonce}`;
+  const sig = b64url(await crypto.subtle.sign("HMAC", await key(env), new TextEncoder().encode(body)));
+  return `${b64url(new TextEncoder().encode(body))}.${sig}`;
+}
+
+/* Повертаємо рядок, з якого почався вхід, але лише якщо його хост у списку. */
+async function readState(env, state) {
+  const parts = String(state || "").split(".");
+  if (parts.length !== 2) return null;
+  let body = "";
+  try { body = new TextDecoder().decode(fromB64url(parts[0])); } catch (e) { return null; }
+  const i = body.lastIndexOf(".");
+  if (i < 0) return null;
+  const base = body.slice(0, i);
+  const good = await crypto.subtle.verify("HMAC", await key(env), fromB64url(parts[1]),
+    new TextEncoder().encode(body));
+  if (!good) return null;
+  let origin = "";
+  try { origin = new URL(base).origin; } catch (e) { return null; }
+  return allowsOrigin(env, origin) ? base : null;
+}
+
+/* Ім'я акаунта з GitHub: префікс gh- і лише те, що проходить HANDLE_RE.
+   Довгий логін або самі незвичні символи — тоді вже номер, він завжди короткий. */
+function ghHandle(login, id) {
+  const raw = ("gh-" + String(login || "").toLowerCase()).replace(/[^a-z0-9._-]/g, "-").slice(0, 24).replace(/[-._]+$/, "");
+  return cleanHandle(raw) || cleanHandle("gh-" + String(id));
+}
+
+const ghBack = (base, flag) => new Response(null, { status: 302, headers: { location: `${base}/?gh=${flag}#profile` } });
+
+/* Обмін коду на токен і токена на людину. Помилка будь-якого кроку — чесний
+   «failed» назад на сайт: без цього браузер лишався б на порожній сторінці. */
+async function ghExchange(env, code, callbackUrl) {
+  const tokRes = await fetch("https://github.com/login/oauth/access_token", {
+    method: "POST",
+    headers: { "content-type": "application/json", accept: "application/json" },
+    body: JSON.stringify({
+      client_id: env.GH_CLIENT_ID, client_secret: env.GH_CLIENT_SECRET,
+      code, redirect_uri: callbackUrl
+    })
+  });
+  const tok = await tokRes.json().catch(() => ({}));
+  if (!tok || !tok.access_token) return null;
+  const userRes = await fetch("https://api.github.com/user", {
+    headers: { authorization: "Bearer " + tok.access_token, accept: "application/vnd.github+json", "user-agent": "python-copier" }
+  });
+  const gh = await userRes.json().catch(() => ({}));
+  return gh && gh.id ? gh : null;
+}
+
+async function ghUser(env, gh) {
+  const found = await env.DB.prepare("SELECT handle FROM users WHERE provider = ? AND pid = ?")
+    .bind(GH_PROVIDER, String(gh.id)).first();
+  if (found) return found.handle;
+  let handle = ghHandle(gh.login, gh.id);
+  if (!handle) return null;
+  const clash = await env.DB.prepare("SELECT handle FROM users WHERE handle = ?").bind(handle).first();
+  if (clash) handle = cleanHandle("gh-" + String(gh.id));
+  if (!handle) return null;
+  /* Пароль — випадковий: людина з GitHub не може мати «свій» пароль тут,
+     а отже ніколи не зайде під цим ім'ям через форму з паролем. */
+  const pass = await hashPassword(crypto.randomUUID());
+  await env.DB.prepare(
+    "INSERT INTO users (handle, name, pass, created, last_seen, provider, pid) VALUES (?, ?, ?, ?, ?, ?, ?)"
+  ).bind(handle, cleanName(gh.name || gh.login, handle), pass, now(), now(), GH_PROVIDER, String(gh.id)).run();
+  return handle;
+}
+
 /* ---------- обробка ---------- */
 
 function allowsOrigin(env, origin) {
@@ -219,6 +298,47 @@ async function handle2(request, env) {
 
   if (path === "/api/logout" && request.method === "POST") {
     return withCors(json({ ok: true }, 200, { "set-cookie": cookieClear() }));
+  }
+
+  /* --- вхід через GitHub: обидва кроки — звичайні переходи браузера, не fetch --- */
+
+  if (path === `/api/oauth/${GH_PROVIDER}/start`) {
+    const base = url.searchParams.get("return") || "";
+    let origin = "";
+    try { origin = new URL(base).origin; } catch (e) { origin = ""; }
+    /* Спершу куди повертати: чужу адресу не повинен обробляти навіть код,
+       який далі міг би втекти з браузером на сторонній сайт. */
+    if (!allowsOrigin(env, origin)) return json({ ok: false, code: "badorigin" }, 400);
+    if (!env.GH_CLIENT_ID || !env.GH_CLIENT_SECRET) return json({ ok: false, code: "notconfigured" }, 501);
+    if (tooMany(ip, 30, 3600)) return json({ ok: false, code: "slow" }, 429);
+    const state = await makeState(env, base, b64url(crypto.getRandomValues(new Uint8Array(8))));
+    const q = new URLSearchParams({
+      client_id: env.GH_CLIENT_ID,
+      redirect_uri: ghCallbackUrl(url),
+      scope: GH_SCOPE,
+      state
+    });
+    return Response.redirect(`https://github.com/login/oauth/authorize?${q.toString()}`, 302);
+  }
+
+  if (path === `/api/oauth/${GH_PROVIDER}/callback`) {
+    const base = await readState(env, url.searchParams.get("state"));
+    if (!base) return json({ ok: false, code: "badstate" }, 400);
+    const code = url.searchParams.get("code");
+    if (!code || url.searchParams.get("error")) return ghBack(base, "cancel");
+    const gh = await ghExchange(env, code, ghCallbackUrl(url));
+    if (!gh) return ghBack(base, "failed");
+    await ensureSchema(env);
+    const handle = await ghUser(env, gh);
+    if (!handle) return ghBack(base, "failed");
+    await env.DB.prepare("UPDATE users SET last_seen = ? WHERE handle = ?").bind(now(), handle).run();
+    const who = await env.DB.prepare("SELECT name FROM users WHERE handle = ?").bind(handle).first();
+    /* Кука та сама, що й після входу з паролем: далі акаунт бачить /api/me,
+       тож прогрес і хмара працюють без жодної окремої логіки. */
+    return new Response(null, {
+      status: 302,
+      headers: { location: `${base}/?gh=ok#profile`, "set-cookie": cookieSet(await makeToken(env, handle)) }
+    });
   }
 
   const cookie = request.headers.get("cookie") || "";

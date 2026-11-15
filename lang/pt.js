@@ -278,6 +278,7 @@
     "tasks.solvedBadge": "Resolvido",
     "profile.errLogin": "Nome de usuário ou senha errados",
     "profile.errSlow": "Muitas tentativas seguidas. Tente novamente em 15 minutos", "profile.errHandle": "Nome inválido: apenas letras inglesas, dígitos, ponto e traço — de 3 a 24", "profile.errOffline": "O servidor não respondeu e esta conta fica no servidor. Verifique a internet",
+    "profile.ghCancel": "Login com GitHub cancelado", "profile.ghFailed": "O GitHub não confirmou o login. Tente novamente",
     "course.test": "Teste {n}",
     "profile.okRegister": "Conta criada!",
     "set.perfAuto": "Automático: simplifique quando o PC não aguenta",

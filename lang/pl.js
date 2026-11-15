@@ -278,6 +278,7 @@
     "tasks.solvedBadge": "Rozwiązane",
     "profile.errLogin": "Nieprawidłowa nazwa użytkownika lub hasło",
     "profile.errSlow": "Zbyt wiele prób z rzędu. Spróbuj ponownie za 15 minut", "profile.errHandle": "Imię nie pasuje: tylko angielskie litery, cyfry, kropka, myślnik — od 3 do 24", "profile.errOffline": "Serwer nie odpowiedział, a to konto żyje na serwerze. Sprawdź internet",
+    "profile.ghCancel": "Logowanie przez GitHub anulowane", "profile.ghFailed": "GitHub nie potwierdził logowania. Spróbuj ponownie",
     "course.test": "Test {n}",
     "profile.okRegister": "Konto utworzone!",
     "set.perfAuto": "Auto: upraszczaj, gdy komputer nie radzi sobie z tym",

@@ -278,6 +278,7 @@
     "tasks.solvedBadge": "解决了",
     "profile.errLogin": "用户名或密码错误",
     "profile.errSlow": "尝试次数过多。请在 15 分钟后再试", "profile.errHandle": "名称不符合要求：仅限英文字母、数字、点、短横线 — 3 到 24 个字符", "profile.errOffline": "服务器没有响应，而这个账户存放在服务器上。请检查网络",
+    "profile.ghCancel": "通过 GitHub 的登录已取消", "profile.ghFailed": "GitHub 未确认登录。请重试",
     "course.test": "测试 {n}",
     "profile.okRegister": "帐户已创建！",
     "set.perfAuto": "自动：当 PC 无法应对时进行简化",

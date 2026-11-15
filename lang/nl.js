@@ -278,6 +278,7 @@
     "tasks.solvedBadge": "Opgelost",
     "profile.errLogin": "Verkeerde gebruikersnaam of wachtwoord",
     "profile.errSlow": "Te veel pogingen achter elkaar. Probeer het over 15 minuten opnieuw", "profile.errHandle": "Naam onjuist: alleen Engelse letters, cijfers, punt, streepje — 3 tot 24 tekens", "profile.errOffline": "De server reageerde niet en dit account staat op de server. Controleer je internet",
+    "profile.ghCancel": "Inloggen via GitHub geannuleerd", "profile.ghFailed": "GitHub bevestigde de aanmelding niet. Probeer het opnieuw",
     "course.test": "Test {n}",
     "profile.okRegister": "Account aangemaakt!",
     "set.perfAuto": "Auto: vereenvoudig wanneer de pc het niet aankan",

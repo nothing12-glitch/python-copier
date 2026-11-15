@@ -278,6 +278,7 @@
     "tasks.solvedBadge": "Löst",
     "profile.errLogin": "Fel användarnamn eller lösenord",
     "profile.errSlow": "För många försök i rad. Försök igen om 15 minuter", "profile.errHandle": "Namnet funkar inte: bara engelska bokstäver, siffror, punkt, bindestreck — 3 till 24", "profile.errOffline": "Servern svarade inte och det här kontot ligger på servern. Kolla internet",
+    "profile.ghCancel": "Inloggning via GitHub avbruten", "profile.ghFailed": "GitHub bekräftade inte inloggningen. Försök igen",
     "course.test": "Testa {n}",
     "profile.okRegister": "Konto skapat!",
     "set.perfAuto": "Auto: förenkla när datorn inte orkar",

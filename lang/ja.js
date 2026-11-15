@@ -278,6 +278,7 @@
     "tasks.solvedBadge": "解決済み",
     "profile.errLogin": "ユーザー名またはパスワードが間違っています",
     "profile.errSlow": "試行回数が多すぎます。15分後に再試行してください", "profile.errHandle": "名前が使えません: 英字・数字・ピリオド・ハイフンのみ、3〜24文字", "profile.errOffline": "サーバーが応答せず、このアカウントはサーバー上にあります。接続を確認してください",
+    "profile.ghCancel": "GitHubでのサインインが中止されました", "profile.ghFailed": "GitHubがサインインを承認しませんでした。もう一度お試しください",
     "course.test": "テスト{n}",
     "profile.okRegister": "アカウントが作成されました!",
     "set.perfAuto": "自動: PC が対応できない場合の簡素化",

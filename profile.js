@@ -126,6 +126,18 @@
     return { ok: true, name: u.name };
   }
 
+  /* Людина повернулась з GitHub: сервер уже видав свою куку, тож будинку
+     лишається лише відкрити той самий сейшн і затягнути прогрес з хмари. */
+  async function adoptCloud() {
+    if (!global.Net || !global.Net.me) return false;
+    const who = await global.Net.me();
+    if (!who || !who.handle) return false;
+    await rememberLocal(who.handle, who.name);
+    openSession(who.handle, who.name, true);
+    global.Net.pull(false);
+    return true;
+  }
+
   function logout() {
     const wasCloud = isCloud();
     localStorage.removeItem(SESSION_KEY);
@@ -219,7 +231,7 @@
   }
 
   global.Profile = {
-    register, login, logout, current, handle, info, isCloud,
+    register, login, logout, current, handle, info, isCloud, adoptCloud,
     getRecords, getRecord, setRecord, clearRecords, clearAll, socialLogin,
     getOwnPrograms, addOwnProgram, isOwnRecordKey,
     getNickname, setNickname, getAvatar, setAvatar, rename

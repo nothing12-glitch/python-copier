@@ -343,6 +343,7 @@
     "tasks.solvedBadge": "Đã giải quyết",
     "profile.errLogin": "Tên người dùng hoặc mật khẩu sai",
     "profile.errSlow": "Thử quá nhiều lần liên tiếp. Hãy thử lại sau 15 phút", "profile.errHandle": "Tên không hợp lệ: chỉ chữ cái tiếng Anh, số, dấu chấm, gạch ngang — từ 3 đến 24", "profile.errOffline": "Máy chủ không phản hồi và tài khoản này nằm trên máy chủ. Kiểm tra internet",
+    "profile.ghCancel": "Đã huỷ đăng nhập qua GitHub", "profile.ghFailed": "GitHub không xác nhận đăng nhập. Hãy thử lại",
     "set.accent": "Màu nhấn",
     "course.test": "Kiểm tra {n}",
     "profile.okRegister": "Tài khoản đã được tạo!",

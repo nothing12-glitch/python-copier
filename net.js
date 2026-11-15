@@ -109,6 +109,14 @@
     off(CLOUD_KEY); off(SYNC_KEY); off(SAVE_AT_KEY); off(CONFLICT_KEY);
   }
 
+  /* Вхід через GitHub — це перехід браузера, а не fetch: людина бачить
+     сторінку GitHub і повертається сюди з уже виданою сервером кукою.
+     Адресу беремо свою, а не лише хост: основний сайт живе в підпапку. */
+  function oauthStart(provider) {
+    const base = location.origin + location.pathname;
+    location.assign(API + "/api/oauth/" + provider + "/start?return=" + encodeURIComponent(base));
+  }
+
   async function me() {
     const r = await call("/api/me", {}, 10000);
     return r.net && r.status === 200 && r.data.ok ? r.data : null;
@@ -339,7 +347,7 @@
   }
 
   global.Net = {
-    API, init, login, signup, logout, me,
+    API, init, login, signup, logout, me, oauthStart,
     push, pull: fetchCloud, collect, isCloud, auto,
     status: whenText, paint
   };

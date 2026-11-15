@@ -278,6 +278,7 @@
     "tasks.solvedBadge": "해결됨",
     "profile.errLogin": "잘못된 사용자 이름 또는 비밀번호",
     "profile.errSlow": "시도 횟수가 너무 많습니다. 15분 후에 다시 시도하세요", "profile.errHandle": "이름을 쓸 수 없습니다: 영문자, 숫자, 점, 하이픈만 — 3~24자", "profile.errOffline": "서버가 응답하지 않고 이 계정은 서버에 있습니다. 인터넷 연결을 확인하세요",
+    "profile.ghCancel": "GitHub 로그인이 취소되었습니다", "profile.ghFailed": "GitHub가 로그인을 확인하지 않았습니다. 다시 시도하세요",
     "course.test": "테스트 {n}",
     "profile.okRegister": "계정이 생성되었습니다!",
     "set.perfAuto": "자동: PC가 대처할 수 없을 때 단순화",
