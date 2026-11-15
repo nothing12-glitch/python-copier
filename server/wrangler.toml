@@ -1,0 +1,13 @@
+name = "python-copier-api"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "python-copier"
+database_id = "028e4f45-5c1d-466c-ab77-3975b08864d3"
+
+[vars]
+ALLOWED_ORIGIN = "https://python-copier.pages.dev"
+
+# SESSION_SECRET не тут: npx wrangler secret put SESSION_SECRET
