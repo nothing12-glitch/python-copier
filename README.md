@@ -199,6 +199,22 @@ npx wrangler d1 execute python-copier --remote --command "..."   # якщо мі
 
 Права на це дає `CLOUDFLARE_API_TOKEN` (поза репо, у `.secrets/`); `SESSION_SECRET` створено один раз і перестворювати не варто — це зірве активні сесії входу.
 
+### Вхід через GitHub
+
+Кнопка «Увійти через GitHub» веде на `/api/oauth/github/start`, а той — на сам GitHub. Щоб це працювало, у Worker мають бути два значення з сторінки <https://github.com/settings/applications/new>:
+
+```bash
+cd server
+npx wrangler secret put GH_CLIENT_ID
+npx wrangler secret put GH_CLIENT_SECRET
+```
+
+Там же, в GitHub, **Authorization callback URL** має бути рівно
+`https://python-copier-api.homakarsenij68.workers.dev/api/oauth/github/callback` —
+воркер підставляє його сам зі свого адресу, тож будь-який інший рядок GitHub відхилить.
+Сайт у відповідь повертається у **папку** (`/?gh=ok#profile`), а не в `index.html?...`:
+інакше браузер вважав би `index.html` папкою й не знайшов би ні CSS, ні JS.
+
 Правило деплою веба (щоб користувачі не бачили закешованої версії):
 
 1. Підняти `VERSION` у `update.js` і додати запис у `LOG` (uk/en/tr).

@@ -113,7 +113,9 @@
      сторінку GitHub і повертається сюди з уже виданою сервером кукою.
      Адресу беремо свою, а не лише хост: основний сайт живе в підпапку. */
   function oauthStart(provider) {
-    const base = location.origin + location.pathname;
+    /* Беремо папку сторінки, а не сам файл: «index.html?gh=ok» браузер
+       читає як папку index.html, і всі файли сайта тоді 404. */
+    const base = location.origin + location.pathname.replace(/[^/]*$/, "");
     location.assign(API + "/api/oauth/" + provider + "/start?return=" + encodeURIComponent(base));
   }
 

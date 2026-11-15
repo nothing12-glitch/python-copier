@@ -199,7 +199,14 @@ function ghHandle(login, id) {
   return cleanHandle(raw) || cleanHandle("gh-" + String(id));
 }
 
-const ghBack = (base, flag) => new Response(null, { status: 302, headers: { location: `${base}/?gh=${flag}#profile` } });
+/* Адресь папки + наш рядок статусу. Ламаємо тут, а не в браузері: подвійний
+   слеш («8787//?gh=ok») статичний сервер уже читає як інший шлях і дає 404. */
+function ghTarget(base, flag) {
+  const dir = base.endsWith("/") ? base : `${base}/`;
+  return `${dir}?gh=${flag}#profile`;
+}
+
+const ghBack = (base, flag) => new Response(null, { status: 302, headers: { location: ghTarget(base, flag) } });
 
 /* Обмін коду на токен і токена на людину. Помилка будь-якого кроку — чесний
    «failed» назад на сайт: без цього браузер лишався б на порожній сторінці. */
@@ -303,7 +310,9 @@ async function handle2(request, env) {
   /* --- вхід через GitHub: обидва кроки — звичайні переходи браузера, не fetch --- */
 
   if (path === `/api/oauth/${GH_PROVIDER}/start`) {
-    const base = url.searchParams.get("return") || "";
+    /* Повертатися завжди в папку сайта: «index.html?gh=ok» браузер порахував
+       би папкою з ім'ям index.html, і сторінка залишилась би без своїх файлів. */
+    const base = (url.searchParams.get("return") || "").replace(/index\.html?$/i, "");
     let origin = "";
     try { origin = new URL(base).origin; } catch (e) { origin = ""; }
     /* Спершу куди повертати: чужу адресу не повинен обробляти навіть код,
@@ -337,7 +346,7 @@ async function handle2(request, env) {
        тож прогрес і хмара працюють без жодної окремої логіки. */
     return new Response(null, {
       status: 302,
-      headers: { location: `${base}/?gh=ok#profile`, "set-cookie": cookieSet(await makeToken(env, handle)) }
+      headers: { location: ghTarget(base, "ok"), "set-cookie": cookieSet(await makeToken(env, handle)) }
     });
   }
 
