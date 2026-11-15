@@ -1,7 +1,8 @@
 /* Cloudflare Worker для python-copier: акаунти, рейтинг сезону, спільні задачі.
-   Секрет сесій підписується окремим значенням: npx wrangler secret put SESSION_SECRET */
+   Розгортається у воркер python-copier-api; змінні DB (D1), ALLOWED_ORIGIN і секрет
+   SESSION_SECRET задаються зв'язками (bindings) воркера, а не в цьому файлі. */
 
-const PBKDF2_ITER = 200000;
+const PBKDF2_ITER = 100000;
 const SESSION_TTL = 60 * 60 * 24 * 30;
 const COOKIE = "pc_session";
 const MONTH_RE = /^\d{4}-\d{2}$/;
@@ -86,10 +87,12 @@ async function readToken(env, token) {
   return good ? handle : null;
 }
 
+/* SameSite=None: сайт живе на pages.dev, а цей API — на workers.dev, тобто інший сайт.
+   З Lax браузер не доносив би cookie на запити, і вхід не працював би взагалі. */
 function cookieSet(token) {
-  return `${COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${SESSION_TTL}`;
+  return `${COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${SESSION_TTL}`;
 }
-const cookieClear = () => `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
+const cookieClear = () => `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=0`;
 
 /* ---------- ліміт спроб (в межах ізоляту) ---------- */
 
