@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.3";
+  const VERSION = "26.12.4";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.4": {
+      uk: [
+        "На телефоні код у редакторі більше не накладається сам на себе: підсвітка й текст тепер одного розміру, рядки не роз'їжджаються",
+        "Кнопка Пайтончика ховається за край, коли гортаєш сторінку вниз, і повертається, коли гортаєш угору — вона більше не лежить на клавішах калькулятора й перемикачах",
+        "Усі дрібні кнопки, чіпи, вкладки, поля пошуку, повзунки та іконки в іграх піднято до 44 пікселів — по них легко влучити великим пальцем",
+        "Список ігор на телефоні став в одну колонку, картка профілю стала рівною, а занадто дрібні підписи — читабельними",
+        "На екрані телефона жодної горизонтальної прокрутки: усе вміщується у ширину екрана"
+      ],
+      en: [
+        "On the phone the code in the editor no longer doubles over itself: highlight and text share one size, so lines stop drifting apart",
+        "The Pychyk button tucks off the edge when you scroll down and comes back when you scroll up — it no longer sits on the calculator keys or the switches",
+        "Every small button, chip, tab, search field, slider and game icon is now at least 44 pixels — easy to hit with a thumb",
+        "The game list goes single column on the phone, the profile card lines up neatly, and micro-labels are now readable",
+        "No sideways scrolling anywhere on a phone screen: everything fits the width"
+      ],
+      tr: [
+        "Telefonda editördeki kod artık üst üste binmiyor: vurgulama ile metin aynı boyutta, satırlar kaymıyor",
+        "Pychyk düğmesi sayfayı aşağı kaydırınca kenara saklanıyor, yukarı kaydırınca geri geliyor — artık hesap makinesi tuşlarının ve anahtarların üstünde durmuyor",
+        "Tüm küçük düğmeler, etiketler, sekmeler, arama alanları, kaydırıcılar ve oyun simgeleri 44 piksele çıkarıldı — başparmakla kolayca basılır",
+        "Oyun listesi telefonda tek sütun oldu, profil kartı düzene girdi, çok küçük yazılar okunaklı hâle geldi",
+        "Telefon ekranında artık yana kaydırma yok: her şey ekranın enine sığılıyor"
+      ]
+    },
     "26.12.3": {
       uk: [
         "Кнопка «Увійти через GitHub» тепер справжня: браузер відкриває GitHub, а назад повертає вже з твоїм акаунтом і прогресом з хмари — пароль придумувати не треба",

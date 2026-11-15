@@ -997,9 +997,9 @@ body.no-highlight #code { color: #CDD6F4; }
 .highlight .tk-kw { color: #CBA6F7; }
 .highlight .tk-bi { color: #89B4FA; }
 .highlight .tk-num { color: #FAB387; }
-@media (max-width: 768px) {
-  .highlight { font-size: 14px !important; }
-}
+/* На телефоні підсвітка не чіпає шрифт: #code й .line-numbers беруть
+   --editor-font (на iOS він ще й піднятий до 16px), а будь-який власний
+   розмір тут роз'їжджав рядки — код подвоювався поверх самого себе. */
 
 /* ---------- Перехід до рядка з консолі ---------- */
 .console .goto-line {

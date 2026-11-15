@@ -1702,6 +1702,21 @@
     fab.appendChild(mascotSVG("pychik-svg pychik-svg-fab"));
     fab.addEventListener("click", () => { sfx("click"); toggle(); });
 
+    /* На телефоні кнопка висить прямо над останнім рядом списку й закриває
+       собою клавіші калькулятора та перемикачі налаштувань. Гортаємо вниз —
+       ховаємо її за край, поїхав угору чи до кінця сторінки — повертаємо. */
+    let fabY = window.scrollY || 0;
+    window.addEventListener("scroll", () => {
+      if (!fab) return;
+      const y = window.scrollY || 0;
+      const dy = y - fabY;
+      fabY = y;
+      if (Math.abs(dy) < 8) return;
+      if (panel && panel.classList.contains("pychik-open")) return;
+      const atEnd = y + window.innerHeight >= document.documentElement.scrollHeight - 24;
+      fab.classList.toggle("tucked", dy > 0 && !atEnd);
+    }, { passive: true });
+
     panel = el("div", "pychik-panel");
     panel.setAttribute("role", "dialog");
     panel.setAttribute("aria-label", tx("name"));

@@ -267,6 +267,109 @@
   }
 }
 
+/* ========== Зони тапу, дрібний текст і шапка профілю ==========
+   Виміряно на Samsung Galaxy A36 (384 CSS px): чіпи були 30-35 px,
+   іконки ігор 28 px, повзунки 16 px — пальці промахуються. Підлога
+   Material — 44 px; тут скрізь стелю піднімаємо лише на телефоні,
+   бо на планшеті ці самі рядки встигають у ширший екран. */
+@media (max-width: 768px) {
+  .chip,
+  .contest-chip,
+  .gloss-chip,
+  .turtle-tab,
+  .proj-step-chip,
+  .qm-select {
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .chip { font-size: 13px; }
+  .gloss-chip, .proj-step-chip { font-size: 13.5px; }
+
+  /* вкладки форм і режими помідора — теж під великий палець */
+  .tab-btn, .pomo-mode button { min-height: 44px; }
+
+  /* пошук модулів і всі текстові поля: 37 px → 44 px */
+  .mod-search input,
+  #modulesSearch,
+  .field input,
+  .auth-form input {
+    min-height: 44px;
+  }
+
+  /* повзунок: сама смуга лишається тонкою, але попасти по ньому має бути легко */
+  input[type="range"] {
+    min-height: 40px;
+  }
+
+  /* прапорець вибору модуля — 16 px не дістати, навколо нього ще є картка */
+  .mod-sel-box { padding: 11px; margin: -11px; }
+  .mod-sel-input { width: 22px; height: 22px; }
+
+  /* іконки «інфо» й «налаштування» на картках ігор: 28 px → 40 px,
+     інакше вони ще й лізуть одна на одну після збільшення */
+  .game-info-btn, .gs-opt-btn { width: 40px; height: 40px; }
+  .gs-opt-btn { right: 52px; }
+  .game-info-btn .material-icons, .gs-opt-btn .material-icons { font-size: 20px; }
+
+  .bg-edit-btn { min-height: 44px; width: 100%; justify-content: center; }
+  .about-link { display: inline-flex; align-items: center; min-height: 44px; }
+
+  /* Майстер «з якого пристрою» — перше, що бачить телефон, і «Назад» у ньому
+     був єдиною кнопкою, куди важливо влучити. */
+  .device-back,
+  .device-probe { min-height: 44px; }
+  .device-opt-hint { font-size: 12.5px; }
+  .device-probe-res { font-size: 12.5px; }
+  .device-rec { font-size: 11.5px; }
+
+  /* Дрібний службовий текст: 10 px на телефоні не читається */
+  body[data-style="new"] .demo-out-label,
+  .mod-src,
+  .season-barlabel,
+  .ach-progress-label,
+  .daily-cell-date,
+  .help-tag.major { font-size: 11.5px; }
+
+  /* Підписі днів на графіку прогресу: extra.css ріже їх до 9 px на 640 px */
+  .dash-chart-x { font-size: 11px; }
+
+  /* Ігри в одну колонку: на 384 px дві колонки по 174 px перетворювали
+     опис гри на сто рядків. */
+  .games-hub {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  }
+
+  /* Шапка профілю: аватар і ім'я по центру, дії — один ряд під ними.
+     Без цього «Вийти» уїжджало в правий край, а олівець лишався сам посеред
+     порожнього рядка. */
+  .profile-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    align-items: center;
+    gap: 10px 12px;
+  }
+  .profile-head .avatar.big { grid-column: 1 / 3; }
+  .profile-head > div { grid-column: 1 / 3; text-align: center; }
+  #profileDisplayName {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+  }
+  #renameBtn { grid-column: 1 / 2; grid-row: 3; }
+  .profile-head .btn {
+    grid-column: 2 / 3;
+    grid-row: 3;
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+  .cloud-row { min-height: 40px; }
+}
+
 /* ========== Дуже маленькі екрани ========== */
 @media (max-width: 360px) {
   .navrail .rail-label {

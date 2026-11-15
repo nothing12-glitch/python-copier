@@ -45,6 +45,12 @@ body.focus-mode .pychik-fab { opacity: 0; pointer-events: none; }
     height: 52px;
   }
   .pychik-svg-fab { width: 40px; height: 40px; }
+  /* схова за правий край, коли людина читає сторінку вниз (див. pythonchik.js) */
+  .pychik-fab.tucked {
+    transform: translateX(calc(100% + 22px));
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 /* ---------- Панель ---------- */
@@ -545,9 +551,21 @@ body:not(.dark) .pychik-pre { background: rgba(0, 0, 0, .05); color: #1d3a1d; }
   .pychik-say { padding: 12px 12px; }
   .pychik-say-foot { gap: 4px; }
   .pychik-say-count { font-size: 11px; }
-  .pychik-say-ico { width: 30px; height: 30px; }
+  /* Стрілки лишаємо крихітними візуально, але добираємо їм 44 px невидимою
+     зоною навколо — інакше по них не влучити пальцем. */
+  .pychik-say-ico { width: 30px; height: 30px; position: relative; }
+  .pychik-say-ico::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; }
   .pychik-say-skip { padding: 6px 8px; font-size: 11.5px; }
   .pychik-say-next { padding: 6px 11px; font-size: 12px; }
+  /* «Пропустити», «Далі» й питання-чіпи — це справжні кнопки, їм потрібна
+     повна висота під палець. */
+  .pychik-say-skip, .pychik-say-next { min-height: 44px; }
+  .pychik-chip { min-height: 44px; display: inline-flex; align-items: center; }
+  /* хрестик і шестерня в шапці панелі, поле й кнопка «Надіслати» — усе під
+     палець; 16 px у полі ще й забороняє Safari зумитися при фокусі */
+  .pychik-close, .pychik-head-btn { width: 44px; height: 44px; }
+  .pychik-send { min-height: 44px; }
+  .pychik-input { min-height: 44px; font-size: 16px; }
 }
 
 /* Зменшений рух: массток не повзе, а стрибками зʼявляється там, де треба. */
@@ -606,4 +624,21 @@ body.reduce-motion .pychik-tap {
 @media (max-width: 420px) {
   .pychik-dev-tag { display: none; }
   .pychik-dev-text { font-size: 22px; letter-spacing: 2px; }
+}
+
+/* ---------- асистент не заважає модальним вікнам ---------- */
+/* Шар асистента (z 1500) вищий за будь-яке вікно. На 384 px його кнопка
+   сідає рівно на «Класно!» у вікні «Що нового» й на «Перевірити проєктор» у
+   майстрі пристрою. Ці шторки створюються й видаляються з DOM, тому :has()
+   каже правду: поки вікно відкрите — асистента немає на екрані. */
+@media (max-width: 768px) {
+  body:has(.wn-backdrop) .pychik,
+  body:has(.ob-backdrop) .pychik,
+  body:has(.device-ask) .pychik,
+  body:has(.av-modal-backdrop) .pychik,
+  body:has(.gs-backdrop) .pychik,
+  body:has(.ht-backdrop) .pychik,
+  body:has(.vlt-backdrop) .pychik {
+    display: none;
+  }
 }
