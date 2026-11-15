@@ -810,6 +810,8 @@
     if (global.I18n && global.I18n.apply) { try { global.I18n.apply(); } catch (e) {} }
     try { syncNavTitles(); } catch (e) { console.warn("syncNavTitles", e); }
     document.addEventListener("langchange", () => { try { syncNavTitles(); } catch (e) {} });
+    try { mirrorNote(); } catch (e) { console.warn("mirrorNote", e); }
+    document.addEventListener("langchange", () => { try { mirrorNote(); } catch (e) {} });
     console.info("[app.js] init done");
   }
 
@@ -818,6 +820,29 @@
       const lab = btn.querySelector(".rail-label");
       if (lab) btn.title = lab.textContent.trim();
     });
+  }
+
+  /* Той самий сайт віддають дві адреси: стара (GitHub Pages) — основна,
+     нова (Cloudflare Pages) — резерв. Рядок показуємо лише на цих двох:
+     на localhost і на прев'ю-деплоях він був би брехнею. */
+  const MIRRORS = {
+    "nothing12-glitch.github.io": { key: "site.mirrorBackup", href: "https://python-copier.pages.dev", label: "python-copier.pages.dev" },
+    "python-copier.pages.dev": { key: "site.mirrorMain", href: "https://nothing12-glitch.github.io/python-copier/", label: "nothing12-glitch.github.io/python-copier" }
+  };
+
+  function mirrorNote() {
+    const box = document.getElementById("mirrorNote");
+    if (!box) return;
+    const m = MIRRORS[String(location.hostname || "").toLowerCase()];
+    if (!m) { box.hidden = true; return; }
+    const text = document.getElementById("mirrorText");
+    const link = document.getElementById("mirrorLink");
+    if (!text || !link) return;
+    text.setAttribute("data-i18n", m.key);
+    link.href = m.href;
+    link.textContent = m.label;
+    box.hidden = false;
+    if (global.I18n && global.I18n.apply) global.I18n.apply(box);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

@@ -141,6 +141,8 @@
     "contest.next": "הבא",
     "python.askPh": "תשובתך ולאחר מכן Enter",
     "footer.made": "מיוצר עם ❤ ללמידה. תוצרת אוקראינה!",
+    "site.mirrorBackup": "כתובת הגיבוי של האתר:",
+    "site.mirrorMain": "זו כתובת הגיבוי. הכתובת הראשית:",
     "game.optSmall": "קטן",
     "course.tryRun": "נסה את זה",
     "games.p2Win": "שחקן 2 מנצח!",

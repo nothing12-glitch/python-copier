@@ -3,10 +3,30 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.0";
+  const VERSION = "26.12.1";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.1": {
+      uk: [
+        "Вхід з іншого пристрою: зайди у свій акаунт на будь-якому пристрої — і прогрес приходить з хмари. Без мережі все лишається локально, як і раніше",
+        "У Налаштуваннях з'явилась група «Хмара і синхронізація»: авто-синхронізація та кнопки «Надіслати мій прогрес у хмару» й «Взяти прогрес з хмари»",
+        "Сайт має основну адресу (GitHub Pages) і резервну (Cloudflare Pages) — про це рядок унизу сторінки; вхід і хмара працюють з обох",
+        "Усі нові тексти перекладені всіма 24 мовами; для арабської та івриту рядок унизу теж дзеркалиться"
+      ],
+      en: [
+        "Sign in from another device: open your account anywhere and your progress arrives from the cloud. Offline, everything stays local exactly as before",
+        "Settings gained a «Cloud and sync» group: automatic sync plus «Send my progress to the cloud» and «Take progress from the cloud»",
+        "The site now has a main address (GitHub Pages) and a backup one (Cloudflare Pages) — a line at the bottom of the page says so; sign-in and the cloud work from both",
+        "Every new string is translated into all 24 languages; Arabic and Hebrew get the mirrored layout"
+      ],
+      tr: [
+        "Başka cihazdan giriş: hesabını nerede açarsan aç, ilerlemen buluttan gelir. İnternet yokken her şey eskisi gibi yalnızca cihazında kalır",
+        "Ayarlar’a «Bulut ve eşitleme» bölümü eklendi: otomatik eşitleme ile «İlerlememi buluta gönder» ve «İlerlemeyi buluttan al» düğmeleri",
+        "Sitenin artık bir ana adresi (GitHub Pages) bir de yedek adresi (Cloudflare Pages) var; sayfanın altındaki satır bunu söylüyor, giriş ve bulut ikisinde de çalışıyor",
+        "Bütün yeni metinler 24 dilin tamamına çevrildi; Arapça ve İbranice'de arayüz aynalanıyor"
+      ]
+    },
     "26.12.0": {
       major: true,
       uk: [

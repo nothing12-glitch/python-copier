@@ -141,6 +141,8 @@
     "contest.next": "ถัดไป",
     "python.askPh": "คำตอบของคุณ จากนั้น Enter",
     "footer.made": "ทำด้วย ❤ เพื่อการเรียนรู้ ผลิตในยูเครน!",
+    "site.mirrorBackup": "แอดเดรสสำรองของไซต์นี้:",
+    "site.mirrorMain": "นี่คือแอดเดรสสำรอง แอดเดรสหลัก:",
     "game.optSmall": "เล็ก",
     "course.tryRun": "ลองมัน",
     "games.p2Win": "ผู้เล่นที่ 2 ชนะ!",

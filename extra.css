@@ -3518,3 +3518,8 @@ html[dir="rtl"] .gloss-search-ico{left:auto;right:12px}
 .cloud-row{display:flex;align-items:center;gap:8px;margin:8px 0 12px;font-size:13px;color:var(--md-on-surface-var)}
 .cloud-row .material-icons{font-size:18px}
 .cloud-row b{margin-inline-start:auto;font-family:var(--md-mono);color:var(--md-on-surface)}
+
+/* Рядок про основну й резервну адресу сайту — у підвалі, лише на двох доменах. */
+.mirror-note{display:block;margin-top:6px;font-size:12px;opacity:.72}
+.mirror-note[hidden]{display:none}
+.mirror-note a{color:inherit;font-family:var(--md-mono);font-size:11px;text-decoration:underline;word-break:break-all}

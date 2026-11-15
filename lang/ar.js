@@ -141,6 +141,8 @@
     "contest.next": "التالي",
     "python.askPh": "إجابتك، ثم أدخل",
     "footer.made": "مصنوعة باستخدام ❤ للتعلم. صنع في أوكرانيا!",
+    "site.mirrorBackup": "العنوان البديل لهذا الموقع:",
+    "site.mirrorMain": "هذا هو العنوان البديل. العنوان الرئيسي:",
     "game.optSmall": "صغير",
     "course.tryRun": "جربه",
     "games.p2Win": "اللاعب 2 يفوز!",

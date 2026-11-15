@@ -141,6 +141,8 @@
     "contest.next": "Tiếp theo",
     "python.askPh": "câu trả lời của bạn, sau đó Enter",
     "footer.made": "Được làm bằng ❤ để học tập. Sản xuất tại Ukraine!",
+    "site.mirrorBackup": "Địa chỉ dự phòng của trang này:",
+    "site.mirrorMain": "Đây là địa chỉ dự phòng. Địa chỉ chính:",
     "game.optSmall": "nhỏ",
     "course.tryRun": "Hãy thử nó",
     "games.p2Win": "Người chơi thứ 2 thắng!",
