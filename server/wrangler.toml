@@ -8,7 +8,7 @@ database_name = "python-copier"
 database_id = "028e4f45-5c1d-466c-ab77-3975b08864d3"
 
 [vars]
-# Дозволені джерела запитів через кому: продакшн і локальна перевірка в браузері.
-ALLOWED_ORIGIN = "https://python-copier.pages.dev,http://127.0.0.1:8787,http://localhost:8787"
+# Дозволені джерела запитів через кому: основний сайт, резервний GitHub Pages і локальна перевірка в браузері.
+ALLOWED_ORIGIN = "https://python-copier.pages.dev,https://nothing12-glitch.github.io,http://127.0.0.1:8787,http://localhost:8787"
 
 # SESSION_SECRET не тут: npx wrangler secret put SESSION_SECRET
