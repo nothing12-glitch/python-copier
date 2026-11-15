@@ -3514,3 +3514,7 @@ html[dir="rtl"] .gloss-search-ico{left:auto;right:12px}
   .proj-bar-fill,.gloss-bar i,.exam-progress i,.dash-rank-bar i,.dash-cell,.gloss-card,.proj-card,.exam-opt,
   .season-bar>i,.turtle-tab,.mk-item,.turtle-item,.mk-testdel,.mk-testadd,.mk-tpl,.season-src{transition:none}
 }
+
+.cloud-row{display:flex;align-items:center;gap:8px;margin:8px 0 12px;font-size:13px;color:var(--md-on-surface-var)}
+.cloud-row .material-icons{font-size:18px}
+.cloud-row b{margin-inline-start:auto;font-family:var(--md-mono);color:var(--md-on-surface)}

@@ -10,6 +10,8 @@ const HANDLE_RE = /^[a-z0-9][a-z0-9._-]{2,23}$/;
 /* код задачі — як його видає constructor.js: префікс "PC1:" + base64 без "=" */
 const CODE_RE = /^(?:PC1:)?[A-Za-z0-9+/_-]{8,4096}$/;
 const PREFIX = "PC1:";
+/* Цілий сейв прогресу: D1 бере одне значення до 2 МБ, тому чанкувати не треба. */
+const SAVE_MAX = 1500000;
 
 /* ---------- допоміжне ---------- */
 
@@ -118,6 +120,36 @@ async function readBody(request, maxBytes) {
   try { return JSON.parse(text); } catch { return null; }
 }
 
+/* Текст запиту без JSON-розбору: сейв приходить як уже готовий JSON-рядок і
+   зберігається дослівно, щоб браузер віддав Exactly те саме, що поклав. */
+async function readText(request, maxBytes) {
+  const len = Number(request.headers.get("content-length") || 0);
+  if (len > maxBytes) throw new TooBig();
+  const buf = await request.arrayBuffer();
+  if (buf.byteLength > maxBytes) throw new TooBig();
+  return new TextDecoder().decode(buf);
+}
+
+/* Схема правиться тут, а не в консолі дашборда: у безкоштовному плані D1
+   пишеться лише через зв'язку воркера. Міграції ідемпотентні й стартують
+   один раз на ізолят. */
+const MIGRATIONS = [
+  `CREATE TABLE IF NOT EXISTS save (
+     handle TEXT PRIMARY KEY, blob TEXT NOT NULL, at INTEGER NOT NULL, updated INTEGER NOT NULL
+   )`,
+  "DROP TABLE IF EXISTS save_probe"
+];
+let schema = null;
+/* batch() у цьому рантаймі не приймає масив рядків, тому міграції йдуть
+   по одній через prepare().run() — той самий шлях, що й у решти воркера. */
+function ensureSchema(env) {
+  if (!schema) {
+    schema = MIGRATIONS.reduce((p, sql) => p.then(() => env.DB.prepare(sql).run()), Promise.resolve())
+      .catch((err) => { schema = null; throw err; });
+  }
+  return schema;
+}
+
 function cleanHandle(raw) {
   const h = String(raw || "").trim().toLowerCase();
   return HANDLE_RE.test(h) ? h : null;
@@ -130,13 +162,18 @@ function cleanName(raw, fallback) {
 
 /* ---------- обробка ---------- */
 
+function allowsOrigin(env, origin) {
+  if (!origin || !env.ALLOWED_ORIGIN) return false;
+  return env.ALLOWED_ORIGIN.split(",").some((o) => o.trim() === origin);
+}
+
 async function handle2(request, env) {
   const url = new URL(request.url);
   const ip = request.headers.get("cf-connecting-ip") || "unknown";
   const path = url.pathname.replace(/\/+$/, "") || "/";
   const origin = request.headers.get("origin");
   const cors = {};
-  if (origin && origin === env.ALLOWED_ORIGIN) {
+  if (allowsOrigin(env, origin)) {
     cors["access-control-allow-origin"] = origin;
     cors["access-control-allow-credentials"] = "true";
     cors["vary"] = "Origin";
@@ -200,6 +237,45 @@ async function handle2(request, env) {
     const name = body && cleanName(body.name, handle);
     await env.DB.prepare("UPDATE users SET name = ? WHERE handle = ?").bind(name, handle).run();
     return withCors(json({ ok: true, name }));
+  }
+
+  /* --- сейв прогресу (щоб акаунт відкрився з будь-якого пристрою) --- */
+
+  if (path === "/api/save" && request.method === "POST") {
+    if (!handle) return withCors(json({ ok: false, code: "auth" }, 401));
+    await ensureSchema(env);
+    const text = await readText(request, SAVE_MAX);
+    let obj = null;
+    try { obj = JSON.parse(text); } catch { obj = null; }
+    if (!obj || typeof obj !== "object" || typeof obj.data !== "object" || !obj.data) {
+      return withCors(json({ ok: false, code: "badsave" }, 400));
+    }
+    /* at — мітка часу самого сейва на пристрої. Виграні за нею: пристрій,
+       де пізніше грали, переписує хмару; старіший сейв відбивається. */
+    const at = Math.max(0, Number(Date.parse(obj.at || "")) || Date.now());
+    const cur = await env.DB.prepare("SELECT at FROM save WHERE handle = ?").bind(handle).first();
+    if (cur && Number(cur.at) > at) {
+      return withCors(json({ ok: false, code: "newer", at: Number(cur.at) }, 409));
+    }
+    await env.DB.prepare(
+      `INSERT INTO save (handle, blob, at, updated) VALUES (?, ?, ?, ?)
+       ON CONFLICT(handle) DO UPDATE SET blob = excluded.blob, at = excluded.at, updated = excluded.updated`
+    ).bind(handle, text, at, now()).run();
+    return withCors(json({ ok: true, at, bytes: text.length }));
+  }
+
+  if (path === "/api/save" && request.method === "GET") {
+    if (!handle) return withCors(json({ ok: false, code: "auth" }, 401));
+    await ensureSchema(env);
+    const row = await env.DB.prepare("SELECT blob, at, updated FROM save WHERE handle = ?").bind(handle).first();
+    if (!row) return withCors(json({ ok: false, code: "empty" }, 404));
+    return withCors(new Response(row.blob, {
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+        "x-save-at": String(row.at)
+      }
+    }));
   }
 
   /* --- сезон --- */

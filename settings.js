@@ -28,6 +28,7 @@
     hanoiDisks: 4, slideSize: 4, slideShuffle: "normal",
     mazeSize: 13, mazeTrail: "on",
     trackRecords: true, showHints: true, shortcuts: true,
+    cloudAuto: true,
     pyNoCode: true, pyAiUrl: "https://api.openai.com/v1/chat/completions", pyAiModel: "gpt-4o-mini", pyAiKey: "",
     language: null
   };
@@ -187,6 +188,11 @@
       { id: "backupExport", type: "button", label: "set.backupExport", icon: "cloud_download", variant: "outlined" },
       { id: "backupImport", type: "button", label: "set.backupImport", icon: "cloud_upload", variant: "contained" },
       { id: "backupStats", type: "button", label: "set.backupStats", icon: "data_usage", variant: "text" }
+    ]},
+    { group: "set.cloudGroup", items: [
+      { id: "cloudAuto", type: "switch", label: "set.cloudAuto" },
+      { id: "cloudPush", type: "button", label: "set.cloudPush", icon: "cloud_upload", variant: "contained" },
+      { id: "cloudPull", type: "button", label: "set.cloudPull", icon: "cloud_download", variant: "outlined" }
     ]},
     { group: "settings.data", items: [
       { id: "export", type: "button", label: "set.export", icon: "download", variant: "outlined" },

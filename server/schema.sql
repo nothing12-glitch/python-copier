@@ -31,3 +31,12 @@ CREATE TABLE IF NOT EXISTS task (
 );
 CREATE INDEX IF NOT EXISTS idx_task_new ON task (created DESC);
 CREATE INDEX IF NOT EXISTS idx_task_author ON task (handle, created DESC);
+
+-- Цілий сейв прогресу одного акаунта: той самий JSON, що й у файлі резервної копії.
+-- Створюється самим воркером (MIGRATIONS у worker.js), тут — для історії.
+CREATE TABLE IF NOT EXISTS save (
+  handle  TEXT PRIMARY KEY,
+  blob    TEXT NOT NULL,                       -- JSON із полем data: "app.*": рядок
+  at      INTEGER NOT NULL,                    -- мітка часу сейва на пристрої, мс
+  updated INTEGER NOT NULL                     -- коли поклали в хмару, с
+);

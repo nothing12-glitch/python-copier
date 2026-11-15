@@ -295,6 +295,7 @@
     }
     auth.classList.add("hidden");
     prof.classList.remove("hidden");
+    try { if (global.Net) global.Net.paint(); } catch (e) { console.warn("Net.paint", e); }
     const info = global.Profile.info() || {};
     const avatarChar = global.Profile.getAvatar() || "\u{1F9D1}";
     const nameEl = $("#profileDisplayName");
@@ -788,6 +789,7 @@
     try { if (global.Season) global.Season.install(); } catch (e) { console.warn("Season", e); }
     try { if (global.Dashboard) global.Dashboard.init(); } catch (e) { console.warn("Dashboard", e); }
     try { if (global.Backup) global.Backup.init(); } catch (e) { console.warn("Backup", e); }
+    try { if (global.Net) global.Net.init(); } catch (e) { console.warn("Net", e); }
     try { if (global.Games) global.Games.init(); } catch (e) { console.warn("Games", e); }
     try { if (global.Tools) global.Tools.init(); } catch (e) { console.warn("Tools", e); }
     try { renderLearn(); } catch (e) { console.warn("renderLearn", e); }
