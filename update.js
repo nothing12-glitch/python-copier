@@ -9,13 +9,19 @@
   const LOG = {
     "26.12.10": {
       uk: [
-        "Повідомлення-тости на телефоні більше не ховаються за лівий край — усе речення видно цілком, і в новому, і в класичному стилі"
+        "Повідомлення-тости на телефоні більше не ховаються за лівий край — усе речення видно цілком, і в новому, і в класичному стилі",
+        "Кнопки в налаштуваннях на телефоні більше не обрізають другий рядок підпису — «Увійти через Google», «Скинути налаштування» та хмарні кнопки видно повністю",
+        "Email у розділі «Про застосунок» тепер переноситься на свій рядок і не вилазе за край картки"
       ],
       en: [
-        "Toasts on the phone no longer hide behind the left edge — the whole sentence is visible, in both the new and the classic style"
+        "Toasts on the phone no longer hide behind the left edge — the whole sentence is visible, in both the new and the classic style",
+        "Buttons in settings on the phone no longer clip their second label line — «Sign in with Google», «Reset settings» and the cloud buttons are fully visible",
+        "The email in «About the app» now wraps onto its own line and no longer spills past the card edge"
       ],
       tr: [
-        "Telefondaki bildirimler artık sol kenarın arkasına gizlenmiyor — cümlenin tamamı hem yeni hem klasik tarzda görünüyor"
+        "Telefondaki bildirimler artık sol kenarın arkasına gizlenmiyor — cümlenin tamamı hem yeni hem klasik tarzda görünüyor",
+        "Ayarladaki düğmeler telefonda etiketin ikinci satırını artık kesmiyor — «Google ile giriş», «Ayarları sıfırla» ve bulut düğmeleri tam görünüyor",
+        "«Uygulama hakkında» bölümündeki e-posta artık kendi satırına kayıyor ve kartın kenarından taşmıyor"
       ]
     },
     "26.12.9": {
