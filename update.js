@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.12";
+  const VERSION = "26.12.13";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.13": {
+      uk: [
+        "Маленькі іконки отримали підказки при наведенні: звук, музика, пошук, копіювати, зберегти, профіль і перейменування — і всі вони перекладені твоєю мовою",
+        "На майданчику три нові приклади коду: множини (об'єднання, перетин, різниця), zip та enumerate, і lambda разом з map/filter/sorted",
+        "Якщо в системі ввімкнено «зменшити рух», застосунок тепер приглушує всі анімації та плавну прокрутку — менше вислизання й комфортніше око"
+      ],
+      en: [
+        "Small icons now show hover tooltips: sound, music, search, copy, save, profile and rename — all translated into your language",
+        "Three new code examples in the playground: sets (union, intersection, difference), zip and enumerate, and lambda together with map/filter/sorted",
+        "When your system has «reduce motion» turned on, the app now calms all animations and smooth scrolling — less motion, easier on the eyes"
+      ],
+      tr: [
+        "Küçük simgeler artık üzerine gelince ipucu gösteriyor: ses, müzik, arama, kopyala, kaydet, profil ve yeniden adlandır — hepsi senin dilinde çevrilmiş",
+        "Oyun alanında üç yeni kod örneği: kümeler (birleşim, kesişim, fark), zip ve enumerate, bir de lambda ile map/filter/sorted",
+        "Sisteminde «hareketi azalt» açıksa uygulama artık tüm animasyonları ve yumuşak kaydırmayı sakinleştirir — daha az hareket, göze daha rahat"
+      ]
+    },
     "26.12.12": {
       uk: [
         "Перемикач «Рідке скло» тепер точно зникає з налаштувань на комп'ютері: якщо в пункті «Який у тебе комп'ютер» обрано «ПК» чи «Ноутбук», скло не показується, навіть якщо система хибно визначила пристрій",
