@@ -55,6 +55,18 @@
       label: { uk: "Генератори списків", en: "Comprehensions", tr: "Liste üreteçleri" },
       code: `squares = [n * n for n in range(1, 11)]\nevens = [n for n in range(20) if n % 2 == 0]\npairs = [(x, y) for x in range(3) for y in range(3) if x != y]\nwords = ["hi", "there", "you"]\nupper = [w.upper() for w in words]\nprint(squares)\nprint(evens)\nprint(pairs)\nprint(upper)`
     },
+    setops: {
+      label: { uk: "Множини (set)", en: "Sets", tr: "Kümeler (set)" },
+      code: `a = {1, 2, 3, 4}\nb = {3, 4, 5, 6}\nprint("union:", sorted(a | b))\nprint("intersect:", sorted(a & b))\nprint("diff:", sorted(a - b))\nprint("symmetric:", sorted(a ^ b))\nnums = [1, 2, 2, 3, 3, 3]\nprint("unique:", sorted(set(nums)))`
+    },
+    zipenum: {
+      label: { uk: "zip та enumerate", en: "zip & enumerate", tr: "zip ve enumerate" },
+      code: `names = ["Ann", "Bob", "Cia"]\nscores = [9, 7, 10]\nfor name, score in zip(names, scores):\n    print(name, "->", score)\nfor i, name in enumerate(names, 1):\n    print(i, name)\nprint("dict:", dict(zip(names, scores)))`
+    },
+    lambdas: {
+      label: { uk: "lambda, map, filter", en: "lambda, map, filter", tr: "lambda, map, filter" },
+      code: `nums = [1, 2, 3, 4, 5, 6]\nprint("squares:", list(map(lambda n: n * n, nums)))\nprint("evens:", list(filter(lambda n: n % 2 == 0, nums)))\nwords = ["pear", "fig", "banana"]\nprint("by length:", sorted(words, key=lambda w: len(w)))\nprint("reverse:", sorted(nums, reverse=True))`
+    },
     classes: {
       label: { uk: "Класи (ООП)", en: "Classes (OOP)", tr: "Sınıflar (OOP)" },
       code: `class Animal:\n    def __init__(self, name):\n        self.name = name\n    def speak(self):\n        return "..."\n\nclass Cat(Animal):\n    def speak(self):\n        return f"{self.name}: meow"\n\nclass Dog(Animal):\n    def speak(self):\n        return f"{self.name}: woof"\n\nfor a in [Cat("Tom"), Dog("Rex")]:\n    print(a.speak())`
