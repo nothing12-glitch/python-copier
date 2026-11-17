@@ -3,10 +3,24 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.11";
+  const VERSION = "26.12.12";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.12": {
+      uk: [
+        "Перемикач «Рідке скло» тепер точно зникає з налаштувань на комп'ютері: якщо в пункті «Який у тебе комп'ютер» обрано «ПК» чи «Ноутбук», скло не показується, навіть якщо система хибно визначила пристрій",
+        "Застосунок сам перезавантажується, коли виходить нова версія — більше не треба вгадувати, чи оновився кеш: свіжі зміни доходять одразу"
+      ],
+      en: [
+        "The «Liquid Glass» switch now truly disappears from settings on a computer: if «What is your computer» is set to «PC» or «Laptop», the glass is hidden even if the system misdetected the device",
+        "The app now reloads itself when a new version is released — no more guessing whether the cache updated: fresh changes reach you right away"
+      ],
+      tr: [
+        "«Liquid Glass» anahtarı artık bilgisayarda ayarlardan kesinlikle kayboluyor: «Bilgisayarın hangisi?» «PC» ya da «Dizüstü» seçiliyse, sistem cihazı yanlış tanısa bile cam gösterilmiyor",
+        "Uygulama yeni sürüm çıktığında kendini yeniden yüklüyor — artık önbelleğin güncellenip güncellenmediğini tahmin etmeye gerek yok, taze değişiklikler hemen ulaşır"
+      ]
+    },
     "26.12.11": {
       uk: [
         "«Рідке скло» — це мова дизайну Apple, тож воно лишилось лише на iPhone та iPad. На комп'ютері та Android скло більше не з'являється: інтерфейс там — звичайний, суцільний, без прозорих панелей",
