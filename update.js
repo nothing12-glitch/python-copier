@@ -3,10 +3,24 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.5";
+  const VERSION = "26.12.6";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.6": {
+      uk: [
+        "У меню ліворуч зникла біла смуга прокрутки Windows — тепер вона тонка й темна, не псує панель",
+        "Картка «Прогрес курсу» прилипнула до самого низу меню: жоден пункт не ховається за неї й не визирає з-під неї"
+      ],
+      en: [
+        "The white Windows scroll bar is gone from the left menu — it is now thin and dark and no longer ruins the panel",
+        "The «Course progress» card sits flush at the bottom of the menu: no menu row hides behind it and none peeks out from under it"
+      ],
+      tr: [
+        "Sol menüden beyaz Windows kaydırma çubuğu kaldırıldı — artık ince ve koyu, paneli bozmuyor",
+        "«Ders ilerlemesi» kartı menünün en altına yapışık: hiçbir menü satarı arkasında gizlenmiyor, altından sızmıyor"
+      ]
+    },
     "26.12.5": {
       uk: [
         "На комп'ютері інтерфейс перестав сплющуватися: на широкому екрані сторінка тепер займає весь монітор, а не вузьку смужку посередині",
