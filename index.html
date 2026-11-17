@@ -33,7 +33,10 @@
   background:linear-gradient(90deg,#7C3AED,#22D3EE);animation:pc-fill 5s linear forwards}
 @keyframes pc-fill{from{width:0}to{width:100%}}
 @keyframes pc-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-@media(prefers-reduced-motion:reduce){#splash .pc-logo{animation:none}}
+@media(prefers-reduced-motion:reduce){
+  #splash .pc-logo{animation:none}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
   </style>
   <link rel="stylesheet" href="style.css?v=26.12.12">
   <link rel="stylesheet" href="newui.css?v=26.12.12">
