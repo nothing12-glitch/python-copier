@@ -100,6 +100,10 @@
   /* ========== Buttons — більші touch targets ========== */
   .btn {
     min-height: 44px !important;
+    /* база тримає .btn на фіксованій висоті 40px з overflow:hidden; на
+       вузькому телефоні підпис з іконкою переламується на два рядки й
+       другий рядок зникав. Дозволяємо кнопці рости, лиш 44px як підлога. */
+    height: auto !important;
     padding: 12px 20px !important;
     font-size: 15px !important;
   }
