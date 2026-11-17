@@ -93,13 +93,20 @@
     return !!(darkMQ && darkMQ.matches);
   }
 
-  /* Чи показувати скло зараз: явний вибір людини має перевагу, а поки його
-     немає — вмикаємо там, де пристрій Apple. Device.os() знає iPhone, iPad і
-     тач-маки; на Android і Windows скло лишається вимкненим. */
-  function glassOn() {
-    if (state.glass !== null && state.glass !== undefined) return !!state.glass;
+  /* «Liquid Glass» — мова дизайну Apple, тому діє лише на iPhone та iPad.
+     На ПК, Android і будь-де ще скло вимкнено намертво: ані автоматично,
+     ані вручну. Device.os() розпізнає iPhone, iPad і тач-маки. */
+  function isGlassDevice() {
     try { return !!(global.Device && global.Device.os && global.Device.os() === "ios"); }
     catch { return false; }
+  }
+
+  /* Чи показувати скло зараз: на не-iOS — ніколи; на iOS явний вибір людини
+     має перевагу, а поки його немає — вмикаємо саме. */
+  function glassOn() {
+    if (!isGlassDevice()) return false;
+    if (state.glass !== null && state.glass !== undefined) return !!state.glass;
+    return true;
   }
 
   function apply() {
@@ -155,7 +162,7 @@
       { id: "bgGlow", type: "switch", label: "set.bgGlow" },
       { id: "cursorGlow", type: "switch", label: "set.cursorGlow" },
       { id: "bgAnimate", type: "switch", label: "set.bgAnimate" },
-      { id: "glass", type: "switch", label: "set.glass" },
+      { id: "glass", type: "switch", label: "set.glass", hideIf: () => !isGlassDevice() },
       { id: "reduceMotion", type: "switch", label: "set.reduceMotion" },
       { id: "perf", type: "select", label: "set.perf", options: [
         ["auto", "set.perfAuto"], ["full", "set.perfFull"], ["light", "set.perfLight"] ] },
@@ -324,7 +331,7 @@
       const h = document.createElement("h4"); h.className = "settings-group"; h.textContent = t(g.group);
       container.appendChild(h);
       if (g.devLock) container.appendChild(devNotice());
-      g.items.forEach((it) => container.appendChild(row(it, !!g.devLock)));
+      g.items.forEach((it) => { if (it.hideIf && it.hideIf()) return; container.appendChild(row(it, !!g.devLock)); });
     });
   }
 
@@ -335,7 +342,8 @@
       const id = el.dataset.set;
       if (el.type === "checkbox") {
         const item = findItem(id);
-        el.checked = item && item.on !== undefined ? state[id] === item.on : !!state[id];
+        el.checked = id === "glass" ? glassOn()
+          : item && item.on !== undefined ? state[id] === item.on : !!state[id];
       } else if (el.type === "range") {
         el.value = state[id];
       } else {
