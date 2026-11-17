@@ -4086,6 +4086,9 @@
     (root || document).querySelectorAll("[data-i18n-ph]").forEach((el) => {
       el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph")));
     });
+    (root || document).querySelectorAll("[data-i18n-title]").forEach((el) => {
+      el.setAttribute("title", t(el.getAttribute("data-i18n-title")));
+    });
     (root || document).querySelectorAll("[data-i18n-static]").forEach((el) => {
       const what = el.getAttribute("data-i18n-static") || "text";
       const cur = what === "text" ? el.textContent : (el.getAttribute(what) || "");

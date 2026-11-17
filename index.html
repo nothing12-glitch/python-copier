@@ -142,11 +142,11 @@
     </div>
     <div class="appbar-spacer"></div>
 
-    <button id="mobileSearchBtn" class="icon-btn" aria-label="Пошук" data-i18n-static="aria-label"><span class="material-icons">search</span></button>
-    <button id="sfxToggle" class="icon-btn" title="Sound" aria-pressed="true"><span class="material-icons">volume_up</span></button>
-    <button id="musicToggle" class="icon-btn" title="Music" aria-pressed="false"><span class="material-icons">music_note</span></button>
+    <button id="mobileSearchBtn" class="icon-btn" aria-label="Пошук" data-i18n-static="aria-label" data-i18n-title="search.placeholder"><span class="material-icons">search</span></button>
+    <button id="sfxToggle" class="icon-btn" data-i18n-title="settings.sound" aria-pressed="true"><span class="material-icons">volume_up</span></button>
+    <button id="musicToggle" class="icon-btn" data-i18n-title="settings.music" aria-pressed="false"><span class="material-icons">music_note</span></button>
     <button id="profileBtn" class="chip-btn">
-      <span class="avatar" id="avatarTop" title="Avatar">&#128100;</span>
+      <span class="avatar" id="avatarTop" data-i18n-title="profile.title">&#128100;</span>
       <span id="profileName">Github user</span>
     </button>
   </header>
@@ -362,9 +362,9 @@
           <div class="card-bar">
             <span class="bar-title"><span class="material-icons">edit_note</span><span data-i18n="python.code">Код</span></span>
             <div class="bar-actions">
-              <button id="copyCode" class="icon-btn" aria-label="Copy"><span class="material-icons">content_copy</span></button>
-              <button id="savePy" class="icon-btn" aria-label="Save .py"><span class="material-icons">download</span></button>
-              <select id="examples" class="md-select" title="Examples"></select>
+              <button id="copyCode" class="icon-btn" aria-label="Copy" data-i18n-title="python.copy"><span class="material-icons">content_copy</span></button>
+              <button id="savePy" class="icon-btn" aria-label="Save .py" data-i18n-title="python.savePy"><span class="material-icons">download</span></button>
+              <select id="examples" class="md-select"></select>
               <button id="clearCode" class="btn text"><span data-i18n="python.clear">Очистити</span></button>
               <button id="run" class="btn contained" disabled><span class="material-icons">play_arrow</span><span data-i18n="python.run">Запуск</span></button>
             </div>
@@ -962,9 +962,9 @@
       </div>
       <div id="profilePanel" class="card elev2 profile-panel profile-bg hidden">
         <div class="profile-head">
-          <div class="avatar big" id="avatarBig" title="Avatar">&#128100;</div>
+          <div class="avatar big" id="avatarBig" data-i18n-title="profile.title">&#128100;</div>
           <div><h3 id="profileDisplayName">—</h3><p class="muted" id="profileMeta"></p></div>
-          <button id="renameBtn" class="icon-btn" title="Rename"><span class="material-icons">edit</span></button>
+          <button id="renameBtn" class="icon-btn" data-i18n-title="profile.changeNick"><span class="material-icons">edit</span></button>
           <button id="logoutBtn" class="btn outlined danger"><span class="material-icons">logout</span><span data-i18n="profile.logout">Вийти</span></button>
         </div>
         <button id="bgEditBtn" class="bg-edit-btn"><span class="material-icons">palette</span><span data-i18n="profile.changeBg">Змінити фон</span></button>
