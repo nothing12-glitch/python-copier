@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.8";
+  const VERSION = "26.12.9";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.9": {
+      uk: [
+        "«Рідке скло» тепер і в «Класичному» стилі: перемикач «Стиль» у налаштуваннях більше не дає два різні застосунки — склом вкрите однаково і нове, і класичне оформлення",
+        "На телефоні в класиці нижнє меню з 25 пунктів стало тією самою плаваючою скляною капсулою, що й у новому стилі: пункти котяться вбік, а підпис тримається в один рядок і не розлізається на два",
+        "На комп'ютері бічна панель класичного стилю теж стала склом — із відблиском уздовж краю й м'яким сяйвом"
+      ],
+      en: [
+        "«Liquid Glass» now also covers the «Classic» style: the «Style» switch in settings no longer gives you two different apps — glass is applied the same way to both the new and the classic look",
+        "On the phone, the classic 25-item bottom menu became the same floating glass capsule as the new style: the items scroll sideways, and a label stays on one line instead of splitting into two",
+        "On the computer the classic side menu is glass too — with a shine along the edge and a soft glow"
+      ],
+      tr: [
+        "«Liquid Glass» artık «Klasik» tarzı da kapsıyor: ayarlardaki «Tarz» anahtarı artık iki farklı uygulama üretmiyor — cam hem yeni hem klasik görünüme aynı şekilde uygulanıyor",
+        "Telefonda klasik 25 öğeli alt menü, yeni tarzla aynı yüzen cam kapsül oldu: öğeler yana kayar, etiket ikiye bölünmeden tek satırda kalır",
+        "Bilgisayarda klasik yan menü de cam oldu — kenarda parlama ve altında yumuşak ışıkla"
+      ]
+    },
     "26.12.8": {
       uk: [
         "«Рідке скло» тепер не лише на великих панелях: склом стало все — картки, кнопки, перемикачі, поля вводу, вікна, шторка «Ще» й список пошуку",
