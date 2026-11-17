@@ -272,6 +272,13 @@
     right: 16px !important;
     width: auto !important;
     max-width: none !important;
+    /* база центрує тост через left:50% + translateX(-50%); тут ми розтягнули
+       його від 16px до 16px, тому той самий зсув на -50% виштовхував би
+       повідомлення за лівий край. Лишаємо лише вертикальне виїжджання. */
+    transform: translateY(24px) !important;
+  }
+  .snackbar.show {
+    transform: translateY(0) !important;
   }
 }
 
