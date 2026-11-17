@@ -3,10 +3,24 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.10";
+  const VERSION = "26.12.11";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.11": {
+      uk: [
+        "«Рідке скло» — це мова дизайну Apple, тож воно лишилось лише на iPhone та iPad. На комп'ютері та Android скло більше не з'являється: інтерфейс там — звичайний, суцільний, без прозорих панелей",
+        "Перемикач «Скло» в налаштуваннях тепер видно тільки на пристроях Apple — на комп'ютері його прибрано, щоб випадково не ввімкнути те, що там не працює"
+      ],
+      en: [
+        "«Liquid Glass» is Apple's design language, so it now lives only on iPhone and iPad. On the computer and on Android the glass no longer appears — the interface there is plain and solid, with no translucent panels",
+        "The «Glass» switch in settings is now shown only on Apple devices — on the computer it has been removed, so you can't accidentally turn on something that doesn't belong there"
+      ],
+      tr: [
+        "«Liquid Glass» Apple'ın tasarım dili olduğu için artık yalnızca iPhone ve iPad'de. Bilgisayarda ve Android'de cam bir daha görünmüyor — arayüz düz ve opak, yarı saydam panel yok",
+        "Ayarlardaki «Cam» anahtarı artık yalnızca Apple cihazlarda görünüyor — bilgisayarda kaldırıldı, böylece oraya ait olmayan bir şey yanlışlıkla açılamaz"
+      ]
+    },
     "26.12.10": {
       uk: [
         "Повідомлення-тости на телефоні більше не ховаються за лівий край — усе речення видно цілком, і в новому, і в класичному стилі",
