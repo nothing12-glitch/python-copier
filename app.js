@@ -729,6 +729,22 @@
     }
   }
 
+  /* «Край прокрутки», як в iOS: доки сторінка не зсунулася — шапка майже
+     невидима, щось тільки під нею поїхало — скло густішає й дістає волосину
+     рамку. Слухач пасивний, кадрами не керує, а атрибут пише лише коли стан
+     змінюється. */
+  function bindScrollEdge() {
+    let last = null, raf = 0;
+    function read() {
+      raf = 0;
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      const next = y > 8 ? "under" : "top";
+      if (next !== last) { last = next; document.body.dataset.edge = next; }
+    }
+    window.addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(read); }, { passive: true });
+    read();
+  }
+
   function bindMoreSheet() {
     const sheet = $("#moreSheet");
     const grid = $("#moreSheetGrid");
@@ -812,6 +828,7 @@
     try { decorateCards(); } catch (e) { console.warn("decorateCards", e); }
     try { bindGlobalSearch(); } catch (e) { console.warn("bindGlobalSearch", e); }
     try { bindMoreSheet(); } catch (e) { console.warn("bindMoreSheet", e); }
+    try { bindScrollEdge(); } catch (e) { console.warn("bindScrollEdge", e); }
     try { if (global.Pythonchik) global.Pythonchik.init(); } catch (e) { console.warn("Pythonchik", e); }
     try { bindFocusPicker(); } catch (e) { console.warn("bindFocusPicker", e); }
     try { updateNavProgress(); } catch (e) { console.warn("updateNavProgress", e); }
