@@ -95,8 +95,11 @@
 
   /* «Liquid Glass» — мова дизайну Apple, тому діє лише на iPhone та iPad.
      На ПК, Android і будь-де ще скло вимкнено намертво: ані автоматично,
-     ані вручну. Device.os() розпізнає iPhone, iPad і тач-маки. */
+     ані вручну. Device.os() розпізнає iPhone, iPad і тач-маки. Додатково,
+     якщо людина сама позначила «Який у тебе комп'ютер» як ПК чи ноутбук,
+     скло не показуємо навіть якщо система хибно впізнала пристрій як Apple. */
   function isGlassDevice() {
+    if (state.deviceForm === "desktop" || state.deviceForm === "laptop") return false;
     try { return !!(global.Device && global.Device.os && global.Device.os() === "ios"); }
     catch { return false; }
   }
