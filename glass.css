@@ -1,0 +1,488 @@
+/* ============================================================================
+   glass.css — «Рідке скло» (Liquid Glass) як у нових iOS.
+   Діє лише коли на <body> є клас glass-on (перемикач «Рідке скло» в
+   «Налаштуваннях»), тому без скла застосунок лишається рівно таким, як був.
+
+   Окремий файл, а не черговий розділ extra.css: скло зачіпає весь інтерфейс
+   одразу, і в 3600 рядках воно загубилось б.
+
+   Чому не на кожному елементі справжнє backdrop-filter: кожне розмиття —
+   окремий шар композиту, і сорок розмиттів в одному кадрі вбивають кадри на
+   слабких телефонах. Тому blur отримують лише великі поверхні (смужки,
+   картки, вікна), а дрібні контроли — «дешеве скло» з тих самих градієнтів,
+   відблисків і тіней. Вигляд той самий, ціна в рази менша.
+   ========================================================================== */
+
+/* ---------- 1) Токени: три ґати скла ----------
+   thin — картки й блоки, під ними лише фон;
+   regular — смужки (шапка, бічна панель, нижнє меню), під ними прокручується
+   текст, тому вони густіші;
+   thick — те, що плаває над чужим текстом (вікна, шторки, списки пошуку):
+   їхнє розмиття не бачить того, що під ним, тому тіло майже суцільне. */
+body.glass-on[data-style="new"] {
+  --lg-blur-thin: blur(20px) saturate(1.7) brightness(1.05);
+  --lg-blur: blur(30px) saturate(1.8) brightness(1.06);
+  --lg-blur-thick: blur(34px) saturate(1.55);
+
+  --lg-thin: rgba(26,20,42,.42);
+  --lg-regular: rgba(19,14,32,.62);
+  --lg-thick: rgba(15,11,26,.90);
+  /* стан «під смужкою поїхав контент»: густіше за звичайне, але не суцільне */
+  --lg-solid: rgba(15,11,26,.82);
+
+  /* відблиск по усій верхній половині — «лінза» збирає світло біля краю */
+  --lg-spec: linear-gradient(158deg,rgba(255,255,255,.17),rgba(255,255,255,.04) 26%,rgba(255,255,255,0) 52%);
+  --lg-lens: radial-gradient(130px 66px at 14% -8%,rgba(255,255,255,.20),rgba(255,255,255,0) 70%);
+
+  --lg-edge: rgba(255,255,255,.16);
+  --lg-hair: rgba(255,255,255,.09);
+  --lg-tint: rgba(var(--md-primary-rgb),.30);
+  --lg-tint-soft: rgba(var(--md-primary-rgb),.16);
+  /* обрана плашка: у темній темі вистачає й --lg-tint, у світлій акцент
+     на білому склі ледь помітний, тому там own, густіша пара */
+  --lg-sel: var(--lg-tint);
+  --lg-sel-soft: var(--lg-tint-soft);
+
+  /* край скла: світло згори, тінь знизу, м'яке преломлення по периметру */
+  --lg-rim: inset 0 1px 0 rgba(255,255,255,.46),
+            inset 0 0 0 .5px rgba(255,255,255,.12),
+            inset 0 -1px 0 rgba(0,0,0,.30),
+            inset 0 0 22px -8px rgba(255,255,255,.20);
+  --lg-inner: inset 0 -34px 46px -40px rgba(255,255,255,.14);
+  --lg-drop: 0 20px 44px -22px rgba(0,0,0,.66), 0 3px 10px -5px rgba(0,0,0,.45);
+  --lg-glow: 0 0 44px -16px rgba(var(--md-primary-rgb),.40);
+
+  --lg-r-pill: 999px;
+  --lg-r-xl: 28px;
+  --lg-r-lg: 24px;
+  --lg-r-md: 18px;
+  --lg-r-sm: 13px;
+
+  /* готові «рецепти» поверхонь */
+  --lg-face: var(--lg-lens),var(--lg-spec),var(--lg-thin);
+  --lg-face-bar: var(--lg-lens),var(--lg-spec),var(--lg-regular);
+  --lg-face-thick: var(--lg-lens),var(--lg-spec),var(--lg-thick);
+  --lg-shadow: var(--lg-rim),var(--lg-inner),var(--lg-drop),var(--lg-glow);
+}
+
+/* світла тема: скло біле, але тінь тепліша й слабша, інакше все сіре */
+body.glass-on[data-style="new"]:not(.dark) {
+  --lg-thin: rgba(255,255,255,.50);
+  --lg-regular: rgba(255,255,255,.66);
+  --lg-thick: rgba(255,255,255,.94);
+  --lg-solid: rgba(255,255,255,.88);
+  --lg-spec: linear-gradient(158deg,rgba(255,255,255,.78),rgba(255,255,255,.22) 26%,rgba(255,255,255,0) 52%);
+  --lg-lens: radial-gradient(130px 66px at 14% -8%,rgba(255,255,255,.95),rgba(255,255,255,0) 70%);
+  --lg-edge: rgba(255,255,255,.88);
+  --lg-hair: rgba(42,29,78,.10);
+  --lg-sel: rgba(var(--md-primary-rgb),.46);
+  --lg-sel-soft: rgba(var(--md-primary-rgb),.26);
+  --lg-rim: inset 0 1px 0 rgba(255,255,255,.98),
+            inset 0 0 0 .5px rgba(255,255,255,.55),
+            inset 0 -1px 0 rgba(96,84,132,.14),
+            inset 0 0 22px -8px rgba(255,255,255,.65);
+  --lg-inner: inset 0 -34px 46px -40px rgba(120,108,180,.18);
+  --lg-drop: 0 18px 40px -22px rgba(44,32,74,.34), 0 3px 10px -6px rgba(44,32,74,.20);
+  --lg-glow: 0 0 40px -18px rgba(var(--md-primary-rgb),.30);
+}
+
+/* iOS-дрібниці: без синього прямокутника на тап і без 300 мс затримки */
+body.glass-on[data-style="new"] {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: default;
+}
+
+/* ---------- 2) Великі поверхні контенту ---------- */
+body.glass-on[data-style="new"] :is(
+  .card, .learn-card, .tool-card, .game-card, .task-card, .mod-card,
+  .ach-card, .proj-card, .gloss-card, .help-card, .dash-block,
+  .season-board-card, .season-side, .exam-review-card, .feedback-card,
+  .md-panel, .snippets-card, .mk-empty, .room-empty, .gloss-empty,
+  .turtle-empty, .season-empty, .exam-nopick, .snippet-empty
+) {
+  background: var(--lg-face);
+  -webkit-backdrop-filter: var(--lg-blur-thin);
+  backdrop-filter: var(--lg-blur-thin);
+  border: 1px solid var(--lg-edge);
+  border-radius: var(--lg-r-lg);
+  box-shadow: var(--lg-shadow);
+}
+
+/* банер-герой: його власні плями світла лишаємо, замінюємо лише основу */
+body.glass-on[data-style="new"] .hero {
+  background:
+    radial-gradient(90% 130% at 12% -20%, rgba(124,58,237,.38), transparent 62%),
+    radial-gradient(70% 110% at 100% 0%, rgba(34,211,238,.14), transparent 60%),
+    var(--lg-lens), var(--lg-spec), var(--lg-thin);
+  -webkit-backdrop-filter: var(--lg-blur);
+  backdrop-filter: var(--lg-blur);
+  border: 1px solid var(--lg-edge);
+  border-radius: var(--lg-r-xl);
+  box-shadow: var(--lg-shadow);
+}
+body.glass-on[data-style="new"] .hero-demo {
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-rim), 0 26px 60px -26px rgba(0,0,0,.95);
+}
+
+/* графік, стрічка, рядки: тонкий шар без окремого розмиття — їх багато */
+body.glass-on[data-style="new"] :is(.dash-chart-wrap, .daily-hero, .contest-banner, .profile-head) {
+  background: var(--lg-face);
+  border: 1px solid var(--lg-edge);
+  border-radius: var(--lg-r-lg);
+  box-shadow: var(--lg-rim), var(--lg-inner);
+}
+body.glass-on[data-style="new"] :is(.snippet-row, .mp-track, .season-row, .bk-row, .cloud-row, .dash-feed li, .record) {
+  background: var(--lg-spec), rgba(255,255,255,.05);
+  border: 1px solid var(--lg-hair);
+  border-radius: var(--lg-r-md);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
+}
+
+/* код лишається суцільним: на прозорому фоні рядки не читаються */
+body.glass-on[data-style="new"] :is(.course-code, .code-block, .task-example-pre, .gloss-io pre, .pychik-pre, .demo-code) {
+  background: rgba(9,6,17,.72);
+  border: 1px solid var(--lg-hair);
+  border-radius: var(--lg-r-md);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+body.glass-on[data-style="new"]:not(.dark) :is(.course-code, .code-block, .task-example-pre, .gloss-io pre, .pychik-pre, .demo-code) {
+  background: rgba(14,10,24,.92);
+}
+
+/* ---------- 3) Смужки: шапка, бічна панель, картка прогресу ---------- */
+body.glass-on[data-style="new"] .appbar {
+  background: var(--lg-lens), var(--lg-spec), rgba(20,15,33,.34);
+  -webkit-backdrop-filter: var(--lg-blur);
+  backdrop-filter: var(--lg-blur);
+  border-bottom: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.26);
+}
+body.glass-on[data-style="new"]:not(.dark) .appbar {
+  background: var(--lg-lens), var(--lg-spec), rgba(255,255,255,.42);
+}
+/* «край прокрутки», як в iOS: доки сторінка внизу — смужка густіша й з
+   волосиною рамкою, зверху над порожнім фоном вона майже невидима */
+body.glass-on[data-style="new"][data-edge="under"] .appbar {
+  background: var(--lg-lens), var(--lg-spec), var(--lg-solid);
+  border-bottom-color: var(--lg-hair);
+  box-shadow: var(--lg-rim), 0 10px 26px -20px rgba(0,0,0,.9);
+}
+
+body.glass-on[data-style="new"] .navrail {
+  background: var(--lg-face-bar);
+  -webkit-backdrop-filter: var(--lg-blur);
+  backdrop-filter: var(--lg-blur);
+  border-right: 1px solid var(--lg-hair);
+  box-shadow: var(--lg-rim);
+}
+body.glass-on[data-style="new"] .nav-progress {
+  background: var(--lg-face-thick);
+  -webkit-backdrop-filter: var(--lg-blur);
+  backdrop-filter: var(--lg-blur);
+  border: 1px solid var(--lg-edge);
+  border-bottom: 0;
+  border-radius: var(--lg-r-lg) var(--lg-r-lg) 0 0;
+  box-shadow: var(--lg-rim), 0 -16px 30px -22px rgba(0,0,0,.9);
+}
+
+/* ---------- 4) Плаваючі шари: вікна, шторки, списки, тости ---------- */
+body.glass-on[data-style="new"] :is(
+  .modal-card, .panel-card, .ob-card, .wn-card, .gs-card, .ht-card,
+  .av-modal-card, .ip-card, .md-card, .bk-modal-card, .device-card,
+  .teacher-card, .grules-card, .focus-pick, .qm-panel, .more-sheet-panel,
+  .search-pop, .autocomplete, .snackbar, #musicPanel, .pychik-panel,
+  .vlt-card-modal, .pgtk-dlg, .tool-card--wide
+) {
+  background: var(--lg-face-thick);
+  -webkit-backdrop-filter: var(--lg-blur-thick);
+  backdrop-filter: var(--lg-blur-thick);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow);
+}
+/* шторка знизу й великі вікна — свій радіус, інакше кут «з'їдає» відблиск */
+body.glass-on[data-style="new"] :is(.more-sheet-panel, .pychik-panel) {
+  border-radius: var(--lg-r-xl) var(--lg-r-xl) 0 0;
+}
+body.glass-on[data-style="new"] :is(.wn-card, .ob-card, .gs-card, .ht-card, .ip-card, .md-card, .bk-modal-card, .av-modal-card, .device-card, .teacher-card, .grules-card, .modal-card, .panel-card, .vlt-card-modal, .pgtk-dlg) {
+  border-radius: var(--lg-r-xl);
+}
+/* затемнення під вікном — теж скло, але темне: iOS «морфить» фон */
+body.glass-on[data-style="new"] :is(.more-sheet-backdrop, .modal-backdrop, .wn-backdrop, .ob-backdrop, .gs-backdrop, .ht-backdrop, .vlt-backdrop, .ip-backdrop, .av-modal-backdrop, .pgtk-dlgback, #deviceAsk) {
+  background: rgba(6,4,12,.52);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+}
+
+/* ---------- 5) Контроли: «дешеве скло» без розмиття ---------- */
+/* вторинні кнопки, чипи, таби — скло з відблиском і волосиною рамкою.
+   У :is() лишаємо лише одно-класові селектори: :is() бере вагу найдужчого
+   свого аргумента, тому один ID чи складений селектор усередині списку
+   піднімає вагу всього правила і воно починає перема обрані стани нижче.
+   Через це .btn.outlined, .btn.text і #mobileSearchBtn виписані окремо. */
+body.glass-on[data-style="new"] :is(
+  .chip, .md-chip, .tab-btn, .av-tab, .turtle-tab,
+  .contest-chip, .gloss-chip, .proj-step-chip, .help-chip, .help-tag,
+  .exam-pill, .task-level-badge, .task-solved-badge, .proj-card-badge,
+  .vlt-badge, .wn-chip, .daily-flame, .hero-badge, .mod-state, .ach-tier,
+  .contest-stat, .err-kind, .err-type, .py-ask, .pychik-chip, .qm-select,
+  .icon-btn, .chip-btn, .bg-edit-btn, .emoji-btn,
+  .device-opt, .device-probe, .device-back, .pwa-install-btn, .focus-exit,
+  .mp-btn, .game-info-btn, .gs-opt-btn, .grules-x, .snippet-save-btn,
+  .pychik-head-btn, .pychik-close, .pychik-send, .hpeg, .hdisk
+),
+body.glass-on[data-style="new"] .btn.outlined,
+body.glass-on[data-style="new"] .btn.text,
+body.glass-on[data-style="new"] #mobileSearchBtn {
+  background: var(--lg-lens), var(--lg-spec), rgba(255,255,255,.07);
+  border: 1px solid var(--lg-edge);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.30), inset 0 -1px 0 rgba(0,0,0,.22);
+}
+body.glass-on[data-style="new"]:not(.dark) :is(
+  .chip, .md-chip, .tab-btn, .av-tab, .turtle-tab,
+  .contest-chip, .gloss-chip, .proj-step-chip, .help-chip, .help-tag,
+  .exam-pill, .task-level-badge, .task-solved-badge, .proj-card-badge,
+  .vlt-badge, .wn-chip, .daily-flame, .hero-badge, .mod-state, .ach-tier,
+  .contest-stat, .py-ask, .pychik-chip, .qm-select, .icon-btn, .chip-btn,
+  .device-opt, .device-probe, .mp-btn, .game-info-btn,
+  .gs-opt-btn, .emoji-btn, .bg-edit-btn, .snippet-save-btn
+),
+body.glass-on[data-style="new"]:not(.dark) .btn.outlined,
+body.glass-on[data-style="new"]:not(.dark) .btn.text,
+body.glass-on[data-style="new"]:not(.dark) #mobileSearchBtn {
+  background: var(--lg-lens), var(--lg-spec), rgba(255,255,255,.62);
+  border: 1px solid rgba(255,255,255,.80);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(96,84,132,.10),
+              0 2px 8px -4px rgba(44,32,74,.30);
+}
+
+/* основна кнопка: акцентне скло — світло збирається зверху, як на iOS */
+body.glass-on[data-style="new"] .btn.contained {
+  background:
+    var(--lg-lens),
+    linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 46%),
+    var(--md-primary);
+  border: 1px solid rgba(255,255,255,.24);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.44), var(--lg-drop);
+}
+body.glass-on[data-style="new"] .hero-cta .btn.contained {
+  background:
+    var(--lg-lens),
+    linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,0) 46%),
+    var(--nu-text);
+}
+
+/* натиснення: скло «вдавлюється» і втрачає частину тіні — як відгук iOS */
+body.glass-on[data-style="new"] :is(.btn, .chip, .icon-btn, .md-chip, .tab-btn,
+  .av-tab, .turtle-tab, .contest-chip, .gloss-chip, .qm-select, .device-opt,
+  .mp-btn, .game-info-btn, .gs-opt-btn, .pychik-send, .emoji-btn):active {
+  transform: scale(.962);
+  filter: brightness(1.14) saturate(1.18);
+}
+body.glass-on[data-style="new"] .card[data-goto]:active {
+  transform: translateY(-1px) scale(.988);
+}
+
+/* обрані стани: акцентне скло замість плоского кольору */
+body.glass-on[data-style="new"] :is(.tab-btn.active, .tab-btn[aria-selected="true"],
+  .av-tab.active, .turtle-tab.active, .chip.active, .md-chip.active,
+  .contest-chip.active, .gloss-chip.active, .device-opt.is-rec, .qm-item.is-sel) {
+  background: linear-gradient(180deg, var(--lg-sel), var(--lg-sel-soft)), var(--lg-lens);
+  border-color: rgba(255,255,255,.30);
+  box-shadow: var(--lg-rim), 0 0 22px -10px rgba(var(--md-primary-rgb),.55);
+  /* скло робить плашку напівпрозорою, тому текст бере не «на акценті»,
+     а звичайний колір інтерфейсу: у темній темі світлий, у світлій темний */
+  color: var(--nu-text);
+}
+body.glass-on[data-style="new"] :is(.tab-btn.active, .av-tab.active, .turtle-tab.active) .material-icons {
+  color: var(--nu-text);
+}
+
+/* активний розділ у бічному меню та в шторці «Ще»: той самий акцент, що й
+   без скла (текст лишається читабельним), але склоний, а не плаский.
+   На телефоні меню — капсула, і там заповнювати кнопкою акцент не треба,
+   тому правило діє лише від 769px. */
+@media (min-width: 769px) {
+  body.glass-on[data-style="new"] .rail-btn.active {
+    background: var(--lg-lens),
+                linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 46%),
+                var(--md-primary);
+    box-shadow: var(--lg-rim), 0 12px 26px -14px rgba(var(--md-primary-rgb),.95),
+                0 0 28px -10px rgba(var(--md-primary-rgb),.70);
+  }
+}
+body.glass-on[data-style="new"] .more-sheet-grid button.active {
+  background: var(--lg-lens),
+              linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 46%),
+              var(--md-primary);
+  box-shadow: var(--lg-rim), 0 12px 26px -14px rgba(var(--md-primary-rgb),.95);
+}
+
+/* перемикач: скляна «вагітня» доріжка з крапелькою світла на повзунку */
+body.glass-on[data-style="new"] .track {
+  background: var(--lg-spec), rgba(255,255,255,.10);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-rim), inset 0 2px 8px rgba(0,0,0,.35);
+}
+body.glass-on[data-style="new"] .track::after {
+  background: #fff;
+  box-shadow: 0 2px 8px -2px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.9);
+}
+body.glass-on[data-style="new"] .switch input:checked + .track {
+  background: linear-gradient(180deg, rgba(var(--md-primary-rgb),.95), rgba(var(--md-primary-rgb),.70));
+  border-color: rgba(255,255,255,.34);
+}
+
+/* поля вводу: «вдавлене» скло, як інпути в iOS, а не випуклі-plaшки */
+body.glass-on[data-style="new"] :is(.field input, .md-input, .ob-input, .mod-search input,
+  .gloss-search input, .mk-field input, .vlt-input, .guess input, .av-nick-input,
+  .stdin-input, select.md-select, .qm-native) {
+  background: var(--lg-spec), rgba(255,255,255,.05);
+  border: 1px solid var(--lg-edge);
+  box-shadow: inset 0 1px 4px rgba(0,0,0,.40), inset 0 -1px 0 rgba(255,255,255,.06);
+  border-radius: var(--lg-r-md);
+}
+body.glass-on[data-style="new"]:not(.dark) :is(.field input, .md-input, .ob-input,
+  .mod-search input, .gloss-search input, .mk-field input, .vlt-input, .guess input,
+  .av-nick-input, .stdin-input, select.md-select) {
+  background: var(--lg-spec), rgba(255,255,255,.70);
+  border: 1px solid rgba(42,29,78,.14);
+  box-shadow: inset 0 1px 3px rgba(44,32,74,.12);
+}
+body.glass-on[data-style="new"] :is(.field input, .md-input):focus {
+  border-color: rgba(var(--md-primary-rgb),.55);
+  box-shadow: inset 0 1px 4px rgba(0,0,0,.40), 0 0 0 3px rgba(var(--md-primary-rgb),.20);
+}
+
+/* редактор і консоль: темне скло-«акваріум», сам код лишається суцільним */
+body.glass-on[data-style="new"] :is(#code, .console, .task-editor textarea, .turtle-editor textarea) {
+  background: rgba(9,6,17,.86);
+  border: 1px solid var(--lg-hair);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+/* ---------- 6) Поле пошуку в шапці ---------- */
+body.glass-on[data-style="new"] .appbar-search {
+  background: var(--lg-lens), var(--lg-spec), rgba(255,255,255,.06);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-rim);
+  border-radius: var(--lg-r-pill);
+}
+body.glass-on[data-style="new"]:not(.dark) .appbar-search {
+  background: var(--lg-lens), var(--lg-spec), rgba(255,255,255,.58);
+}
+body.glass-on[data-style="new"] .appbar-search:focus-within {
+  border-color: rgba(var(--md-primary-rgb),.55);
+  box-shadow: var(--lg-rim), 0 0 0 3px rgba(var(--md-primary-rgb),.20);
+}
+
+/* ---------- 7) Нижнє меню на телефоні: плаваюча скляна капсула ---------- */
+@media (max-width: 768px) {
+  body.glass-on[data-style="new"] .navrail {
+    top: auto !important;
+    left: 12px !important; right: 12px !important;
+    bottom: calc(12px + var(--sab, 0px)) !important;
+    width: auto !important;
+    height: 66px !important;
+    border: 1px solid var(--lg-edge) !important;
+    border-radius: var(--lg-r-pill) !important;
+    background: var(--lg-face-bar) !important;
+    -webkit-backdrop-filter: var(--lg-blur) !important;
+    backdrop-filter: var(--lg-blur) !important;
+    box-shadow: var(--lg-rim), var(--lg-inner), var(--lg-drop), var(--lg-glow) !important;
+    padding: 0 8px !important;
+    gap: 2px !important;
+  }
+  body.glass-on[data-style="new"] main {
+    padding-bottom: calc(104px + var(--sab, 0px)) !important;
+  }
+  /* той самий «scroll edge», що й у шапці: доки контент під капсулою не
+     поїхав — скло прозоре, поїхав — густішає, щоб іконки не читались
+     крізь рядки списку */
+  body.glass-on[data-style="new"][data-edge="under"] .navrail {
+    background: var(--lg-lens), var(--lg-spec), var(--lg-solid) !important;
+  }
+  body.glass-on[data-style="new"] .rail-btn {
+    border-radius: var(--lg-r-pill);
+  }
+  /* активний пункт — «рідка» пігулка: акцентне скло з відблиском і сяйвом */
+  body.glass-on[data-style="new"] .rail-btn::before {
+    width: 62px; height: 52px;
+    border-radius: var(--lg-r-pill);
+    background: linear-gradient(180deg, var(--lg-sel), var(--lg-sel-soft)), var(--lg-lens);
+    border: 1px solid rgba(255,255,255,.26);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.50), 0 8px 18px -10px rgba(0,0,0,.85),
+                0 0 20px -8px rgba(var(--md-primary-rgb),.65);
+  }
+  body.glass-on[data-style="new"] .rail-btn.active .rail-label {
+    color: var(--nu-text);
+  }
+  body.glass-on[data-style="new"] .rail-btn.active .rail-ico,
+  body.glass-on[data-style="new"] .rail-btn.active .rail-ico .material-icons {
+    color: #fff;
+  }
+  /* у світлій темі пігулка ледь забарвлена, тому там іконка — кольору
+     акценту, а не біла: білий значок на ніжно-бузковому не видно */
+  body.glass-on[data-style="new"]:not(.dark) .rail-btn.active .rail-ico,
+  body.glass-on[data-style="new"]:not(.dark) .rail-btn.active .rail-ico .material-icons {
+    color: var(--md-primary);
+  }
+  /* тост не повинен сідати на капсулу */
+  body.glass-on[data-style="new"] #toast.snackbar {
+    bottom: calc(92px + var(--sab, 0px)) !important;
+  }
+}
+
+/* ---------- 8) Пайтончик: його бульбашка теж скло ---------- */
+body.glass-on[data-style="new"] :is(.pychik-bubble, .pychik-fab) {
+  background: var(--lg-face-thick);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-rim), var(--lg-drop);
+}
+
+/* ---------- 9) Класичний інтерфейс під склом ----------
+   Той самий матеріал, але без всієї нової структури — щоб перемикач не
+   давав два зовсім різні застосунки. */
+body.glass-on:not([data-style="new"]) :is(.card, .appbar, .navrail, .snackbar, .autocomplete, #musicPanel, .ob-card) {
+  background: var(--lg-lens), var(--lg-spec), rgba(255,255,255,.06);
+  -webkit-backdrop-filter: var(--lg-blur-thin);
+  backdrop-filter: var(--lg-blur-thin);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-rim), var(--lg-drop);
+}
+body.glass-on:not([data-style="new"]) {
+  --lg-blur-thin: blur(20px) saturate(1.7);
+  --lg-lens: radial-gradient(130px 66px at 14% -8%, rgba(255,255,255,.18), rgba(255,255,255,0) 70%);
+  --lg-spec: linear-gradient(158deg, rgba(255,255,255,.14), rgba(255,255,255,0) 46%);
+  --lg-edge: rgba(255,255,255,.16);
+  --lg-rim: inset 0 1px 0 rgba(255,255,255,.40), inset 0 0 22px -8px rgba(255,255,255,.18);
+  --lg-drop: 0 18px 40px -22px rgba(0,0,0,.6);
+}
+
+/* ---------- 10) Фолбеки ----------
+   Без backdrop-filter (і на слабкому залізі, коли застосунок сам вимкнув
+   розмиття) скло має стати майже суцільним — інакше текст лежить на фоні. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  body.glass-on[data-style="new"] {
+    --lg-thin: rgba(22,17,35,.95);
+    --lg-regular: rgba(18,13,28,.97);
+    --lg-blur-thin: none; --lg-blur: none; --lg-blur-thick: none;
+  }
+  body.glass-on[data-style="new"]:not(.dark) {
+    --lg-thin: rgba(255,255,255,.96);
+    --lg-regular: rgba(255,255,255,.97);
+  }
+}
+body.low-power.glass-on[data-style="new"] {
+  --lg-thin: rgba(22,17,35,.95);
+  --lg-regular: rgba(18,13,28,.97);
+  --lg-blur-thin: none; --lg-blur: none; --lg-blur-thick: none;
+}
+body.low-power.glass-on[data-style="new"]:not(.dark) {
+  --lg-thin: rgba(255,255,255,.96);
+  --lg-regular: rgba(255,255,255,.97);
+}
+/* анімації вимкнено — скло не «дихає», але лишається склом */
+body.glass-on[data-style="new"].reduce-motion :is(.btn, .chip, .icon-btn, .rail-btn, .card[data-goto]) {
+  transition: none;
+}

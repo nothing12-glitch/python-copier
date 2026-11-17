@@ -11,6 +11,7 @@ const STATIC_ASSETS = [
   "/mobile.css",
   "/rtl.css",
   "/pythonchik.css",
+  "/glass.css",
   "/pychik-ai.js",
   "/i18n.js",
   "/lang/tr.js",
