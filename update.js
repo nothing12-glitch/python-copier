@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.6";
+  const VERSION = "26.12.7";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.7": {
+      uk: [
+        "«Рідке скло» тепер справжнє скло, як в iOS: прозорі панелі з холодним відтінком, відблиском уздовж верхнього краю й м'яким сяйвом під ними. Працює і в темній, і у світлій темі",
+        "Список результатів пошуку на комп'ютері більше не ховається за меню ліворуч — назви знайденого видно повністю",
+        "Якщо залізо слабке й програма сама вимикає розмиття, скло стає суцільним: текст залишається читабельним"
+      ],
+      en: [
+        "«Liquid Glass» is now real glass, the iOS way: translucent panels with a cool tint, a shine along the top edge and a soft glow underneath. Works in both the dark and the light theme",
+        "The search results list on the computer no longer hides behind the left menu — the names you found are fully visible",
+        "On weak hardware, when the app turns the blur off by itself, the glass becomes solid so the text stays readable"
+      ],
+      tr: [
+        "«Liquid Glass» artık gerçek cam, iOS'taki gibi: soğuk tonlu yarı saydam paneller, üst kenarda parlama ve altında yumuşak ışık. Koyu ve açık temada da çalışıyor",
+        "Bilgisayarda arama sonuçları listesi artık sol menünün arkasına gizlenmiyor — bulunan isimlerin tamamı görünüyor",
+        "Donanım zayıfsa ve uygulama bulanıklığı kendisi kapatıyorsa cam opaklaşır, metin okunur kalır"
+      ]
+    },
     "26.12.6": {
       uk: [
         "У меню ліворуч зникла біла смуга прокрутки Windows — тепер вона тонка й темна, не псує панель",
