@@ -3,10 +3,21 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.9";
+  const VERSION = "26.12.10";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.10": {
+      uk: [
+        "Повідомлення-тости на телефоні більше не ховаються за лівий край — усе речення видно цілком, і в новому, і в класичному стилі"
+      ],
+      en: [
+        "Toasts on the phone no longer hide behind the left edge — the whole sentence is visible, in both the new and the classic style"
+      ],
+      tr: [
+        "Telefondaki bildirimler artık sol kenarın arkasına gizlenmiyor — cümlenin tamamı hem yeni hem klasik tarzda görünüyor"
+      ]
+    },
     "26.12.9": {
       uk: [
         "«Рідке скло» тепер і в «Класичному» стилі: перемикач «Стиль» у налаштуваннях більше не дає два різні застосунки — склом вкрите однаково і нове, і класичне оформлення",
