@@ -171,9 +171,9 @@
       projects: { done: Object.keys(dj.steps || {}).length, total: P ? P.count : 0, points: projPoints, max: P ? P.maxPoints : 0 },
       daily: { done: Object.keys(dl.days || {}).length, streak: D && D.streak ? D.streak() : 0, best: dl.best || 0 },
       glossary: { done: gl.read, total: gl.total },
-      exam: { attempts: ex.attempts, best: ex.best, passed: ex.passed, size: X ? X.draw : 12 },
+      exam: { done: ex.passed || 0, attempts: ex.attempts, best: ex.best, passed: ex.passed, size: X ? X.draw : 12 },
       games: { done: (stats.gamesPlayed || []).length, total: 9 },
-      contest: { runs: stats.contestsRun || 0, best: stats.contestBest || 0, perfect: stats.contestPerfect || 0 },
+      contest: { done: stats.contestsRun || 0, runs: stats.contestsRun || 0, best: stats.contestBest || 0, perfect: stats.contestPerfect || 0 },
       turtle: { done: (tu.lessonsRun || 0) + (tu.solved || 0), total: (tu.lessonsTotal || 10) + (tu.total || 10), lessons: tu.lessonsRun || 0, lessonsTotal: tu.lessonsTotal || 10, tasks: tu.solved || 0, tasksTotal: tu.total || 10 },
       maker: { done: mk.solved || 0, total: (mk.own || 0) + (mk.yard || 0), own: mk.own || 0, yard: mk.yard || 0 },
       season: { done: (sn.league || 0) + 1, total: leagueCount, xp: sn.xp || 0, days: sn.days || 0, rank: sn.rank || 0 },
@@ -225,7 +225,7 @@
       const h = max ? Math.max(r.p ? 6 : 2, Math.round((r.p / max) * 44)) : 2;
       const x = (i * w).toFixed(2);
       return '<g class="dash-bar' + (r.today ? " today" : "") + '">' +
-        '<rect x="' + (Number(x) + w * 0.22).toFixed(2) + '" y="' + (48 - h) + '" width="' + (w * 0.56).toFixed(2) + '" height="' + h + '" rx="1">' +
+        '<rect x="' + (Number(x) + w * 0.22).toFixed(2) + '" y="' + (48 - h) + '" width="' + (w * 0.56).toFixed(2) + '" height="' + h + '">' +
         "<title>" + escapeHtml(r.human + " · " + r.p + " " + t("dash.pts")) + "</title></rect>" +
         "</g>";
     }).join("");

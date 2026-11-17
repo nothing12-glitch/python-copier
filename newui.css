@@ -192,6 +192,16 @@ body[data-style="new"] .rail-btn{
   transition:background .18s,color .18s;
 }
 body[data-style="new"] .rail-btn:hover{background:var(--nu-surface);color:var(--nu-text);border-radius:12px}
+/* 19 пунктів по 40px не влазять у рейку заввишки ~670px (вікно 720px),
+   і флекс сплющував кнопки до 21px. Стискати заборонено — рейка вже має
+   overflow-y:auto, тому вона скроллиться, а картка прогресу лишається внизу. */
+body[data-style="new"] .navrail>*{flex-shrink:0}
+body[data-style="new"][data-nav-pos="left"] .nav-progress,
+body[data-style="new"][data-nav-pos="right"] .nav-progress{
+  position:sticky;bottom:0;z-index:1;
+  /* під неї гортаються пункти меню — напівпрозорий surface їх просвічує */
+  background:var(--nu-surface-solid);
+}
 body[data-style="new"] .rail-ico{width:auto;height:auto;background:transparent;color:inherit;border-radius:0}
 body[data-style="new"] .rail-ico .material-icons{font-size:20px}
 body[data-style="new"] .rail-label{
@@ -258,6 +268,22 @@ body[data-style="new"].no-nav-labels .nav-progress-text{display:none}
 
 /* ===== Контент ===== */
 body[data-style="new"] main{max-width:1320px;padding-top:28px}
+
+/* На моніторах від 1400px колонка не повинна лишатися завширшки планшета:
+   1320px дає ~1040px контенту й по 300px мертвого поля з обох боків.
+   Рейка фіксована ліворуч, тому main забирає весь екран, а читабельну
+   ширину тримаємо окремою стелею для .view. */
+@media(min-width:1400px){
+  body[data-style="new"] main{max-width:none;margin:0;padding-left:calc(var(--nu-nav-w) + 28px);padding-right:28px}
+  body[data-style="new"][data-nav-pos="right"] main{padding-left:28px;padding-right:calc(var(--nu-nav-w) + 28px)}
+  body[data-style="new"][data-nav-pos="top"] main,
+  body[data-style="new"][data-nav-pos="bottom"] main{padding-left:28px}
+  body[data-style="new"] main>.view{max-width:1480px;margin-inline:auto}
+  /* герой тримаємо пропорційним: права панель росте разом із колонкою,
+     інакше на 1400px+ банер перетворюється на тонку смужку */
+  body[data-style="new"] .hero{grid-template-columns:minmax(0,1fr) minmax(0,520px);gap:44px;padding:48px 44px;min-height:390px}
+  body[data-style="new"] .hero-demo{width:100%}
+}
 body[data-style="new"] .section-head{display:block;margin:2px 0 22px}
 body[data-style="new"] .section-head h2{font-size:28px;font-weight:700;letter-spacing:-.7px;margin:0;color:var(--nu-text)}
 body[data-style="new"] .section-head .md-chip{margin-top:8px}

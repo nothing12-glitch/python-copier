@@ -1653,6 +1653,13 @@ body[data-style="new"] .view.active {
 body[data-style="new"] .view.active > .section-head,
 body[data-style="new"] .view.active > .card,
 body[data-style="new"] .view.active > .hero { margin: 0 auto; }
+/* авто-відступи у флекс-колонці сжимають блок до ширини вмісту, тому
+   «Твоя статистика» та інші панелі були вужчі за колонку. width:100%
+   повертає їм ширину розділу, а власні max-width (профіль, налаштування)
+   досі центрують вузькі панелі. */
+body[data-style="new"] .view.active > .section-head,
+body[data-style="new"] .view.active > .card,
+body[data-style="new"] .view.active > .hero { width: 100%; }
 body[data-style="new"] .card > .card-body,
 body[data-style="new"] .pad { padding: 16px; }
 body[data-style="new"] .cards { gap: 16px; margin-top: 0; }

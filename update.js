@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.4";
+  const VERSION = "26.12.5";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.5": {
+      uk: [
+        "На комп'ютері інтерфейс перестав сплющуватися: на широкому екрані сторінка тепер займає весь монітор, а не вузьку смужку посередині",
+        "Панелі «Твоя статистика» та інші блоки в середині сторінки більше не вужчі за саму сторінку — вони вирівняні з банером",
+        "У «Твоїй статистиці» зникли дві клітинки з написом «undefined» — тепер там справжні цифри: складені іспити та пробі змагань",
+        "Стовпчики графіка активності більше не розтягуються в окуляри на ширшому екрані",
+        "Пункти меню ліворуч перестали сплющуватися в тонкі смужки: якщо вікно низьке, список просто гортається, а «Прогрес курсу» лишається внизу"
+      ],
+      en: [
+        "On the computer the interface is no longer squashed: on a wide screen the page now uses the whole monitor instead of a narrow strip down the middle",
+        "The «Your statistics» panel and the other blocks are no longer narrower than the page itself — they line up with the banner",
+        "Two cells showing «undefined» are gone from «Your statistics» — they now hold real numbers: exams passed and contest runs",
+        "Activity chart bars no longer stretch into sunglasses on a wider screen",
+        "The menu on the left stops flattening into thin strips: on a short window the list simply scrolls, and «Course progress» stays at the bottom"
+      ],
+      tr: [
+        "Bilgisayarda arayüz artık ezilmiyor: geniş ekranda sayfa ortada dar bir şerit yerine monitörün tamamını kullanıyor",
+        "«İstatistiklerin» paneli ve diğer bloklar sayfanın kendisinden daha dar değil — afişle hizalanıyor",
+        "«İstatistiklerin» bölümündeki iki «undefined» kutusu kaldırıldı — artık gerçek sayılar var: geçilen sınavlar ve yarışma denemeleri",
+        "Aktivite grafiği çubukları geniş ekrarda artık gözlük camı gibi uzamıyor",
+        "Soldaki menü maddeleri artık ince şeritlere ezilmiyor: pencere alçaksa liste kaydırılır, «Ders ilerlemesi» ise altta kalır"
+      ]
+    },
     "26.12.4": {
       uk: [
         "На телефоні код у редакторі більше не накладається сам на себе: підсвітка й текст тепер одного розміру, рядки не роз'їжджаються",
