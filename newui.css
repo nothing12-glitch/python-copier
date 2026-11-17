@@ -101,6 +101,10 @@ body[data-style="new"] .appbar{
   box-shadow:none;
   gap:14px;
 }
+/* style.css дає шапці й рейці однаковий z-index:30, а рейка стоїть у DOM
+   пізніше — тому випадаючий список пошуку малювався під бічною панеллю і
+   перші 250px назв результатів зникали за нею. */
+@media(min-width:769px){body[data-style="new"] .appbar{z-index:50}}
 body[data-style="new"] .appbar-logo,
 body[data-style="new"] .appbar-title{display:none}
 body[data-style="new"] .icon-btn{color:var(--nu-dim)}
