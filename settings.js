@@ -4,7 +4,10 @@
 
   const DEFAULTS = {
     style: "new", theme: "auto", accent: "purple", bgGlow: true, cursorGlow: true, bgAnimate: true,
-    glass: false, reduceMotion: false, compact: false, fontSize: 14,
+    /* null = «людина ще не обирала»: тоді скло вмикається саме там, де
+       пристрій Apple (iPhone, iPad), і лишається вимкненим на решті.
+       Явні true/false поважаємо завжди. */
+    glass: null, reduceMotion: false, compact: false, fontSize: 14,
     perf: "auto",
     deviceForm: "auto",
     mobileOs: "auto",
@@ -52,6 +55,14 @@
         localStorage.setItem("app.navLayoutMigrated", "1");
         localStorage.setItem(KEY, JSON.stringify(s));
       }
+      // одноразова міграція: попереднє «скло» було просто напівпрозорим,
+      // тому знімємо позначку «людина обрала» — нехай новий розв'язник
+      // сам вирішить за системою
+      if (!localStorage.getItem("app.glassAutoMigrated")) {
+        s.glass = DEFAULTS.glass;
+        localStorage.setItem("app.glassAutoMigrated", "1");
+        localStorage.setItem(KEY, JSON.stringify(s));
+      }
     } catch {}
     return s;
   }
@@ -82,6 +93,15 @@
     return !!(darkMQ && darkMQ.matches);
   }
 
+  /* Чи показувати скло зараз: явний вибір людини має перевагу, а поки його
+     немає — вмикаємо там, де пристрій Apple. Device.os() знає iPhone, iPad і
+     тач-маки; на Android і Windows скло лишається вимкненим. */
+  function glassOn() {
+    if (state.glass !== null && state.glass !== undefined) return !!state.glass;
+    try { return !!(global.Device && global.Device.os && global.Device.os() === "ios"); }
+    catch { return false; }
+  }
+
   function apply() {
     const b = document.body;
     b.dataset.style = state.style;
@@ -90,7 +110,7 @@
     b.classList.toggle("bg-glow-on", !!state.bgGlow);
     b.classList.toggle("bg-animate-on", !!state.bgAnimate);
     b.classList.toggle("cursor-glow-on", !!state.cursorGlow);
-    b.classList.toggle("glass-on", !!state.glass);
+    b.classList.toggle("glass-on", glassOn());
     b.classList.toggle("reduce-motion", !!state.reduceMotion);
     b.classList.toggle("compact", !!state.compact);
     b.classList.toggle("no-linenumbers", !state.lineNumbers);
@@ -224,7 +244,10 @@
       const lab = document.createElement("label"); lab.className = "switch";
       const inp = document.createElement("input"); inp.type = "checkbox"; inp.dataset.set = item.id;
       const isToggleVal = item.on !== undefined;
-      inp.checked = isToggleVal ? state[item.id] === item.on : !!state[item.id];
+      /* перемикач скла показує справжній стан, а не «null = авто»,
+         інакше на iPhone було б увімкнено, а лампочка — ніби вимкнено */
+      inp.checked = isToggleVal ? state[item.id] === item.on
+        : item.id === "glass" ? glassOn() : !!state[item.id];
       inp.onchange = () => set(item.id, isToggleVal ? (inp.checked ? item.on : item.off) : inp.checked);
       const tr = document.createElement("span"); tr.className = "track";
       lab.append(inp, tr); wrap.appendChild(lab);
