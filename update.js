@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.7";
+  const VERSION = "26.12.8";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.8": {
+      uk: [
+        "«Рідке скло» тепер не лише на великих панелях: склом стало все — картки, кнопки, перемикачі, поля вводу, вікна, шторка «Ще» й список пошуку",
+        "На телефоні нижнє меню — плаваюча скляна капсула, як у нових iOS, а активний пункт сидить у м'якій пігулці. Коли щось прокручується під меню чи шапкою, скло там густішає, щоб текст не читався крізь панель",
+        "На iPhone та iPad скло вмикається саме — шукати його в налаштуваннях більше не треба. Хочеш інакше — увімкни чи вимкни вручну, вибір збережеться"
+      ],
+      en: [
+        "«Liquid Glass» is no longer only on the big panels: now everything is glass — cards, buttons, switches, input fields, windows, the «More» sheet and the search list",
+        "On the phone the bottom menu is a floating glass capsule like in recent iOS, and the active item sits in a soft pill. When content scrolls under the menu or the header, the glass thickens there so text does not read through the panel",
+        "On iPhone and iPad the glass now turns itself on — no need to look for it in settings. Want it differently? Switch it by hand and the choice is saved"
+      ],
+      tr: [
+        "«Liquid Glass» artık sadece büyük panellerde değil: şimdi her şey cam — kartlar, düğmeler, anahtarlar, giriş alanları, pencereler, «Diğer» perdesi ve arama listesi",
+        "Telefonda alt menü, yeni iOS'taki gibi yüzen cam bir kapsül; etkin öğe yumuşak bir pilin içinde. Menü veya başlığın altından içerik kayınca cam orada koyulaşır, metin panelin içinden okunmaz",
+        "iPhone ve iPad'de cam artık kendiliğinden açılıyor — ayarlarda aramaya gerek yok. Farklı istiyorsan elle aç ya da kapat, tercihin saklanır"
+      ]
+    },
     "26.12.7": {
       uk: [
         "«Рідке скло» тепер справжнє скло, як в iOS: прозорі панелі з холодним відтінком, відблиском уздовж верхнього краю й м'яким сяйвом під ними. Працює і в темній, і у світлій темі",
