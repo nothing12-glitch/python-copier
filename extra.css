@@ -1865,6 +1865,121 @@ body.glass-on .card { border:1px solid var(--glass-brd); box-shadow:0 10px 34px 
 body.glass-on .more-sheet-backdrop,
 body.glass-on .modal-backdrop { background:rgba(0,0,0,.42); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
 
+/* --- iOS-рівень скла лише для нового інтерфейсу ---
+   Плоска напівпрозорість виглядає як «заморожене молоко». iOS-скло —
+   це тіло з холодним відтінком, дзеркальний спалах уздовж верхнього
+   краю, м'яке внутрішнє світло й сяйво під панеллю. Справжнє
+   backdrop-filter лишаємо тільки великим поверхням: на кнопках їх
+   забагато, і телефон на Android починає гальмувати. */
+body.glass-on[data-style="new"]{
+  --lg-blur:blur(26px) saturate(1.55) brightness(1.08);
+  --lg-body:rgba(24,19,38,.52);
+  --lg-body-2:rgba(17,13,28,.68);
+  --lg-sheen:linear-gradient(148deg,rgba(255,255,255,.13),rgba(255,255,255,0) 36%);
+  --lg-edge:rgba(255,255,255,.20);
+  --lg-hi:rgba(255,255,255,.42);
+  --lg-lo:rgba(255,255,255,.08);
+  --lg-inner:rgba(255,255,255,.07);
+  --lg-glow:rgba(148,138,255,.30);
+  --lg-drop:rgba(0,0,0,.72);
+  --lg-radius:26px;
+  /* плаваючі поверхні (пошук, підказки, сповіщення) лежать прямо над
+     текстом і картинками. Їхній blur не бачить, що під ними (backdrop-root
+     — сама шапка), тому скло тут майже суцільне, але з тим самим блиском. */
+  --lg-body-3:rgba(17,13,28,.94);
+}
+body.glass-on[data-style="new"]:not(.dark){
+  --lg-body:rgba(255,255,255,.56);
+  --lg-body-2:rgba(255,255,255,.74);
+  --lg-sheen:linear-gradient(148deg,rgba(255,255,255,.55),rgba(255,255,255,0) 36%);
+  --lg-edge:rgba(255,255,255,.92);
+  --lg-hi:rgba(255,255,255,.96);
+  --lg-lo:rgba(120,110,160,.12);
+  --lg-inner:rgba(120,110,180,.07);
+  --lg-glow:rgba(110,100,190,.18);
+  --lg-drop:rgba(42,32,70,.30);
+  --lg-body-3:rgba(255,255,255,.96);
+}
+
+/* великі поверхні: картки, вікна, панелі */
+body.glass-on[data-style="new"] .card,
+body.glass-on[data-style="new"] .modal-card,
+body.glass-on[data-style="new"] .panel-card,
+body.glass-on[data-style="new"] .ob-card,
+body.glass-on[data-style="new"] .qm-panel,
+body.glass-on[data-style="new"] .more-sheet-panel,
+body.glass-on[data-style="new"] .grules-card,
+body.glass-on[data-style="new"] .focus-pick {
+  background:var(--lg-sheen),var(--lg-body);
+  -webkit-backdrop-filter:var(--lg-blur);
+  backdrop-filter:var(--lg-blur);
+  border:1px solid var(--lg-edge);
+  border-radius:var(--lg-radius);
+  box-shadow:
+    inset 0 1px 0 var(--lg-hi),
+    inset 0 -1px 0 var(--lg-lo),
+    inset 0 -30px 44px -36px var(--lg-inner),
+    0 22px 54px -26px var(--lg-drop),
+    0 0 46px -14px var(--lg-glow);
+}
+
+/* шапка й бічна панель: темніше тіло, бо під текстом не має прозорого сяяти */
+body.glass-on[data-style="new"] .appbar,
+body.glass-on[data-style="new"] .navrail {
+  background:var(--lg-body-2);
+  -webkit-backdrop-filter:var(--lg-blur);
+  backdrop-filter:var(--lg-blur);
+  border-color:var(--lg-edge);
+  box-shadow:inset 0 1px 0 var(--lg-hi);
+}
+
+/* дрібні плаваючі: пошук, підказки, сповіщення — свій радіус, той самий край */
+body.glass-on[data-style="new"] .search-pop,
+body.glass-on[data-style="new"] .autocomplete,
+body.glass-on[data-style="new"] .snackbar,
+body.glass-on[data-style="new"] #musicPanel {
+  background:var(--lg-sheen),var(--lg-body-3);
+  -webkit-backdrop-filter:var(--lg-blur);
+  backdrop-filter:var(--lg-blur);
+  border:1px solid var(--lg-edge);
+  box-shadow:
+    inset 0 1px 0 var(--lg-hi),
+    0 18px 40px -22px var(--lg-drop),
+    0 0 34px -14px var(--lg-glow);
+}
+
+/* картка прогресу прилипає до низу рейки: під неї гортаються пункти меню,
+   а без blur напівпрозорий фон перетворює їх на напівчитний текст під
+   «Прогрес курсу». Скло розмиває те, що їде під карткою. */
+body.glass-on[data-style="new"] .nav-progress {
+  background:var(--lg-body-3);
+  -webkit-backdrop-filter:var(--lg-blur);
+  backdrop-filter:var(--lg-blur);
+  border:1px solid var(--lg-edge);
+  border-bottom:0;
+  border-radius:20px 20px 0 0;
+  box-shadow:inset 0 1px 0 var(--lg-hi),0 -14px 26px -18px var(--lg-drop);
+}
+
+/* поле пошуку в шапці — скляна пігулка */
+body.glass-on[data-style="new"] .appbar-search {
+  background:var(--lg-sheen),rgba(255,255,255,.06);
+  border:1px solid var(--lg-edge);
+  box-shadow:inset 0 1px 0 var(--lg-hi),0 10px 24px -18px var(--lg-drop);
+}
+body.glass-on[data-style="new"]:not(.dark) .appbar-search {
+  background:var(--lg-sheen),rgba(255,255,255,.5);
+}
+
+/* без backdrop-filter скло було б надто прозорим для тексту */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  body.glass-on[data-style="new"]{--lg-body:rgba(24,19,38,.94);--lg-body-2:rgba(17,13,28,.96);--lg-body-3:rgba(17,13,28,.98)}
+  body.glass-on[data-style="new"]:not(.dark){--lg-body:rgba(255,255,255,.94);--lg-body-2:rgba(255,255,255,.96);--lg-body-3:rgba(255,255,255,.98)}
+}
+/* те саме, коли програма сама вимкнула blur на слабкому залізі (Device.probePerf) */
+body.low-power.glass-on[data-style="new"]{--lg-body:rgba(24,19,38,.94);--lg-body-2:rgba(17,13,28,.96);--lg-body-3:rgba(17,13,28,.98)}
+body.low-power.glass-on[data-style="new"]:not(.dark){--lg-body:rgba(255,255,255,.94);--lg-body-2:rgba(255,255,255,.96);--lg-body-3:rgba(255,255,255,.98)}
+
 /* ---------- 32) Новий фон: сяйво + aurora + точкова сітка ---------- */
 @keyframes nuAurora { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.15)} 100%{transform:rotate(360deg) scale(1)} }
 @keyframes nuBeam   { 0%{transform:translateX(-30%) skewX(-14deg);opacity:0} 40%{opacity:.5} 100%{transform:translateX(130%) skewX(-14deg);opacity:0} }
