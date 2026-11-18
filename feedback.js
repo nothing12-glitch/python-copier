@@ -1,6 +1,6 @@
-/* Відгуки: власна форма надсилає на свій сервер (без Google Forms),
-   власнику летить лист у Telegram, а під власним акаунтом тут же
-   available панель усіх відгуків. */
+/* Відгуки: користувач сам обирає канал — власна форма (свій сервер + лист у
+   Telegram власнику) або стара Google Форма у новій вкладці. Під власним
+   акаунтом тут же доступна панель усіх відгуків. */
 (function (global) {
   const $ = (s) => document.querySelector(s);
   const t = (k, v) => (global.I18n ? global.I18n.t(k, v) : k);
@@ -39,8 +39,17 @@
   const CATS = [["bug", "feedback.catBug"], ["idea", "feedback.catIdea"], ["thanks", "feedback.catThanks"]];
   const CAT_ICON = { bug: "bug_report", idea: "lightbulb", thanks: "near_me" };
 
+  const CHKEY = "app.feedbackChannel";
+  const FORM_URLS = {
+    uk: "https://docs.google.com/forms/d/e/1FAIpQLSdbOSp4mHrvAdMfoRsOPDHYna10YyuvFpXW0YBFUfxgBeoTrg/viewform",
+    en: "https://docs.google.com/forms/d/e/1FAIpQLSdbyODW2BLOuYZNElhh4yklqOLx3R1gcIlpgkisxMvDORy8hg/viewform",
+    tr: "https://docs.google.com/forms/d/e/1FAIpQLSegWFJOVYdvtnEKRCm-lm1Db-IWMb5udNcMt5voME_gFQT0gQ/viewform"
+  };
+  const formUrl = () => FORM_URLS[(global.I18n && global.I18n.lang) || "uk"] || FORM_URLS.en;
+
   let cat = localStorage.getItem(CATKEY);
   if (!CAT_ICON[cat]) cat = "bug";
+  let channel = localStorage.getItem(CHKEY) === "forms" ? "forms" : "app";
   let busy = false;
   let admin = null;      // null = ще не перевірено, false = не власник
   let panel = { rows: [], n: 0, unread: 0, offset: 0 };
@@ -91,6 +100,26 @@
 
   function buildForm(host) {
     host.innerHTML = "";
+
+    const chooser = el("div", "fb-choose");
+    const q = el("div", "fb-channel-q", t("feedback.channelQ"));
+    const chips = el("div", "fb-chips");
+    const chanBtns = {};
+    [["app", "feedback.channelApp", "bolt"], ["forms", "feedback.channelForms", "description"]].forEach(([code, key, ic]) => {
+      const b = el("button", "chip fb-chan");
+      b.type = "button";
+      b.append(el("span", "material-icons", ic), el("span", "fb-chan-label", t(key)));
+      b.onclick = () => {
+        channel = code;
+        localStorage.setItem(CHKEY, code);
+        paintChannel();
+      };
+      chanBtns[code] = b;
+      chips.appendChild(b);
+    });
+    chooser.append(q, chips);
+    host.appendChild(chooser);
+
     const form = el("form", "fb-form");
     form.noValidate = true;
 
@@ -175,9 +204,34 @@
     };
 
     host.appendChild(form);
-    ui = { area, count, updateCount, cats: catBtns, sendLabel: send.querySelector(".fb-send-label"), emailLab, err };
+
+    const formsCard = el("div", "fb-forms");
+    const formsHint = el("p", "fb-forms-hint", t("feedback.formsHint"));
+    const formsOpen = el("button", "btn contained fb-forms-open");
+    formsOpen.type = "button";
+    formsOpen.append(el("span", "material-icons", "open_in_new"), el("span", "fb-forms-open-label", t("feedback.formsOpen")));
+    formsOpen.onclick = () => window.open(formUrl(), "_blank", "noopener");
+    formsCard.append(formsHint, formsOpen);
+    host.appendChild(formsCard);
+
+    ui = {
+      q, chanBtns, formsHint, formsOpenLabel: formsOpen.querySelector(".fb-forms-open-label"),
+      area, count, updateCount, cats: catBtns, sendLabel: send.querySelector(".fb-send-label"), emailLab, err,
+      form, formsCard
+    };
     paintCats();
+    paintChannel();
     updateCount();
+  }
+
+  function paintChannel() {
+    if (!ui) return;
+    ui.chanBtns.app.classList.toggle("active", channel === "app");
+    ui.chanBtns.forms.classList.toggle("active", channel === "forms");
+    ui.chanBtns.app.setAttribute("aria-pressed", channel === "app" ? "true" : "false");
+    ui.chanBtns.forms.setAttribute("aria-pressed", channel === "forms" ? "true" : "false");
+    ui.form.hidden = channel !== "app";
+    ui.formsCard.hidden = channel !== "forms";
   }
 
   let ui = null;
@@ -297,10 +351,16 @@
         const b = ui.cats[code];
         if (b) b.querySelector(".fb-cat-label").textContent = t(key);
       });
+      ui.q.textContent = t("feedback.channelQ");
+      ui.chanBtns.app.querySelector(".fb-chan-label").textContent = t("feedback.channelApp");
+      ui.chanBtns.forms.querySelector(".fb-chan-label").textContent = t("feedback.channelForms");
+      ui.formsHint.textContent = t("feedback.formsHint");
+      ui.formsOpenLabel.textContent = t("feedback.formsOpen");
       ui.sendLabel.textContent = t("feedback.send");
       ui.emailLab.textContent = t("feedback.emailPh");
       ui.updateCount();
       paintCats();
+      paintChannel();
     }
     if (admin) renderAdmin();
   }

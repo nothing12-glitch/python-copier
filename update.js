@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.18";
+  const VERSION = "26.12.19";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.19": {
+      uk: [
+        "У «Відгуках» тепер питають, як тобі зручніше: «Через застосунок» — і текст миттєво летить розробнику в Telegram, або «Через Google Форму» — як раніше, у новій вкладці",
+        "Твій вибір запам'ятається: наступного разу розділ відкриється одразу в обраному режимі, а перемкнути можна одним дотиком",
+        "Google Форма відкривається мовою застосунку (українською, англійською чи турецькою), в решті мов — англомовною формою"
+      ],
+      en: [
+        "«Feedback» now asks which way you prefer: «Through the app» — and your text flies straight to the developer's Telegram, or «Through a Google Form» — the old way, in a new tab",
+        "Your choice is remembered: next time the section opens in the mode you picked, and switching is a single tap",
+        "The Google Form opens in the app's language (Ukrainian, English or Turkish); in other languages the English form is used"
+      ],
+      tr: [
+        "«Geri bildirim» artık sana soruyor: «Uygulama üzerinden» — metnin geliştiricinin Telegram'ına anında ulaşır, ya da «Google Formu üzerinden» — öncesi gibi, yeni sekmede",
+        "Seçimin hatırlanır: bölüm bir dahaki sefere seçtiğin modla açılır; değiştirmek tek dokunuş",
+        "Google Formu uygulama diliyle açılır (Ukraynaca, İngilizce veya Türkçe); diğer dillerde İngilizce form kullanılır"
+      ]
+    },
     "26.12.18": {
       uk: [
         "Розділ «Відгуки» працює без жодних Google-форм: обери категорію — Помилка, Пропозиція чи Подяка, напиши текст, і він миттєво полетить розробнику в Telegram; за бажанням лиш епошту — на випадок відповіді",
