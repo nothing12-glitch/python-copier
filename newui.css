@@ -204,13 +204,17 @@ body[data-style="new"] .rail-btn{
 }
 body[data-style="new"] .rail-btn:hover{background:var(--nu-surface);color:var(--nu-text);border-radius:12px}
 /* 19 пунктів по 40px не влазять у рейку заввишки ~670px (вікно 720px),
-   і флекс сплющував кнопки до 21px. Стискати заборонено — рейка вже має
-   overflow-y:auto, тому вона скроллиться, а картка прогресу лишається внизу. */
-body[data-style="new"] .navrail>*{flex-shrink:0}
+   і флекс сплющував кнопки до 21px. Стискати заборонено — скроллиться
+   окремий блок .nav-scroll, а картка прогресу лишається футером знизу.
+   Обгортка прозора для всіх режимів, крім нового вертикального меню на ПК
+   (там вона стає зоною прокрутки в блоці нижче). */
+.nav-scroll{display:contents}
+body[data-style="new"] .nav-scroll>*{flex-shrink:0}
 body[data-style="new"][data-nav-pos="left"] .nav-progress,
 body[data-style="new"][data-nav-pos="right"] .nav-progress{
-  position:sticky;bottom:0;z-index:1;
-  /* під неї гортаються пункти меню — напівпрозорий surface їх просвічує */
+  /* футер поза зоною прокрутки: пункти гортаються вгорі й ніколи не
+     заходять під картку */
+  flex:0 0 auto;z-index:1;
   background:var(--nu-surface-solid);
   /* прилипання до нижнього краю: нижні кути й рамка знизу лише шумлять */
   border-radius:16px 16px 0 0;border-bottom:0;
@@ -255,6 +259,26 @@ body[data-style="new"].no-nav-labels .nav-progress-text{display:none}
 
 /* положення панелі у новому стилі */
 @media(min-width:769px){
+  /* вертикальна рейка: гортається лише список, картка прогресу — футер
+     поза зоною прокрутки, тому жоден пункт не заходить під картку */
+  body[data-style="new"][data-nav-pos="left"] .navrail,
+  body[data-style="new"][data-nav-pos="right"] .navrail{overflow:hidden}
+  body[data-style="new"][data-nav-pos="left"] .nav-scroll,
+  body[data-style="new"][data-nav-pos="right"] .nav-scroll{
+    display:flex;flex-direction:column;gap:2px;align-items:stretch;
+    flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;
+    /* витягуємо смугу прокрутки до краю рейки, вміст тримаємо на відступі */
+    margin:0 -14px;padding:0 14px 4px;
+    scrollbar-width:thin;scrollbar-color:var(--nu-faint) transparent;
+  }
+  body[data-style="new"][data-nav-pos="left"] .nav-scroll::-webkit-scrollbar,
+  body[data-style="new"][data-nav-pos="right"] .nav-scroll::-webkit-scrollbar{width:8px}
+  body[data-style="new"][data-nav-pos="left"] .nav-scroll::-webkit-scrollbar-track,
+  body[data-style="new"][data-nav-pos="right"] .nav-scroll::-webkit-scrollbar-track{background:transparent}
+  body[data-style="new"][data-nav-pos="left"] .nav-scroll::-webkit-scrollbar-thumb,
+  body[data-style="new"][data-nav-pos="right"] .nav-scroll::-webkit-scrollbar-thumb{background:var(--nu-faint);border-radius:8px}
+  body[data-style="new"][data-nav-pos="left"] .navrail:hover .nav-scroll::-webkit-scrollbar-thumb,
+  body[data-style="new"][data-nav-pos="right"] .navrail:hover .nav-scroll::-webkit-scrollbar-thumb{background:var(--nu-dim)}
   body[data-style="new"] main{padding-left:var(--nu-nav-w)}
   body[data-style="new"][data-nav-pos="right"] .navrail{left:auto;right:0;border-right:0;border-left:1px solid var(--nu-line-soft)}
   body[data-style="new"][data-nav-pos="right"] main{padding-left:16px;padding-right:var(--nu-nav-w)}
