@@ -59,6 +59,9 @@
     if (name === "glossary" && global.Glossary) {
       try { global.Glossary.render(); } catch (e) { console.warn(e); }
     }
+    if (name === "review" && global.Review) {
+      try { global.Review.init(); } catch (e) { console.warn(e); }
+    }
     if (name === "exam" && global.Exam) {
       try { global.Exam.render(); } catch (e) { console.warn(e); }
     }
@@ -814,6 +817,7 @@
     try { if (global.Course) global.Course.init(); } catch (e) { console.warn("Course", e); }
     try { if (global.Projects) global.Projects.init(); } catch (e) { console.warn("Projects", e); }
     try { if (global.Glossary) global.Glossary.init(); } catch (e) { console.warn("Glossary", e); }
+    try { if (global.Review) global.Review.init(); } catch (e) { console.warn("Review", e); }
     try { if (global.Exam) global.Exam.init(); } catch (e) { console.warn("Exam", e); }
     try { if (global.TurtleLab) global.TurtleLab.init(); } catch (e) { console.warn("TurtleLab", e); }
     try { if (global.Constructor) global.Constructor.init(); } catch (e) { console.warn("Constructor", e); }
@@ -836,7 +840,7 @@
     // початковий маршрут
     try {
       const hash = (location.hash || "#home").slice(1);
-      route(["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "exam", "turtle", "constructor", "season", "games", "tools", "feedback", "profile", "achievements", "settings", "help"].includes(hash) ? hash : "home");
+      route(["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "review", "exam", "turtle", "constructor", "season", "games", "tools", "feedback", "profile", "achievements", "settings", "help"].includes(hash) ? hash : "home");
     } catch (e) { console.warn("initial route", e); }
 
     if (global.I18n && global.I18n.apply) { try { global.I18n.apply(); } catch (e) {} }

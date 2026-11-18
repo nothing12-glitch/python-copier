@@ -5,7 +5,7 @@
   const STATS_KEY = "app.achStats";
 
   const ALL_GAMES = ["ttt", "snake", "memory", "g2048", "rps", "react", "simon", "mines", "guess"];
-  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "exam", "turtle", "constructor", "season", "games", "tools", "feedback", "profile", "settings", "achievements"];
+  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "review", "exam", "turtle", "constructor", "season", "games", "tools", "feedback", "profile", "settings", "achievements"];
   const tasksTotal = () => (global.Tasks && global.Tasks.count) || 12;
   const courseTotal = () => (global.Course && global.Course.count) || 12;
   const glossTotal = () => (global.Glossary && global.Glossary.count) || 41;
@@ -55,6 +55,11 @@
 
   function seasonState() {
     try { return (global.Season && global.Season.stats()) || {}; }
+    catch (e) { return {}; }
+  }
+
+  function reviewState() {
+    try { return (global.Review && global.Review.stats()) || {}; }
     catch (e) { return {}; }
   }
 
@@ -131,7 +136,12 @@
 
     { id: "season_first",  ico: "military_tech",    cat: "season", tier: "bronze", check: () => (seasonState().xp || 0) >= 100,                     progress: () => Math.min((seasonState().xp || 0) / 100, 1) },
     { id: "season_league", ico: "military_tech", cat: "season", tier: "silver", check: () => (seasonState().promotions || 0) >= 1,            progress: () => Math.min((seasonState().promotions || 0) / 1, 1) },
-    { id: "season_streak", ico: "local_fire_department", cat: "season", tier: "gold", check: () => (seasonState().days || 0) >= 21,            progress: () => Math.min((seasonState().days || 0) / 21, 1) }
+    { id: "season_streak", ico: "local_fire_department", cat: "season", tier: "gold", check: () => (seasonState().days || 0) >= 21,            progress: () => Math.min((seasonState().days || 0) / 21, 1) },
+
+    { id: "review_first",  ico: "style",          cat: "review", tier: "bronze", check: () => (reviewState().done || 0) >= 1,                      progress: () => Math.min((reviewState().done || 0) / 1, 1) },
+    { id: "review_50",     ico: "layers",         cat: "review", tier: "silver", check: () => (reviewState().done || 0) >= 50,                     progress: () => Math.min((reviewState().done || 0) / 50, 1) },
+    { id: "review_master", ico: "school",         cat: "review", tier: "gold",   check: () => glossTotal() > 0 && (reviewState().mastered || 0) >= glossTotal(), progress: () => glossTotal() ? Math.min((reviewState().mastered || 0) / glossTotal(), 1) : 0 },
+    { id: "review_streak", ico: "local_fire_department", cat: "review", tier: "silver", check: () => (reviewState().streak || 0) >= 7,                progress: () => Math.min((reviewState().streak || 0) / 7, 1) }
   ];
 
   const TIER_COLORS = { bronze: "#CD7F32", silver: "#C0C0C0", gold: "#FFD700" };
@@ -156,6 +166,7 @@
     daily:    { uk: "Щоденний виклик", en: "Daily challenge", tr: "Günlük görev" },
     projects: { uk: "Проєкти",  en: "Projects",  tr: "Projeler" },
     glossary: { uk: "Словник",  en: "Glossary",  tr: "Sözlük" },
+    review:   { uk: "Повторення", en: "Review",  tr: "Tekrar" },
     exam:     { uk: "Іспит",    en: "Exam",      tr: "Sınav" },
     turtle:   { uk: "Черепашка", en: "Turtle",   tr: "Kaplumbağa" },
     maker:    { uk: "Конструктор", en: "Constructor", tr: "Kurucu" },
@@ -219,7 +230,11 @@
     maker_import:   { uk: "Гість із двору",      en: "Yard Guest",         tr: "Bahçe Misafiri" },
     season_first:   { uk: "Перші очки",          en: "First Points",       tr: "İlk Puanlar" },
     season_league:  { uk: "Виліт у лігу",        en: "League Promotion",   tr: "Lige Yükselme" },
-    season_streak:  { uk: "Три тижні в грі",     en: "Three Weeks In",     tr: "Üç Haftadır Oyunda" }
+    season_streak:  { uk: "Три тижні в грі",     en: "Three Weeks In",     tr: "Üç Haftadır Oyunda" },
+    review_first:   { uk: "Перше повторення",    en: "First Review",       tr: "İlk Tekrar" },
+    review_50:      { uk: "П'ятдесят карток",    en: "Fifty Cards",        tr: "Elli Kart" },
+    review_master:  { uk: "Пам'ять на роки",     en: "Long-Term Memory",   tr: "Uzun Süreli Hafıza" },
+    review_streak:  { uk: "Тиждень без пропусків", en: "A Week Unbroken",  tr: "Kesintisiz Bir Hafta" }
   };
 
   const ACH_DESC = {
@@ -279,7 +294,11 @@
     maker_import:   { uk: "Додай у двір задачу за кодом друга",    en: "Add a friend's task to the yard by invite code", tr: "Arkadaşının görevini davet koduyla bahçeye ekle" },
     season_first:   { uk: "Набери 100 XP у поточному сезоні",      en: "Earn 100 XP in the current season", tr: "Bu sezonda 100 XP topla" },
     season_league:  { uk: "Підвищся хоча б в одну лігу",           en: "Get promoted to at least one league", tr: "En az bir lige yüksel" },
-    season_streak:  { uk: "Май 21 день із сезонним бонусом",       en: "Reach 21 bonus days in a season", tr: "Bir sezonda 21 bonus güne ulaş" }
+    season_streak:  { uk: "Май 21 день із сезонним бонусом",       en: "Reach 21 bonus days in a season", tr: "Bir sezonda 21 bonus güne ulaş" },
+    review_first:   { uk: "Оціни свою першу картку в повторенні",  en: "Grade your first flashcard in Review", tr: "Tekrar'da ilk kartını puanla" },
+    review_50:      { uk: "Переглянь 50 карток за будь-який час",  en: "Go through 50 flashcards in total", tr: "Toplamda 50 kart tekrar et" },
+    review_master:  { uk: "Досягни найвищої скриньки для кожного терміна", en: "Max every glossary term's box", tr: "Sözlükteki her terimi en üst kutuya taşı" },
+    review_streak:  { uk: "Повторюй сім днів поспіль",             en: "Review seven days in a row", tr: "Yedi gün üst üste tekrar yap" }
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
@@ -415,7 +434,7 @@
       '</h3><span class="ach-counter">' + count + ' / ' + total + '</span>';
     container.appendChild(header);
 
-    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "course", "projects", "glossary", "exam", "turtle", "maker", "season", "profile", "explore", "streak", "daily"];
+    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "course", "projects", "glossary", "review", "exam", "turtle", "maker", "season", "profile", "explore", "streak", "daily"];
     cats.forEach((cat) => {
       const catAchs = ACHIEVEMENTS.filter((a) => a.cat === cat);
       if (catAchs.length === 0) return;
@@ -613,7 +632,7 @@
 
     /* Проєкти, словник й іспит тримають свій прогрес у власних ключах —
        тут достатньо лише перерахувати значки. */
-    ["projectdone", "glossaryread", "examdone"].forEach((ev) => {
+    ["projectdone", "glossaryread", "examdone", "reviewdone"].forEach((ev) => {
       document.addEventListener(ev, () => {
         checkAll();
         rerenderIfActive();

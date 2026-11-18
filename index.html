@@ -193,6 +193,10 @@
       <span class="rail-ico"><span class="material-icons">menu_book</span></span>
       <span class="rail-label" data-i18n="nav.glossary">Словник Python</span>
     </button>
+    <button class="rail-btn" data-route="review">
+      <span class="rail-ico"><span class="material-icons">style</span></span>
+      <span class="rail-label" data-i18n="nav.review">Повторення</span>
+    </button>
     <button class="rail-btn" data-route="exam">
       <span class="rail-ico"><span class="material-icons">workspace_premium</span></span>
       <span class="rail-label" data-i18n="nav.exam">Іспит</span>
@@ -616,6 +620,15 @@
       </div>
       <div id="glossList" class="gloss-list"></div>
       <p id="glossEmpty" class="gloss-empty muted hidden" data-i18n="gloss.empty">Нічого не знайдено.</p>
+    </section>
+
+    <!-- REVIEW (spaced repetition) -->
+    <section class="view" id="view-review">
+      <div class="section-head">
+        <h2 data-i18n="nav.review">Повторення</h2>
+        <button class="btn text" id="reviewReset" type="button"><span class="material-icons">restart_alt</span><span data-i18n="review.reset">Скинути</span></button>
+      </div>
+      <div id="reviewStage" class="review-stage"></div>
     </section>
 
     <!-- EXAM -->
@@ -1097,6 +1110,7 @@
   <script src="daily.js?v=26.12.13"></script>
   <script src="projects.js?v=26.12.13"></script>
   <script src="glossary.js?v=26.12.13"></script>
+  <script src="review.js?v=26.12.13"></script>
   <script src="exam.js?v=26.12.13"></script>
   <script src="turtle.js?v=26.12.13"></script>
   <script src="constructor.js?v=26.12.13"></script>
