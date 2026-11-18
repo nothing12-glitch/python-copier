@@ -27,8 +27,55 @@
   }
   global.App = { toast };
 
+  /* ---------- Розблокування розділів за досвідом (XP) ----------
+     Три «підсумкові» розділи ховаються за замком, доки гравець не накопичить
+     потрібний досвід (Season.xp). Числа нижче — підказка «що зробити», а не штраф. */
+  const GATES = { review: 30, debug: 60, mastery: 120 };
+
+  function xpNow() {
+    try { return (global.Season && global.Season.stats && global.Season.stats().xp) || 0; }
+    catch (e) { return 0; }
+  }
+
+  function gateHint(name) {
+    return t("nav.lockedXp", { n: GATES[name], cur: xpNow() });
+  }
+
+  function isGated(name) {
+    return Object.prototype.hasOwnProperty.call(GATES, name) && xpNow() < GATES[name];
+  }
+
+  function paintNavLocks() {
+    Object.keys(GATES).forEach((name) => {
+      const btn = document.querySelector('#mainnav .rail-btn[data-route="' + name + '"]');
+      if (!btn) return;
+      const locked = isGated(name);
+      btn.classList.toggle("is-locked", locked);
+      let badge = btn.querySelector(".rail-lock");
+      if (locked) {
+        if (!badge) {
+          badge = document.createElement("span");
+          badge.className = "rail-lock material-icons";
+          badge.textContent = "lock";
+          btn.appendChild(badge);
+        }
+        btn.title = gateHint(name);
+      } else {
+        if (badge) badge.remove();
+        const lab = btn.querySelector(".rail-label");
+        if (lab) btn.title = lab.textContent.trim();
+      }
+    });
+  }
+
   /* ---------- Маршрутизатор ---------- */
   function route(name) {
+    if (isGated(name)) {
+      toast(gateHint(name));
+      try { if (global.Audio2 && global.Audio2.SFX && global.Audio2.SFX.error) global.Audio2.SFX.error(); } catch (e) {}
+      if (!document.querySelector(".view.active")) route("home");
+      return;
+    }
     document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
     const view = $("#view-" + name);
     if (view) view.classList.add("active");
@@ -97,6 +144,7 @@
     }
     location.hash = name;
     try { updateNavProgress(); } catch (e) { console.warn("updateNavProgress", e); }
+    try { paintNavLocks(); } catch (e) { console.warn("paintNavLocks", e); }
     try { decorateCards(); } catch (e) { console.warn("decorateCards", e); }
     console.info("[app.js] route ->", name);
     document.dispatchEvent(new CustomEvent("routechange", { detail: name }));
@@ -868,7 +916,10 @@
 
     if (global.I18n && global.I18n.apply) { try { global.I18n.apply(); } catch (e) {} }
     try { syncNavTitles(); } catch (e) { console.warn("syncNavTitles", e); }
+    try { paintNavLocks(); } catch (e) { console.warn("paintNavLocks", e); }
     document.addEventListener("langchange", () => { try { syncNavTitles(); } catch (e) {} });
+    document.addEventListener("langchange", () => { try { paintNavLocks(); } catch (e) {} });
+    document.addEventListener("seasonchange", () => { try { paintNavLocks(); } catch (e) {} });
     try { mirrorNote(); } catch (e) { console.warn("mirrorNote", e); }
     try { githubReturn(); } catch (e) { console.warn("githubReturn", e); }
     document.addEventListener("langchange", () => { try { mirrorNote(); } catch (e) {} });

@@ -3651,3 +3651,10 @@ html[dir="rtl"] .gloss-search-ico{left:auto;right:12px}
 body.dark .field-eye:hover{background:rgba(230,224,233,.10)}
 body[data-style="new"] .field-eye{color:var(--nu-dim)}
 body[data-style="new"] .field-eye:hover{background:var(--nu-surface);color:var(--nu-text)}
+
+/* ---------- Замок на пунктах меню, розблоковуваних за досвідом ---------- */
+.rail-btn.is-locked{opacity:.6}
+.rail-btn.is-locked:hover{opacity:.78}
+.rail-lock{position:absolute;top:1px;inset-inline-end:5px;font-size:13px;line-height:1;pointer-events:none;opacity:.9}
+.rail-btn .rail-lock{font-size:13px}
+body[data-style="new"] .rail-lock{color:var(--nu-dim)}
