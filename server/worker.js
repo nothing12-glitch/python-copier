@@ -12,6 +12,11 @@ const CODE_RE = /^(?:PC1:)?[A-Za-z0-9+/_-]{8,4096}$/;
 const PREFIX = "PC1:";
 /* Цілий сейв прогресу: D1 бере одне значення до 2 МБ, тому чанкувати не треба. */
 const SAVE_MAX = 1500000;
+/* Відгуки: три категорії, текст до 2000 символів, email — необов'язковий. */
+const FB_CATS = { bug: "🐞", idea: "💡", thanks: "🙏" };
+const FB_MAX = 2000;
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,24}$/;
+const LANG_RE = /^[a-z][a-z-]{1,4}$/;
 
 /* ---------- допоміжне ---------- */
 
@@ -137,7 +142,13 @@ const MIGRATIONS = [
   `CREATE TABLE IF NOT EXISTS save (
      handle TEXT PRIMARY KEY, blob TEXT NOT NULL, at INTEGER NOT NULL, updated INTEGER NOT NULL
    )`,
-  "DROP TABLE IF EXISTS save_probe"
+  "DROP TABLE IF EXISTS save_probe",
+  `CREATE TABLE IF NOT EXISTS feedback (
+     id INTEGER PRIMARY KEY AUTOINCREMENT, cat TEXT NOT NULL, body TEXT NOT NULL,
+     email TEXT NOT NULL DEFAULT '', handle TEXT, lang TEXT NOT NULL DEFAULT 'uk',
+     created INTEGER NOT NULL, is_read INTEGER NOT NULL DEFAULT 0
+   )`,
+  "CREATE INDEX IF NOT EXISTS idx_feedback_new ON feedback (created DESC)"
 ];
 let schema = null;
 /* batch() у цьому рантаймі не приймає масив рядків, тому міграції йдуть
@@ -158,6 +169,36 @@ function cleanHandle(raw) {
 function cleanName(raw, fallback) {
   const n = String(raw || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 32);
   return n || fallback;
+}
+
+/* ---------- відгуки: адмін і Telegram ---------- */
+
+function isAdmin(env, who) {
+  if (!who || !env.ADMIN_HANDLES) return false;
+  return env.ADMIN_HANDLES.split(",").map((s) => s.trim()).includes(who);
+}
+
+/* Telegram-HTML: без екранування чужий текст зміг би підробити повідомлення
+   в чаті власника і зламати розмітку — тому & < > правимо завжди. */
+function escHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+async function tgSend(env, html) {
+  try {
+    await fetch(`https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        chat_id: env.TG_CHAT_ID,
+        text: html.slice(0, 4000),
+        parse_mode: "HTML",
+        disable_web_page_preview: true
+      })
+    });
+  } catch (e) {
+    console.error("telegram send failed:", e && e.message);
+  }
 }
 
 /* ---------- вхід через GitHub ---------- */
@@ -253,7 +294,7 @@ function allowsOrigin(env, origin) {
   return env.ALLOWED_ORIGIN.split(",").some((o) => o.trim() === origin);
 }
 
-async function handle2(request, env) {
+async function handle2(request, env, ctx) {
   const url = new URL(request.url);
   const ip = request.headers.get("cf-connecting-ip") || "unknown";
   const path = url.pathname.replace(/\/+$/, "") || "/";
@@ -497,13 +538,76 @@ async function handle2(request, env) {
     return withCors(json({ ok: true, title: row.title, name: row.name, body: JSON.parse(row.body) }));
   }
 
+  /* --- відгуки --- */
+
+  if (path === "/api/feedback" && request.method === "POST") {
+    if (tooMany(ip, 8, 3600)) return withCors(json({ ok: false, code: "slow" }, 429));
+    await ensureSchema(env);
+    const body = await readBody(request, 8192);
+    const cat = body ? String(body.cat || "") : "";
+    if (!FB_CATS[cat]) return withCors(json({ ok: false, code: "badcat" }, 400));
+    const text = String((body && body.text) || "")
+      .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim().slice(0, FB_MAX);
+    if (text.length < 5) return withCors(json({ ok: false, code: "short" }, 400));
+    const email = String((body && body.email) || "").trim().slice(0, 254);
+    if (email && !EMAIL_RE.test(email)) return withCors(json({ ok: false, code: "bademail" }, 400));
+    const langRaw = body ? String(body.lang || "") : "";
+    const lang = LANG_RE.test(langRaw) ? langRaw : "uk";
+    await env.DB.prepare(
+      "INSERT INTO feedback (cat, body, email, handle, lang, created) VALUES (?, ?, ?, ?, ?, ?)"
+    ).bind(cat, text, email, handle || null, lang, now()).run();
+    /* Лист власнику — ідеальним не буває: Telegram лежить чи токен протерто,
+       відгук уже в базі, і запит не маємо право на це ламати. */
+    if (env.TG_BOT_TOKEN && env.TG_CHAT_ID && ctx) {
+      const who = handle ? "@" + escHtml(handle) : "анонімно";
+      const when = new Date().toISOString().slice(0, 16).replace("T", " ");
+      const mailLine = email ? `✉️ ${escHtml(email)}\n` : "";
+      ctx.waitUntil(tgSend(env,
+        `🐍 <b>Відгук python-copier</b>\n${FB_CATS[cat]} ${escHtml(cat)} · ${who} · 🌐 ${escHtml(lang)} · 🕒 ${when} UTC\n${mailLine}${escHtml(text)}`));
+    }
+    return withCors(json({ ok: true, admin: isAdmin(env, handle) }));
+  }
+
+  if (path === "/api/feedback" && request.method === "GET") {
+    if (!isAdmin(env, handle)) return withCors(json({ ok: false, code: "auth" }, 401));
+    if (tooMany(ip, 120, 60)) return withCors(json({ ok: false, code: "slow" }, 429));
+    await ensureSchema(env);
+    const limit = Math.max(1, Math.min(100, Number(url.searchParams.get("limit")) || 50));
+    const offset = Math.max(0, Math.floor(Number(url.searchParams.get("offset")) || 0));
+    const where = url.searchParams.get("unread") === "1" ? " WHERE is_read = 0" : "";
+    const rows = await env.DB.prepare(
+      `SELECT id, cat, body, email, handle, lang, created, is_read FROM feedback${where}
+       ORDER BY created DESC LIMIT ${limit} OFFSET ${offset}`
+    ).all();
+    const stats = await env.DB.prepare(
+      "SELECT COUNT(*) AS n, COALESCE(SUM(is_read = 0), 0) AS unread FROM feedback"
+    ).first();
+    return withCors(json({
+      ok: true, rows: rows.results || [],
+      n: stats ? stats.n : 0, unread: stats ? stats.unread : 0
+    }, 200, { "cache-control": "no-store" }));
+  }
+
+  if (path === "/api/feedback/read" && request.method === "POST") {
+    if (!isAdmin(env, handle)) return withCors(json({ ok: false, code: "auth" }, 401));
+    const body = await readBody(request, 1024);
+    if (body && body.all) {
+      await env.DB.prepare("UPDATE feedback SET is_read = 1 WHERE is_read = 0").run();
+    } else {
+      const id = Math.floor(Number(body && body.id));
+      if (!Number.isInteger(id) || id <= 0) return withCors(json({ ok: false, code: "badid" }, 400));
+      await env.DB.prepare("UPDATE feedback SET is_read = 1 WHERE id = ?").bind(id).run();
+    }
+    return withCors(json({ ok: true }));
+  }
+
   return withCors(json({ ok: false, code: "notfound" }, 404));
 }
 
 export default {
   async fetch(request, env, ctx) {
     try {
-      return await handle2(request, env);
+      return await handle2(request, env, ctx);
     } catch (err) {
       if (err instanceof TooBig) return json({ ok: false, code: "big" }, 413);
       console.error("worker error:", err && err.message);

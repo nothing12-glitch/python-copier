@@ -1,191 +1,330 @@
-/* Відгуки: вбудовані Google-форми (окрема на кожну мову) + вибір мови */
+/* Відгуки: власна форма надсилає на свій сервер (без Google Forms),
+   власнику летить лист у Telegram, а під власним акаунтом тут же
+   available панель усіх відгуків. */
 (function (global) {
   const $ = (s) => document.querySelector(s);
+  const t = (k, v) => (global.I18n ? global.I18n.t(k, v) : k);
+  const say = (m) => { if (global.App && global.App.toast) global.App.toast(m); };
 
-  const FORM_URLS = {
-    uk: "https://docs.google.com/forms/d/e/1FAIpQLSdbOSp4mHrvAdMfoRsOPDHYna10YyuvFpXW0YBFUfxgBeoTrg/viewform",
-    en: "https://docs.google.com/forms/d/e/1FAIpQLSdbyODW2BLOuYZNElhh4yklqOLx3R1gcIlpgkisxMvDORy8hg/viewform",
-    tr: "https://docs.google.com/forms/d/e/1FAIpQLSegWFJOVYdvtnEKRCm-lm1Db-IWMb5udNcMt5voME_gFQT0gQ/viewform"
-  };
+  /* Транспорт свой: net.js зайнятий інчою фічею, а кук сесії все одно
+     доокупує браузер — credentials:"include" несе pc_session сам. */
+  const API = (global.Net && global.Net.API) || "https://python-copier-api.homakarsenij68.workers.dev";
+  async function raw(path, opts, ms) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), ms || 20000);
+    try {
+      const res = await fetch(API + path, Object.assign({ credentials: "include", signal: ctrl.signal }, opts || {}));
+      const text = await res.text();
+      return { net: true, status: res.status, text };
+    } catch (e) {
+      return { net: false, status: 0, text: "" };
+    } finally { clearTimeout(timer); }
+  }
+  async function call(path, opts, ms) {
+    const r = await raw(path, opts, ms);
+    if (!r.net) return { net: false };
+    let data = null;
+    try { data = JSON.parse(r.text); } catch (e) { data = null; }
+    return { net: true, status: r.status, data };
+  }
+  const post = (path, obj) => call(path, {
+    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(obj)
+  });
+  const get = (path) => call(path, undefined, 15000);
 
-  const KEY_LANG = "app.formLang";
-  let formLang = localStorage.getItem(KEY_LANG) || "";
-  let modal = null;
+  const FB_MAX = 2000;
+  const QKEY = "app.feedbackQueue";
+  const CATKEY = "app.feedbackCat";
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const CATS = [["bug", "feedback.catBug"], ["idea", "feedback.catIdea"], ["thanks", "feedback.catThanks"]];
+  const CAT_ICON = { bug: "bug_report", idea: "lightbulb", thanks: "near_me" };
 
-  const LANGS = [["uk", "Українська"], ["en", "English"], ["tr", "Türkçe"]];
+  let cat = localStorage.getItem(CATKEY);
+  if (!CAT_ICON[cat]) cat = "bug";
+  let busy = false;
+  let admin = null;      // null = ще не перевірено, false = не власник
+  let panel = { rows: [], n: 0, unread: 0, offset: 0 };
 
-  const FL = {
-    uk: {
-      nav: "Відгуки", title: "Відгуки",
-      intro: "Маєш ідею, знайшов(ла) помилку чи хочеш подякувати? Заповни форму — відповіді приходять автору сайту.",
-      privacy: "Відповіді зберігаються у Google-таблиці автора. Входити нікуди не треба — можна залишитися анонімом.",
-      open: "Відкрити в новій вкладці",
-      noFormTitle: "Форму ще не підключено",
-      noFormText: "Автор ще не додав посилання на Google-форму. Зазирни пізніше!",
-      langTitle: "Якою мовою показати форму?",
-      langHint: "Обери мову — форма відкриється нею. Вибір запам'ятається.",
-      langBtn: "Мова форми"
-    },
-    en: {
-      nav: "Feedback", title: "Feedback",
-      intro: "Have an idea, found a bug, or want to say thanks? Fill in the form — answers go straight to the site author.",
-      privacy: "Answers are stored in the author's Google Sheet. No login needed — you can stay anonymous.",
-      open: "Open in a new tab",
-      noFormTitle: "Form not connected yet",
-      noFormText: "The author has not added a Google Form link yet. Check back later!",
-      langTitle: "Which language for the form?",
-      langHint: "Pick a language — the form will open in it. We'll remember your choice.",
-      langBtn: "Form language"
-    },
-    tr: {
-      nav: "Geri Bildirim", title: "Geri Bildirim",
-      intro: "Bir fikrin mi var, bir hata mı buldun ya da teşekkür mü etmek istiyorsun? Formu doldur — yanıtlar doğrudan site sahibine gider.",
-      privacy: "Yanıtlar site sahibinin Google Tablosunda saklanır. Giriş gerekmez — anonim kalabilirsin.",
-      open: "Yeni sekmede aç",
-      noFormTitle: "Form henüz bağlanmadı",
-      noFormText: "Site sahibi henüz bir Google Form bağlantısı eklemedi. Daha sonra tekrar bak!",
-      langTitle: "Form hangi dilde görünsün?",
-      langHint: "Bir dil seç — form o dilde açılır. Seçimin hatırlanır.",
-      langBtn: "Form dili"
+  function qRead() {
+    try { return JSON.parse(localStorage.getItem(QKEY) || "[]"); } catch (e) { return []; }
+  }
+  function qWrite(list) {
+    try { localStorage.setItem(QKEY, JSON.stringify(list.slice(-20))); } catch (e) { /* сховище повне */ }
+  }
+  function qPush(item) {
+    const list = qRead().filter((x) => Date.now() - (x.at || 0) < 30 * 864e5);
+    list.push(item);
+    qWrite(list);
+  }
+
+  async function flush() {
+    const list = qRead();
+    if (!list.length) return;
+    const left = [];
+    for (const item of list) {
+      const r = await post("/api/feedback", item);
+      const ok = r.net && r.status < 500;
+      if (!ok) left.push(item);
+      if (!r.net) break;
     }
-  };
-  const S = () => (global.I18n ? global.I18n.langMap(FL) : FL.uk);
-
-  const available = () => LANGS.filter(([c]) => (FORM_URLS[c] || "").trim());
-  const availCodes = () => available().map(([c]) => c);
-
-  function currentCode() {
-    const codes = availCodes();
-    if (!codes.length) return "";
-    return codes.includes(formLang) ? formLang : codes[0];
+    qWrite(left);
+    if (!left.length) say(t("feedback.sent"));
   }
 
-  function formUrl(code, embed) {
-    const raw = (FORM_URLS[code] || "").trim();
-    if (!raw) return "";
-    const base = raw.split("?")[0];
-    return base + "?hl=" + code + (embed ? "&embedded=true" : "");
+  /* ---------- форма ---------- */
+
+  function el(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
   }
 
-  function closeModal() {
-    if (modal) { modal.remove(); modal = null; }
-  }
-
-  function langButtons(host, onPick) {
-    const row = document.createElement("div");
-    row.className = "ob-langs";
-    available().forEach(([code, name]) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.textContent = name;
-      b.onclick = () => onPick(code);
-      row.appendChild(b);
-    });
-    host.appendChild(row);
-  }
-
-  function pickLang(code) {
-    formLang = code;
-    localStorage.setItem(KEY_LANG, code);
-    closeModal();
-    render();
-  }
-
-  function askLang() {
-    if (modal || available().length < 2) return;
-    modal = document.createElement("div");
-    modal.className = "ob-backdrop";
-    const card = document.createElement("div");
-    card.className = "ob-card";
-    const ico = document.createElement("div");
-    ico.className = "ob-emoji";
-    ico.textContent = "\u{1F30D}";
-    const h = document.createElement("h3");
-    h.textContent = S().langTitle;
-    const p = document.createElement("p");
-    p.textContent = S().langHint;
-    card.append(ico, h, p);
-    langButtons(card, pickLang);
-    modal.appendChild(card);
-    modal.onclick = (e) => { if (e.target === modal) closeModal(); };
-    document.body.appendChild(modal);
-  }
-
-  function ensureLangBtn() {
-    let b = $("#feedbackLangBtn");
-    if (!b) {
-      const open = $("#feedbackOpen");
-      if (!open || !open.parentNode) return null;
-      b = document.createElement("button");
-      b.id = "feedbackLangBtn";
-      b.className = "icon-btn";
-      b.innerHTML = '<span class="material-icons">translate</span>';
-      open.parentNode.insertBefore(b, open);
-      b.onclick = () => askLang();
-    }
-    b.title = S().langBtn;
+  function iconBtn(icon, label, onClick) {
+    const b = el("button", "btn outlined fb-mini");
+    b.type = "button";
+    const i = el("span", "material-icons", icon);
+    b.append(i, el("span", null, label));
+    b.onclick = onClick;
     return b;
   }
 
-  function render() {
-    const s = S();
-    const nav = $("#feedbackNavLabel"); if (nav) nav.textContent = s.nav;
-    const title = $("#feedbackTitle"); if (title) title.textContent = s.title;
-    const barTitle = $("#feedbackBarTitle"); if (barTitle) barTitle.textContent = s.title;
-    const intro = $("#feedbackIntro"); if (intro) intro.textContent = s.intro;
-    const priv = $("#feedbackPrivacy"); if (priv) priv.textContent = s.privacy;
-    const open = $("#feedbackOpen");
-    if (open) open.querySelectorAll("span")[1].textContent = s.open;
-    const langBtn = ensureLangBtn();
-    const host = $("#feedbackBody");
-    if (!host) return;
+  function buildForm(host) {
     host.innerHTML = "";
-    const avail = available();
-    const needPick = avail.length > 1 && !availCodes().includes(formLang);
-    if (!avail.length || needPick) {
-      if (open) open.classList.add("hidden");
-      if (langBtn) langBtn.classList.add("hidden");
-      const d = document.createElement("div");
-      d.className = "feedback-empty";
-      const i = document.createElement("span");
-      i.className = "material-icons";
-      i.textContent = avail.length ? "translate" : "hourglass_bottom";
-      const h = document.createElement("h3");
-      h.textContent = avail.length ? s.langTitle : s.noFormTitle;
-      const p = document.createElement("p");
-      p.textContent = avail.length ? s.langHint : s.noFormText;
-      d.append(i, h, p);
-      if (avail.length) langButtons(d, pickLang);
-      host.appendChild(d);
+    const form = el("form", "fb-form");
+    form.noValidate = true;
+
+    const cats = el("div", "fb-cats");
+    cats.setAttribute("role", "group");
+    const catBtns = {};
+    CATS.forEach(([code, key]) => {
+      const b = el("button", "chip fb-cat");
+      b.type = "button";
+      b.append(el("span", "material-icons", CAT_ICON[code]), el("span", "fb-cat-label", t(key)));
+      b.dataset.cat = code;
+      b.onclick = () => { cat = code; localStorage.setItem(CATKEY, code); paintCats(); };
+      catBtns[code] = b;
+      cats.appendChild(b);
+    });
+    form.appendChild(cats);
+
+    const areaWrap = el("div", "fb-areawrap");
+    const area = el("textarea", "fb-area");
+    area.maxLength = FB_MAX;
+    area.rows = 6;
+    const count = el("div", "fb-count");
+    const updateCount = () => { count.textContent = t("feedback.chars", { n: FB_MAX - area.value.length }); };
+    area.oninput = updateCount;
+    areaWrap.append(area, count);
+    form.appendChild(areaWrap);
+
+    const emailField = el("div", "field");
+    const email = el("input", "");
+    email.type = "email";
+    email.id = "fbEmail";
+    email.placeholder = " ";
+    email.maxLength = 254;
+    const emailLab = el("label", null, t("feedback.emailPh"));
+    emailLab.htmlFor = "fbEmail";
+    emailField.append(email, emailLab);
+    form.appendChild(emailField);
+
+    const err = el("div", "fb-err");
+    err.setAttribute("aria-live", "polite");
+    form.appendChild(err);
+
+    const send = el("button", "btn contained fb-send");
+    send.type = "submit";
+    send.append(el("span", "material-icons", "send"), el("span", "fb-send-label", t("feedback.send")));
+    form.appendChild(send);
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      if (busy) return;
+      const text = area.value.trim();
+      const mail = email.value.trim();
+      err.textContent = "";
+      if (text.length < 5) { err.textContent = t("feedback.short"); area.focus(); return; }
+      if (mail && !EMAIL_RE.test(mail)) { err.textContent = t("feedback.badEmail"); email.focus(); return; }
+      busy = true;
+      send.disabled = true;
+      const item = { cat, text: text.slice(0, FB_MAX), email: mail, lang: (global.I18n && global.I18n.lang) || "uk", at: Date.now() };
+      const r = await post("/api/feedback", item);
+      busy = false;
+      send.disabled = false;
+      let clear = false;
+      if (!r.net || r.status >= 500) {
+        qPush(item);
+        say(t("feedback.queued"));
+        clear = true;
+        if (r.net && admin === null) probeAdmin();
+      } else if (r.data && r.data.ok) {
+        say(t("feedback.sent"));
+        if (r.data.admin && !admin) { admin = true; probeAdmin(); }
+        clear = true;
+      } else {
+        const code = (r.data && r.data.code) || "";
+        err.textContent = code === "slow" ? t("feedback.slow")
+          : code === "bademail" ? t("feedback.badEmail") : t("feedback.failed");
+      }
+      if (clear) {
+        area.value = "";
+        email.value = "";
+        updateCount();
+      }
+    };
+
+    host.appendChild(form);
+    ui = { area, count, updateCount, cats: catBtns, sendLabel: send.querySelector(".fb-send-label"), emailLab, err };
+    paintCats();
+    updateCount();
+  }
+
+  let ui = null;
+
+  function paintCats() {
+    if (!ui) return;
+    CATS.forEach(([code]) => {
+      const b = ui.cats[code];
+      b.classList.toggle("active", code === cat);
+      b.setAttribute("aria-pressed", code === cat ? "true" : "false");
+    });
+  }
+
+  /* ---------- панель автора ---------- */
+
+  function fmtDate(sec) {
+    try { return new Date(sec * 1000).toLocaleString(); } catch (e) { return String(sec); }
+  }
+
+  function markRead(id, all) {
+    post("/api/feedback/read", all ? { all: true } : { id }).then((r) => {
+      if (r.net && r.data && r.data.ok) {
+        panel.rows.forEach((row) => { if (all || row.id === id) row.is_read = 1; });
+        panel.unread = all ? 0 : panel.rows.filter((row) => !row.is_read).length;
+        renderAdmin();
+      }
+    });
+  }
+
+  async function loadMore() {
+    const r = await get("/api/feedback?limit=50&offset=" + panel.offset);
+    if (r.net && r.data && r.data.ok) {
+      panel.rows = panel.rows.concat(r.data.rows || []);
+      panel.offset += (r.data.rows || []).length;
+      renderAdmin();
+    }
+  }
+
+  async function probeAdmin() {
+    const r = await get("/api/feedback?limit=50");
+    const host = $("#feedbackAdmin");
+    if (!host) return;
+    if (r.net && r.status === 200 && r.data && r.data.ok) {
+      admin = true;
+      panel = { rows: r.data.rows || [], n: r.data.n || 0, unread: r.data.unread || 0, offset: (r.data.rows || []).length };
+      renderAdmin();
+    } else {
+      if (r.net && r.status === 401) admin = false;
+      panel = { rows: [], n: 0, unread: 0, offset: 0 };
+      host.innerHTML = "";
+    }
+  }
+
+  function renderAdmin() {
+    const host = $("#feedbackAdmin");
+    if (!host || !admin) return;
+    host.innerHTML = "";
+    const card = el("div", "card elev1 feedback-card fb-admin");
+
+    const head = el("div", "fb-admin-head");
+    const title = el("h3", "fb-admin-title", t("feedback.adminTitle"));
+    if (panel.unread > 0) title.appendChild(el("span", "fb-badge", String(panel.unread)));
+    const tools = el("div", "fb-admin-tools");
+    tools.append(
+      iconBtn("refresh", t("feedback.adminRefresh"), () => probeAdmin()),
+      iconBtn("done_all", t("feedback.adminMarkAll"), () => markRead(0, true))
+    );
+    head.append(title, tools);
+    card.appendChild(head);
+
+    if (!panel.rows.length) {
+      card.appendChild(el("div", "feedback-empty", t("feedback.adminEmpty")));
+      host.appendChild(card);
       return;
     }
-    const code = currentCode();
-    if (open) {
-      open.classList.remove("hidden");
-      open.onclick = () => window.open(formUrl(code, false), "_blank", "noopener");
+
+    panel.rows.forEach((row) => {
+      const r = el("div", "fb-row" + (row.is_read ? "" : " unread"));
+      const meta = el("div", "fb-meta");
+      const who = row.handle ? "@" + row.handle : t("feedback.anon");
+      const label = (CATS.find(([code]) => code === row.cat) || [, row.cat])[1];
+      meta.append(
+        el("span", "material-icons fb-cat-ico", CAT_ICON[row.cat] || "chat"),
+        el("span", "fb-cat-name", t(label)),
+        el("span", null, who),
+        el("span", null, row.lang || "uk"),
+        el("span", null, fmtDate(row.created))
+      );
+      if (row.email) meta.append(el("span", "material-icons fb-cat-ico", "mail"), el("span", null, row.email));
+      r.appendChild(meta);
+      r.appendChild(el("p", "fb-body", row.body));
+      if (!row.is_read) {
+        r.appendChild(iconBtn("check", t("feedback.markRead"), () => markRead(row.id, false)));
+      }
+      card.appendChild(r);
+    });
+
+    if (panel.rows.length < panel.n) {
+      card.appendChild(iconBtn("expand_more", t("feedback.adminMore"), () => loadMore()));
     }
-    if (langBtn) langBtn.classList.toggle("hidden", avail.length < 2);
-    const f = document.createElement("iframe");
-    f.src = formUrl(code, true);
-    f.className = "feedback-frame";
-    f.title = "Google Forms";
-    f.loading = "lazy";
-    host.appendChild(f);
+    host.appendChild(card);
+  }
+
+  /* ---------- загальний рендер ---------- */
+
+  function render() {
+    const nav = $("#feedbackNavLabel"); if (nav) nav.textContent = t("feedback.title");
+    const title = $("#feedbackTitle"); if (title) title.textContent = t("feedback.title");
+    const barTitle = $("#feedbackBarTitle"); if (barTitle) barTitle.textContent = t("feedback.title");
+    const intro = $("#feedbackIntro"); if (intro) intro.textContent = t("feedback.intro");
+    const priv = $("#feedbackPrivacy"); if (priv) priv.textContent = t("feedback.privacy");
+    const host = $("#feedbackBody");
+    if (!host) return;
+    if (!ui || !host.childElementCount) { buildForm(host); }
+    else {
+      CATS.forEach(([code, key]) => {
+        const b = ui.cats[code];
+        if (b) b.querySelector(".fb-cat-label").textContent = t(key);
+      });
+      ui.sendLabel.textContent = t("feedback.send");
+      ui.emailLab.textContent = t("feedback.emailPh");
+      ui.updateCount();
+      paintCats();
+    }
+    if (admin) renderAdmin();
+  }
+
+  function onEnter() {
+    if (qRead().length) flush();
+    if (admin === null || admin === true) probeAdmin();
   }
 
   function init() {
     if (!$("#feedbackBody")) return;
     render();
     document.addEventListener("langchange", render);
+    window.addEventListener("online", () => flush());
     document.addEventListener("click", (e) => {
-      const b = e.target.closest('[data-route="feedback"], [data-goto="feedback"]');
-      if (b && available().length > 1 && !availCodes().includes(formLang)) setTimeout(askLang, 60);
+      if (e.target.closest('[data-route="feedback"], [data-goto="feedback"]')) setTimeout(onEnter, 60);
     });
+    window.addEventListener("hashchange", () => {
+      if (location.hash === "#feedback") onEnter();
+    });
+    if (location.hash === "#feedback") onEnter();
+    setInterval(() => { if (qRead().length) flush(); }, 60000);
   }
 
   document.addEventListener("DOMContentLoaded", init);
-  global.Feedback = {
-    init,
-    setFormUrl: (u, lang) => { FORM_URLS[lang || "uk"] = (u || "").trim(); render(); }
-  };
+  global.Feedback = { init, render };
 })(window);

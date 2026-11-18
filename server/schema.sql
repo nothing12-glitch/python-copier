@@ -40,3 +40,17 @@ CREATE TABLE IF NOT EXISTS save (
   at      INTEGER NOT NULL,                    -- мітка часу сейва на пристрої, мс
   updated INTEGER NOT NULL                     -- коли поклали в хмару, с
 );
+
+-- Власні відгуки користувачів: замість Google Forms.
+-- Створюється самим воркером (MIGRATIONS у worker.js), тут — для історії.
+CREATE TABLE IF NOT EXISTS feedback (
+  id      INTEGER PRIMARY KEY AUTOINCREMENT,
+  cat     TEXT NOT NULL,                       -- bug | idea | thanks
+  body    TEXT NOT NULL,                       -- текст відгуку, до 2000 символів
+  email   TEXT NOT NULL DEFAULT '',            -- необов'язковий зворотний контакт
+  handle  TEXT,                                -- NULL = анонімно, інакше users.handle
+  lang    TEXT NOT NULL DEFAULT 'uk',
+  created INTEGER NOT NULL,                    -- секунди epoch
+  is_read INTEGER NOT NULL DEFAULT 0           -- чи бачив це вже власник
+);
+CREATE INDEX IF NOT EXISTS idx_feedback_new ON feedback (created DESC);

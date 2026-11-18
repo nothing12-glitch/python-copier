@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.17";
+  const VERSION = "26.12.18";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.18": {
+      uk: [
+        "Розділ «Відгуки» працює без жодних Google-форм: обери категорію — Помилка, Пропозиція чи Подяка, напиши текст, і він миттєво полетить розробнику в Telegram; за бажанням лиш епошту — на випадок відповіді",
+        "Немає інтернету? Відгук не загубиться: він почекає в черзі на твоєму пристрої й надішлеться сам, щойно зв'язок повернеться",
+        "Усі відгуки збираються в базу та в панель автора просто в застосунку — звичайним користувачам вона невидима, а вхід для надсилання відгуку взагалі не потрібен"
+      ],
+      en: [
+        "The «Feedback» section works without any Google Forms: pick a category — Bug, Idea or Thanks — write your text, and it flies straight to the developer's Telegram; leave an email if you'd like an answer",
+        "No internet? The feedback won't get lost: it waits in a queue on your device and sends itself the moment the connection is back",
+        "All feedback lands in a database and in the author's panel right inside the app — regular users never see it, and sending feedback needs no login at all"
+      ],
+      tr: [
+        "«Geri bildirim» bölümü artık Google Form'lar olmadan çalışıyor: bir kategori seç — Hata, Öneri ya da Teşekkür — metnini yaz, geliştiricinin Telegram'ına anında ulaşsın; yanıt istersen bir e-posta bırak",
+        "İnternet yok mu? Geri bildirim kaybolmaz: cihazındaki kuyrukta bekler ve bağlantı döner dönmez kendiliğinden gönderilir",
+        "Tüm geri bildirimler veritabanında ve uygulamanın içindeki yazar panelinde toplanır — normal kullanıcılar paneli hiç görmez, geri bildirim göndermek için giriş de gerekmez"
+      ]
+    },
     "26.12.17": {
       uk: [
         "Картка «Прогрес курсу» внизу меню більше не накладається на пункти: список гортається окремо, а картка спокійно стоїть знизу — жоден пункт не ховається за нею і не визирає з-під краю",

@@ -10,5 +10,9 @@ database_id = "028e4f45-5c1d-466c-ab77-3975b08864d3"
 [vars]
 # Дозволені джерела запитів через кому: основний GitHub Pages, резервний Cloudflare Pages і локальна перевірка в браузері.
 ALLOWED_ORIGIN = "https://nothing12-glitch.github.io,https://python-copier.pages.dev,http://127.0.0.1:8787,http://localhost:8787"
+# Ніки власників панелі відгуків через кому. Порожньо = панель невидима для всіх.
+ADMIN_HANDLES = "gh-nothing12-glitch"
+# Числовий chat.id власника для листів про відгуки.
+TG_CHAT_ID = "8666312308"
 
-# SESSION_SECRET не тут: npx wrangler secret put SESSION_SECRET
+# SESSION_SECRET і TG_BOT_TOKEN не тут: npx wrangler secret put SESSION_SECRET / TG_BOT_TOKEN
