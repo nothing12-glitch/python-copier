@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.14";
+  const VERSION = "26.12.15";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.15": {
+      uk: [
+        "У полях пароля на вході й реєстрації з'явилося «око»: натисни — побачиш, що саме набрав, і впевнишся, що автокорект чи Caps Lock не зіпсували пароль",
+        "Око працює однаково гарно в обох темах і в мовах справа наліво — там воно ввічливо перестрибує на лівий бік поля",
+        "Підказки «Показати пароль» і «Приховати пароль» перекладені всіма 24 мовами"
+      ],
+      en: [
+        "The password fields on sign-in and register grew an «eye»: tap it to see exactly what you typed, so autocorrect or Caps Lock can't quietly ruin your password",
+        "The eye sits neatly in both themes and in right-to-left languages too — there it politely jumps to the left side of the field",
+        "The «Show password» and «Hide password» hints are translated into all 24 languages"
+      ],
+      tr: [
+        "Giriş ve kayıt ekranlarındaki parola alanlarına bir «göz» geldi: bas ve tam olarak ne yazdığını gör — otomatik düzeltme ya da Caps Lock parolanı sessizce bozamasın",
+        "Göz her iki temada ve sağdan sola yazılan dillerde de yerinde duruyor — orada alanın sol tarafına nazikçe atlıyor",
+        "«Parolayı göster» ve «Parolayı gizle» ipuçları 24 dilin hepsine çevrildi"
+      ]
+    },
     "26.12.14": {
       uk: [
         "Нова картотека «Повторення»: картки зі словника повертаються рівно тоді, коли пора їх пригадати (система Лайтнера), з «стриком» днів поспіль і відсотком справжньої опанованості",
