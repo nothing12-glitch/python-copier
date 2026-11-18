@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.19";
+  const VERSION = "26.12.20";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.20": {
+      uk: [
+        "Кожен відгук у Telegram тепер із кнопками: ⭐1–5 — оцінка цінності, і «Прочитано» — одним дотиком",
+        "Оцінка зберігається на сервері й показується зірочками в панелі автора; повторно поставити зірку не вийде — дані залишаються чесними",
+        "Натиск кнопки підтверджується сповіщенням прямо у Telegram — одразу видно, що все зарахувалось"
+      ],
+      en: [
+        "Every feedback ping in Telegram now comes with buttons: ⭐1–5 to rate its value, and «Read» in one tap",
+        "The rating is saved on the server and shown as stars in the author's panel; you can't rate twice — the numbers stay honest",
+        "Each button press confirms right in Telegram, so you see instantly that it counted"
+      ],
+      tr: [
+        "Telegram'daki her geri bildirim artık düğmeli: değerlendirmek için ⭐1–5 ve tek dokunuşta «Okundu»",
+        "Oy sunucuya kaydedilir ve yazar panelinde yıldız olarak görünür; ikinci kez oy verilemez — sayılar dürüst kalır",
+        "Her düğme dokunuşu Telegram'da anında onaylanır, böylece sayıldığını hemen görürsün"
+      ]
+    },
     "26.12.19": {
       uk: [
         "У «Відгуках» тепер питають, як тобі зручніше: «Через застосунок» — і текст миттєво летить розробнику в Telegram, або «Через Google Форму» — як раніше, у новій вкладці",

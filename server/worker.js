@@ -148,14 +148,19 @@ const MIGRATIONS = [
      email TEXT NOT NULL DEFAULT '', handle TEXT, lang TEXT NOT NULL DEFAULT 'uk',
      created INTEGER NOT NULL, is_read INTEGER NOT NULL DEFAULT 0
    )`,
-  "CREATE INDEX IF NOT EXISTS idx_feedback_new ON feedback (created DESC)"
+  "CREATE INDEX IF NOT EXISTS idx_feedback_new ON feedback (created DESC)",
+  "ALTER TABLE feedback ADD COLUMN rating INTEGER"
 ];
 let schema = null;
 /* batch() у цьому рантаймі не приймає масив рядків, тому міграції йдуть
-   по одній через prepare().run() — той самий шлях, що й у решти воркера. */
+   по одній через prepare().run() — той самий шлях, що й у решти воркера.
+   ALTER на вже наявну колонку — не помилка, а очікуваний повтор. */
 function ensureSchema(env) {
   if (!schema) {
-    schema = MIGRATIONS.reduce((p, sql) => p.then(() => env.DB.prepare(sql).run()), Promise.resolve())
+    schema = MIGRATIONS.reduce((p, sql) => p.then(async () => {
+      try { await env.DB.prepare(sql).run(); }
+      catch (e) { if (!/duplicate column/i.test(String((e && e.message) || ""))) throw e; }
+    }), Promise.resolve())
       .catch((err) => { schema = null; throw err; });
   }
   return schema;
@@ -184,21 +189,41 @@ function escHtml(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-async function tgSend(env, html) {
+async function tgCall(env, method, payload) {
   try {
-    await fetch(`https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage`, {
+    const res = await fetch(`https://api.telegram.org/bot${env.TG_BOT_TOKEN}/${method}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        chat_id: env.TG_CHAT_ID,
-        text: html.slice(0, 4000),
-        parse_mode: "HTML",
-        disable_web_page_preview: true
-      })
+      body: JSON.stringify(payload)
     });
+    return await res.json();
   } catch (e) {
-    console.error("telegram send failed:", e && e.message);
+    console.error(`telegram ${method} failed:`, e && e.message);
+    return { ok: false };
   }
+}
+
+/* Кнопки під листом: п'ять зірочок оцінки + «прочитано». Після вибору
+   рядок зірочок замінюється на підсумок — повторна оцінка неможлива. */
+function fbKeyboard(id, rating, read) {
+  const rows = [];
+  if (!rating) {
+    rows.push([1, 2, 3, 4, 5].map((n) => ({ text: "⭐" + n, callback_data: `r:${id}:${n}` })));
+  } else {
+    rows.push([{ text: "Оцінка: " + "⭐".repeat(rating), callback_data: "noop" }]);
+  }
+  rows.push([{ text: read ? "✅ Прочитано" : "✅ Прочитано", callback_data: read ? "noop" : `rd:${id}` }]);
+  return { inline_keyboard: rows };
+}
+
+async function tgSend(env, html, markup) {
+  return tgCall(env, "sendMessage", {
+    chat_id: env.TG_CHAT_ID,
+    text: html.slice(0, 4000),
+    parse_mode: "HTML",
+    disable_web_page_preview: true,
+    reply_markup: markup
+  });
 }
 
 /* ---------- вхід через GitHub ---------- */
@@ -553,9 +578,10 @@ async function handle2(request, env, ctx) {
     if (email && !EMAIL_RE.test(email)) return withCors(json({ ok: false, code: "bademail" }, 400));
     const langRaw = body ? String(body.lang || "") : "";
     const lang = LANG_RE.test(langRaw) ? langRaw : "uk";
-    await env.DB.prepare(
+    const ins = await env.DB.prepare(
       "INSERT INTO feedback (cat, body, email, handle, lang, created) VALUES (?, ?, ?, ?, ?, ?)"
     ).bind(cat, text, email, handle || null, lang, now()).run();
+    const fid = (ins && ins.meta && ins.meta.last_row_id) || 0;
     /* Лист власнику — ідеальним не буває: Telegram лежить чи токен протерто,
        відгук уже в базі, і запит не маємо право на це ламати. */
     if (env.TG_BOT_TOKEN && env.TG_CHAT_ID && ctx) {
@@ -563,7 +589,8 @@ async function handle2(request, env, ctx) {
       const when = new Date().toISOString().slice(0, 16).replace("T", " ");
       const mailLine = email ? `✉️ ${escHtml(email)}\n` : "";
       ctx.waitUntil(tgSend(env,
-        `🐍 <b>Відгук python-copier</b>\n${FB_CATS[cat]} ${escHtml(cat)} · ${who} · 🌐 ${escHtml(lang)} · 🕒 ${when} UTC\n${mailLine}${escHtml(text)}`));
+        `🐍 <b>Відгук python-copier</b>\n${FB_CATS[cat]} ${escHtml(cat)} · ${who} · 🌐 ${escHtml(lang)} · 🕒 ${when} UTC\n${mailLine}${escHtml(text)}`,
+        fbKeyboard(fid, 0, 0)));
     }
     return withCors(json({ ok: true, admin: isAdmin(env, handle) }));
   }
@@ -576,7 +603,7 @@ async function handle2(request, env, ctx) {
     const offset = Math.max(0, Math.floor(Number(url.searchParams.get("offset")) || 0));
     const where = url.searchParams.get("unread") === "1" ? " WHERE is_read = 0" : "";
     const rows = await env.DB.prepare(
-      `SELECT id, cat, body, email, handle, lang, created, is_read FROM feedback${where}
+      `SELECT id, cat, body, email, handle, lang, created, is_read, rating FROM feedback${where}
        ORDER BY created DESC LIMIT ${limit} OFFSET ${offset}`
     ).all();
     const stats = await env.DB.prepare(
@@ -599,6 +626,48 @@ async function handle2(request, env, ctx) {
       await env.DB.prepare("UPDATE feedback SET is_read = 1 WHERE id = ?").bind(id).run();
     }
     return withCors(json({ ok: true }));
+  }
+
+  /* --- Telegram-вебхук: оцінка зірочками й «прочитано» кнопками --- */
+
+  if (path === "/tg" && request.method === "POST") {
+    const secret = request.headers.get("x-tg-webhook-secret") || "";
+    if (!env.TG_WEBHOOK_SECRET || secret !== env.TG_WEBHOOK_SECRET) {
+      return new Response("forbidden", { status: 403 });
+    }
+    const upd = await readBody(request, 65536);
+    const cq = upd && upd.callback_query;
+    const chatId = cq && cq.message && cq.message.chat && cq.message.chat.id;
+    if (cq && String(chatId) === String(env.TG_CHAT_ID)) {
+      await ensureSchema(env);
+      const mid = cq.message.message_id;
+      const rate = String(cq.data || "").match(/^r:(\d+):([1-5])$/);
+      const read = String(cq.data || "").match(/^rd:(\d+)$/);
+      if (rate) {
+        const id = Number(rate[1]);
+        const n = Number(rate[2]);
+        const res = await env.DB.prepare(
+          "UPDATE feedback SET rating = ? WHERE id = ? AND rating IS NULL"
+        ).bind(n, id).run();
+        const row = await env.DB.prepare("SELECT is_read FROM feedback WHERE id = ?").bind(id).first();
+        if (res && res.meta && res.meta.changes > 0) {
+          await tgCall(env, "editMessageReplyMarkup",
+            { chat_id: chatId, message_id: mid, reply_markup: fbKeyboard(id, n, row ? row.is_read : 0) });
+          await tgCall(env, "answerCallbackQuery", { callback_query_id: cq.id, text: "Дякую за оцінку!" });
+        } else {
+          await tgCall(env, "answerCallbackQuery",
+            { callback_query_id: cq.id, text: "Цей відгук уже оцінено", show_alert: true });
+        }
+      } else if (read) {
+        const id = Number(read[1]);
+        await env.DB.prepare("UPDATE feedback SET is_read = 1 WHERE id = ?").bind(id).run();
+        const row = await env.DB.prepare("SELECT rating FROM feedback WHERE id = ?").bind(id).first();
+        await tgCall(env, "editMessageReplyMarkup",
+          { chat_id: chatId, message_id: mid, reply_markup: fbKeyboard(id, (row && row.rating) || 0, 1) });
+        await tgCall(env, "answerCallbackQuery", { callback_query_id: cq.id, text: "Позначено прочитаним" });
+      }
+    }
+    return new Response("{}", { status: 200, headers: { "content-type": "application/json" } });
   }
 
   return withCors(json({ ok: false, code: "notfound" }, 404));

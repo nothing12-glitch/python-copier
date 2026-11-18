@@ -321,6 +321,7 @@
         el("span", null, fmtDate(row.created))
       );
       if (row.email) meta.append(el("span", "material-icons fb-cat-ico", "mail"), el("span", null, row.email));
+      if (row.rating) meta.append(el("span", "fb-stars", "⭐".repeat(row.rating)));
       r.appendChild(meta);
       r.appendChild(el("p", "fb-body", row.body));
       if (!row.is_read) {

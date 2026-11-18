@@ -552,6 +552,7 @@ body.glass-on .ob-card{box-shadow:0 12px 40px rgba(0,0,0,.25);border:1px solid v
 .fb-meta .material-icons{font-size:16px}
 .fb-cat-ico{color:var(--md-primary)}
 .fb-body{margin:8px 0 6px;font-size:14px;line-height:1.6;color:var(--md-on-surface);white-space:pre-wrap;overflow-wrap:anywhere}
+.fb-stars{color:var(--md-primary);font-size:13px;letter-spacing:1px}
 
 /* ===== Secret room ===== */
 .secret-imgs{display:flex;flex-direction:column;gap:6px;margin:4px 0 16px}

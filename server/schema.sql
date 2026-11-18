@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS feedback (
   handle  TEXT,                                -- NULL = анонімно, інакше users.handle
   lang    TEXT NOT NULL DEFAULT 'uk',
   created INTEGER NOT NULL,                    -- секунди epoch
-  is_read INTEGER NOT NULL DEFAULT 0           -- чи бачив це вже власник
+  is_read INTEGER NOT NULL DEFAULT 0,          -- чи бачив це вже власник
+  rating  INTEGER                              -- оцінка ⭐1–5 з Telegram-кнопки (NULL = ще не оцінено)
 );
 CREATE INDEX IF NOT EXISTS idx_feedback_new ON feedback (created DESC);
