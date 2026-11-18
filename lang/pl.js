@@ -759,6 +759,7 @@
     "debug.solvedTag": "rozwiązane",
     "debug.reset": "Resetuj",
     "nav.mastery": "Mapa mistrzostwa",
+    "nav.lockedXp": "Odblokowuje się przy {n} XP — teraz masz {cur}. Pomagają lekcje, zadania i codzienne wyzwania.",
     "mastery.intro": "Twój postęp w jednym miejscu: pierścienie liczą się z prawdziwych odpowiedzi w kursie, zadaniach, słowniku, powtórce, polowaniu na błędy, egzaminie i żółwiu.",
     "mastery.overall": "Mistrzostwo ogólne",
     "mastery.topics": "Tematy Pythona",

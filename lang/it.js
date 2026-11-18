@@ -759,6 +759,7 @@
     "debug.solvedTag": "risolto",
     "debug.reset": "Reimposta",
     "nav.mastery": "Mappa della padronanza",
+    "nav.lockedXp": "Si sblocca a {n} XP — adesso ne hai {cur}. Aiutano lezioni, esercizi e sfide quotidiane.",
     "mastery.intro": "I tuoi progressi tutti in un colpo d'occhio: gli anelli si calcolano dalle risposte reali nel corso, nelle attività, nel glossario, nel ripasso, nella caccia al bug, nell'esame e in turtle.",
     "mastery.overall": "Padronanza complessiva",
     "mastery.topics": "Argomenti Python",

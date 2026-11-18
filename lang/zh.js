@@ -759,6 +759,7 @@
     "debug.solvedTag": "已解决",
     "debug.reset": "重置",
     "nav.mastery": "掌握地图",
+    "nav.lockedXp": "达到 {n} 经验后解锁 — 你目前有 {cur}。完成课程、任务和每日挑战有帮助。",
     "mastery.intro": "一屏看遍全部进度：圆环根据你在课程、任务、词汇表、复习、捉虫、考试和乌龟绘图中的真实作答计算得出。",
     "mastery.overall": "总掌握度",
     "mastery.topics": "Python 主题",

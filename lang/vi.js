@@ -871,6 +871,7 @@
     "debug.solvedTag": "đã giải",
     "debug.reset": "Đặt lại",
     "nav.mastery": "Bản đồ thành thạo",
+    "nav.lockedXp": "Mở khoá ở {n} XP — hiện bạn có {cur}. Bài học, bài tập và thử thách hằng ngày sẽ giúp.",
     "mastery.intro": "Tiến độ của bạn ở mọi nơi cùng lúc: các vòng được tính từ câu trả lời thật trong khóa học, bài tập, từ điển, ôn tập, săn lỗi, kỳ thi và phần rùa.",
     "mastery.overall": "Thành thạo tổng thể",
     "mastery.topics": "Chủ đề Python",

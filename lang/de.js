@@ -759,6 +759,7 @@
     "debug.solvedTag": "gelöst",
     "debug.reset": "Zurücksetzen",
     "nav.mastery": "Meisterschaftskarte",
+    "nav.lockedXp": "Wird bei {n} XP freigeschaltet – du hast jetzt {cur}. Lektionen, Aufgaben und tägliche Challenges helfen.",
     "mastery.intro": "Dein Fortschritt überall auf einen Blick: Die Ringe basieren auf deinen echten Antworten in Kurs, Aufgaben, Glossar, Wiederholung, Fehlersuche, Prüfung und Turtle.",
     "mastery.overall": "Gesamtmeisterschaft",
     "mastery.topics": "Python-Themen",

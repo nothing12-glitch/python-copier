@@ -759,6 +759,7 @@
     "debug.solvedTag": "löst",
     "debug.reset": "Nollställ",
     "nav.mastery": "Behärskningskarta",
+    "nav.lockedXp": "Låses upp vid {n} XP — du har {cur} nu. Lektioner, uppgifter och dagliga utmaningar hjälper.",
     "mastery.intro": "Ditt framsteg överallt på en gång: ringarna räknas på faktiska svar i kursen, uppgifterna, ordlistan, upprepningen, bugjakten, examen och sköldpaddan.",
     "mastery.overall": "Total behärskning",
     "mastery.topics": "Python-ämnen",

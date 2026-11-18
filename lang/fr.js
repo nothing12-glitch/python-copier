@@ -759,6 +759,7 @@
     "debug.solvedTag": "résolu",
     "debug.reset": "Réinitialiser",
     "nav.mastery": "Carte de maîtrise",
+    "nav.lockedXp": "Se débloque à {n} XP — tu en as {cur} maintenant. Les leçons, les exercices et les défis quotidiens aident.",
     "mastery.intro": "Ta progression partout à la fois : les anneaux sont calculés à partir de tes vraies réponses dans le cours, les tâches, le glossaire, la révision, la chasse aux bugs, l’examen et turtle.",
     "mastery.overall": "Maîtrise globale",
     "mastery.topics": "Sujets Python",

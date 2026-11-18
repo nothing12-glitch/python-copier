@@ -759,6 +759,7 @@
     "debug.solvedTag": "terpecahkan",
     "debug.reset": "Atur ulang",
     "nav.mastery": "Peta penguasaan",
+    "nav.lockedXp": "Terbuka pada {n} XP — sekarang kamu punya {cur}. Pelajaran, tugas, dan tantangan harian membantu.",
     "mastery.intro": "Progresmu di semua tempat sekaligus: cincin dihitung dari jawaban nyata di kursus, tugas, glosarium, ulasan, berburu bug, ujian, dan bagian turtle.",
     "mastery.overall": "Penguasaan keseluruhan",
     "mastery.topics": "Topik Python",

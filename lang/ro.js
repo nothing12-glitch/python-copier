@@ -759,6 +759,7 @@
     "debug.solvedTag": "rezolvat",
     "debug.reset": "Resetează",
     "nav.mastery": "Harta stăpânirii",
+    "nav.lockedXp": "Se deblochează la {n} XP — acum ai {cur}. Ajută lecțiile, temele și provocările zilnice.",
     "mastery.intro": "Progresul tău peste tot deodată: inelele se calculează din răspunsurile reale din curs, sarcini, dicționar, recapitulare, vânătoarea de erori, examen și țestoasă.",
     "mastery.overall": "Stăpânire generală",
     "mastery.topics": "Subiecte Python",

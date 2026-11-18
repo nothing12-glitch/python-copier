@@ -759,6 +759,7 @@
     "debug.solvedTag": "解決済み",
     "debug.reset": "リセット",
     "nav.mastery": "習熟度マップ",
+    "nav.lockedXp": "{n} XPで解放されます — 現在 {cur} です。レッスン、課題、毎日のチャレンジが役立ちます。",
     "mastery.intro": "あらゆる場所の進捗を一度に確認：リングはコース、タスク、単語帳、復習、バグ探し、試験、カメ描画での実際の解答から計算されます。",
     "mastery.overall": "総合習熟度",
     "mastery.topics": "Python のテーマ",

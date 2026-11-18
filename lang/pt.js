@@ -759,6 +759,7 @@
     "debug.solvedTag": "resolvido",
     "debug.reset": "Reiniciar",
     "nav.mastery": "Mapa de domínio",
+    "nav.lockedXp": "Desbloqueia com {n} XP — agora tens {cur}. Ajudam as lições, as tarefas e os desafios diários.",
     "mastery.intro": "O teu progresso todo de uma vez: os anéis são calculados a partir das tuas respostas reais no curso, nas tarefas, no glossário, na revisão, na caça aos erros, no exame e no turtle.",
     "mastery.overall": "Domínio geral",
     "mastery.topics": "Temas de Python",

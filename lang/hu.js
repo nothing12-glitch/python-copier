@@ -759,6 +759,7 @@
     "debug.solvedTag": "megoldva",
     "debug.reset": "Visszaállítás",
     "nav.mastery": "Tudástérkép",
+    "nav.lockedXp": "{n} XP-nél nyílik meg — most {cur} van. Segítenek a leckék, a feladatok és a napi kihívások.",
     "mastery.intro": "A haladásod mindenhol egyszerre: a gyűrűk a kurzusban, a feladatokban, a szótárban, az ismétlésben, a hibakeresésben, a vizsgában és a teknőcnél adott valódi válaszokból számolódnak.",
     "mastery.overall": "Általános tudásszint",
     "mastery.topics": "Python témák",

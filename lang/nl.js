@@ -759,6 +759,7 @@
     "debug.solvedTag": "opgelost",
     "debug.reset": "Resetten",
     "nav.mastery": "Beheersingskaart",
+    "nav.lockedXp": "Wordt ontgrendeld bij {n} XP — je hebt nu {cur}. Lessen, opdrachten en dagelijkse challenges helpen.",
     "mastery.intro": "Je voortgang overal tegelijk: de ringen worden berekend uit echte antwoorden in de cursus, taken, woordenboek, herhaling, bugjacht, examen en schildpad.",
     "mastery.overall": "Algemene beheersing",
     "mastery.topics": "Python-onderwerpen",

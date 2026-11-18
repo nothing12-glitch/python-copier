@@ -759,6 +759,7 @@
     "debug.solvedTag": "해결됨",
     "debug.reset": "초기화",
     "nav.mastery": "숙련도 지도",
+    "nav.lockedXp": "{n} XP에 해제됩니다 — 현재 {cur}입니다. 수업, 과제, 매일 도전이 도움이 됩니다.",
     "mastery.intro": "모든 곳의 진행률을 한눈에: 링은 과정, 과제, 용어집, 복습, 버그 찾기, 시험, 거북이 그래픽에서의 실제 답변으로 계산됩니다.",
     "mastery.overall": "전체 숙련도",
     "mastery.topics": "Python 주제",

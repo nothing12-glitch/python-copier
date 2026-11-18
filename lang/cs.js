@@ -759,6 +759,7 @@
     "debug.solvedTag": "vyřešeno",
     "debug.reset": "Resetovat",
     "nav.mastery": "Mapa zvládnutí",
+    "nav.lockedXp": "Odemkne se při {n} XP — teď máš {cur}. Pomáhají lekce, úkoly a denní výzvy.",
     "mastery.intro": "Tvůj postup všude najednou: kruhy se počítají ze skutečných odpovědí v kurzu, úlohách, slovníku, opakování, honbě za chybami, zkoušce a v želvě.",
     "mastery.overall": "Celkové zvládnutí",
     "mastery.topics": "Témata Pythonu",
