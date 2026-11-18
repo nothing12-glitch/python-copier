@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.16";
+  const VERSION = "26.12.17";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.17": {
+      uk: [
+        "Картка «Прогрес курсу» внизу меню більше не накладається на пункти: список гортається окремо, а картка спокійно стоїть знизу — жоден пункт не ховається за нею і не визирає з-під краю",
+        "На телефоні в меню «Ще» нарешті видно замок на розділах, що відкриваються за досвід, — раніше він з'являвся лише в бічному меню",
+        "«Досягнення» на вузькому екрані більше не роз'їжджаються за правий край — картки рівно стають по ширині телефона"
+      ],
+      en: [
+        "The «Course progress» card at the bottom of the menu no longer overlaps the items: the list scrolls on its own and the card sits calmly below — no row hides behind it or peeks out from under the edge",
+        "On the phone, the «More» menu finally shows the padlock on the sections that unlock with experience — before it only appeared in the side menu",
+        "«Achievements» no longer spill past the right edge on narrow screens — the cards now fit the phone width exactly"
+      ],
+      tr: [
+        "Menünün altındaki «Ders ilerlemesi» kartı artık öğelerin üstüne binmiyor: liste kendi başına kayıyor, kart altta sakin duruyor — hiçbir satır arkasında gizlenmiyor, kenarından sızmıyor",
+        "Telefonda «Daha fazla» menüsünde, deneyimle açılan bölümlerde sonunda kilit simgesi görünüyor — önceden yalnız kenar menüde çıkıyordu",
+        "«Başarımlar» dar ekranda artık sağ kenardan taşmıyor — kartlar telefon genişliğine tam oturuyor"
+      ]
+    },
     "26.12.16": {
       uk: [
         "Три розділи — «Повторення», «Розбирай помилки» та «Мапа майстерності» — тепер ховаються за замком, доки не накопичиш досвід: вони для тих, хто вже щось устиг пройти, а не для першого ж дня",
