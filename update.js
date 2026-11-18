@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.15";
+  const VERSION = "26.12.16";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.16": {
+      uk: [
+        "Три розділи — «Повторення», «Розбирай помилки» та «Мапа майстерності» — тепер ховаються за замком, доки не накопичиш досвід: вони для тих, хто вже щось устиг пройти, а не для першого ж дня",
+        "На заблокованому пункті меню світиться замок, а дотик підказує, скільки досвіду ще бракує і що саме його приносить — уроки, задачі та щоденні виклики",
+        "Щойно досвіду стає досить, замок зникає сам собою, без перезавантаження — розділ відкривається миттєво"
+      ],
+      en: [
+        "Three sections — «Review», «Bug hunt» and «Mastery map» — now sit behind a lock until you earn enough experience: they're for people who've already covered some ground, not for day one",
+        "A locked menu item shows a padlock, and tapping it tells you exactly how much experience is missing and what brings it — lessons, tasks and daily challenges",
+        "The moment you have enough, the lock disappears on its own without a reload — the section opens right away"
+      ],
+      tr: [
+        "Üç bölüm — «Tekrar», «Hatayı bul» ve «Ustalık haritası» — yeterince deneyim kazanana kadar kilitli: bunlar bir şeyleri tamamlamış olanlar için, ilk gün için değil",
+        "Kilitli menü öğesinde kilit simgesi parlar; dokununca ne kadar deneyim eksik olduğunu ve onu neyin getirdiğini söyler — dersler, görevler ve günlük meydan okumalar",
+        "Yeterli deneyime ulaşınca kilit, sayfayı yenilemeden kendiliğinden kaybolur — bölüm anında açılır"
+      ]
+    },
     "26.12.15": {
       uk: [
         "У полях пароля на вході й реєстрації з'явилося «око»: натисни — побачиш, що саме набрав, і впевнишся, що автокорект чи Caps Lock не зіпсували пароль",
