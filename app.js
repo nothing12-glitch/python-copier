@@ -37,34 +37,40 @@
     catch (e) { return 0; }
   }
 
-  function gateHint(name) {
-    return t("nav.lockedXp", { n: GATES[name], cur: xpNow() });
+  function gateHint(name, xp) {
+    if (xp === undefined) xp = xpNow();
+    return t("nav.lockedXp", { n: GATES[name], cur: xp });
   }
 
-  function isGated(name) {
-    return Object.prototype.hasOwnProperty.call(GATES, name) && xpNow() < GATES[name];
+  function isGated(name, xp) {
+    if (xp === undefined) xp = xpNow();
+    return Object.prototype.hasOwnProperty.call(GATES, name) && xp < GATES[name];
   }
 
   function paintNavLocks() {
+    const xp = xpNow();
     Object.keys(GATES).forEach((name) => {
-      const btn = document.querySelector('#mainnav .rail-btn[data-route="' + name + '"]');
-      if (!btn) return;
-      const locked = isGated(name);
-      btn.classList.toggle("is-locked", locked);
-      let badge = btn.querySelector(".rail-lock");
-      if (locked) {
-        if (!badge) {
-          badge = document.createElement("span");
-          badge.className = "rail-lock material-icons";
-          badge.textContent = "lock";
-          btn.appendChild(badge);
+      const btns = document.querySelectorAll(
+        '#mainnav .rail-btn[data-route="' + name + '"], #moreSheetGrid [data-route="' + name + '"]'
+      );
+      const locked = isGated(name, xp);
+      btns.forEach((btn) => {
+        btn.classList.toggle("is-locked", locked);
+        let badge = btn.querySelector(".rail-lock");
+        if (locked) {
+          if (!badge) {
+            badge = document.createElement("span");
+            badge.className = "rail-lock material-icons";
+            badge.textContent = "lock";
+            btn.appendChild(badge);
+          }
+          btn.title = gateHint(name, xp);
+        } else {
+          if (badge) badge.remove();
+          const lab = btn.querySelector(".rail-label");
+          if (lab) btn.title = lab.textContent.trim();
         }
-        btn.title = gateHint(name);
-      } else {
-        if (badge) badge.remove();
-        const lab = btn.querySelector(".rail-label");
-        if (lab) btn.title = lab.textContent.trim();
-      }
+      });
     });
   }
 
@@ -840,7 +846,7 @@
         grid.appendChild(b);
       });
     }
-    const open = () => { build(); sheet.hidden = false; document.body.classList.add("sheet-open"); };
+    const open = () => { build(); paintNavLocks(); sheet.hidden = false; document.body.classList.add("sheet-open"); };
     const close = () => { sheet.hidden = true; document.body.classList.remove("sheet-open"); };
     btn.addEventListener("click", () => { sheet.hidden ? open() : close(); });
     sheet.querySelectorAll("[data-more-close]").forEach((el) => el.addEventListener("click", close));
