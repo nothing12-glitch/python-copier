@@ -52,6 +52,25 @@ CREATE TABLE IF NOT EXISTS feedback (
   lang    TEXT NOT NULL DEFAULT 'uk',
   created INTEGER NOT NULL,                    -- секунди epoch
   is_read INTEGER NOT NULL DEFAULT 0,          -- чи бачив це вже власник
-  rating  INTEGER                              -- оцінка ⭐1–5 з Telegram-кнопки (NULL = ще не оцінено)
+  rating  INTEGER,                             -- оцінка ⭐1–5 з Telegram-кнопки (NULL = ще не оцінено)
+  tgchat  INTEGER                              -- Telegram chat.id автора (щоб власник міг відповісти)
 );
 CREATE INDEX IF NOT EXISTS idx_feedback_new ON feedback (created DESC);
+
+-- Чернетка анкети в Telegram-боті: тип → текст → email.
+-- Створюється самим воркером (MIGRATIONS у worker.js), тут — для історії.
+CREATE TABLE IF NOT EXISTS tg_draft (
+  chat_id INTEGER PRIMARY KEY,
+  cat     TEXT NOT NULL,
+  body    TEXT NOT NULL DEFAULT '',
+  stage   INTEGER NOT NULL DEFAULT 1,          -- 1 = чекаємо текст, 2 = чекаємо email, 3 = причина оцінки сайту
+  updated INTEGER NOT NULL
+);
+
+-- Режим відповіді власника: чат власника -> відгук, якому він зараз пише.
+-- Створюється самим воркером (MIGRATIONS у worker.js), тут — для історії.
+CREATE TABLE IF NOT EXISTS tg_reply (
+  chat_id INTEGER PRIMARY KEY,                 -- TG_CHAT_ID власника
+  fid     INTEGER NOT NULL,                    -- feedback.id
+  updated INTEGER NOT NULL
+);

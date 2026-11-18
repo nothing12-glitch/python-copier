@@ -12,8 +12,9 @@ const CODE_RE = /^(?:PC1:)?[A-Za-z0-9+/_-]{8,4096}$/;
 const PREFIX = "PC1:";
 /* Цілий сейв прогресу: D1 бере одне значення до 2 МБ, тому чанкувати не треба. */
 const SAVE_MAX = 1500000;
-/* Відгуки: три категорії, текст до 2000 символів, email — необов'язковий. */
-const FB_CATS = { bug: "🐞", idea: "💡", thanks: "🙏" };
+/* Відгуки: три категорії + оцінка сайту (як у Google Формі), текст до
+   2000 символів, email — необов'язковий. */
+const FB_CATS = { bug: "🐞", idea: "💡", thanks: "🙏", rating: "⭐" };
 const FB_MAX = 2000;
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,24}$/;
 const LANG_RE = /^[a-z][a-z-]{1,4}$/;
@@ -149,7 +150,15 @@ const MIGRATIONS = [
      created INTEGER NOT NULL, is_read INTEGER NOT NULL DEFAULT 0
    )`,
   "CREATE INDEX IF NOT EXISTS idx_feedback_new ON feedback (created DESC)",
-  "ALTER TABLE feedback ADD COLUMN rating INTEGER"
+  "ALTER TABLE feedback ADD COLUMN rating INTEGER",
+  "ALTER TABLE feedback ADD COLUMN tgchat INTEGER",
+  `CREATE TABLE IF NOT EXISTS tg_draft (
+     chat_id INTEGER PRIMARY KEY, cat TEXT NOT NULL, body TEXT NOT NULL DEFAULT '',
+     stage INTEGER NOT NULL DEFAULT 1, updated INTEGER NOT NULL
+   )`,
+  `CREATE TABLE IF NOT EXISTS tg_reply (
+     chat_id INTEGER PRIMARY KEY, fid INTEGER NOT NULL, updated INTEGER NOT NULL
+   )`
 ];
 let schema = null;
 /* batch() у цьому рантаймі не приймає масив рядків, тому міграції йдуть
@@ -189,9 +198,9 @@ function escHtml(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-async function tgCall(env, method, payload) {
+async function tgCall(env, method, payload, token) {
   try {
-    const res = await fetch(`https://api.telegram.org/bot${env.TG_BOT_TOKEN}/${method}`, {
+    const res = await fetch(`https://api.telegram.org/bot${token || env.TG_BOT_TOKEN}/${method}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(payload)
@@ -203,17 +212,57 @@ async function tgCall(env, method, payload) {
   }
 }
 
-/* Кнопки під листом: п'ять зірочок оцінки + «прочитано». Після вибору
+/* Кнопки під листом: п'ять зірочок оцінки + «прочитано» + «відповісти
+   автору» (лише якщо автор писав із Telegram — є tgchat). Після вибору
    рядок зірочок замінюється на підсумок — повторна оцінка неможлива. */
-function fbKeyboard(id, rating, read) {
+function fbKeyboard(id, rating, read, tgchat) {
   const rows = [];
   if (!rating) {
     rows.push([1, 2, 3, 4, 5].map((n) => ({ text: "⭐" + n, callback_data: `r:${id}:${n}` })));
   } else {
     rows.push([{ text: "Оцінка: " + "⭐".repeat(rating), callback_data: "noop" }]);
   }
-  rows.push([{ text: read ? "✅ Прочитано" : "✅ Прочитано", callback_data: read ? "noop" : `rd:${id}` }]);
+  rows.push([{ text: "✅ Прочитано", callback_data: read ? "noop" : `rd:${id}` }]);
+  if (tgchat) rows.push([{ text: "💬 Відповісти людині", callback_data: `rp:${id}` }]);
   return { inline_keyboard: rows };
+}
+
+/* Власник пише текст у відповідь — надіслати його людині через основний
+   бот (сам туди приходять листи) і підтвердити власнику. */
+async function tgOwnerReply(env, chatId, text) {
+  const ownerToken = env.TG2_BOT_TOKEN || env.TG_BOT_TOKEN;
+  if (tooMany("tg2owner:" + chatId, 20, 60)) return;
+  const t = await env.DB.prepare("SELECT fid FROM tg_reply WHERE chat_id = ?").bind(chatId).first();
+  if (text === "/cancel") {
+    if (!t) return;
+    await env.DB.prepare("DELETE FROM tg_reply WHERE chat_id = ?").bind(chatId).run();
+    await tgCall(env, "sendMessage", { chat_id: chatId, text: "Скасовано 👍" }, ownerToken);
+    return;
+  }
+  if (!t) {
+    if (text.startsWith("/")) return;
+    await tgCall(env, "sendMessage", {
+      chat_id: chatId,
+      text: "Спочатку натисни «💬 Відповісти людині» під потрібним листом."
+    }, ownerToken);
+    return;
+  }
+  const row = await env.DB.prepare("SELECT tgchat FROM feedback WHERE id = ?").bind(t.fid).first();
+  await env.DB.prepare("DELETE FROM tg_reply WHERE chat_id = ?").bind(chatId).run();
+  if (!row || !row.tgchat) {
+    await tgCall(env, "sendMessage",
+      { chat_id: chatId, text: "Цей автор писав не з Telegram — відповісти неможливо 🤔" }, ownerToken);
+    return;
+  }
+  const res = await tgCall(env, "sendMessage", {
+    chat_id: row.tgchat,
+    text: "Ось відповідь від розробника:\n\n" + text.slice(0, 4000)
+  });
+  await tgCall(env, "sendMessage", {
+    chat_id: chatId,
+    text: res && res.ok ? "Відповідь надіслано автору ✅"
+      : "Не вдалося надіслати: людина, мабуть, заблокувала бота."
+  }, ownerToken);
 }
 
 async function tgSend(env, html, markup) {
@@ -223,7 +272,250 @@ async function tgSend(env, html, markup) {
     parse_mode: "HTML",
     disable_web_page_preview: true,
     reply_markup: markup
+  }, env.TG2_BOT_TOKEN || env.TG_BOT_TOKEN);
+}
+
+/* Натискання кнопок «⭐n», «Прочитано» і «Відповісти» — спільне для /tg
+   (листи від застосунку, бот1) і /tg2 (листи з Telegram, бот2). Токен той
+   самий, що надіслав лист: Telegram дозволяє редагувати markup лише своєму
+   боту. mode — токен бота, який пише власнику в підказках. */
+async function handleFbCallback(env, cq, token) {
+  const chatId = cq.message && cq.message.chat && cq.message.chat.id;
+  const mid = cq.message.message_id;
+  const data = String(cq.data || "");
+  const rate = data.match(/^r:(\d+):([1-5])$/);
+  const read = data.match(/^rd:(\d+)$/);
+  const reply = data.match(/^rp:(\d+)$/);
+  if (rate) {
+    const id = Number(rate[1]);
+    const n = Number(rate[2]);
+    const res = await env.DB.prepare(
+      "UPDATE feedback SET rating = ? WHERE id = ? AND rating IS NULL"
+    ).bind(n, id).run();
+    const row = await env.DB.prepare("SELECT is_read, tgchat FROM feedback WHERE id = ?").bind(id).first();
+    if (res && res.meta && res.meta.changes > 0) {
+      await tgCall(env, "editMessageReplyMarkup",
+        { chat_id: chatId, message_id: mid, reply_markup: fbKeyboard(id, n, row ? row.is_read : 0, row && row.tgchat) }, token);
+      await tgCall(env, "answerCallbackQuery", { callback_query_id: cq.id, text: "Дякую за оцінку!" }, token);
+    } else {
+      await tgCall(env, "answerCallbackQuery",
+        { callback_query_id: cq.id, text: "Цей відгук уже оцінено", show_alert: true }, token);
+    }
+  } else if (read) {
+    const id = Number(read[1]);
+    await env.DB.prepare("UPDATE feedback SET is_read = 1 WHERE id = ?").bind(id).run();
+    const row = await env.DB.prepare("SELECT rating, tgchat FROM feedback WHERE id = ?").bind(id).first();
+    await tgCall(env, "editMessageReplyMarkup",
+      { chat_id: chatId, message_id: mid, reply_markup: fbKeyboard(id, (row && row.rating) || 0, 1, row && row.tgchat) }, token);
+    await tgCall(env, "answerCallbackQuery", { callback_query_id: cq.id, text: "Позначено прочитаним" }, token);
+  } else if (reply) {
+    const id = Number(reply[1]);
+    const row = await env.DB.prepare("SELECT tgchat FROM feedback WHERE id = ?").bind(id).first();
+    if (!row || !row.tgchat) {
+      await tgCall(env, "answerCallbackQuery",
+        { callback_query_id: cq.id, text: "Цей автор писав не з Telegram — відповісти неможливо", show_alert: true }, token);
+      return;
+    }
+    await env.DB.prepare(
+      "INSERT INTO tg_reply (chat_id, fid, updated) VALUES (?, ?, ?)" +
+      " ON CONFLICT(chat_id) DO UPDATE SET fid = excluded.fid, updated = excluded.updated"
+    ).bind(chatId, id, now()).run();
+    await tgCall(env, "answerCallbackQuery", { callback_query_id: cq.id, text: "Режим відповіді" }, token);
+    await tgCall(env, "sendMessage", {
+      chat_id: chatId,
+      text: "Напиши текст відповіді — я надішлю його автору в основний бот.\nСкасувати — /cancel"
+    }, token);
+  }
+}
+
+/* Анкета в Telegram — ті самі питання, що й у Google Формі та у
+   застосунку: тип відгуку → текст → email (необов'язково). Чернетку
+   тримаємо в tg_draft: stage 1 — чекаємо текст, stage 2 — чекаємо email. */
+const FB_DRAFT_TTL = 86400;
+
+function fbCatKeyboard() {
+  return { inline_keyboard: [
+    [
+      { text: "🐞 Баг", callback_data: "fc:bug" },
+      { text: "💡 Ідея", callback_data: "fc:idea" },
+      { text: "🙏 Подяка", callback_data: "fc:thanks" }
+    ],
+    /* Оцінка сайту — як питання «Оціни сайт загалом» у Google Формі. */
+    [{ text: "⭐ ОЦІНКА САЙТУ", callback_data: "fc:rating" }]
+  ] };
+}
+
+function fbScaleKeyboard() {
+  return { inline_keyboard: [
+    [1, 2, 3, 4, 5].map((n) => ({ text: String(n), callback_data: `fr:${n}` }))
+  ] };
+}
+
+async function tgAskCats(env, chatId) {
+  await tgCall(env, "sendMessage", {
+    chat_id: chatId,
+    text: "Python Copier — зворотний зв'язок 💬\nЩо хочеш повідомити?",
+    reply_markup: fbCatKeyboard()
   });
+}
+
+async function tgDraftGet(env, chatId) {
+  const d = await env.DB.prepare("SELECT * FROM tg_draft WHERE chat_id = ?").bind(chatId).first();
+  if (!d) return null;
+  if (now() - d.updated > FB_DRAFT_TTL) {
+    await env.DB.prepare("DELETE FROM tg_draft WHERE chat_id = ?").bind(chatId).run();
+    return null;
+  }
+  return d;
+}
+
+async function tgDraftPut(env, chatId, cat, body, stage) {
+  await env.DB.prepare(
+    "INSERT INTO tg_draft (chat_id, cat, body, stage, updated) VALUES (?, ?, ?, ?, ?)" +
+    " ON CONFLICT(chat_id) DO UPDATE SET cat = excluded.cat, body = excluded.body," +
+    " stage = excluded.stage, updated = excluded.updated"
+  ).bind(chatId, cat, body, stage, now()).run();
+}
+
+/* Готовий відгук: зберегти як із застосунку, подякувати людині й
+   показати власнику його особистим ботом з кнопками оцінки. ownerExtra —
+   підказка власнику (наприклад, «відповіси автору?»). */
+async function tgFinalize(env, from, chatId, cat, body, email, ownerExtra) {
+  await env.DB.prepare("DELETE FROM tg_draft WHERE chat_id = ?").bind(chatId).run();
+  const ins = await env.DB.prepare(
+    "INSERT INTO feedback (cat, body, email, handle, lang, created, tgchat) VALUES (?, ?, ?, ?, ?, ?, ?)"
+  ).bind(cat, body, email, from.username || null, "uk", now(), chatId).run();
+  const fid = (ins && ins.meta && ins.meta.last_row_id) || 0;
+  await tgCall(env, "sendMessage",
+    { chat_id: chatId, text: "Дякую! Твій відгук надіслано розробнику 💙" });
+  if (!env.TG_CHAT_ID) return;
+  const who = from.username ? "@" + escHtml(from.username) : escHtml(from.first_name || "анонімно");
+  const when = new Date().toISOString().slice(0, 16).replace("T", " ");
+  const mailLine = email ? `✉️ ${escHtml(email)}\n` : "";
+  const extra = ownerExtra ? `\n${ownerExtra}` : "";
+  const res = await tgCall(env, "sendMessage", {
+    chat_id: env.TG_CHAT_ID,
+    text: `🐍 <b>Відгук python-copier</b>\n${FB_CATS[cat]} ${escHtml(cat)} · ${who} · 🌐 uk · 🕒 ${when} UTC\n${mailLine}${escHtml(body)}${extra}`.slice(0, 4000),
+    parse_mode: "HTML",
+    disable_web_page_preview: true,
+    reply_markup: fbKeyboard(fid, 0, 0, chatId)
+  }, env.TG2_BOT_TOKEN || env.TG_BOT_TOKEN);
+  /* Якщо власник ще не натискав /start у особистого бота — лист не дійде. */
+  if (!res || !res.ok) console.error("owner delivery failed for feedback", fid);
+}
+
+/* Оцінка сайту: записуємо чернетку (stage 3) та питаємо причину —
+   1–3: «чому так і чого не вистачило», 4–5: «що сподобалось». */
+async function tgRateSite(env, chatId, mid, n, cqId) {
+  const stars = "⭐".repeat(n);
+  await tgDraftPut(env, chatId, "rating", String(n), 3);
+  await tgCall(env, "editMessageReplyMarkup", {
+    chat_id: chatId, message_id: mid,
+    reply_markup: { inline_keyboard: [[{ text: `Твоя оцінка: ${stars} ${n}/5`, callback_data: "noop" }]] }
+  });
+  await tgCall(env, "answerCallbackQuery", { callback_query_id: cqId, text: "Дякую!" });
+  const ask = n <= 3
+    ? "Чому ти поставив таку оцінку і чого не вистачило?\nНапиши сюди — це найцінніше для розвитку сайту.\nСкасувати — /cancel"
+    : "Дякую! Напиши, чому наш сайт тобі так сподобався — що найкорисніше?\nСкасувати — /cancel";
+  await tgCall(env, "sendMessage", { chat_id: chatId, text: ask });
+}
+
+/* Натискання кнопок анкети в будь-якого чату: вибір типу, оцінка сайту
+   або «без email». */
+async function handleFbFormCallback(env, cq) {
+  const chatId = cq.message && cq.message.chat && cq.message.chat.id;
+  if (chatId === undefined || chatId === null) return;
+  const data = String(cq.data || "");
+  if (data === "fc:rating") {
+    await tgCall(env, "answerCallbackQuery", { callback_query_id: cq.id, text: "Обрано!" });
+    await tgCall(env, "sendMessage", {
+      chat_id: chatId,
+      text: "Оціни сайт загалом\n1 — дуже погано, 5 — супер",
+      reply_markup: fbScaleKeyboard()
+    });
+    return;
+  }
+  const fr = data.match(/^fr:([1-5])$/);
+  if (fr) {
+    if (tooMany("tgfb:" + chatId, 10, 60)) return;
+    await tgRateSite(env, chatId, cq.message.message_id, Number(fr[1]), cq.id);
+    return;
+  }
+  const fc = data.match(/^fc:(bug|idea|thanks)$/);
+  if (fc) {
+    await tgDraftPut(env, chatId, fc[1], "", 1);
+    await tgCall(env, "answerCallbackQuery", { callback_query_id: cq.id, text: "Обрано!" });
+    await tgCall(env, "sendMessage", {
+      chat_id: chatId,
+      text: "Напиши текст відгуку (до 2000 символів).\nСкасувати — /cancel"
+    });
+    return;
+  }
+  if (data === "fs") {
+    const d = await tgDraftGet(env, chatId);
+    if (d && d.stage === 2) {
+      await tgFinalize(env, cq.from || {}, chatId, d.cat, d.body, "");
+    }
+  }
+}
+
+/* Повідомлення-текст у основному боті: кроки анкети або підказка почати. */
+async function tgUserFlow(env, msg) {
+  const chatId = msg.chat && msg.chat.id;
+  if (chatId === undefined || chatId === null) return;
+  const text = String(msg.text || "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim();
+  if (tooMany("tgfb:" + chatId, 10, 60)) return;
+  const d = await tgDraftGet(env, chatId);
+  if (text === "/cancel") {
+    if (d) await env.DB.prepare("DELETE FROM tg_draft WHERE chat_id = ?").bind(chatId).run();
+    await tgCall(env, "sendMessage", { chat_id: chatId, text: "Скасовано 👍" });
+    return;
+  }
+  if (!d) {
+    await tgAskCats(env, chatId);
+    return;
+  }
+  const from = msg.from || {};
+  if (d.stage === 3) {
+    /* Причина оцінки сайту: 1–3 — «чому і чого не вистачило», 4–5 — «що сподобалось». */
+    if (text.length < 2) {
+      await tgCall(env, "sendMessage",
+        { chat_id: chatId, text: "Напиши хоча б пару слів 🙂 Або /cancel." });
+      return;
+    }
+    const n = Number(d.body) || 3;
+    const stars = "⭐".repeat(n);
+    const extra = n <= 3
+      ? "✍️ Натисни «Відповісти людині», щоб уточнити причину й пообіцяти фікс."
+      : "✍️ Можеш подякувати людині кнопкою «Відповісти людині».";
+    await tgFinalize(env, from, chatId, "rating",
+      `Оцінка сайту: ${stars} ${n}/5\n${text.slice(0, FB_MAX)}`, "", extra);
+    return;
+  }
+  if (d.stage === 1) {
+    if (text.length < 5) {
+      await tgCall(env, "sendMessage",
+        { chat_id: chatId, text: "Напиши, будь ласка, трохи більше — хоча б речення 🙂" });
+      return;
+    }
+    await tgDraftPut(env, chatId, d.cat, text.slice(0, FB_MAX), 2);
+    await tgCall(env, "sendMessage", {
+      chat_id: chatId,
+      text: "Як хочеш, щоб я відповів — надішли сюди email.\n" +
+            "Або просто надішли повідомлення далі без нього.",
+      reply_markup: { inline_keyboard: [[{ text: "📤 Надіслати без email", callback_data: "fs" }]] }
+    });
+    return;
+  }
+  if (EMAIL_RE.test(text)) {
+    await tgFinalize(env, from, chatId, d.cat, d.body, text);
+  } else {
+    await tgCall(env, "sendMessage", {
+      chat_id: chatId,
+      text: "Це не схоже на email 🤔 Надішли email, натисни «Надіслати без email» або /cancel.",
+      reply_markup: { inline_keyboard: [[{ text: "📤 Надіслати без email", callback_data: "fs" }]] }
+    });
+  }
 }
 
 /* ---------- вхід через GitHub ---------- */
@@ -628,44 +920,54 @@ async function handle2(request, env, ctx) {
     return withCors(json({ ok: true }));
   }
 
-  /* --- Telegram-вебхук: оцінка зірочками й «прочитано» кнопками --- */
+  /* --- Основний бот: анкети від людей і кнопки власника на старих листах --- */
 
   if (path === "/tg" && request.method === "POST") {
-    const secret = request.headers.get("x-tg-webhook-secret") || "";
+    const secret = request.headers.get("x-telegram-bot-api-secret-token") ||
+      request.headers.get("x-tg-webhook-secret") || "";
     if (!env.TG_WEBHOOK_SECRET || secret !== env.TG_WEBHOOK_SECRET) {
       return new Response("forbidden", { status: 403 });
     }
     const upd = await readBody(request, 65536);
     const cq = upd && upd.callback_query;
     const chatId = cq && cq.message && cq.message.chat && cq.message.chat.id;
-    if (cq && String(chatId) === String(env.TG_CHAT_ID)) {
+    const data = cq ? String(cq.data || "") : "";
+    if (cq && String(chatId) === String(env.TG_CHAT_ID) && /^(r:|rd:|rp:)/.test(data)) {
       await ensureSchema(env);
-      const mid = cq.message.message_id;
-      const rate = String(cq.data || "").match(/^r:(\d+):([1-5])$/);
-      const read = String(cq.data || "").match(/^rd:(\d+)$/);
-      if (rate) {
-        const id = Number(rate[1]);
-        const n = Number(rate[2]);
-        const res = await env.DB.prepare(
-          "UPDATE feedback SET rating = ? WHERE id = ? AND rating IS NULL"
-        ).bind(n, id).run();
-        const row = await env.DB.prepare("SELECT is_read FROM feedback WHERE id = ?").bind(id).first();
-        if (res && res.meta && res.meta.changes > 0) {
-          await tgCall(env, "editMessageReplyMarkup",
-            { chat_id: chatId, message_id: mid, reply_markup: fbKeyboard(id, n, row ? row.is_read : 0) });
-          await tgCall(env, "answerCallbackQuery", { callback_query_id: cq.id, text: "Дякую за оцінку!" });
-        } else {
-          await tgCall(env, "answerCallbackQuery",
-            { callback_query_id: cq.id, text: "Цей відгук уже оцінено", show_alert: true });
-        }
-      } else if (read) {
-        const id = Number(read[1]);
-        await env.DB.prepare("UPDATE feedback SET is_read = 1 WHERE id = ?").bind(id).run();
-        const row = await env.DB.prepare("SELECT rating FROM feedback WHERE id = ?").bind(id).first();
-        await tgCall(env, "editMessageReplyMarkup",
-          { chat_id: chatId, message_id: mid, reply_markup: fbKeyboard(id, (row && row.rating) || 0, 1) });
-        await tgCall(env, "answerCallbackQuery", { callback_query_id: cq.id, text: "Позначено прочитаним" });
-      }
+      await handleFbCallback(env, cq);
+    } else if (cq && /^(fc:|fr:|fs$)/.test(data)) {
+      await ensureSchema(env);
+      await handleFbFormCallback(env, cq);
+    }
+    const msg = upd && upd.message;
+    if (msg && typeof msg.text === "string") {
+      await ensureSchema(env);
+      await tgUserFlow(env, msg);
+    }
+    return new Response("{}", { status: 200, headers: { "content-type": "application/json" } });
+  }
+
+  /* --- Особистий бот власника: кнопки листів і текст відповідей --- */
+
+  if (path === "/tg2" && request.method === "POST") {
+    const secret = request.headers.get("x-telegram-bot-api-secret-token") ||
+      request.headers.get("x-tg-webhook-secret") || "";
+    if (!env.TG_WEBHOOK_SECRET || secret !== env.TG_WEBHOOK_SECRET) {
+      return new Response("forbidden", { status: 403 });
+    }
+    const upd = await readBody(request, 65536);
+    const cq = upd && upd.callback_query;
+    const cqChat = cq && cq.message && cq.message.chat && cq.message.chat.id;
+    if (cq && String(cqChat) === String(env.TG_CHAT_ID)) {
+      await ensureSchema(env);
+      await handleFbCallback(env, cq, env.TG2_BOT_TOKEN);
+    }
+    const msg2 = upd && upd.message;
+    const m2Chat = msg2 && msg2.chat && msg2.chat.id;
+    if (msg2 && typeof msg2.text === "string" &&
+        String(m2Chat) === String(env.TG_CHAT_ID)) {
+      await ensureSchema(env);
+      await tgOwnerReply(env, m2Chat, msg2.text.trim());
     }
     return new Response("{}", { status: 200, headers: { "content-type": "application/json" } });
   }
