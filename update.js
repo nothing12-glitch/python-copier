@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.13";
+  const VERSION = "26.12.14";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.14": {
+      uk: [
+        "Нова картотека «Повторення»: картки зі словника повертаються рівно тоді, коли пора їх пригадати (система Лайтнера), з «стриком» днів поспіль і відсотком справжньої опанованості",
+        "Новий тренажер «Розбирай помилки»: 32 маленькі програми з умисним багом — знайди прогалину, допиши код і порівняй вивід з очікуваним; усе рахується текстом, тож працює офлайн без запуску Python",
+        "Нова «Мапа майстерності»: всі твої успіхи в одному місці — кільця по 8 темах Python і покриття кожного розділу, обчислені з реальних відповідей, плюс підказка «що вивчити далі»"
+      ],
+      en: [
+        "New «Review» deck: glossary cards come back exactly when it's time to remember them (Leitner system), with a day streak and a true mastery percentage",
+        "New «Bug hunt» trainer: 32 tiny programs each with a deliberate bug — find the gap, fix the code and compare the output with what's expected; it checks as text, so it works offline without running Python",
+        "New «Mastery map»: all your progress in one place — rings across 8 Python topics and coverage of every section, computed from real answers, plus a «what to study next» tip"
+      ],
+      tr: [
+        "Yeni «Tekrar» destesi: sözlük kartları hatırlama zamanı gelince birebir geri geliyor (Leitner sistemi), gün serisi ve gerçek ustalık yüzdesiyle",
+        "Yeni «Hatayı bul» eğitmeni: her biri kasıtlı hatalı 32 mini program — boşluğu bul, kodu tamamla ve çıktıyı beklenenle karşılaştır; metin olarak denetlendiği için Python çalıştırmadan çevrimdışı çalışır",
+        "Yeni «Ustalık haritası»: tüm ilerlemen tek yerde — 8 Python konusu boyunca halkalar ve her bölümün kapsamı, gerçek yanıtlardan hesaplanır, bir de «sırada ne var» ipucu"
+      ]
+    },
     "26.12.13": {
       uk: [
         "Маленькі іконки отримали підказки при наведенні: звук, музика, пошук, копіювати, зберегти, профіль і перейменування — і всі вони перекладені твоєю мовою",
