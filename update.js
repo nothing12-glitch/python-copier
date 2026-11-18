@@ -3,10 +3,27 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.20";
+  const VERSION = "26.12.21";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.12.21": {
+      uk: [
+        "У вікні «Відгуки» з'явився третій спосіб — «Через Telegram»: кнопка відкриває чат із ботом, де коротка анкета проведе тебе крок за кроком",
+        "Вибір каналу (застосунок, Google Форма чи Telegram) запам'ятається — наступного разу розділ відкриється одразу в обраному режимі",
+        "Оцінка сайту в боті тепер питатиме «чому»: 1–3 — чого не вистачило, 4–5 — що найбільше сподобалось; а розробник може відповісти прямо в Telegram"
+      ],
+      en: [
+        "The «Feedback» window gains a third way — «Through Telegram»: a button opens the bot chat, where a short questionnaire guides you step by step",
+        "Your channel choice (app, Google Form or Telegram) is remembered, so the section opens in that mode next time",
+        "Site rating in the bot now asks «why»: 1–3 — what was missing, 4–5 — what you loved most; and the developer can reply right in Telegram"
+      ],
+      tr: [
+        "«Geri bildirim» penceresine üçüncü bir yol geldi — «Telegram üzerinden»: bir düğme bot sohbetini açar ve kısa bir anket seni adım adım yönlendirir",
+        "Kanal seçimin (uygulama, Google Formu veya Telegram) hatırlanır; bölüm bir dahaki sefere o modla açılır",
+        "Bottaki site puanlaması artık «neden» diye soruyor: 1–3 — ne eksikti, 4–5 — en çok ne hoşuna gitti; geliştirici de Telegram'dan yanıt verebilir"
+      ]
+    },
     "26.12.20": {
       uk: [
         "Кожен відгук у Telegram тепер із кнопками: ⭐1–5 — оцінка цінності, і «Прочитано» — одним дотиком",

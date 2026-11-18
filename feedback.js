@@ -49,7 +49,9 @@
 
   let cat = localStorage.getItem(CATKEY);
   if (!CAT_ICON[cat]) cat = "bug";
-  let channel = localStorage.getItem(CHKEY) === "forms" ? "forms" : "app";
+  const TG_BOT_URL = "https://t.me/nothing_pc_feedback_bot";
+  let channel = localStorage.getItem(CHKEY);
+  if (channel !== "forms" && channel !== "tg") channel = "app";
   let busy = false;
   let admin = null;      // null = ще не перевірено, false = не власник
   let panel = { rows: [], n: 0, unread: 0, offset: 0 };
@@ -105,7 +107,7 @@
     const q = el("div", "fb-channel-q", t("feedback.channelQ"));
     const chips = el("div", "fb-chips");
     const chanBtns = {};
-    [["app", "feedback.channelApp", "bolt"], ["forms", "feedback.channelForms", "description"]].forEach(([code, key, ic]) => {
+    [["app", "feedback.channelApp", "bolt"], ["forms", "feedback.channelForms", "description"], ["tg", "feedback.channelTg", "send"]].forEach(([code, key, ic]) => {
       const b = el("button", "chip fb-chan");
       b.type = "button";
       b.append(el("span", "material-icons", ic), el("span", "fb-chan-label", t(key)));
@@ -214,10 +216,20 @@
     formsCard.append(formsHint, formsOpen);
     host.appendChild(formsCard);
 
+    const tgCard = el("div", "fb-forms");
+    const tgHint = el("p", "fb-forms-hint", t("feedback.tgHint"));
+    const tgOpen = el("button", "btn contained fb-forms-open");
+    tgOpen.type = "button";
+    tgOpen.append(el("span", "material-icons", "send"), el("span", "fb-forms-open-label", t("feedback.tgOpen")));
+    tgOpen.onclick = () => window.open(TG_BOT_URL, "_blank", "noopener");
+    tgCard.append(tgHint, tgOpen);
+    host.appendChild(tgCard);
+
     ui = {
       q, chanBtns, formsHint, formsOpenLabel: formsOpen.querySelector(".fb-forms-open-label"),
+      tgHint, tgOpenLabel: tgOpen.querySelector(".fb-forms-open-label"),
       area, count, updateCount, cats: catBtns, sendLabel: send.querySelector(".fb-send-label"), emailLab, err,
-      form, formsCard
+      form, formsCard, tgCard
     };
     paintCats();
     paintChannel();
@@ -228,10 +240,13 @@
     if (!ui) return;
     ui.chanBtns.app.classList.toggle("active", channel === "app");
     ui.chanBtns.forms.classList.toggle("active", channel === "forms");
+    ui.chanBtns.tg.classList.toggle("active", channel === "tg");
     ui.chanBtns.app.setAttribute("aria-pressed", channel === "app" ? "true" : "false");
     ui.chanBtns.forms.setAttribute("aria-pressed", channel === "forms" ? "true" : "false");
+    ui.chanBtns.tg.setAttribute("aria-pressed", channel === "tg" ? "true" : "false");
     ui.form.hidden = channel !== "app";
     ui.formsCard.hidden = channel !== "forms";
+    ui.tgCard.hidden = channel !== "tg";
   }
 
   let ui = null;
@@ -355,8 +370,11 @@
       ui.q.textContent = t("feedback.channelQ");
       ui.chanBtns.app.querySelector(".fb-chan-label").textContent = t("feedback.channelApp");
       ui.chanBtns.forms.querySelector(".fb-chan-label").textContent = t("feedback.channelForms");
+      ui.chanBtns.tg.querySelector(".fb-chan-label").textContent = t("feedback.channelTg");
       ui.formsHint.textContent = t("feedback.formsHint");
       ui.formsOpenLabel.textContent = t("feedback.formsOpen");
+      ui.tgHint.textContent = t("feedback.tgHint");
+      ui.tgOpenLabel.textContent = t("feedback.tgOpen");
       ui.sendLabel.textContent = t("feedback.send");
       ui.emailLab.textContent = t("feedback.emailPh");
       ui.updateCount();
