@@ -5,7 +5,7 @@
   const STATS_KEY = "app.achStats";
 
   const ALL_GAMES = ["ttt", "snake", "memory", "g2048", "rps", "react", "simon", "mines", "guess"];
-  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "review", "exam", "turtle", "constructor", "season", "games", "tools", "feedback", "profile", "settings", "achievements"];
+  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "review", "debug", "exam", "turtle", "constructor", "season", "games", "tools", "feedback", "profile", "settings", "achievements"];
   const tasksTotal = () => (global.Tasks && global.Tasks.count) || 12;
   const courseTotal = () => (global.Course && global.Course.count) || 12;
   const glossTotal = () => (global.Glossary && global.Glossary.count) || 41;
@@ -61,6 +61,15 @@
   function reviewState() {
     try { return (global.Review && global.Review.stats()) || {}; }
     catch (e) { return {}; }
+  }
+
+  function debugState() {
+    try { return (global.DebugLab && global.DebugLab.stats()) || {}; }
+    catch (e) { return {}; }
+  }
+  function debugTotal() {
+    try { return (global.DebugLab && global.DebugLab.count) || 32; }
+    catch (e) { return 32; }
   }
 
   /* ---------- Визначення досягнень ---------- */
@@ -141,7 +150,12 @@
     { id: "review_first",  ico: "style",          cat: "review", tier: "bronze", check: () => (reviewState().done || 0) >= 1,                      progress: () => Math.min((reviewState().done || 0) / 1, 1) },
     { id: "review_50",     ico: "layers",         cat: "review", tier: "silver", check: () => (reviewState().done || 0) >= 50,                     progress: () => Math.min((reviewState().done || 0) / 50, 1) },
     { id: "review_master", ico: "school",         cat: "review", tier: "gold",   check: () => glossTotal() > 0 && (reviewState().mastered || 0) >= glossTotal(), progress: () => glossTotal() ? Math.min((reviewState().mastered || 0) / glossTotal(), 1) : 0 },
-    { id: "review_streak", ico: "local_fire_department", cat: "review", tier: "silver", check: () => (reviewState().streak || 0) >= 7,                progress: () => Math.min((reviewState().streak || 0) / 7, 1) }
+    { id: "review_streak", ico: "local_fire_department", cat: "review", tier: "silver", check: () => (reviewState().streak || 0) >= 7,                progress: () => Math.min((reviewState().streak || 0) / 7, 1) },
+
+    { id: "debug_first",   ico: "bug_report",     cat: "debug",  tier: "bronze", check: () => (debugState().solved || 0) >= 1,                       progress: () => Math.min((debugState().solved || 0) / 1, 1) },
+    { id: "debug_10",      ico: "pest_control",   cat: "debug",  tier: "silver", check: () => (debugState().solved || 0) >= 10,                      progress: () => Math.min((debugState().solved || 0) / 10, 1) },
+    { id: "debug_all",     ico: "engineering",    cat: "debug",  tier: "gold",   check: () => debugTotal() > 0 && (debugState().solved || 0) >= debugTotal(), progress: () => debugTotal() ? Math.min((debugState().solved || 0) / debugTotal(), 1) : 0 },
+    { id: "debug_hard",    ico: "psychology",     cat: "debug",  tier: "silver", check: () => (debugState().solved || 0) >= 21,                      progress: () => Math.min((debugState().solved || 0) / 21, 1) }
   ];
 
   const TIER_COLORS = { bronze: "#CD7F32", silver: "#C0C0C0", gold: "#FFD700" };
@@ -167,6 +181,7 @@
     projects: { uk: "Проєкти",  en: "Projects",  tr: "Projeler" },
     glossary: { uk: "Словник",  en: "Glossary",  tr: "Sözlük" },
     review:   { uk: "Повторення", en: "Review",  tr: "Tekrar" },
+    debug:    { uk: "Полювання на баги", en: "Bug hunt", tr: "Hata avı" },
     exam:     { uk: "Іспит",    en: "Exam",      tr: "Sınav" },
     turtle:   { uk: "Черепашка", en: "Turtle",   tr: "Kaplumbağa" },
     maker:    { uk: "Конструктор", en: "Constructor", tr: "Kurucu" },
@@ -234,7 +249,11 @@
     review_first:   { uk: "Перше повторення",    en: "First Review",       tr: "İlk Tekrar" },
     review_50:      { uk: "П'ятдесят карток",    en: "Fifty Cards",        tr: "Elli Kart" },
     review_master:  { uk: "Пам'ять на роки",     en: "Long-Term Memory",   tr: "Uzun Süreli Hafıza" },
-    review_streak:  { uk: "Тиждень без пропусків", en: "A Week Unbroken",  tr: "Kesintisiz Bir Hafta" }
+    review_streak:  { uk: "Тиждень без пропусків", en: "A Week Unbroken",  tr: "Kesintisiz Bir Hafta" },
+    debug_first:    { uk: "Перший жук",            en: "First Bug",          tr: "İlk Böcek" },
+    debug_10:       { uk: "Десять жуків",          en: "Ten Bugs Down",      tr: "On Böcek" },
+    debug_all:      { uk: "Головний відловлювач",  en: "Chief Exterminator", tr: "Baş İmha Uzmanı" },
+    debug_hard:     { uk: "Досвіднений отруйник",  en: "Seasoned Sleuth",    tr: "Tecrübelı Dedektif" }
   };
 
   const ACH_DESC = {
@@ -298,7 +317,11 @@
     review_first:   { uk: "Оціни свою першу картку в повторенні",  en: "Grade your first flashcard in Review", tr: "Tekrar'da ilk kartını puanla" },
     review_50:      { uk: "Переглянь 50 карток за будь-який час",  en: "Go through 50 flashcards in total", tr: "Toplamda 50 kart tekrar et" },
     review_master:  { uk: "Досягни найвищої скриньки для кожного терміна", en: "Max every glossary term's box", tr: "Sözlükteki her terimi en üst kutuya taşı" },
-    review_streak:  { uk: "Повторюй сім днів поспіль",             en: "Review seven days in a row", tr: "Yedi gün üst üste tekrar yap" }
+    review_streak:  { uk: "Повторюй сім днів поспіль",             en: "Review seven days in a row", tr: "Yedi gün üst üste tekrar yap" },
+    debug_first:    { uk: "Виправ першу помилку в коді",           en: "Fix your first broken program", tr: "İlk bozuk programını düzelt" },
+    debug_10:       { uk: "Розбері 10 програм з помилками",        en: "Debug 10 broken programs", tr: "10 bozuk programı düzelt" },
+    debug_all:      { uk: "Виправ усі програми в тренажері",       en: "Fix every program in the trainer", tr: "Antrenördeki tüm programları düzelt" },
+    debug_hard:     { uk: "Розбері 21 програму, включно зі складними", en: "Solve 21 programs, hard ones included", tr: "Zorlar dahil 21 programı çöz" }
   };
 
   const lang = () => (global.I18n ? global.I18n.lang : "uk");
@@ -434,7 +457,7 @@
       '</h3><span class="ach-counter">' + count + ' / ' + total + '</span>';
     container.appendChild(header);
 
-    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "course", "projects", "glossary", "review", "exam", "turtle", "maker", "season", "profile", "explore", "streak", "daily"];
+    const cats = ["python", "games", "specific", "tools", "tasks", "contest", "modules", "course", "projects", "glossary", "review", "debug", "exam", "turtle", "maker", "season", "profile", "explore", "streak", "daily"];
     cats.forEach((cat) => {
       const catAchs = ACHIEVEMENTS.filter((a) => a.cat === cat);
       if (catAchs.length === 0) return;
@@ -632,7 +655,7 @@
 
     /* Проєкти, словник й іспит тримають свій прогрес у власних ключах —
        тут достатньо лише перерахувати значки. */
-    ["projectdone", "glossaryread", "examdone", "reviewdone"].forEach((ev) => {
+    ["projectdone", "glossaryread", "examdone", "reviewdone", "debugdone"].forEach((ev) => {
       document.addEventListener(ev, () => {
         checkAll();
         rerenderIfActive();

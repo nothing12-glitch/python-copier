@@ -197,6 +197,10 @@
       <span class="rail-ico"><span class="material-icons">style</span></span>
       <span class="rail-label" data-i18n="nav.review">Повторення</span>
     </button>
+    <button class="rail-btn" data-route="debug">
+      <span class="rail-ico"><span class="material-icons">bug_report</span></span>
+      <span class="rail-label" data-i18n="nav.debug">Розбирай помилки</span>
+    </button>
     <button class="rail-btn" data-route="exam">
       <span class="rail-ico"><span class="material-icons">workspace_premium</span></span>
       <span class="rail-label" data-i18n="nav.exam">Іспит</span>
@@ -629,6 +633,15 @@
         <button class="btn text" id="reviewReset" type="button"><span class="material-icons">restart_alt</span><span data-i18n="review.reset">Скинути</span></button>
       </div>
       <div id="reviewStage" class="review-stage"></div>
+    </section>
+
+    <!-- DEBUG (bug hunt trainer) -->
+    <section class="view" id="view-debug">
+      <div class="section-head">
+        <h2 data-i18n="nav.debug">Розбирай помилки</h2>
+        <button class="btn text" id="debugReset" type="button"><span class="material-icons">restart_alt</span><span data-i18n="debug.reset">Скинути</span></button>
+      </div>
+      <div id="debugStage" class="debug-stage"></div>
     </section>
 
     <!-- EXAM -->
@@ -1111,6 +1124,7 @@
   <script src="projects.js?v=26.12.13"></script>
   <script src="glossary.js?v=26.12.13"></script>
   <script src="review.js?v=26.12.13"></script>
+  <script src="debug.js?v=26.12.13"></script>
   <script src="exam.js?v=26.12.13"></script>
   <script src="turtle.js?v=26.12.13"></script>
   <script src="constructor.js?v=26.12.13"></script>

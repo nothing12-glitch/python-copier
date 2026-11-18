@@ -3254,6 +3254,42 @@ body:not([data-style="new"]) .py-ask { background: rgba(148, 226, 213, .05); }
 .review-done .task-actions{margin-top:6px}
 @media (max-width:640px){.review-stats{grid-template-columns:repeat(2,1fr)}.review-grade .btn{flex:1 1 100%}}
 
+/* ---------- Розбирай помилки (тренажер багів) ---------- */
+.debug-stage{display:flex;flex-direction:column;gap:14px;max-width:720px;margin-inline:auto}
+.dbg-head{display:flex;flex-direction:column;gap:10px}
+.dbg-stats{font-size:13.5px;color:var(--md-on-surface-var)}
+.dbg-stats b{color:var(--md-primary);font-size:16px}
+.dbg-chips{display:flex;gap:8px;flex-wrap:wrap}
+.dbg-chip{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;padding:6px 12px;border-radius:999px;border:1px solid var(--md-outline-var);background:var(--md-surface);color:var(--md-on-surface-var);cursor:pointer}
+.dbg-chip b{font-size:11px;padding:1px 7px;border-radius:999px;background:var(--md-surface-dim)}
+.dbg-chip.on{background:var(--md-primary-container);color:var(--md-on-primary-container);border-color:transparent}
+.dbg-bar{height:6px;border-radius:999px;background:var(--md-surface-dim);overflow:hidden}
+.dbg-bar i{display:block;height:100%;width:0;background:var(--md-primary);border-radius:999px;transition:width .3s}
+.dbg-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dbg-pos{font-size:13px;font-weight:600;color:var(--md-on-surface)}
+.dbg-lvl{font-size:11px;padding:3px 10px;border-radius:999px;background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
+.dbg-solved-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--md-success)}
+.dbg-solved-tag .material-icons{font-size:15px}
+.dbg-code{margin:0;padding:16px 18px;border-radius:12px;background:var(--md-surface-dim);font-family:var(--md-mono);font-size:14px;line-height:1.9;color:var(--md-on-surface);white-space:pre-wrap;word-break:break-word}
+.dbg-line{display:block}
+.dbg-fill{display:inline-block;width:74px;font-family:var(--md-mono);font-size:14px;text-align:center;padding:1px 6px;border-radius:6px;border:1.5px dashed var(--md-primary);background:var(--md-primary-container);color:var(--md-on-primary-container)}
+.dbg-fill:focus{outline:2px solid var(--md-primary);outline-offset:1px;border-style:solid}
+.dbg-io{display:flex;flex-direction:column;gap:4px}
+.dbg-io-tag{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--md-on-surface-var)}
+.dbg-io pre{margin:0;padding:8px 12px;border-radius:8px;background:var(--md-surface-dim);font-family:var(--md-mono);font-size:12.5px;line-height:1.5;color:var(--md-on-surface);white-space:pre-wrap}
+.dbg-hint{display:flex;align-items:flex-start;gap:8px;margin:0;padding:12px 14px;border-radius:10px;background:var(--md-tertiary-container);color:var(--md-on-tertiary-container);font-size:13px;line-height:1.55}
+.dbg-hint .material-icons{font-size:18px;flex:0 0 auto}
+.dbg-fb{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;font-size:13.5px;font-weight:600}
+.dbg-fb.ok{background:var(--md-success-container,var(--md-secondary-container));color:var(--md-success)}
+.dbg-fb.bad{background:var(--md-error-container,var(--md-surface-dim));color:var(--md-error)}
+.dbg-fb .material-icons{font-size:20px}
+.dbg-actions{gap:8px;flex-wrap:wrap}
+.dbg-actions .btn[data-act=prev],.dbg-actions .btn[data-act=next]{flex:0 0 auto;min-width:44px;padding-inline:10px}
+.dbg-actions .btn[data-act=hint]{flex:0 1 auto}
+.dbg-actions .btn[data-act=check]{flex:1 1 auto;justify-content:center}
+.dbg-empty{margin:0;font-size:14px}
+@media (max-width:640px){.dbg-code{font-size:13px;padding:14px}.dbg-actions .btn[data-act=check]{flex:1 1 100%}}
+
 /* ---------- Іспит ---------- */
 .exam-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .exam-pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:6px 12px;border-radius:999px;background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
