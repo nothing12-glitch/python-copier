@@ -390,6 +390,8 @@
     "course.unavailable": "Ο έλεγχος δεν είναι διαθέσιμος μέχρι να φορτωθεί η Python.",
     "installer.updatedUnknown": "δεν υπάρχουν δεδομένα ενημέρωσης",
     "profile.password": "Κωδικός πρόσβασης",
+    "profile.showPass": "Εμφάνιση κωδικού",
+    "profile.hidePass": "Απόκρυψη κωδικού",
     "game.optDuo": "Δύο παίκτες",
     "python.lint.more": "και {n} περισσότερες προειδοποιήσεις",
     "profile.register": "Εγγραφή",

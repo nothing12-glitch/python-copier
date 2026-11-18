@@ -390,6 +390,8 @@
     "course.unavailable": "Python がロードされるまでチェックはできません。",
     "installer.updatedUnknown": "更新データがありません",
     "profile.password": "パスワード",
+    "profile.showPass": "パスワードを表示",
+    "profile.hidePass": "パスワードを隠す",
     "game.optDuo": "2人のプレイヤー",
     "python.lint.more": "および {n} の追加警告",
     "profile.register": "登録する",

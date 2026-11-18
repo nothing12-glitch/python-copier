@@ -390,6 +390,8 @@
     "course.unavailable": "जब तक पाइथन लोड नहीं हो जाता तब तक जाँच उपलब्ध नहीं है।",
     "installer.updatedUnknown": "कोई अद्यतन डेटा नहीं",
     "profile.password": "पासवर्ड",
+    "profile.showPass": "पासवर्ड दिखाएँ",
+    "profile.hidePass": "पासवर्ड छिपाएँ",
     "game.optDuo": "दो खिलाड़ी",
     "python.lint.more": "और {n} अधिक चेतावनियाँ",
     "profile.register": "रजिस्टर करें",

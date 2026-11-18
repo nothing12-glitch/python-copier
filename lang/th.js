@@ -483,6 +483,8 @@
     "course.unavailable": "การตรวจสอบไม่พร้อมใช้งานจนกว่า Python จะโหลดแล้ว",
     "installer.updatedUnknown": "ไม่มีข้อมูลการอัพเดต",
     "profile.password": "รหัสผ่าน",
+    "profile.showPass": "แสดงรหัสผ่าน",
+    "profile.hidePass": "ซ่อนรหัสผ่าน",
     "game.optDuo": "ผู้เล่นสองคน",
     "python.lint.more": "และคำเตือนเพิ่มเติมอีก {n}",
     "profile.register": "ลงทะเบียน",

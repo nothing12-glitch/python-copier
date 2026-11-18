@@ -483,6 +483,8 @@
     "course.unavailable": "הבדיקה אינה זמינה עד לטעינת Python.",
     "installer.updatedUnknown": "אין נתוני עדכון",
     "profile.password": "סיסמה",
+    "profile.showPass": "הצג סיסמה",
+    "profile.hidePass": "הסתר סיסמה",
     "game.optDuo": "שני שחקנים",
     "python.lint.more": "ועוד {n} אזהרות",
     "profile.register": "הרשמה",

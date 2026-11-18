@@ -390,6 +390,8 @@
     "course.unavailable": "Python이 로드될 때까지 검사를 사용할 수 없습니다.",
     "installer.updatedUnknown": "업데이트 데이터 없음",
     "profile.password": "비밀번호",
+    "profile.showPass": "비밀번호 표시",
+    "profile.hidePass": "비밀번호 숨기기",
     "game.optDuo": "두 명의 플레이어",
     "python.lint.more": "그리고 {n} 추가 경고",
     "profile.register": "등록",

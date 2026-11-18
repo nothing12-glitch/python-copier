@@ -989,13 +989,13 @@
         </div>
         <form id="loginForm" class="auth-form">
           <div class="field"><input id="loginUser" type="text" placeholder=" " autocomplete="username" required><label data-i18n="profile.username">Ім'я</label></div>
-          <div class="field"><input id="loginPass" type="password" placeholder=" " autocomplete="current-password" required><label data-i18n="profile.password">Пароль</label></div>
+          <div class="field has-eye"><input id="loginPass" type="password" placeholder=" " autocomplete="current-password" required><label data-i18n="profile.password">Пароль</label><button type="button" class="field-eye" data-eye="loginPass" data-i18n-title="profile.showPass" aria-label="Показати пароль"><span class="material-icons">visibility</span></button></div>
           <button class="btn contained" type="submit"><span data-i18n="profile.signIn">Увійти</span></button>
           <p class="auth-msg" id="loginMsg"></p>
         </form>
         <form id="registerForm" class="auth-form hidden">
           <div class="field"><input id="regUser" type="text" placeholder=" " autocomplete="username" minlength="3" required><label data-i18n="profile.username">Ім'я</label></div>
-          <div class="field"><input id="regPass" type="password" placeholder=" " autocomplete="new-password" minlength="4" required><label data-i18n="profile.password">Пароль</label></div>
+          <div class="field has-eye"><input id="regPass" type="password" placeholder=" " autocomplete="new-password" minlength="4" required><label data-i18n="profile.password">Пароль</label><button type="button" class="field-eye" data-eye="regPass" data-i18n-title="profile.showPass" aria-label="Показати пароль"><span class="material-icons">visibility</span></button></div>
           <button class="btn contained" type="submit"><span data-i18n="profile.createAccount">Створити акаунт</span></button>
           <p class="auth-msg" id="regMsg"></p>
         </form>

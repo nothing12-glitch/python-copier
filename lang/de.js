@@ -390,6 +390,8 @@
     "course.unavailable": "Die Überprüfung ist erst verfügbar, wenn Python geladen wurde.",
     "installer.updatedUnknown": "keine Update-Daten",
     "profile.password": "Passwort",
+    "profile.showPass": "Passwort anzeigen",
+    "profile.hidePass": "Passwort verbergen",
     "game.optDuo": "Zwei Spieler",
     "python.lint.more": "und ein weiterer {n} der Warnungen",
     "profile.register": "Registrieren",

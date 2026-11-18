@@ -390,6 +390,8 @@
     "course.unavailable": "Sprawdzanie jest niedostępne do czasu załadowania Pythona.",
     "installer.updatedUnknown": "brak danych aktualizacji",
     "profile.password": "Hasło",
+    "profile.showPass": "Pokaż hasło",
+    "profile.hidePass": "Ukryj hasło",
     "game.optDuo": "Dwóch graczy",
     "python.lint.more": "i kolejny {n} ostrzeżeń",
     "profile.register": "Zarejestruj się",

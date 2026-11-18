@@ -3642,3 +3642,12 @@ html[dir="rtl"] .gloss-search-ico{left:auto;right:12px}
 .mirror-note{display:block;margin-top:6px;font-size:12px;opacity:.72}
 .mirror-note[hidden]{display:none}
 .mirror-note a{color:inherit;font-family:var(--md-mono);font-size:11px;text-decoration:underline;word-break:break-all}
+
+/* ---------- Око показу пароля у формі входу ---------- */
+.field.has-eye input{padding-inline-end:46px}
+.field-eye{position:absolute;inset-inline-end:6px;bottom:6px;width:34px;height:34px;border:0;border-radius:50%;background:transparent;color:var(--md-on-surface-var);display:grid;place-items:center;cursor:pointer;padding:0;line-height:0}
+.field-eye:hover{background:rgba(29,27,32,.08)}
+.field-eye .material-icons{font-size:20px}
+body.dark .field-eye:hover{background:rgba(230,224,233,.10)}
+body[data-style="new"] .field-eye{color:var(--nu-dim)}
+body[data-style="new"] .field-eye:hover{background:var(--nu-surface);color:var(--nu-text)}

@@ -390,6 +390,8 @@
     "course.unavailable": "Pemeriksaan tidak tersedia sampai Python dimuat.",
     "installer.updatedUnknown": "tidak ada pembaruan data",
     "profile.password": "Kata sandi",
+    "profile.showPass": "Tampilkan kata sandi",
+    "profile.hidePass": "Sembunyikan kata sandi",
     "game.optDuo": "Dua pemain",
     "python.lint.more": "dan {n} peringatan lainnya",
     "profile.register": "Daftar",

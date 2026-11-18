@@ -390,6 +390,8 @@
     "course.unavailable": "Kontrola není k dispozici, dokud se nenačte Python.",
     "installer.updatedUnknown": "žádná aktualizační data",
     "profile.password": "Heslo",
+    "profile.showPass": "Zobrazit heslo",
+    "profile.hidePass": "Skrýt heslo",
     "game.optDuo": "Dva hráči",
     "python.lint.more": "a {n} dalších varování",
     "profile.register": "Zaregistrujte se",

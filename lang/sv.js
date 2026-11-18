@@ -390,6 +390,8 @@
     "course.unavailable": "Kontroll är inte tillgänglig förrän Python har laddats.",
     "installer.updatedUnknown": "inga uppdateringsdata",
     "profile.password": "Lösenord",
+    "profile.showPass": "Visa lösenord",
+    "profile.hidePass": "Dölj lösenord",
     "game.optDuo": "Två spelare",
     "python.lint.more": "och {n} fler varningar",
     "profile.register": "Registrera dig",

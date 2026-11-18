@@ -390,6 +390,8 @@
     "course.unavailable": "La vérification n'est pas disponible tant que Python n'a pas été chargé.",
     "installer.updatedUnknown": "pas de données de mise à jour",
     "profile.password": "Mot de passe",
+    "profile.showPass": "Afficher le mot de passe",
+    "profile.hidePass": "Masquer le mot de passe",
     "game.optDuo": "Deux joueurs",
     "python.lint.more": "et un autre {n} d'avertissements",
     "profile.register": "S'inscrire",

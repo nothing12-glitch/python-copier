@@ -390,6 +390,8 @@
     "course.unavailable": "Verificarea nu este disponibilă până la încărcarea Python.",
     "installer.updatedUnknown": "fără date de actualizare",
     "profile.password": "Parolă",
+    "profile.showPass": "Arată parola",
+    "profile.hidePass": "Ascunde parola",
     "game.optDuo": "Doi jucători",
     "python.lint.more": "și încă {n} avertismente",
     "profile.register": "Înregistrează-te",

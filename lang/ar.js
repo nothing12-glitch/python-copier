@@ -483,6 +483,8 @@
     "course.unavailable": "التحقق غير متاح حتى يتم تحميل بايثون.",
     "installer.updatedUnknown": "لا توجد بيانات التحديث",
     "profile.password": "كلمة المرور",
+    "profile.showPass": "إظهار كلمة المرور",
+    "profile.hidePass": "إخفاء كلمة المرور",
     "game.optDuo": "لاعبين اثنين",
     "python.lint.more": "و{n} المزيد من التحذيرات",
     "profile.register": "سجل",

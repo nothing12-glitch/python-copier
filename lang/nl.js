@@ -390,6 +390,8 @@
     "course.unavailable": "Controle is pas beschikbaar als Python is geladen.",
     "installer.updatedUnknown": "geen updategegevens",
     "profile.password": "Wachtwoord",
+    "profile.showPass": "Wachtwoord tonen",
+    "profile.hidePass": "Wachtwoord verbergen",
     "game.optDuo": "Twee spelers",
     "python.lint.more": "en {n} meer waarschuwingen",
     "profile.register": "Registreren",

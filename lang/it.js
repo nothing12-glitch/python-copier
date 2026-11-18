@@ -390,6 +390,8 @@
     "course.unavailable": "Il controllo non è disponibile finché Python non viene caricato.",
     "installer.updatedUnknown": "nessun dato di aggiornamento",
     "profile.password": "Parola d'ordine",
+    "profile.showPass": "Mostra password",
+    "profile.hidePass": "Nascondi password",
     "game.optDuo": "Due giocatori",
     "python.lint.more": "e un altro {n} di avvertimenti",
     "profile.register": "Registrati",

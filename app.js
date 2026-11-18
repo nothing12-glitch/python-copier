@@ -293,6 +293,21 @@
         }
       };
     }
+    document.querySelectorAll(".field-eye").forEach((btn) => {
+      btn.onclick = () => {
+        const inp = document.getElementById(btn.dataset.eye);
+        if (!inp) return;
+        const show = inp.type === "password";
+        inp.type = show ? "text" : "password";
+        const icon = btn.querySelector(".material-icons");
+        if (icon) icon.textContent = show ? "visibility_off" : "visibility";
+        const key = show ? "profile.hidePass" : "profile.showPass";
+        btn.setAttribute("data-i18n-title", key);
+        btn.setAttribute("title", t(key));
+        btn.setAttribute("aria-label", t(key));
+        inp.focus();
+      };
+    });
     const logoutBtn = $("#logoutBtn");
     if (logoutBtn) {
       logoutBtn.onclick = () => {

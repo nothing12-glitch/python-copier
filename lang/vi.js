@@ -483,6 +483,8 @@
     "course.unavailable": "Việc kiểm tra không khả dụng cho đến khi Python được tải.",
     "installer.updatedUnknown": "không có dữ liệu cập nhật",
     "profile.password": "Mật khẩu",
+    "profile.showPass": "Hiện mật khẩu",
+    "profile.hidePass": "Ẩn mật khẩu",
     "game.optDuo": "Hai người chơi",
     "python.lint.more": "và {n} cảnh báo khác",
     "profile.register": "Đăng ký",

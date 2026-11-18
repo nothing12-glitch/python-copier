@@ -390,6 +390,8 @@
     "course.unavailable": "Az ellenőrzés nem érhető el, amíg a Python be nem töltődik.",
     "installer.updatedUnknown": "nincsenek frissítési adatok",
     "profile.password": "Jelszó",
+    "profile.showPass": "Jelszó megjelenítése",
+    "profile.hidePass": "Jelszó elrejtése",
     "game.optDuo": "Két játékos",
     "python.lint.more": "és {n} további figyelmeztetés",
     "profile.register": "Regisztráció",

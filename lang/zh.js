@@ -390,6 +390,8 @@
     "course.unavailable": "在 Python 加载之前无法进行检查。",
     "installer.updatedUnknown": "无更新数据",
     "profile.password": "密码",
+    "profile.showPass": "显示密码",
+    "profile.hidePass": "隐藏密码",
     "game.optDuo": "两名玩家",
     "python.lint.more": "和 {n} 更多警告",
     "profile.register": "注册",
