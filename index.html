@@ -201,6 +201,10 @@
       <span class="rail-ico"><span class="material-icons">bug_report</span></span>
       <span class="rail-label" data-i18n="nav.debug">Розбирай помилки</span>
     </button>
+    <button class="rail-btn" data-route="mastery">
+      <span class="rail-ico"><span class="material-icons">insights</span></span>
+      <span class="rail-label" data-i18n="nav.mastery">Мапа майстерності</span>
+    </button>
     <button class="rail-btn" data-route="exam">
       <span class="rail-ico"><span class="material-icons">workspace_premium</span></span>
       <span class="rail-label" data-i18n="nav.exam">Іспит</span>
@@ -642,6 +646,14 @@
         <button class="btn text" id="debugReset" type="button"><span class="material-icons">restart_alt</span><span data-i18n="debug.reset">Скинути</span></button>
       </div>
       <div id="debugStage" class="debug-stage"></div>
+    </section>
+
+    <!-- MASTERY (skill map) -->
+    <section class="view" id="view-mastery">
+      <div class="section-head">
+        <h2 data-i18n="nav.mastery">Мапа майстерності</h2>
+      </div>
+      <div id="masteryStage" class="mastery-stage"></div>
     </section>
 
     <!-- EXAM -->
@@ -1125,6 +1137,7 @@
   <script src="glossary.js?v=26.12.13"></script>
   <script src="review.js?v=26.12.13"></script>
   <script src="debug.js?v=26.12.13"></script>
+  <script src="mastery.js?v=26.12.13"></script>
   <script src="exam.js?v=26.12.13"></script>
   <script src="turtle.js?v=26.12.13"></script>
   <script src="constructor.js?v=26.12.13"></script>

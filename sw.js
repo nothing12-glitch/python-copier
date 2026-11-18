@@ -54,6 +54,7 @@ const STATIC_ASSETS = [
   "/glossary.js",
   "/review.js",
   "/debug.js",
+  "/mastery.js",
   "/exam.js",
   "/turtle.js",
   "/constructor.js",

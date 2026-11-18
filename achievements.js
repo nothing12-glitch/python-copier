@@ -5,7 +5,7 @@
   const STATS_KEY = "app.achStats";
 
   const ALL_GAMES = ["ttt", "snake", "memory", "g2048", "rps", "react", "simon", "mines", "guess"];
-  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "review", "debug", "exam", "turtle", "constructor", "season", "games", "tools", "feedback", "profile", "settings", "achievements"];
+  const ALL_ROUTES = ["home", "python", "modules", "course", "tasks", "daily", "projects", "glossary", "review", "debug", "mastery", "exam", "turtle", "constructor", "season", "games", "tools", "feedback", "profile", "settings", "achievements"];
   const tasksTotal = () => (global.Tasks && global.Tasks.count) || 12;
   const courseTotal = () => (global.Course && global.Course.count) || 12;
   const glossTotal = () => (global.Glossary && global.Glossary.count) || 41;
