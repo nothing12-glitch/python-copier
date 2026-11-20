@@ -265,6 +265,52 @@ async function tgOwnerReply(env, chatId, text) {
   }, ownerToken);
 }
 
+/* Статистика по відгуках для команди /stats */
+async function tgOwnerStats(env, chatId) {
+  const total = await env.DB.prepare("SELECT COUNT(*) AS n FROM feedback").first();
+  const byCat = await env.DB.prepare("SELECT cat, COUNT(*) AS n FROM feedback GROUP BY cat").all();
+  const unread = await env.DB.prepare("SELECT COUNT(*) AS n FROM feedback WHERE is_read = 0").first();
+  const rows = await env.DB.prepare("SELECT body FROM feedback WHERE cat = 'rating'").all();
+  let sum = 0, cnt = 0;
+  for (const r of (rows.results || [])) {
+    const m = /(\d)\/5/.exec(r.body);
+    if (m) { sum += Number(m[1]); cnt++; }
+  }
+  const avg = cnt ? (sum / cnt).toFixed(1) : "—";
+  const lines = (byCat.results || []).map((c) => `${FB_CATS[c.cat]} ${c.cat} — ${c.n}`);
+  const text =
+    `📊 <b>Статистика відгуків</b>\n` +
+    `Всього: ${total.n}\n` +
+    `Непрочитано: ${unread.n}\n` +
+    `Оцінка сайту: ${cnt} разів, середня ${avg}/5\n\n` +
+    lines.join("\n");
+  await tgCall(env, "sendMessage", {
+    chat_id: chatId, text, parse_mode: "HTML", disable_web_page_preview: true
+  }, env.TG2_BOT_TOKEN || env.TG_BOT_TOKEN);
+}
+
+/* Останні відгуки для команди /list */
+async function tgOwnerList(env, chatId, limit = 5) {
+  const rows = await env.DB.prepare(
+    "SELECT id, cat, body, handle, created, tgchat, rating, is_read FROM feedback ORDER BY id DESC LIMIT ?"
+  ).bind(limit).all();
+  const items = rows.results || [];
+  if (!items.length) {
+    await tgCall(env, "sendMessage", { chat_id: chatId, text: "Поки що немає відгуків." }, env.TG2_BOT_TOKEN || env.TG_BOT_TOKEN);
+    return;
+  }
+  for (const r of items) {
+    const who = r.handle ? "@" + escHtml(r.handle) : escHtml("анонімно");
+    const when = new Date((r.created || 0) * 1000).toISOString().slice(0, 16).replace("T", " ");
+    const readMark = r.is_read ? " ✅" : "";
+    const text = `🐍 <b>Відгук python-copier</b>\n${FB_CATS[r.cat]} ${escHtml(r.cat)} · ${who} · 🌐 uk · 🕒 ${when} UTC${readMark}\n${escHtml(r.body)}`.slice(0, 4000);
+    await tgCall(env, "sendMessage", {
+      chat_id: chatId, text, parse_mode: "HTML", disable_web_page_preview: true,
+      reply_markup: fbKeyboard(r.id, r.rating || 0, r.is_read ? 1 : 0, r.tgchat)
+    }, env.TG2_BOT_TOKEN || env.TG_BOT_TOKEN);
+  }
+}
+
 async function tgSend(env, html, markup) {
   return tgCall(env, "sendMessage", {
     chat_id: env.TG_CHAT_ID,
@@ -967,7 +1013,18 @@ async function handle2(request, env, ctx) {
     if (msg2 && typeof msg2.text === "string" &&
         String(m2Chat) === String(env.TG_CHAT_ID)) {
       await ensureSchema(env);
-      await tgOwnerReply(env, m2Chat, msg2.text.trim());
+      if (msg2.text === "/stats") {
+        await tgOwnerStats(env, m2Chat);
+      } else if (msg2.text === "/list") {
+        await tgOwnerList(env, m2Chat);
+      } else if (msg2.text === "/help" || msg2.text === "/start") {
+        await tgCall(env, "sendMessage", {
+          chat_id: m2Chat,
+          text: "Особистий бот відгуків 🐍\n\n/stats — зведена статистика\n/list — останні 5 відгуків із кнопками\n\nЩоб відповісти людині — натисни «💬 Відповісти людині» під її листом і напиши текст. Скасувати — /cancel."
+        }, env.TG2_BOT_TOKEN || env.TG_BOT_TOKEN);
+      } else {
+        await tgOwnerReply(env, m2Chat, msg2.text.trim());
+      }
     }
     return new Response("{}", { status: 200, headers: { "content-type": "application/json" } });
   }
