@@ -1,0 +1,139 @@
+/* animations.css — All keyframe animations and transitions
+   Extracted from extra.css, style.css, newui.css
+*/
+
+/* ============================================================
+   Base fade animations (from style.css)
+   ============================================================ */
+@keyframes mdfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes mpin{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes ripple{to{transform:scale(2.6);opacity:0}}
+@keyframes blobfloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(5vmax,-4vmax) scale(1.12)}}
+@keyframes bloom{0%{transform:scale(0) rotate(-180deg);opacity:0}60%{transform:scale(1.15) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* ============================================================
+   Update modal major badge animation
+   ============================================================ */
+@keyframes wnmajor{from{opacity:0;transform:translateY(-8px) scale(.95)}to{opacity:1;transform:none}}
+
+/* ============================================================
+   Update modal entrance (from extra.css)
+   ============================================================ */
+@keyframes wn-in{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+
+/* ============================================================
+   New UI dialog entrance (from newui.css)
+   ============================================================ */
+@keyframes nu-dialog-in{from{transform:translateY(14px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+
+/* ============================================================
+   New UI more sheet slide up (from newui.css)
+   ============================================================ */
+@keyframes nu-sheet-up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+
+/* ============================================================
+   Game pause fade (from extra.css)
+   ============================================================ */
+@keyframes gsfade{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:none}}
+
+/* ============================================================
+   Jump flash for line numbers (from extra.css)
+   ============================================================ */
+@keyframes jumpFlash{0%{background:rgba(103,80,164,.3)}100%{background:transparent}}
+
+/* ============================================================
+   Music player equalizer (from extra.css)
+   ============================================================ */
+@keyframes mpEq{0%,100%{height:28%}50%{height:100%}}
+
+/* ============================================================
+   Python ask input animation (from extra.css)
+   ============================================================ */
+@keyframes py-ask-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ============================================================
+   Module stats bar fill (from extra.css - implicit via transition)
+   ============================================================ */
+/* Uses CSS transition on width property */
+
+/* ============================================================
+   Progress bars (various) - use transition on width
+   ============================================================ */
+
+/* ============================================================
+   Focus mode pill drop (from style.css)
+   ============================================================ */
+/* .pill-drop uses transition on transform, opacity, width, height */
+
+/* ============================================================
+   Card hover effects (from style.css)
+   ============================================================ */
+/* .card[data-goto]:hover uses transition on box-shadow, transform */
+
+/* ============================================================
+   Button ripple effect
+   ============================================================ */
+/* .ripple uses animation: ripple .5s ease-out */
+
+/* ============================================================
+   Language fade (from style.css)
+   ============================================================ */
+/* .appbar, .navrail, main use transition: opacity .18s ease, transform .18s ease */
+/* body.lang-fade .appbar, body.lang-fade .navrail, body.lang-fade main use transform: translateY(6px) */
+
+/* ============================================================
+   Reduced motion overrides
+   ============================================================ */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important;
+  }
+  /* Specific overrides for important transitions */
+  .proj-bar-fill,.gloss-bar i,.exam-progress i,.dash-rank-bar i,
+  .dash-cell,.gloss-card,.proj-card,.exam-opt,
+  .season-bar>i,.turtle-tab,.mk-item,.turtle-item,.mk-testdel,
+  .mk-testadd,.mk-tpl,.season-src,
+  .pill-drop,.ripple,.blob,.cursor-glow{
+    transition:none!important;
+    animation:none!important;
+  }
+}
+
+/* ============================================================
+   Low power mode overrides (from style.css)
+   ============================================================ */
+body.low-power .bg-glow,
+body.low-power .blob,
+body.low-power .nu-beam,
+body.low-power .cursor-glow{display:none!important}
+body.low-power{--glass-blur:none}
+body.low-power *,
+body.low-power *::before,
+body.low-power *::after{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  animation-duration:.001s!important;
+  animation-iteration-count:1!important;
+  transition-duration:.001s!important;
+}
+
+/* ============================================================
+   Projector mode overrides (from style.css)
+   ============================================================ */
+body.projector-mode .bg-glow,
+body.projector-mode .blob,
+body.projector-mode .nu-beam,
+body.projector-mode .cursor-glow{display:none!important}
+
+/* ============================================================
+   Transition utilities (common durations)
+   ============================================================ */
+:root{
+  --trans-fast:120ms;
+  --trans-base:180ms;
+  --trans-slow:280ms;
+  --ease-out:cubic-bezier(.22,.61,.36,1);
+  --ease-in-out:cubic-bezier(.4,0,.2,1);
+}

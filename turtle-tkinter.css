@@ -1,0 +1,149 @@
+/* turtle-tkinter.css — Turtle graphics and Tkinter styles
+   Extracted from extra.css section 25 and newui.css turtle section
+*/
+
+/* ============================================================
+   Turtle Graphics (from extra.css section 25 / newui.css)
+   ============================================================ */
+.turtle-hero{display:flex;flex-direction:column;gap:12px;padding:18px 20px;margin-bottom:14px}
+.turtle-intro{margin:0;font-size:14px;line-height:1.6}
+.turtle-stats{display:flex;gap:8px;flex-wrap:wrap}
+.turtle-stat{font-family:var(--md-mono);font-size:12.5px;padding:6px 12px;border-radius:999px;background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
+.turtle-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.turtle-tab{display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:13.5px;padding:9px 15px;border-radius:999px;border:1px solid var(--md-outline-var);background:transparent;color:var(--md-on-surface-var);cursor:pointer;transition:.15s}
+.turtle-tab .material-icons{font-size:18px}
+.turtle-tab:hover{border-color:var(--md-primary)}
+.turtle-tab.active{border-color:var(--md-primary);background:var(--md-primary-container);color:var(--md-on-primary-container);font-weight:600}
+.turtle-stage{margin-bottom:16px}
+.turtle-tip{margin:0 0 12px;font-size:13px;line-height:1.55}
+.turtle-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.turtle-editor{display:flex;flex-direction:column;gap:6px}
+.turtle-editor textarea{min-height:220px}
+.turtle-canvas-wrap{display:flex;flex-direction:column;gap:8px;min-width:0}
+.turtle-canvas{display:grid;place-items:center;min-height:240px;padding:8px;border-radius:12px;border:1px dashed var(--md-outline-var);background:var(--md-surface-dim);overflow:hidden}
+.turtle-canvas:not(:empty){border-style:solid;background:#fff}
+.turtle-live{border-color:var(--md-primary)}
+.turtle-out{margin:0;padding:10px 12px;border-radius:10px;background:#181825;color:#CDD6F4;font-family:var(--md-mono);font-size:12.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;max-height:180px;overflow:auto}
+.turtle-out:empty{display:none}
+.turtle-status{margin-top:10px;font-size:13px;line-height:1.5}
+.turtle-status.good{color:var(--md-success)}
+.turtle-status.bad,.turtle-status.error{color:var(--md-error)}
+.turtle-status.loading{color:var(--md-on-surface-var)}
+.turtle-list{display:grid;gap:10px}
+.turtle-item{display:flex;align-items:flex-start;gap:12px;width:100%;font:inherit;text-align:start;padding:13px 16px;border-radius:var(--md-radius);border:1px solid var(--md-outline-var);background:var(--md-surface);color:var(--md-on-surface);cursor:pointer;transition:.15s}
+.turtle-item:hover{border-color:var(--md-primary);box-shadow:var(--md-elev2)}
+.turtle-item.done{border-inline-start:4px solid var(--md-success)}
+.turtle-item>.material-icons{font-size:21px;flex:0 0 auto;color:var(--md-primary);margin-top:1px}
+.turtle-itemtext{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.turtle-itemtitle{font-size:14.5px;font-weight:600}
+.turtle-itemmeta{font-size:12px;color:var(--md-on-surface-var)}
+.turtle-tick{color:var(--md-success);font-size:21px;flex:0 0 auto}
+.turtle-empty{padding:22px;text-align:center;font-size:14px}
+@media(max-width:640px){
+  .turtle-hero{padding:14px}
+  .turtle-tabs{gap:6px}
+  .turtle-tab{flex:1 1 auto;justify-content:center;padding:8px 12px;font-size:12.5px}
+  .turtle-split{grid-template-columns:1fr}
+  .turtle-editor textarea{min-height:170px}
+  .turtle-canvas{min-height:200px}
+  .turtle-item{padding:12px}
+  .turtle-actions .btn{flex:1 1 auto;justify-content:center}
+}
+
+/* Tkinter styles (if any exist) */
+/* Currently no specific Tkinter styles in extra.css, keeping placeholder */
+
+/* ============================================================
+   NEW UI OVERRIDES for Turtle
+   ============================================================ */
+body[data-style="new"] .turtle-hero{padding:18px 20px;margin-bottom:14px}
+body[data-style="new"] .turtle-intro{color:var(--nu-dim)}
+body[data-style="new"] .turtle-stat{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .turtle-tabs{gap:8px;margin-bottom:14px}
+body[data-style="new"] .turtle-tab{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .turtle-tab:hover{border-color:var(--md-primary);background:var(--nu-surface-2);color:var(--nu-text)}
+body[data-style="new"] .turtle-tab.active{border-color:var(--md-primary);background:var(--md-primary);color:var(--nu-on-accent);font-weight:600}
+body[data-style="new"] .turtle-tab .material-icons{color:var(--md-primary)}
+body[data-style="new"] .turtle-tip{color:var(--nu-dim)}
+body[data-style="new"] .turtle-split{gap:14px}
+body[data-style="new"] .turtle-editor textarea{
+  background:var(--nu-surface);
+  border:1px solid var(--nu-line);
+  color:var(--nu-text);
+  border-radius:10px;
+  font-family:var(--md-mono);
+  font-size:var(--editor-font,14px);
+  padding:12px;
+  resize:vertical;
+  outline:none;
+}
+body[data-style="new"] .turtle-editor textarea:focus{
+  border-color:var(--md-primary);
+  box-shadow:0 0 0 3px rgba(124,58,237,.22);
+}
+body[data-style="new"] .turtle-canvas-wrap{gap:8px}
+body[data-style="new"] .turtle-canvas{
+  background:var(--nu-surface);
+  border:1px dashed var(--nu-line);
+  border-radius:12px;
+}
+body[data-style="new"] .turtle-canvas:not(:empty){
+  border-style:solid;
+  background:#fff;
+}
+body[data-style="new"] .turtle-live{border-color:var(--md-primary)}
+body[data-style="new"] .turtle-out{
+  background:#0B0813;
+  border:1px solid var(--nu-line);
+  color:#CDD6F4;
+}
+body[data-style="new"] .turtle-status{color:var(--nu-dim)}
+body[data-style="new"] .turtle-status.good{color:var(--md-success)}
+body[data-style="new"] .turtle-status.bad,body[data-style="new"] .turtle-status.error{color:var(--md-error)}
+body[data-style="new"] .turtle-status.loading{color:var(--nu-faint)}
+body[data-style="new"] .turtle-list{gap:10px}
+body[data-style="new"] .turtle-item{
+  background:var(--nu-surface-solid);
+  border:1px solid var(--nu-line);
+  border-radius:18px;
+  color:var(--nu-text);
+}
+body[data-style="new"] .turtle-item:hover{
+  border-color:rgba(124,58,237,.42);
+  background:var(--nu-surface-2);
+  box-shadow:0 20px 44px -28px rgba(0,0,0,.9);
+}
+body[data-style="new"] .turtle-item.done{border-inline-start:4px solid var(--md-success)}
+body[data-style="new"] .turtle-item>.material-icons{color:var(--md-primary)}
+body[data-style="new"] .turtle-itemtitle{color:var(--nu-text)}
+body[data-style="new"] .turtle-itemmeta{color:var(--nu-dim)}
+body[data-style="new"] .turtle-tick{color:var(--md-success)}
+body[data-style="new"] .turtle-empty{color:var(--nu-dim);padding:22px}
+
+/* Turtle actions buttons for new UI */
+body[data-style="new"] .turtle-actions .btn{
+  background:var(--nu-surface);
+  border:1px solid var(--nu-line);
+  color:var(--nu-dim);
+}
+body[data-style="new"] .turtle-actions .btn:hover{
+  background:var(--nu-surface-2);
+  color:var(--nu-text);
+}
+body[data-style="new"] .turtle-actions .btn.contained{
+  background:var(--md-primary);
+  color:var(--nu-on-accent);
+  border-color:var(--md-primary);
+}
+
+/* Mobile responsive for new UI turtle */
+@media(max-width:640px){
+  body[data-style="new"] .turtle-hero{padding:14px}
+  body[data-style="new"] .turtle-tabs{gap:6px}
+  body[data-style="new"] .turtle-tab{flex:1 1 auto;justify-content:center;padding:8px 12px;font-size:12.5px}
+  body[data-style="new"] .turtle-split{grid-template-columns:1fr}
+  body[data-style="new"] .turtle-editor textarea{min-height:170px}
+  body[data-style="new"] .turtle-canvas{min-height:200px}
+  body[data-style="new"] .turtle-item{padding:12px}
+  body[data-style="new"] .turtle-actions .btn{flex:1 1 auto;justify-content:center}
+}

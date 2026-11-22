@@ -1,0 +1,300 @@
+/* games-achievements.css — Games, tasks, contest, achievements
+   Extracted from extra.css sections 11-12, 22, 42-43, 8, and style.css games section
+*/
+
+/* ============================================================
+   8) Досягнення (ачіви)
+   ============================================================ */
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.ach-card{background:var(--md-surface);border-radius:var(--md-radius);box-shadow:var(--md-elev1);padding:20px;text-align:center;transition:box-shadow .2s,transform .2s}
+.ach-card:hover{box-shadow:var(--md-elev3);transform:translateY(-2px)}
+.ach-card.locked{opacity:.55;filter:grayscale(.7)}
+.ach-ico{font-size:40px;margin-bottom:12px;display:block}
+.ach-card h3{margin:0 0 6px;font-size:16px;font-weight:500}
+.ach-card p{margin:0;color:var(--md-on-surface-var);font-size:13px;line-height:1.5}
+.ach-progress{margin-top:12px;padding-top:12px;border-top:1px solid var(--md-outline-var)}
+.ach-progress-bar{height:6px;border-radius:999px;background:var(--md-surface-dim);overflow:hidden}
+.ach-progress-bar i{display:block;height:100%;width:0;background:var(--md-primary);border-radius:999px;transition:width .4s}
+.ach-progress-label{display:flex;justify-content:space-between;margin-top:6px;font-size:11.5px;color:var(--md-on-surface-var)}
+.ach-progress-label b{color:var(--md-on-surface);font-family:var(--md-mono)}
+.ach-section-title{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--md-on-surface-var);margin:24px 0 10px}
+
+/* ============================================================
+   11) Задачі (tasks.js)
+   ============================================================ */
+.tasks-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.tasks-search{position:relative;flex:1;min-width:180px}
+.tasks-search-ico{position:absolute;top:50%;transform:translateY(-50%);left:12px;font-size:20px;color:var(--md-on-surface-var);pointer-events:none}
+.tasks-search input{width:100%;font-family:var(--md-mono);font-size:14px;padding:11px 14px;padding-inline-start:42px;border-radius:12px;border:1px solid var(--md-outline-var);background:var(--md-surface);color:var(--md-on-surface)}
+.tasks-search input::placeholder{color:var(--md-on-surface-var);opacity:.7}
+.tasks-search input:focus{outline:none;border-color:var(--md-primary)}
+.tasks-filters{display:flex;gap:8px;flex-wrap:wrap}
+.tasks-chip{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;padding:6px 12px;border-radius:999px;border:1px solid var(--md-outline-var);background:transparent;color:var(--md-on-surface-var);cursor:pointer;transition:.15s}
+.tasks-chip .material-icons{font-size:16px}
+.tasks-chip:hover{border-color:var(--md-primary)}
+.tasks-chip.active{border-color:var(--md-primary);background:var(--md-primary-container);color:var(--md-on-primary-container);font-weight:600}
+.tasks-list{display:grid;gap:12px}
+.task-card{background:var(--md-surface);border-radius:var(--md-radius);border:1px solid var(--md-outline-var);overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.task-card:hover{border-color:var(--md-primary);box-shadow:var(--md-elev2)}
+.task-card.solved{border-inline-start:4px solid var(--md-success)}
+.task-card-head{display:flex;align-items:flex-start;gap:12px;padding:16px 18px}
+.task-card-ico{flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--md-primary-container);color:var(--md-on-primary-container);font-size:20px}
+.task-card-body{flex:1;min-width:0}
+.task-card-title{margin:0 0 4px;font-size:15px;font-weight:600;color:var(--md-on-surface)}
+.task-card-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--md-on-surface-var)}
+.task-card-meta .material-icons{font-size:14px;vertical-align:middle}
+.task-card-diff{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
+.task-card-diff.easy{background:#E6F4EA;color:#137333}
+.task-card-diff.medium{background:#FFF3E0;color:#E65100}
+.task-card-diff.hard{background:#FCE8E6;color:#B3261E}
+.task-card-actions{display:flex;gap:8px;padding:0 18px 16px}
+.task-card-actions .btn{flex:1 1 auto;justify-content:center;min-width:96px}
+.task-empty{padding:26px;text-align:center;font-size:14px;color:var(--md-on-surface-var)}
+
+.task-stage{margin-bottom:16px}
+.task-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.task-title{margin:0;font-size:22px;font-weight:600;color:var(--md-on-surface)}
+.task-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--md-on-surface-var)}
+.task-meta .material-icons{font-size:16px;vertical-align:middle}
+.task-diff{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:600}
+.task-diff.easy{background:#E6F4EA;color:#137333}
+.task-diff.medium{background:#FFF3E0;color:#E65100}
+.task-diff.hard{background:#FCE8E6;color:#B3261E}
+.task-theory{margin:0 0 18px;padding:16px 18px;border-radius:12px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);font-size:14px;line-height:1.65;color:var(--md-on-surface-var)}
+.task-example{margin:0 0 18px}
+.task-example-label{display:block;margin:0 0 8px;font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--md-on-surface-var)}
+.task-example pre{margin:0;padding:14px 16px;border-radius:10px;background:#181825;color:#CDD6F4;font-family:var(--md-mono);font-size:13px;line-height:1.6;white-space:pre;overflow-x:auto}
+.task-hint{margin:0 0 18px;padding:14px 16px;border-radius:10px;border:1px solid var(--md-outline-var);background:var(--md-surface);font-size:13.5px;line-height:1.6;color:var(--md-on-surface-var)}
+.task-hint summary{cursor:pointer;font-weight:600;color:var(--md-on-surface)}
+.task-hint summary::marker{color:var(--md-primary)}
+.task-editor-wrap{display:flex;background:#1E1E2E;border-radius:12px;overflow:hidden}
+.task-line-numbers{padding:16px 10px 16px 14px;color:#6C7086;font-family:var(--md-mono);font-size:var(--editor-font);line-height:1.6;text-align:right;user-select:none;min-width:44px;border-right:1px solid #313244}
+#taskCode{flex:1;background:transparent;border:0;outline:none;color:#CDD6F4;font-family:var(--md-mono);font-size:var(--editor-font);line-height:1.6;padding:16px;resize:vertical;min-height:220px;tab-size:var(--tab-size)}
+.task-output{margin-top:16px;padding:16px;border-radius:12px;background:#11111B;color:#A6E3A1;font-family:var(--md-mono);font-size:13px;line-height:1.6;min-height:120px;white-space:pre-wrap;word-break:break-word;overflow:auto}
+.task-output .err{color:#F38BA8}
+.task-status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:var(--md-on-surface-var)}
+.task-status-line .err-type{vertical-align:middle}
+.task-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.task-actions .btn{flex:1 1 auto;justify-content:center;min-width:100px}
+
+/* ============================================================
+   12) Змагання (contest.js)
+   ============================================================ */
+.contest-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.contest-search{position:relative;flex:1;min-width:180px}
+.contest-search-ico{position:absolute;top:50%;transform:translateY(-50%);left:12px;font-size:20px;color:var(--md-on-surface-var);pointer-events:none}
+.contest-search input{width:100%;font-family:var(--md-mono);font-size:14px;padding:11px 14px;padding-inline-start:42px;border-radius:12px;border:1px solid var(--md-outline-var);background:var(--md-surface);color:var(--md-on-surface)}
+.contest-search input::placeholder{color:var(--md-on-surface-var);opacity:.7}
+.contest-search input:focus{outline:none;border-color:var(--md-primary)}
+.contest-filters{display:flex;gap:8px;flex-wrap:wrap}
+.contest-chip{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;padding:6px 12px;border-radius:999px;border:1px solid var(--md-outline-var);background:transparent;color:var(--md-on-surface-var);cursor:pointer;transition:.15s}
+.contest-chip .material-icons{font-size:16px}
+.contest-chip:hover{border-color:var(--md-primary)}
+.contest-chip.active{border-color:var(--md-primary);background:var(--md-primary-container);color:var(--md-on-primary-container);font-weight:600}
+.contest-list{display:grid;gap:12px}
+.contest-card{background:var(--md-surface);border-radius:var(--md-radius);border:1px solid var(--md-outline-var);overflow:hidden;transition:border-color .2s}
+.contest-card:hover{border-color:var(--md-primary);box-shadow:var(--md-elev2)}
+.contest-card.active{border-color:var(--md-primary);background:rgba(var(--md-primary-rgb),.06)}
+.contest-card-head{display:flex;align-items:flex-start;gap:12px;padding:16px 18px}
+.contest-card-ico{flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--md-secondary-container);color:var(--md-on-secondary-container);font-size:20px}
+.contest-card-body{flex:1;min-width:0}
+.contest-card-title{margin:0 0 4px;font-size:15px;font-weight:600;color:var(--md-on-surface)}
+.contest-card-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--md-on-surface-var)}
+.contest-card-meta .material-icons{font-size:14px;vertical-align:middle}
+.contest-card-dots{display:flex;gap:4px;margin-top:8px}
+.contest-dot{width:10px;height:10px;border-radius:50%;background:var(--md-surface-dim);border:1px solid var(--md-outline-var)}
+.contest-dot.solved{background:#34D399}
+.contest-dot.current{background:linear-gradient(135deg,var(--md-primary),#F9A825)}
+.contest-card-actions{display:flex;gap:8px;padding:0 18px 16px}
+.contest-card-actions .btn{flex:1 1 auto;justify-content:center;min-width:96px}
+
+.contest-stage{margin-bottom:16px}
+.contest-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.contest-title{margin:0;font-size:22px;font-weight:600;color:var(--md-on-surface)}
+.contest-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--md-on-surface-var)}
+.contest-meta .material-icons{font-size:16px;vertical-align:middle}
+.contest-diff{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:600}
+.contest-diff.easy{background:#E6F4EA;color:#137333}
+.contest-diff.medium{background:#FFF3E0;color:#E65100}
+.contest-diff.hard{background:#FCE8E6;color:#B3261E}
+.contest-editor-wrap{display:flex;background:#1E1E2E;border-radius:12px;overflow:hidden}
+.contest-line-numbers{padding:16px 10px 16px 14px;color:#6C7086;font-family:var(--md-mono);font-size:var(--editor-font);line-height:1.6;text-align:right;user-select:none;min-width:44px;border-right:1px solid #313244}
+#contestCode{flex:1;background:transparent;border:0;outline:none;color:#CDD6F4;font-family:var(--md-mono);font-size:var(--editor-font);line-height:1.6;padding:16px;resize:vertical;min-height:220px;tab-size:var(--tab-size)}
+.contest-output{margin-top:16px;padding:16px;border-radius:12px;background:#11111B;color:#A6E3A1;font-family:var(--md-mono);font-size:13px;line-height:1.6;min-height:120px;white-space:pre-wrap;word-break:break-word;overflow:auto}
+.contest-output .err{color:#F38BA8}
+.contest-status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:var(--md-on-surface-var)}
+.contest-status-line .err-type{vertical-align:middle}
+.contest-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.contest-actions .btn{flex:1 1 auto;justify-content:center;min-width:100px}
+
+/* ============================================================
+   42) Contest stats tiles (extra air for number grids)
+   ============================================================ */
+.contest-stats{gap:13px;margin-bottom:22px}
+.contest-stat{flex:1 1 148px;min-width:148px;padding:16px 18px;border-radius:14px}
+.contest-stat .contest-stat-value{margin:0;font-size:24px;line-height:1.2}
+.contest-stat .contest-stat-label{margin-top:5px}
+.contest-chips{gap:9px}
+@media(max-width:768px){
+  .contest-stat{flex:1 1 calc(50% - 13px);min-width:0;padding:14px 16px}
+  .contest-stats{gap:11px;margin-bottom:18px}
+}
+
+/* ============================================================
+   43) Line numbers in course, tasks, trainer + error type
+   (Already covered in python-editor.css for gutter-host)
+   ============================================================ */
+
+/* ============================================================
+   Game pause overlay (from extra.css section 22)
+   ============================================================ */
+.gs-area-host{position:relative}
+.gs-pause{position:absolute;top:0;right:0;bottom:0;left:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;border-radius:18px;background:rgba(7,11,24,.68);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);color:#fff;text-align:center;animation:gsfade .18s ease both}
+.gs-pause-ico{display:block;line-height:1}
+.gs-pause-ico .material-icons{font-size:44px;color:var(--md-primary)}
+.gs-pause-title{font-size:22px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.gs-pause-hint{font-size:12.5px;opacity:.78;max-width:300px;line-height:1.4}
+.gs-note{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:12px;background:rgba(var(--md-primary-rgb),.12);border:1px solid rgba(var(--md-primary-rgb),.3)}
+.gs-note-text{font-size:12.5px;line-height:1.45;opacity:.9}
+.gs-restart{width:100%}
+.gs-card-opts{margin-top:8px;font-size:11.5px;line-height:1.4;color:var(--md-on-surface-var,var(--md-on-surface));opacity:.78}
+.gs-opt-btn{position:absolute;top:8px;right:42px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(var(--md-primary-rgb),.2);color:var(--md-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .15s;padding:0}
+.gs-opt-btn .material-icons{font-size:18px}
+.gs-opt-btn:hover{background:rgba(var(--md-primary-rgb),.35);transform:scale(1.1)}
+@media(prefers-reduced-motion:reduce){.gs-pause,.gs-opt-btn{animation:none!important;transition:none!important}}
+
+/* ============================================================
+   New games in new UI (from extra.css section 22)
+   ============================================================ */
+body[data-style="new"] .games-hub{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+body[data-style="new"] .game-card{background:var(--nu-surface-solid);border:1px solid var(--nu-line);border-radius:18px;padding:20px}
+body[data-style="new"] .game-card:hover{border-color:rgba(124,58,237,.42);background:var(--nu-surface-2);box-shadow:0 20px 44px -28px rgba(0,0,0,.9);transform:translateY(-3px)}
+body[data-style="new"] .game-card .ico{font-size:40px;color:var(--md-primary)}
+body[data-style="new"] .game-card h3{font-size:16px;font-weight:600;color:var(--nu-text)}
+body[data-style="new"] .game-card p{font-size:13px;color:var(--nu-dim)}
+body[data-style="new"] .game-card .best{background:var(--md-primary-container);color:var(--md-on-primary-container)}
+body[data-style="new"] .game-top{border-bottom:1px solid var(--nu-line);padding-bottom:14px;margin-bottom:18px}
+body[data-style="new"] .game-title{color:var(--nu-text)}
+body[data-style="new"] .game-score{background:var(--nu-surface);color:var(--nu-dim);border:1px solid var(--nu-line)}
+body[data-style="new"] .game-area{gap:20px}
+body[data-style="new"] .ttt button{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-text)}
+body[data-style="new"] .ttt button:hover{background:var(--md-primary-container);color:var(--nu-on-accent)}
+body[data-style="new"] .mem .mcard{background:var(--nu-surface);border:1px solid var(--nu-line);color:transparent}
+body[data-style="new"] .mem .mcard.flip{background:var(--nu-surface-solid);color:var(--nu-text);border-color:var(--md-primary)}
+body[data-style="new"] .mem .mcard.done{opacity:.45}
+body[data-style="new"] .g2048{background:var(--nu-surface);border:1px solid var(--nu-line)}
+body[data-style="new"] .g2048 .cell{background:var(--nu-surface-dim);color:var(--nu-text)}
+body[data-style="new"] .rps button{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-text)}
+body[data-style="new"] .rps button:hover{background:var(--md-primary-container);color:var(--nu-on-accent)}
+body[data-style="new"] .react-box{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-text)}
+body[data-style="new"] .react-box.wait{background:#F9AB00;color:#201A00}
+body[data-style="new"] .react-box.go{background:#188038;color:#fff}
+body[data-style="new"] .dpad button{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-text)}
+body[data-style="new"] .dpad button:active{background:var(--md-primary-container);color:var(--nu-on-accent)}
+
+/* Game pause for new UI */
+body[data-style="new"] .gs-pause{background:rgba(5,3,12,.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+body[data-style="new"] .gs-pause-ico .material-icons{color:var(--md-primary)}
+body[data-style="new"] .gs-note{background:rgba(var(--md-primary-rgb),.12);border-color:rgba(var(--md-primary-rgb),.3)}
+body[data-style="new"] .gs-opt-btn{background:rgba(var(--md-primary-rgb),.2);color:var(--md-primary)}
+body[data-style="new"] .gs-opt-btn:hover{background:rgba(var(--md-primary-rgb),.35)}
+body[data-style="new"] .gs-card-opts{color:var(--nu-dim)}
+
+/* ============================================================
+   Achievements for new UI
+   ============================================================ */
+body[data-style="new"] .ach-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+body[data-style="new"] .ach-card{background:var(--nu-surface-solid);border:1px solid var(--nu-line);border-radius:18px;padding:20px}
+body[data-style="new"] .ach-card:hover{border-color:rgba(124,58,237,.42);background:var(--nu-surface-2);box-shadow:0 20px 44px -28px rgba(0,0,0,.9);transform:translateY(-3px)}
+body[data-style="new"] .ach-card.locked{opacity:.55;filter:grayscale(.7)}
+body[data-style="new"] .ach-ico{color:var(--md-primary)}
+body[data-style="new"] .ach-card h3{color:var(--nu-text)}
+body[data-style="new"] .ach-card p{color:var(--nu-dim)}
+body[data-style="new"] .ach-progress{border-top:1px solid var(--nu-line)}
+body[data-style="new"] .ach-progress-bar{background:var(--nu-surface)}
+body[data-style="new"] .ach-progress-bar i{background:var(--nu-grad)}
+body[data-style="new"] .ach-progress-label{color:var(--nu-faint)}
+body[data-style="new"] .ach-progress-label b{color:var(--nu-text)}
+body[data-style="new"] .ach-section-title{color:var(--nu-faint)}
+
+/* Tasks for new UI */
+body[data-style="new"] .tasks-search input{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-text)}
+body[data-style="new"] .tasks-search input:focus{border-color:var(--md-primary);box-shadow:0 0 0 3px rgba(124,58,237,.22)}
+body[data-style="new"] .tasks-chip{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .tasks-chip:hover{background:var(--nu-surface-2);color:var(--nu-text);border-color:var(--md-primary)}
+body[data-style="new"] .tasks-chip.active{background:var(--md-primary);border-color:var(--md-primary);color:var(--nu-on-accent);font-weight:600}
+body[data-style="new"] .task-card{background:var(--nu-surface-solid);border:1px solid var(--nu-line)}
+body[data-style="new"] .task-card:hover{border-color:rgba(124,58,237,.42);box-shadow:0 20px 44px -28px rgba(0,0,0,.9)}
+body[data-style="new"] .task-card.solved{border-inline-start:4px solid var(--md-success)}
+body[data-style="new"] .task-card-ico{background:var(--nu-grad-soft);color:var(--nu-text);border:1px solid var(--nu-line)}
+body[data-style="new"] .task-card-title{color:var(--nu-text)}
+body[data-style="new"] .task-card-meta{color:var(--nu-dim)}
+body[data-style="new"] .task-card-diff{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .task-card-diff.easy{background:rgba(20,108,46,.15);color:var(--md-success);border-color:var(--md-success)}
+body[data-style="new"] .task-card-diff.medium{background:rgba(249,168,37,.15);color:#F9A825;border-color:#F9A825}
+body[data-style="new"] .task-card-diff.hard{background:rgba(var(--md-error-rgb),.15);color:var(--md-error);border-color:var(--md-error)}
+body[data-style="new"] .task-card-actions .btn{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .task-card-actions .btn:hover{background:var(--nu-surface-2);color:var(--nu-text)}
+body[data-style="new"] .task-card-actions .btn.contained{background:var(--md-primary);color:var(--nu-on-accent);border-color:var(--md-primary)}
+body[data-style="new"] .task-stage .task-title{color:var(--nu-text)}
+body[data-style="new"] .task-meta{color:var(--nu-dim)}
+body[data-style="new"] .task-diff{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .task-theory{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .task-example pre{background:#0B0813;border:1px solid var(--nu-line);color:#D6D0E8}
+body[data-style="new"] .task-hint{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .task-hint summary{color:var(--nu-text)}
+body[data-style="new"] .task-editor-wrap{background:var(--nu-surface-solid);border:1px solid var(--nu-line)}
+body[data-style="new"] .task-line-numbers{background:rgba(8,6,15,.6);border-right:1px solid var(--nu-line);color:var(--nu-faint)}
+body[data-style="new"] #taskCode{background:transparent;color:var(--nu-text)}
+body[data-style="new"] .task-output{background:var(--nu-surface-solid);border:1px solid var(--nu-line);color:var(--nu-text)}
+body[data-style="new"] .task-status-line{color:var(--nu-dim)}
+body[data-style="new"] .task-actions .btn{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .task-actions .btn:hover{background:var(--nu-surface-2);color:var(--nu-text)}
+body[data-style="new"] .task-actions .btn.contained{background:var(--md-primary);color:var(--nu-on-accent);border-color:var(--md-primary)}
+
+/* Contest for new UI */
+body[data-style="new"] .contest-search input{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-text)}
+body[data-style="new"] .contest-search input:focus{border-color:var(--md-primary);box-shadow:0 0 0 3px rgba(124,58,237,.22)}
+body[data-style="new"] .contest-chip{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .contest-chip:hover{background:var(--nu-surface-2);color:var(--nu-text);border-color:var(--md-primary)}
+body[data-style="new"] .contest-chip.active{background:var(--md-primary);border-color:var(--md-primary);color:var(--nu-on-accent);font-weight:600}
+body[data-style="new"] .contest-card{background:var(--nu-surface-solid);border:1px solid var(--nu-line)}
+body[data-style="new"] .contest-card:hover{border-color:rgba(124,58,237,.42);box-shadow:0 20px 44px -28px rgba(0,0,0,.9)}
+body[data-style="new"] .contest-card.active{border-color:var(--md-primary);background:rgba(var(--md-primary-rgb),.06)}
+body[data-style="new"] .contest-card-ico{background:var(--nu-grad-soft);color:var(--nu-text);border:1px solid var(--nu-line)}
+body[data-style="new"] .contest-card-title{color:var(--nu-text)}
+body[data-style="new"] .contest-card-meta{color:var(--nu-dim)}
+body[data-style="new"] .contest-dot.solved{background:#34D399}
+body[data-style="new"] .contest-dot.current{background:var(--nu-grad)}
+body[data-style="new"] .contest-card-actions .btn{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .contest-card-actions .btn:hover{background:var(--nu-surface-2);color:var(--nu-text)}
+body[data-style="new"] .contest-card-actions .btn.contained{background:var(--md-primary);color:var(--nu-on-accent);border-color:var(--md-primary)}
+body[data-style="new"] .contest-stage .contest-title{color:var(--nu-text)}
+body[data-style="new"] .contest-meta{color:var(--nu-dim)}
+body[data-style="new"] .contest-diff{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .contest-editor-wrap{background:var(--nu-surface-solid);border:1px solid var(--nu-line)}
+body[data-style="new"] .contest-line-numbers{background:rgba(8,6,15,.6);border-right:1px solid var(--nu-line);color:var(--nu-faint)}
+body[data-style="new"] #contestCode{background:transparent;color:var(--nu-text)}
+body[data-style="new"] .contest-output{background:var(--nu-surface-solid);border:1px solid var(--nu-line);color:var(--nu-text)}
+body[data-style="new"] .contest-status-line{color:var(--nu-dim)}
+body[data-style="new"] .contest-actions .btn{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .contest-actions .btn:hover{background:var(--nu-surface-2);color:var(--nu-text)}
+body[data-style="new"] .contest-actions .btn.contained{background:var(--md-primary);color:var(--nu-on-accent);border-color:var(--md-primary)}
+body[data-style="new"] .contest-stats{gap:13px;margin-bottom:22px}
+body[data-style="new"] .contest-stat{flex:1 1 148px;min-width:148px;padding:16px 18px;border-radius:14px;background:var(--nu-surface);border:1px solid var(--nu-line)}
+body[data-style="new"] .contest-stat .contest-stat-value{color:var(--nu-text)}
+body[data-style="new"] .contest-stat .contest-stat-label{color:var(--nu-dim)}
+body[data-style="new"] .contest-chips{gap:9px}
+
+/* Mobile responsive for games/tasks/contest */
+@media(max-width:768px){
+  .tasks-toolbar,.contest-toolbar{flex-direction:column;align-items:stretch}
+  .tasks-search,.contest-search{min-width:0;width:100%}
+  .task-card-head,.contest-card-head{padding:14px 16px}
+  .task-card-actions,.contest-card-actions{padding:0 16px 14px}
+  .task-card-actions .btn,.contest-card-actions .btn{min-width:0}
+  .task-top,.contest-top{flex-direction:column;align-items:flex-start}
+  .task-editor-wrap,.contest-editor-wrap{flex-direction:column}
+  .task-line-numbers,.contest-line-numbers{display:none}
+  #taskCode,#contestCode{min-height:180px}
+}

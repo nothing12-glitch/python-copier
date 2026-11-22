@@ -1,0 +1,423 @@
+/* modals.css — All modal dialog styles
+   Extracted from extra.css sections 1-6, 45-46, 656-758 (newui.css)
+   Contains: Update modal, Help modal, Avatar modal, Game settings modal,
+   Module install modal, Module info modal, Game rules modal
+*/
+
+/* ============================================================
+   1) Оновлення (wn-card / wn-backdrop)
+   ============================================================ */
+.wn-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:100;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:grid;place-items:center;padding:16px;animation:mdfade .25s ease}
+.wn-backdrop[hidden]{display:none}
+.wn-card{background:var(--md-surface);color:var(--md-on-surface);border-radius:24px;box-shadow:var(--md-elev3);max-width:92vw;width:min(92vw,520px);max-height:82vh;overflow:auto;animation:wn-in .28s cubic-bezier(.22,.61,.36,1) .05s both}
+@keyframes wn-in{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+.wn-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--md-outline-var);position:sticky;top:0;background:var(--md-surface);z-index:1}
+.wn-title{margin:0;font-size:20px;font-weight:600}
+.wn-close{width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--md-on-surface-var);display:grid;place-items:center;cursor:pointer;transition:.2s}
+.wn-close:hover{background:rgba(29,27,32,.08);color:var(--md-on-surface)}
+.wn-close .material-icons{font-size:22px}
+.wn-body{padding:20px}
+.wn-list{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:10px}
+.wn-list li{font-size:14px;line-height:1.55;color:var(--md-on-surface-var)}
+.wn-list li::marker{color:var(--md-primary);font-size:1.1em}
+.wn-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--md-outline-var);background:var(--md-surface)}
+.wn-major{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 14px;padding:9px 14px;border-radius:14px;background:linear-gradient(100deg,var(--md-primary),#F9A825);color:#fff;font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;text-align:center;box-shadow:var(--md-elev2);animation:wnmajor .45s cubic-bezier(.22,.61,.36,1) .1s both}
+.wn-major .material-icons{font-size:20px}
+.help-tag.major{color:#fff;background:var(--md-primary);padding:3px 9px;border-radius:999px;letter-spacing:.4px}
+@media(max-width:640px){.wn-major{font-size:12.5px;padding:8px 10px}.help-tag.major{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.wn-major{animation:none}}
+
+/* ============================================================
+   2) Довідка (ht-card / ht-backdrop)
+   ============================================================ */
+.ht-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:110;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:grid;place-items:center;padding:16px;animation:mdfade .25s ease}
+.ht-backdrop[hidden]{display:none}
+.ht-card{background:var(--md-surface);color:var(--md-on-surface);border-radius:24px;box-shadow:var(--md-elev3);max-width:92vw;width:min(92vw,520px);max-height:82vh;overflow:auto;animation:nu-dialog-in .22s ease-out}
+.ht-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--md-outline-var);position:sticky;top:0;background:var(--md-surface);z-index:1}
+.ht-card h3{margin:0;font-size:20px;font-weight:600}
+.ht-close{width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--md-on-surface-var);display:grid;place-items:center;cursor:pointer;transition:.2s}
+.ht-close:hover{background:rgba(29,27,32,.08);color:var(--md-on-surface)}
+.ht-close .material-icons{font-size:22px}
+.ht-body{padding:20px;max-height:65vh;overflow:auto}
+.ht-section{margin:0 0 24px}
+.ht-section h4{margin:0 0 10px;font-size:15px;font-weight:600;color:var(--md-primary)}
+.ht-section p{margin:0 0 8px;font-size:14px;line-height:1.55;color:var(--md-on-surface-var)}
+.ht-section ul{margin:0 0 12px;padding-inline-start:20px}
+.ht-section li{font-size:14px;line-height:1.55;color:var(--md-on-surface-var);margin-bottom:6px}
+.ht-section code{font-family:var(--md-mono);font-size:13px;background:var(--md-surface-dim);padding:2px 6px;border-radius:6px}
+.ht-section .md-chip{margin-right:6px;margin-bottom:6px}
+
+/* ============================================================
+   3) Аватар (av-modal-card / av-modal-backdrop)
+   ============================================================ */
+.av-modal-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:120;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:grid;place-items:center;padding:16px;animation:mdfade .25s ease}
+.av-modal-backdrop[hidden]{display:none}
+.av-modal-card{background:var(--md-surface);color:var(--md-on-surface);border-radius:24px;box-shadow:var(--md-elev3);max-width:92vw;width:min(92vw,420px);animation:nu-dialog-in .22s ease-out}
+.av-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--md-outline-var)}
+.av-modal-title{margin:0;font-size:20px;font-weight:600}
+.av-modal-close{width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--md-on-surface-var);display:grid;place-items:center;cursor:pointer;transition:.2s}
+.av-modal-close:hover{background:rgba(29,27,32,.08);color:var(--md-on-surface)}
+.av-modal-close .material-icons{font-size:22px}
+.av-modal-body{padding:20px}
+.av-modal-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--md-outline-var)}
+.av-modal-tab{flex:1;border:0;background:transparent;color:var(--md-on-surface-var);font-family:var(--md-font);font-weight:500;font-size:14px;padding:10px 0;border-bottom:2px solid transparent;cursor:pointer;transition:.2s}
+.av-modal-tab.active{color:var(--md-primary);border-bottom-color:var(--md-primary)}
+.av-emoji-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;max-height:44vh;overflow:auto;padding:2px}
+.av-emoji-btn{font-size:26px;width:100%;aspect-ratio:1;border-radius:12px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);cursor:pointer;transition:.15s;display:grid;place-items:center;padding:0}
+.av-emoji-btn:hover{background:var(--md-primary-container);transform:scale(1.08)}
+.av-emoji-btn.selected{border-color:var(--md-primary);background:var(--md-primary);color:var(--md-on-primary);transform:scale(1.05)}
+.av-bg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.av-bg-btn{aspect-ratio:1;border-radius:12px;border:1px solid var(--md-outline-var);background:var(--md-surface-dim);cursor:pointer;transition:.15s;position:relative}
+.av-bg-btn.selected::after{content:"";position:absolute;inset:0;border-radius:12px;border:2px solid var(--md-primary);box-shadow:0 0 0 2px var(--md-primary-container)}
+.av-bg-btn img{width:100%;height:100%;border-radius:11px;object-fit:cover}
+.av-modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--md-outline-var)}
+@media(max-width:480px){.av-emoji-grid{grid-template-columns:repeat(5,1fr)}}
+
+/* ============================================================
+   4) Налаштування гри (gs-card / gs-backdrop)
+   ============================================================ */
+.gs-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:130;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:grid;place-items:center;padding:16px;animation:mdfade .25s ease}
+.gs-backdrop[hidden]{display:none}
+.gs-card{background:var(--md-surface);color:var(--md-on-surface);border-radius:24px;box-shadow:var(--md-elev3);width:min(92vw,420px);max-height:82vh;overflow:auto;animation:nu-dialog-in .22s ease-out}
+.gs-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--md-outline-var)}
+.gs-card h3{margin:0;font-size:20px;font-weight:600}
+.gs-close{width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--md-on-surface-var);display:grid;place-items:center;cursor:pointer;transition:.2s}
+.gs-close:hover{background:rgba(29,27,32,.08);color:var(--md-on-surface)}
+.gs-close .material-icons{font-size:22px}
+.gs-body{padding:20px}
+.gs-option{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--md-outline-var)}
+.gs-option:last-of-type{border-bottom:0}
+.gs-option-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.gs-option-title{font-size:15px;font-weight:500;color:var(--md-on-surface)}
+.gs-option-desc{font-size:12.5px;color:var(--md-on-surface-var)}
+.gs-switch{position:relative;display:inline-block;width:52px;height:32px;flex:none}
+.gs-switch input{opacity:0;width:0;height:0;position:absolute}
+.gs-track{position:absolute;top:0;right:0;bottom:0;left:0;background:var(--md-surface-dim);border:2px solid var(--md-outline);border-radius:999px;cursor:pointer;transition:.2s}
+.gs-track::after{content:"";position:absolute;top:4px;left:4px;width:16px;height:16px;border-radius:50%;background:var(--md-outline);transition:.2s}
+.gs-switch input:checked+.gs-track{background:var(--md-primary);border-color:var(--md-primary)}
+.gs-switch input:checked+.gs-track::after{width:24px;height:24px;top:2px;left:24px;background:var(--md-on-primary)}
+.gs-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--md-outline-var)}
+
+/* ============================================================
+   5) Встановлення модуля (mod-install-card / mod-install-backdrop)
+   ============================================================ */
+.mod-install-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:140;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:grid;place-items:center;padding:16px;animation:mdfade .25s ease}
+.mod-install-backdrop[hidden]{display:none}
+.mod-install-card{background:var(--md-surface);color:var(--md-on-surface);border-radius:24px;box-shadow:var(--md-elev3);width:min(92vw,460px);max-height:82vh;overflow:auto;animation:nu-dialog-in .22s ease-out}
+.mod-install-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--md-outline-var)}
+.mod-install-title{margin:0;font-size:20px;font-weight:600}
+.mod-install-close{width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--md-on-surface-var);display:grid;place-items:center;cursor:pointer;transition:.2s}
+.mod-install-close:hover{background:rgba(29,27,32,.08);color:var(--md-on-surface)}
+.mod-install-close .material-icons{font-size:22px}
+.mod-install-body{padding:20px}
+.mod-install-info{display:flex;gap:12px;margin-bottom:16px;padding:12px;border-radius:12px;background:var(--md-surface-dim)}
+.mod-install-ico{flex:0 0 auto;width:48px;height:48px;border-radius:12px;background:var(--md-primary-container);color:var(--md-on-primary-container);display:grid;place-items:center;font-size:22px}
+.mod-install-meta{flex:1;min-width:0}
+.mod-install-name{margin:0 0 4px;font-size:16px;font-weight:600;color:var(--md-on-surface)}
+.mod-install-desc{margin:0;font-size:13px;line-height:1.5;color:var(--md-on-surface-var)}
+.mod-install-ver{font-size:12px;color:var(--md-on-surface-var);font-family:var(--md-mono)}
+.mod-install-progress{margin:16px 0;height:6px;border-radius:999px;background:var(--md-surface-dim);overflow:hidden}
+.mod-install-progress i{display:block;height:100%;width:0;border-radius:999px;background:var(--md-primary);transition:width .3s}
+.mod-install-status{font-size:13px;color:var(--md-on-surface-var);min-height:18px}
+.mod-install-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--md-outline-var)}
+
+/* ============================================================
+   6) Інфо модуля (mod-info-card / mod-info-backdrop)
+   ============================================================ */
+.mod-info-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:140;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:grid;place-items:center;padding:16px;animation:mdfade .25s ease}
+.mod-info-backdrop[hidden]{display:none}
+.mod-info-card{background:var(--md-surface);color:var(--md-on-surface);border-radius:24px;box-shadow:var(--md-elev3);width:min(92vw,480px);max-height:82vh;overflow:auto;animation:nu-dialog-in .22s ease-out}
+.mod-info-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--md-outline-var)}
+.mod-info-title{margin:0;font-size:20px;font-weight:600}
+.mod-info-close{width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--md-on-surface-var);display:grid;place-items:center;cursor:pointer;transition:.2s}
+.mod-info-close:hover{background:rgba(29,27,32,.08);color:var(--md-on-surface)}
+.mod-info-close .material-icons{font-size:22px}
+.mod-info-body{padding:20px}
+.mod-info-header{display:flex;gap:12px;margin-bottom:16px;padding:12px;border-radius:12px;background:var(--md-surface-dim)}
+.mod-info-ico{flex:0 0 auto;width:48px;height:48px;border-radius:12px;background:var(--md-primary-container);color:var(--md-on-primary-container);display:grid;place-items:center;font-size:22px}
+.mod-info-meta{flex:1;min-width:0}
+.mod-info-name{margin:0 0 4px;font-size:16px;font-weight:600;color:var(--md-on-surface)}
+.mod-info-ver{font-size:12px;color:var(--md-on-surface-var);font-family:var(--md-mono)}
+.mod-info-desc{margin:0 0 16px;font-size:13px;line-height:1.5;color:var(--md-on-surface-var)}
+.mod-info-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.mod-info-stat{font-family:var(--md-mono);font-size:13px;padding:6px 12px;border-radius:999px;background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
+.mod-info-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.mod-info-tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--md-mono);font-size:11px;padding:4px 9px;border-radius:999px;background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
+.mod-info-actions{display:flex;gap:8px;flex-wrap:wrap}
+.mod-info-actions .btn{flex:1 1 auto;min-width:120px;justify-content:center}
+
+/* ============================================================
+   7) Правила гри (grules)
+   ============================================================ */
+.grules{position:fixed;top:0;right:0;bottom:0;left:0;z-index:1200;display:none;place-items:center;padding:16px;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.grules.show{display:grid}
+.grules-card{width:92vw;width:min(92vw,520px);max-height:82vh;overflow:auto;padding:22px;background:var(--md-surface);color:var(--md-on-surface);border-radius:24px;box-shadow:var(--md-elev3);animation:nu-dialog-in .22s ease-out}
+.grules-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.grules-title{margin:0;font-size:20px;font-weight:600}
+.grules-sub{margin:2px 0 14px;font-size:13.5px;line-height:1.6;color:var(--md-on-surface-var)}
+.grules-list{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.grules-list li{display:flex;gap:10px;font-size:14px;line-height:1.55}
+.grules-list li::before{content:"";flex:0 0 auto;width:6px;height:6px;margin-top:8px;border-radius:50%;background:var(--md-primary)}
+.grules-foot{display:flex;justify-content:flex-end;margin-top:18px}
+@keyframes nu-dialog-in{from{transform:translateY(14px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+
+/* ============================================================
+   NEW UI OVERRIDES for modals
+   ============================================================ */
+body[data-style="new"] .wn-backdrop,
+body[data-style="new"] .ht-backdrop,
+body[data-style="new"] .av-modal-backdrop,
+body[data-style="new"] .gs-backdrop,
+body[data-style="new"] .mod-install-backdrop,
+body[data-style="new"] .mod-info-backdrop,
+body[data-style="new"] .grules,
+body[data-style="new"] .ob-backdrop,
+body[data-style="new"] .device-ask{
+  background:rgba(5,3,12,.72);
+  -webkit-backdrop-filter:blur(9px) saturate(1.2);
+  backdrop-filter:blur(9px) saturate(1.2);
+}
+body[data-style="new"] .wn-card,
+body[data-style="new"] .ht-card,
+body[data-style="new"] .av-modal-card,
+body[data-style="new"] .gs-card,
+body[data-style="new"] .mod-install-card,
+body[data-style="new"] .mod-info-card,
+body[data-style="new"] .grules-card,
+body[data-style="new"] .ob-card,
+body[data-style="new"] .device-card{
+  background:var(--nu-surface-solid);
+  color:var(--nu-text);
+  border:1px solid var(--nu-line);
+  border-radius:24px;
+  box-shadow:var(--nu-shadow);
+}
+body[data-style="new"] .wn-head,
+body[data-style="new"] .ht-head,
+body[data-style="new"] .av-modal-head,
+body[data-style="new"] .gs-head,
+body[data-style="new"] .mod-install-head,
+body[data-style="new"] .mod-info-head{
+  border-bottom:1px solid var(--nu-line);
+}
+body[data-style="new"] .wn-title,
+body[data-style="new"] .ht-card h3,
+body[data-style="new"] .av-modal-title,
+body[data-style="new"] .gs-card h3,
+body[data-style="new"] .mod-install-title,
+body[data-style="new"] .mod-info-title{
+  color:var(--nu-text);
+  font-weight:700;
+  letter-spacing:-.2px;
+}
+body[data-style="new"] .wn-close,
+body[data-style="new"] .ht-close,
+body[data-style="new"] .av-modal-close,
+body[data-style="new"] .gs-close,
+body[data-style="new"] .mod-install-close,
+body[data-style="new"] .mod-info-close,
+body[data-style="new"] .grules-x{
+  color:var(--nu-dim);
+}
+body[data-style="new"] .wn-close:hover,
+body[data-style="new"] .ht-close:hover,
+body[data-style="new"] .av-modal-close:hover,
+body[data-style="new"] .gs-close:hover,
+body[data-style="new"] .mod-install-close:hover,
+body[data-style="new"] .mod-info-close:hover,
+body[data-style="new"] .grules-x:hover{
+  background:var(--nu-surface-2);
+  color:var(--nu-text);
+}
+body[data-style="new"] .wn-list li,
+body[data-style="new"] .ht-section p,
+body[data-style="new"] .ht-section li,
+body[data-style="new"] .gs-option-desc,
+body[data-style="new"] .mod-install-desc,
+body[data-style="new"] .mod-info-desc{
+  color:var(--nu-dim);
+}
+body[data-style="new"] .gs-option-title,
+body[data-style="new"] .mod-install-name,
+body[data-style="new"] .mod-info-name{
+  color:var(--nu-text);
+}
+body[data-style="new"] .gs-track{
+  background:var(--nu-surface);
+  border-color:var(--nu-line);
+}
+body[data-style="new"] .gs-track::after{
+  background:var(--nu-dim);
+}
+body[data-style="new"] .gs-switch input:checked+.gs-track{
+  background:var(--md-primary);
+  border-color:var(--md-primary);
+}
+body[data-style="new"] .gs-switch input:checked+.gs-track::after{
+  background:var(--nu-on-accent);
+}
+body[data-style="new"] .mod-install-info,
+body[data-style="new"] .mod-info-header{
+  background:var(--nu-surface);
+  border:1px solid var(--nu-line);
+}
+body[data-style="new"] .mod-install-progress,
+body[data-style="new"] .mod-info-stats{
+  background:var(--nu-surface);
+}
+body[data-style="new"] .mod-install-progress i{
+  background:var(--nu-grad);
+}
+body[data-style="new"] .mod-install-status{
+  color:var(--nu-dim);
+}
+body[data-style="new"] .mod-info-stat,
+body[data-style="new"] .mod-info-tag{
+  background:var(--nu-surface);
+  border:1px solid var(--nu-line);
+  color:var(--nu-dim);
+}
+body[data-style="new"] .mod-info-tag{
+  background:var(--nu-surface-2);
+}
+body[data-style="new"] .mod-install-foot,
+body[data-style="new"] .gs-foot,
+body[data-style="new"] .mod-info-actions{
+  border-top:1px solid var(--nu-line);
+}
+body[data-style="new"] .grules-card{
+  background:var(--nu-surface-solid);
+  color:var(--nu-text);
+  border:1px solid var(--nu-line);
+  border-radius:24px;
+  box-shadow:var(--nu-shadow);
+}
+body[data-style="new"] .grules-title{
+  color:var(--nu-text);
+  font-weight:700;
+  letter-spacing:-.2px;
+}
+body[data-style="new"] .grules-sub,
+body[data-style="new"] .grules-list li{
+  color:var(--nu-dim);
+}
+body[data-style="new"] .grules-list li::before{
+  background:var(--md-primary);
+}
+body[data-style="new"] .grules-x{
+  color:var(--nu-dim);
+}
+body[data-style="new"] .grules-x:hover{
+  background:var(--nu-surface-2);
+  color:var(--nu-text);
+}
+
+/* Onboarding modal (ob-card) - base styles in style.css, new UI overrides here */
+body[data-style="new"] .ob-card{
+  background:var(--nu-surface-solid);
+  border:1px solid var(--nu-line);
+  box-shadow:var(--nu-shadow);
+}
+body[data-style="new"] .ob-card h3{
+  color:var(--nu-text);
+  font-weight:700;
+  letter-spacing:-.2px;
+}
+body[data-style="new"] .ob-card p{
+  color:var(--nu-dim);
+}
+body[data-style="new"] .ob-input{
+  background:var(--nu-surface-2);
+  border:1px solid var(--nu-line);
+  color:var(--nu-text);
+  border-radius:12px;
+}
+body[data-style="new"] .ob-input:focus{
+  outline:none;
+  border-color:var(--md-primary);
+  box-shadow:0 0 0 3px rgba(124,58,237,.22);
+}
+body[data-style="new"] .ob-langs button{
+  background:var(--nu-surface);
+  border:1px solid var(--nu-line);
+  color:var(--nu-text);
+}
+body[data-style="new"] .ob-langs button:hover{
+  background:var(--md-primary);
+  color:var(--nu-on-accent);
+}
+body[data-style="new"] .ob-langs button.is-current{
+  border-color:var(--md-primary);
+  background:var(--md-primary);
+  color:var(--nu-on-accent);
+  font-weight:600;
+}
+body[data-style="new"] .emoji-btn{
+  border:1px solid var(--nu-line);
+  background:var(--nu-surface-2);
+}
+body[data-style="new"] .emoji-btn:hover{
+  background:var(--md-primary);
+  color:var(--nu-on-accent);
+}
+body[data-style="new"] .av-bg-grid button{
+  border:1px solid var(--nu-line);
+  background:var(--nu-surface-2);
+}
+body[data-style="new"] .av-bg-grid button.selected{
+  border-color:var(--md-primary);
+  background:var(--md-primary);
+  color:var(--nu-on-accent);
+}
+
+/* ============================================================
+   9) Історія оновлень у Допомозі (help-log / help-ver)
+   ============================================================ */
+.help-log{padding:2px 16px 4px}
+.help-ver{background:var(--md-surface);border:1px solid var(--md-outline-var);border-radius:14px;overflow:hidden}
+.help-ver + .help-ver{margin-top:8px}
+.help-ver-head{display:flex;align-items:center;gap:10px;width:100%;font:inherit;text-align:start;padding:14px 16px;background:transparent;border:0;cursor:pointer;color:var(--md-on-surface)}
+.help-ver-head:hover{background:rgba(var(--md-primary-rgb),.07)}
+.help-chip{display:inline-flex;align-items:center;flex:0 0 auto;font-family:var(--md-mono);font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
+.help-ver.open .help-chip{background:var(--md-primary);color:var(--md-on-primary)}
+.help-ver-title{flex:1 1 auto;min-width:0;font-size:14.5px;font-weight:600;color:var(--md-on-surface);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.help-ver.open .help-ver-title{-webkit-line-clamp:unset;overflow:visible;white-space:normal}
+.help-tag{display:inline-flex;align-items:center;flex:0 0 auto;font-size:11px;padding:3px 8px;border-radius:999px;background:var(--md-surface-dim);color:var(--md-on-surface-var)}
+.help-tag.major{color:#fff;background:var(--md-primary);padding:3px 9px;border-radius:999px;letter-spacing:.4px}
+.help-ver-arrow{flex:none;font-size:20px;color:var(--md-on-surface-var)}
+.help-ver-list{display:none;padding:0 16px 14px;margin:0;border-top:1px solid var(--md-outline-var)}
+.help-ver.open .help-ver-list{display:block;animation:helpfade .2s ease both}
+.help-ver-list li{font-size:13.5px;line-height:1.55;color:var(--md-on-surface-var);margin-bottom:6px}
+.help-ver-list li::before{content:"• ";color:var(--md-primary);font-weight:700}
+
+@keyframes helpfade{
+  from{opacity:0;transform:translateY(-4px)}
+  to{opacity:1;transform:none}
+}
+
+/* NEW UI OVERRIDES for Help Changelog */
+body[data-style="new"] .help-log{padding:2px 16px 4px}
+body[data-style="new"] .help-ver{background:var(--nu-surface-solid);border:1px solid var(--nu-line);border-radius:18px}
+body[data-style="new"] .help-ver + .help-ver{margin-top:8px}
+body[data-style="new"] .help-ver-head{color:var(--nu-text)}
+body[data-style="new"] .help-ver-head:hover{background:rgba(var(--md-primary-rgb),.08)}
+body[data-style="new"] .help-chip{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .help-ver.open .help-chip{background:var(--md-primary);color:var(--nu-on-accent)}
+body[data-style="new"] .help-ver-title{color:var(--nu-text)}
+body[data-style="new"] .help-tag{background:var(--nu-surface);border:1px solid var(--nu-line);color:var(--nu-dim)}
+body[data-style="new"] .help-tag.major{background:var(--md-primary);color:#fff}
+body[data-style="new"] .help-ver-arrow{color:var(--nu-faint)}
+body[data-style="new"] .help-ver-list{border-top:1px solid var(--nu-line);background:var(--nu-surface)}
+body[data-style="new"] .help-ver-list li{color:var(--nu-dim)}
+body[data-style="new"] .help-ver-list li::before{color:var(--md-primary)}
+
+/* Responsive for modals */
+@media(max-width:640px){
+  .wn-card,.ht-card,.av-modal-card,.gs-card,.mod-install-card,.mod-info-card,.grules-card{
+    width:95vw;
+    max-width:400px;
+  }
+  .av-emoji-grid{grid-template-columns:repeat(5,1fr);}
+  .av-bg-grid{grid-template-columns:repeat(3,1fr);}
+  .mod-info-actions .btn{flex:1 1 100%;justify-content:center;}
+}
