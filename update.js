@@ -3,10 +3,33 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.11.22";
+  const VERSION = "26.11.24";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.11.24": {
+      uk: [
+        "Виправлено кешування офлайн-даних: Service Worker тепер коректно оновлює缓存 при зміні версії, уникнуто ситуацій зі старим кодом після деплою"
+      ],
+      en: [
+        "Fixed offline data caching: Service Worker now correctly updates cache on version change, avoided stale code after deploy"
+      ],
+      pl: [
+        "Naprawiono buforowanie danych offline: Service Worker teraz poprawnie aktualizuje cache przy zmianie wersji, uniknięto sytuacji ze starym kodem po wdrożeniu"
+      ],
+      es: [
+        "Corregido el almacenamiento en caché de datos offline: Service Worker ahora actualiza correctamente la caché al cambiar de versión, evitado código obsoleto tras el despliegue"
+      ],
+      fr: [
+        "Correction de la mise en cache des données hors ligne : le Service Worker met maintenant correctement à jour le cache lors du changement de version, évité le code obsolète après le déploiement"
+      ],
+      de: [
+        "Offline-Caching repariert: Service Worker aktualisiert den Cache jetzt korrekt beim Versionswechsel, veralteter Code nach dem Deploy wird vermieden"
+      ],
+      tr: [
+        "Çevrimdışı veri önbelleği düzeltildi: Service Worker sürüm değişikliğinde önbelleği artık doğru güncelliyor, dağıtımdan sonra eski kod önlendi"
+      ]
+    },
     "26.11.22": {
       uk: [
         "Пункти навігації «Інструменти» та «Відгуки» тепер перекладаються при зміні мови — раніше вони залишалися українською",
