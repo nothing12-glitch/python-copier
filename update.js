@@ -7,27 +7,65 @@
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
-    "26.11.24": {
+    "26.11.25": {
+      major: true,
       uk: [
-        "Виправлено кешування офлайн-даних: Service Worker тепер коректно оновлює缓存 при зміні версії, уникнуто ситуацій зі старим кодом після деплою"
+        "Service Worker кеш оновлено: виправлено ситуацію, коли старий update.js кешувався і Історія оновлень не показувала нові версії",
+        "Додано відсутні записи в LOG для версій 26.11.24 та 26.11.25 — тепер «Що нового» знову з'являється при вході"
       ],
       en: [
-        "Fixed offline data caching: Service Worker now correctly updates cache on version change, avoided stale code after deploy"
+        "Service Worker cache updated: fixed stale update.js caching causing missing update history entries",
+        "Added missing LOG entries for 26.11.24 and 26.11.25 — «What's new» modal now appears on sign-in again"
       ],
       pl: [
-        "Naprawiono buforowanie danych offline: Service Worker teraz poprawnie aktualizuje cache przy zmianie wersji, uniknięto sytuacji ze starym kodem po wdrożeniu"
+        "Zaktualizowano cache Service Workera: naprawiono buforowanie starego update.js, przez co historia aktualizacji nie pokazywała nowych wersji",
+        "Dodano brakujące wpisy w LOG dla wersji 26.11.24 i 26.11.25 — modalne «Co nowego» znów pojawia się przy logowaniu"
       ],
       es: [
-        "Corregido el almacenamiento en caché de datos offline: Service Worker ahora actualiza correctamente la caché al cambiar de versión, evitado código obsoleto tras el despliegue"
+        "Caché de Service Worker actualizado: corregido el almacenamiento en caché del update.js antiguo que causaba entradas faltantes en el historial",
+        "Añadidas entradas LOG faltantes para 26.11.24 y 26.11.25 — el modal «Qué hay de nuevo» vuelve a aparecer al iniciar sesión"
       ],
       fr: [
-        "Correction de la mise en cache des données hors ligne : le Service Worker met maintenant correctement à jour le cache lors du changement de version, évité le code obsolète après le déploiement"
+        "Cache Service Worker mis à jour : correction de la mise en cache de l'ancien update.js causant des entrées d'historique manquantes",
+        "Ajout des entrées LOG manquantes pour 26.11.24 et 26.11.25 — la modale « Quoi de neuf » réapparaît à la connexion"
       ],
       de: [
-        "Offline-Caching repariert: Service Worker aktualisiert den Cache jetzt korrekt beim Versionswechsel, veralteter Code nach dem Deploy wird vermieden"
+        "Service Worker Cache aktualisiert: veraltetes update.js-Caching behoben, das fehlende Update-Verlaufseinträge verursachte",
+        "Fehlende LOG-Einträge für 26.11.24 und 26.11.25 hinzugefügt — «Was ist neu»-Modal erscheint wieder bei Anmeldung"
       ],
       tr: [
-        "Çevrimdışı veri önbelleği düzeltildi: Service Worker sürüm değişikliğinde önbelleği artık doğru güncelliyor, dağıtımdan sonra eski kod önlendi"
+        "Service Worker önbelleği güncellendi: eski update.js önbelleği sorunu düzeltildi, güncelleme geçmişi girişleri eksik kalıyordu",
+        "26.11.24 ve 26.11.25 için eksik LOG girdileri eklendi — «Yenilikler» modalı girişte tekrar görünüyor"
+      ]
+    },
+    "26.11.24": {
+      uk: [
+        "Виправлено кешування офлайн-даних: Service Worker тепер коректно оновлює кеш при зміні версії, уникнуто ситуацій зі старим кодом після деплою",
+        "Версія кешу SW піднята до pc-v116 — примусове очищення застарілих файлів у браузері користувача"
+      ],
+      en: [
+        "Fixed offline data caching: Service Worker now correctly updates cache on version change, avoided stale code after deploy",
+        "SW cache version bumped to pc-v116 — forced cleanup of stale files in user's browser"
+      ],
+      pl: [
+        "Naprawiono buforowanie danych offline: Service Worker teraz poprawnie aktualizuje cache przy zmianie wersji, uniknięto sytuacji ze starym kodem po wdrożeniu",
+        "Wersja cache'u SW podniesiona do pc-v116 — wymuszone czyszczenie przestarzałych plików w przeglądarce użytkownika"
+      ],
+      es: [
+        "Corregido el almacenamiento en caché de datos offline: Service Worker ahora actualiza correctamente la caché al cambiar de versión, evitado código obsoleto tras el despliegue",
+        "Versión de caché SW subida a pc-v116 — limpieza forzada de archivos obsoletos en el navegador del usuario"
+      ],
+      fr: [
+        "Correction de la mise en cache des données hors ligne : le Service Worker met maintenant correctement à jour le cache lors du changement de version, évité le code obsolète après le déploiement",
+        "Version du cache SW passée à pc-v116 — nettoyage forcé des fichiers obsolètes dans le navigateur de l'utilisateur"
+      ],
+      de: [
+        "Offline-Caching repariert: Service Worker aktualisiert den Cache jetzt korrekt beim Versionswechsel, veralteter Code nach dem Deploy wird vermieden",
+        "SW-Cache-Version auf pc-v116 erhöht — erzwungene Bereinigung veralteter Dateien im Browser des Nutzers"
+      ],
+      tr: [
+        "Çevrimdışı veri önbelleği düzeltildi: Service Worker sürüm değişikliğinde önbelleği artık doğru güncelliyor, dağıtımdan sonra eski kod önlendi",
+        "SW önbellek sürümü pc-v116'ya yükseltildi — kullanıcının tarayıcısında eski dosyaların zorla temizlenmesi"
       ]
     },
     "26.11.22": {
