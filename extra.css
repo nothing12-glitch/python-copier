@@ -2174,6 +2174,45 @@ body.vlt-noscroll { overflow: hidden; }
   background: rgba(var(--md-primary-rgb), .65);
 }
 
+/* ============================================================
+   NEW UI overrides — Історія оновлень у Допомозі
+   ============================================================ */
+body[data-style="new"] .help-log{padding:2px 16px 4px}
+body[data-style="new"] .help-ver{
+  background:var(--nu-surface-solid);
+  border:1px solid var(--nu-line);
+  border-radius:18px;
+}
+body[data-style="new"] .help-ver + .help-ver{margin-top:8px}
+body[data-style="new"] .help-ver-head{color:var(--nu-text)}
+body[data-style="new"] .help-ver-head:hover{background:rgba(var(--md-primary-rgb),.08)}
+body[data-style="new"] .help-chip{
+  background:var(--nu-surface);
+  border:1px solid var(--nu-line);
+  color:var(--nu-dim);
+}
+body[data-style="new"] .help-ver.open .help-chip{
+  background:var(--md-primary);
+  color:var(--nu-on-accent);
+}
+body[data-style="new"] .help-ver-title{color:var(--nu-text)}
+body[data-style="new"] .help-tag{
+  background:var(--nu-surface);
+  border:1px solid var(--nu-line);
+  color:var(--nu-dim);
+}
+body[data-style="new"] .help-tag.major{
+  background:var(--md-primary);
+  color:#fff;
+}
+body[data-style="new"] .help-ver-arrow{color:var(--nu-faint)}
+body[data-style="new"] .help-ver-list{
+  background:var(--nu-surface);
+  border-top:1px solid var(--nu-line);
+}
+body[data-style="new"] .help-ver-list li{color:var(--nu-dim)}
+body[data-style="new"] .help-ver-list li::before{background:var(--md-primary)}
+
 /* ========== turtle і tkinter (pygui.js) ========== */
 .pg-block {
   --pg-bg:#dddddd;--pg-bg-rgb:221,221,221;
