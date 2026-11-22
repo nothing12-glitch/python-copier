@@ -3,38 +3,53 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.11.22";
+  const VERSION = "26.11.23";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
     "26.11.22": {
+      major: true,
       uk: [
+        "Рефакторинг CSS: величезний extra.css (3664 рядки) розбито на 9 модульних файлів за фічями — тепер стилі завантажуються швидше й чистіше",
         "Пункти навігації «Інструменти» та «Відгуки» тепер перекладаються при зміні мови — раніше вони залишалися українською",
-        "Додано переклади для 7 мов: українська, англійська, польська, іспанська, французька, німецька, турецька"
+        "Додано переклади для 7 мов: українська, англійська, польська, іспанська, французька, німецька, турецька",
+        "Виправлено відображення історії оновлень у розділі «Допомога» — тепер працює в обох UI"
       ],
       en: [
+        "CSS refactor: massive extra.css (3664 lines) split into 9 feature-based modules — styles now load faster and cleaner",
         "Navigation items «Tools» and «Feedback» now translate when switching languages — they used to stay in Ukrainian",
-        "Added translations for 7 languages: Ukrainian, English, Polish, Spanish, French, German, Turkish"
+        "Added translations for 7 languages: Ukrainian, English, Polish, Spanish, French, German, Turkish",
+        "Fixed update history display in «Help» section — now works in both UIs"
       ],
       pl: [
+        "Refaktoryzacja CSS: ogromny extra.css (3664 linie) podzielony na 9 modułów funkcjonalnych — style ładują się szybciej i czystiej",
         "Elementy nawigacji «Narzędzia» i «Opinie» teraz tłumaczą się przy zmianie języka — wcześniej pozostały po ukraińsku",
-        "Dodano tłumaczenia dla 7 języków: ukraiński, angielski, polski, hiszpański, francuski, niemiecki, turecki"
+        "Dodano tłumaczenia dla 7 języków: ukraiński, angielski, polski, hiszpański, francuski, niemiecki, turecki",
+        "Naprawiono wyświetlanie historii aktualizacji w sekcji «Pomoc» — działa w obu UI"
       ],
       es: [
+        "Refactor de CSS: el enorme extra.css (3664 líneas) dividido en 9 módulos por funcionalidad — los estilos cargan más rápido y limpios",
         "Los elementos de navegación «Herramientas» y «Comentarios» ahora se traducen al cambiar de idioma — antes se quedaban en ucraniano",
-        "Añadidas traducciones para 7 idiomas: ucraniano, inglés, polaco, español, francés, alemán, turco"
+        "Añadidas traducciones para 7 idiomas: ucraniano, inglés, polaco, español, francés, alemán, turco",
+        "Corregida la visualización del historial de actualizaciones en «Ayuda» — ahora funciona en ambas UI"
       ],
       fr: [
+        "Refactor CSS : l'énorme extra.css (3664 lignes) découpé en 9 modules par fonctionnalité — les styles chargent plus vite et proprement",
         "Les éléments de navigation «Outils» et «Commentaires» se traduisent maintenant lors du changement de langue — ils restaient en ukrainien",
-        "Ajout des traductions pour 7 langues : ukrainien, anglais, polonais, espagnol, français, allemand, turc"
+        "Ajout des traductions pour 7 langues : ukrainien, anglais, polonais, espagnol, français, allemand, turc",
+        "Correction de l'affichage de l'historique des mises à jour dans «Aide» — fonctionne maintenant dans les deux UI"
       ],
       de: [
+        "CSS-Refactoring: riesiges extra.css (3664 Zeilen) in 9 feature-basierte Module aufgeteilt — Styles laden jetzt schneller und sauberer",
         "Die Navigationspunkte «Werkzeuge» und «Feedback» werden jetzt beim Sprachwechsel übersetzt — sie blieben zuvor auf Ukrainisch",
-        "Übersetzungen für 7 Sprachen hinzugefügt: Ukrainisch, Englisch, Polnisch, Spanisch, Französisch, Deutsch, Türkisch"
+        "Übersetzungen für 7 Sprachen hinzugefügt: Ukrainisch, Englisch, Polnisch, Spanisch, Französisch, Deutsch, Türkisch",
+        "Update-Verlauf in «Hilfe» repariert — funktioniert jetzt in beiden UIs"
       ],
       tr: [
+        "CSS refaktörü: devasa extra.css (3664 satır) 9 özellik modülüne bölündü — stiller artık daha hızlı ve temiz yükleniyor",
         "Gezinme öğeleri «Araçlar» ve «Geri Bildirim» artık dil değiştirildiğinde çevriliyor — daha önce Ukraynaca kalıyordu",
-        "7 dil için çeviriler eklendi: Ukraynaca, İngilizce, Lehçe, İspanyolca, Fransızca, Almanca, Türkçe"
+        "7 dil için çeviriler eklendi: Ukraynaca, İngilizce, Lehçe, İspanyolca, Fransızca, Almanca, Türkçe",
+        «Yardım» bölümündeki güncelleme geçmişi görüntüleme düzeltildi — artık her iki UI'da da çalışıyor"
       ]
     },
     "26.12.21": {
