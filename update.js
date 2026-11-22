@@ -49,7 +49,7 @@
         "CSS refaktörü: devasa extra.css (3664 satır) 9 özellik modülüne bölündü — stiller artık daha hızlı ve temiz yükleniyor",
         "Gezinme öğeleri «Araçlar» ve «Geri Bildirim» artık dil değiştirildiğinde çevriliyor — daha önce Ukraynaca kalıyordu",
         "7 dil için çeviriler eklendi: Ukraynaca, İngilizce, Lehçe, İspanyolca, Fransızca, Almanca, Türkçe",
-        «Yardım» bölümündeki güncelleme geçmişi görüntüleme düzeltildi — artık her iki UI'da da çalışıyor"
+        "«Yardım» bölümündeki güncelleme geçmişi görüntüleme düzeltildi — artık her iki UI'da da çalışıyor"
       ]
     },
     "26.12.21": {
