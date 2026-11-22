@@ -3,10 +3,40 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.12.21";
+  const VERSION = "26.11.22";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
+    "26.11.22": {
+      uk: [
+        "Пункти навігації «Інструменти» та «Відгуки» тепер перекладаються при зміні мови — раніше вони залишалися українською",
+        "Додано переклади для 7 мов: українська, англійська, польська, іспанська, французька, німецька, турецька"
+      ],
+      en: [
+        "Navigation items «Tools» and «Feedback» now translate when switching languages — they used to stay in Ukrainian",
+        "Added translations for 7 languages: Ukrainian, English, Polish, Spanish, French, German, Turkish"
+      ],
+      pl: [
+        "Elementy nawigacji «Narzędzia» i «Opinie» teraz tłumaczą się przy zmianie języka — wcześniej pozostały po ukraińsku",
+        "Dodano tłumaczenia dla 7 języków: ukraiński, angielski, polski, hiszpański, francuski, niemiecki, turecki"
+      ],
+      es: [
+        "Los elementos de navegación «Herramientas» y «Comentarios» ahora se traducen al cambiar de idioma — antes se quedaban en ucraniano",
+        "Añadidas traducciones para 7 idiomas: ucraniano, inglés, polaco, español, francés, alemán, turco"
+      ],
+      fr: [
+        "Les éléments de navigation «Outils» et «Commentaires» se traduisent maintenant lors du changement de langue — ils restaient en ukrainien",
+        "Ajout des traductions pour 7 langues : ukrainien, anglais, polonais, espagnol, français, allemand, turc"
+      ],
+      de: [
+        "Die Navigationspunkte «Werkzeuge» und «Feedback» werden jetzt beim Sprachwechsel übersetzt — sie blieben zuvor auf Ukrainisch",
+        "Übersetzungen für 7 Sprachen hinzugefügt: Ukrainisch, Englisch, Polnisch, Spanisch, Französisch, Deutsch, Türkisch"
+      ],
+      tr: [
+        "Gezinme öğeleri «Araçlar» ve «Geri Bildirim» artık dil değiştirildiğinde çevriliyor — daha önce Ukraynaca kalıyordu",
+        "7 dil için çeviriler eklendi: Ukraynaca, İngilizce, Lehçe, İspanyolca, Fransızca, Almanca, Türkçe"
+      ]
+    },
     "26.12.21": {
       uk: [
         "У вікні «Відгуки» з'явився третій спосіб — «Через Telegram»: кнопка відкриває чат із ботом, де коротка анкета проведе тебе крок за кроком",
