@@ -3,7 +3,7 @@
    Запис у LOG — це і є опис змін: він сам потрапляє у вікно «Що нового»
    й у повну історію оновлень у розділі «Допомога». */
 (function (global) {
-  const VERSION = "26.11.24";
+  const VERSION = "26.11.25";
   const KEY_SEEN = "app.versionSeen";
 
   const LOG = {
